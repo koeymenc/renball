@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Should the Fouled Player Take the Penalty Himself? — Renball</title>
+<meta name="description" content="A player gets fouled by the GK and walks straight to the spot. Should he? One-tailed two-proportion z-test across the top 5 European leagues.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="../../assets/css/design-tokens.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+  body { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+
+  .project-hero { margin-bottom: 3rem; padding-bottom: 2.5rem; border-bottom: 1px solid var(--border); }
+  .project-hero h1 {
+    font-family: var(--serif); font-size: clamp(2rem, 4.5vw, 3.4rem);
+    line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 1.25rem; color: var(--text);
+  }
+  .project-hero h1 em { font-style: italic; color: var(--accent); }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 1.5rem; }
+  .meta-pill {
+    font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 0.3rem 0.7rem;
+    border: 1px solid var(--border); color: var(--text-muted);
+  }
+  .meta-pill.accent {
+    background: var(--accent-glow); color: var(--accent); border-color: var(--accent-dim);
+  }
+
+  .downloads { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 2rem; }
+  .download-btn {
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 0.6rem 1.1rem;
+    border: 1px solid var(--border); color: var(--text-secondary);
+    text-decoration: none; transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .download-btn:hover { color: var(--accent); border-color: var(--accent-dim); background: var(--accent-glow); }
+
+  section.proj { margin: 3.5rem 0; }
+  section.proj h2 {
+    font-family: var(--serif); font-size: 1.8rem;
+    margin-bottom: 1.25rem; letter-spacing: -0.01em;
+  }
+  section.proj p { color: var(--text-secondary); margin-bottom: 1.25rem; }
+  section.proj p strong { color: var(--text); }
+
+  .hypothesis-pill {
+    display: inline-block; font-family: var(--mono); font-size: 0.62rem;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 0.3rem 0.7rem; margin-bottom: 0.75rem;
+    color: var(--accent); border: 1px solid var(--accent-dim); background: var(--accent-glow);
+  }
+
+  .chart-wrap {
+    background: var(--bg-card); border: 1px solid var(--border);
+    padding: 1.75rem; margin: 1.5rem 0;
+  }
+  .chart-wrap canvas { max-width: 100%; }
+  .chart-caption {
+    font-family: var(--mono); font-size: 0.7rem; color: var(--text-muted);
+    margin-top: 0.75rem; line-height: 1.6; letter-spacing: 0.04em;
+  }
+
+  .stats-row {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem; margin: 2rem 0;
+  }
+  .stat-box { background: var(--bg-card); border: 1px solid var(--border); padding: 1.5rem; }
+  .stat-value {
+    font-family: var(--serif); font-size: 2.2rem; color: var(--accent);
+    line-height: 1; margin-bottom: 0.4rem;
+  }
+  .stat-label {
+    font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-muted);
+  }
+  .stat-sub {
+    font-family: var(--mono); font-size: 0.7rem; color: var(--text-secondary);
+    margin-top: 0.5rem; line-height: 1.5;
+  }
+
+  .test-result {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem; background: var(--bg-card); border: 1px solid var(--border);
+    padding: 1.5rem; margin: 1.5rem 0;
+  }
+  .test-result .label {
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.4rem;
+  }
+  .test-result .value { font-family: var(--serif); font-size: 1.6rem; color: var(--text); }
+  .test-result .value.accent { color: var(--accent); }
+  .test-result .value.muted { color: var(--text-secondary); font-size: 1.1rem; }
+
+  /* ─── Hypothesis box ─── */
+  .hypothesis-box {
+    background: var(--bg-card); border: 1px solid var(--border);
+    padding: 1.25rem 1.5rem; margin: 1.25rem 0;
+    font-family: var(--mono); font-size: 0.78rem; color: var(--text-secondary); line-height: 1.7;
+  }
+  .hypothesis-box strong { color: var(--text); font-weight: 500; }
+  .hypothesis-box em { color: var(--accent); font-style: normal; }
+
+  /* ─── 2×2 matrix ─── */
+  .matrix-wrap { margin: 1.5rem 0; }
+  .matrix-2x2 {
+    display: grid; grid-template-columns: 200px 1fr 1fr;
+    gap: 1px; background: var(--border); border: 1px solid var(--border);
+  }
+  .matrix-2x2 > div {
+    background: var(--bg-card); padding: 1.5rem; display: flex;
+    flex-direction: column; justify-content: center;
+  }
+  .matrix-2x2 .corner { background: var(--bg-elevated); }
+  .matrix-2x2 .col-header, .matrix-2x2 .row-header {
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-secondary);
+    background: var(--bg-elevated);
+  }
+  .matrix-2x2 .col-header { text-align: center; }
+  .matrix-2x2 .cell { align-items: center; text-align: center; position: relative; }
+  .matrix-2x2 .cell .rate {
+    font-family: var(--serif); font-size: 2.4rem;
+    color: var(--accent); line-height: 1; margin-bottom: 0.4rem;
+  }
+  .matrix-2x2 .cell .n {
+    font-family: var(--mono); font-size: 0.65rem;
+    color: var(--text-muted); letter-spacing: 0.08em;
+  }
+  .matrix-2x2 .cell.treatment {
+    background: var(--accent-glow);
+    box-shadow: inset 0 0 0 2px var(--accent);
+  }
+  .matrix-2x2 .cell.treatment::before {
+    content: 'TREATMENT';
+    position: absolute; top: 0.6rem; left: 50%; transform: translateX(-50%);
+    font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.16em;
+    color: var(--accent);
+  }
+
+  /* ─── Table ─── */
+  table.proj {
+    width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.88rem;
+  }
+  table.proj th, table.proj td {
+    padding: 0.7rem 1rem; text-align: left; border-bottom: 1px solid var(--border);
+  }
+  table.proj th {
+    font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-muted);
+    border-bottom: 1px solid var(--border-light);
+  }
+  table.proj td { color: var(--text-secondary); }
+  table.proj td:first-child { color: var(--text); }
+  table.proj td.numeric, table.proj th.numeric { text-align: right; font-family: var(--mono); }
+  table.proj td.sig-yes { color: var(--accent); }
+  table.proj td.sig-no { color: var(--text-muted); }
+  table.proj td.lowpower { color: var(--text-muted); font-style: italic; }
+
+  @media (max-width: 768px) {
+    body { padding: 2rem 1.25rem 3rem; }
+    .matrix-2x2 { grid-template-columns: 140px 1fr 1fr; }
+    .matrix-2x2 .cell .rate { font-size: 1.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<a href="../../index.html" class="back-link">← Back to Renball</a>
+
+<header class="project-hero">
+  <div class="meta-row">
+    <span class="meta-pill accent">RESEARCH · 01</span>
+    <span class="meta-pill" id="meta-date">May 2026</span>
+    <span class="meta-pill">Top 5 Leagues</span>
+    <span class="meta-pill">One-Tailed Z-Test</span>
+    <span class="meta-pill">Penalties</span>
+  </div>
+  <h1>Should the Fouled Player Take the Penalty <em>Himself</em>?</h1>
+  <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 720px; line-height: 1.7;">
+    A player gets fouled by the goalkeeper in the box. He picks himself up, dusts off, and walks to the spot.
+    Should he? Theory says no — physically jarred, emotionally agitated, while the keeper across from him has
+    every reason to be locked in. A one-tailed z-test across the top 5 European leagues asks whether the data
+    backs the case for handing the ball to a designated specialist.
+  </p>
+</header>
+
+<div class="downloads">
+  <a href="slides.pdf" class="download-btn" target="_blank">SLIDES · PDF</a>
+  <a href="methodology.pdf" class="download-btn" target="_blank">METHODOLOGY · PDF</a>
+  <a href="code/build.py" class="download-btn" target="_blank">SOURCE · PYTHON</a>
+</div>
+
+<div class="finding-box">
+  <strong style="color: var(--accent); display: block; margin-bottom: 0.3rem; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em;">KEY FINDING</strong>
+  <span id="finding-text">[loading]</span>
+</div>
+
+<div class="stats-row">
+  <div class="stat-box">
+    <div class="stat-value" id="stat-total">—</div>
+    <div class="stat-label">Penalties Analyzed</div>
+    <div class="stat-sub" id="stat-total-sub"></div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-value" id="stat-overall">—</div>
+    <div class="stat-label">Overall Conversion</div>
+    <div class="stat-sub" id="stat-overall-sub"></div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-value" id="stat-treatment">—</div>
+    <div class="stat-label">Treatment · GK Fouled Taker</div>
+    <div class="stat-sub" id="stat-treatment-sub"></div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-value" id="stat-control">—</div>
+    <div class="stat-label">Control · All Other Penalties</div>
+    <div class="stat-sub" id="stat-control-sub"></div>
+  </div>
+</div>
+
+<section class="proj">
+  <h2>Overview</h2>
+  <p>
+    It happens often: a player gets fouled in the box by the goalkeeper, picks himself up, and walks straight
+    to the spot. The question for the bench is whether that's a good idea. Theory says no — the just-fouled
+    player is <strong>physically jarred and emotionally agitated</strong>, while the keeper across from him
+    has just committed a foul that elevated his afternoon into a high-leverage moment and is locked in.
+    The taker should hand the ball to a designated specialist.
+  </p>
+  <p>
+    The test isolates exactly that scenario — <strong>GK caused the foul AND the fouled player took the
+    penalty himself</strong> — and compares the conversion rate against every other penalty in scope. Because
+    the theory predicts conversion drops in this specific situation, the test is one-tailed.
+  </p>
+</section>
+
+<section class="proj">
+  <h2>Data &amp; Method</h2>
+  <p><strong>Sources:</strong> Per-match player-level statistics for the top 5 European leagues (FBref-derived; consolidated into <code style="color:var(--accent)">FULL_DICT_ROWS</code>).</p>
+  <p><strong>Competitions:</strong> Premier League, La Liga, Serie A, Bundesliga, Ligue 1.</p>
+  <p><strong>Sample:</strong> <span id="sample-text">[loading]</span></p>
+  <p><strong>Treatment:</strong> single-penalty matches in which the goalkeeper recorded <code style="color:var(--accent)">PKcon=1</code> <em>and</em> the player taking the penalty (<code style="color:var(--accent)">PKatt=1</code>) was also the player who won the foul (<code style="color:var(--accent)">PKwon=1</code>).</p>
+  <p><strong>Control:</strong> every other single-penalty match (GK caused but a different player took it; or outfielder caused, regardless of who took it).</p>
+  <p><strong>Test:</strong> one-tailed two-proportion z-test (<code style="color:var(--accent)">statsmodels.proportions_ztest(alternative='smaller')</code>) with α = 0.05, plus Wilson 95% CIs on each proportion.</p>
+</section>
+
+<section class="proj">
+  <h2>Where penalties are taken — and converted</h2>
+  <p>Context before the test: conversion rates across the five leagues cluster tightly in the high 70s. League of origin is not a major source of variation in penalty conversion.</p>
+  <div class="chart-wrap">
+    <canvas id="chart-by-league" height="320"></canvas>
+    <div class="chart-caption">All matches with at least one penalty event (loose filter). Bars: conversion rate (%). Hover for attempts and conversions.</div>
+  </div>
+</section>
+
+<section class="proj">
+  <h2>Conversion rate across seasons</h2>
+  <p>Year-on-year stability is also high — the ~77–80% band holds across the period in scope.</p>
+  <div class="chart-wrap">
+    <canvas id="chart-by-season" height="300"></canvas>
+    <div class="chart-caption">All matches with at least one penalty event. Bars: conversion rate (%). Hover for attempts and conversions per season.</div>
+  </div>
+</section>
+
+<section class="proj">
+  <span class="hypothesis-pill">Primary Test · One-Tailed</span>
+  <h2>Should he take it himself?</h2>
+  <div class="hypothesis-box">
+    <div><strong>H₀:</strong> conversion_treatment = conversion_control</div>
+    <div><strong>H₁:</strong> conversion_treatment &lt; conversion_control &nbsp;<em>(one-tailed, lower)</em></div>
+    <div style="margin-top: 0.4rem; color: var(--text-muted);">Why one-tailed: the theory predicts a <em>directional</em> drop (hurt + agitated taker, motivated GK). A two-tailed test would dilute power against an asymmetric prediction.</div>
+  </div>
+  <div class="chart-wrap">
+    <canvas id="chart-primary" height="320"></canvas>
+    <div class="chart-caption" id="caption-primary">Bars: conversion rate (%). Error bars / shaded ranges: 95% Wilson CIs. Treatment cell n is small (~100); CI on treatment is correspondingly wide.</div>
+  </div>
+  <div class="test-result" id="primary-result">
+    <div><div class="label">Treatment rate</div><div class="value accent" id="p-rate-t">—</div><div class="stat-sub" id="p-ci-t"></div></div>
+    <div><div class="label">Control rate</div><div class="value accent" id="p-rate-c">—</div><div class="stat-sub" id="p-ci-c"></div></div>
+    <div><div class="label">Δ (pp)</div><div class="value" id="p-diff">—</div></div>
+    <div><div class="label">Z-statistic</div><div class="value" id="p-z">—</div></div>
+    <div><div class="label">P-value (one-tailed)</div><div class="value" id="p-p">—</div></div>
+    <div><div class="label">Verdict (α=0.05)</div><div class="value muted" id="p-verdict">—</div></div>
+  </div>
+</section>
+
+<section class="proj">
+  <span class="hypothesis-pill">Per-League</span>
+  <h2>The same test, league by league</h2>
+  <p>
+    With only ~100 treatment penalties across all five leagues, splitting further into per-league treatment cells
+    of 13–25 leaves each test severely underpowered. The pooled test above is the headline number; the table below
+    is for transparency and exploratory reading only.
+  </p>
+  <table class="proj" id="per-league-table">
+    <thead>
+      <tr>
+        <th>League</th>
+        <th class="numeric">Treatment rate</th>
+        <th class="numeric">Treatment n</th>
+        <th class="numeric">Control rate</th>
+        <th class="numeric">Control n</th>
+        <th class="numeric">Z</th>
+        <th class="numeric">p (one-tailed)</th>
+        <th>Significant (α=0.05)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<section class="proj">
+  <span class="hypothesis-pill">2×2 Context</span>
+  <h2>Where the treatment sits</h2>
+  <p>
+    The four cells below cover every single-penalty match in scope. The accent-bordered cell is the treatment
+    — GK caused the foul <em>and</em> the player taking the penalty is the same player who was fouled. The other three
+    cells together make up the control group.
+  </p>
+  <div class="matrix-wrap">
+    <div class="matrix-2x2" id="matrix-grid"></div>
+  </div>
+</section>
+
+<section class="proj">
+  <h2>Conclusion</h2>
+  <p id="conclusion-text">[loading]</p>
+</section>
+
+<script src="../../assets/js/chart-defaults.js"></script>
+<script>
+(async function () {
+  const data = await fetch('data/data.json').then(r => r.json());
+  const C = window.RENBALL_COLORS;
+  const fmt = (n, d=0) => (n == null ? '—' : Number(n).toLocaleString(undefined, { maximumFractionDigits: d, minimumFractionDigits: d }));
+  const pct = (n) => (n == null ? '—' : Number(n).toFixed(2) + '%');
+  const pp  = (n) => (n == null ? '—' : (n >= 0 ? '+' : '') + Number(n).toFixed(2) + ' pp');
+
+  const primary = data.primary;
+  const t = primary.treatment;
+  const c = primary.control;
+  const tst = primary.test;
+  const totalAnalyzed = t.attempts + c.attempts;
+  const overallStrict = ((t.conversions + c.conversions) / totalAnalyzed * 100);
+
+  // ─── Stat callouts ───
+  document.getElementById('stat-total').textContent = fmt(totalAnalyzed);
+  document.getElementById('stat-total-sub').textContent = 'strict filter · single-penalty matches';
+  document.getElementById('stat-overall').textContent = pct(overallStrict);
+  document.getElementById('stat-overall-sub').textContent = `${fmt(t.conversions + c.conversions)} converted`;
+  document.getElementById('stat-treatment').textContent = pct(t.rate);
+  document.getElementById('stat-treatment-sub').textContent = `${fmt(t.conversions)} / ${fmt(t.attempts)}`;
+  document.getElementById('stat-control').textContent = pct(c.rate);
+  document.getElementById('stat-control-sub').textContent = `${fmt(c.conversions)} / ${fmt(c.attempts)}`;
+
+  // ─── Finding + conclusion ───
+  const absDiff = Math.abs(tst.rate_diff_pp ?? 0);
+  const dir = (tst.rate_diff_pp ?? 0) < 0 ? 'lower' : 'higher';
+  const sigText = tst.significant_at_05
+    ? `<strong style="color:var(--accent)">Reject H₀ (α=0.05):</strong> the fouled player should hand the ball to a specialist.`
+    : `<strong>Fail to reject H₀:</strong> the data can't yet say "hand it to someone else" with confidence.`;
+  document.getElementById('finding-text').innerHTML =
+    `Conversion is <strong>${absDiff.toFixed(2)} pp ${dir}</strong> when the fouled player takes it himself ` +
+    `(${pct(t.rate)} vs ${pct(c.rate)} for everyone else) — the predicted direction — ` +
+    `but with only ${fmt(t.attempts)} such penalties in scope the gap isn't statistically detectable ` +
+    `(z = ${tst.z_stat.toFixed(2)}, p = ${tst.p_value.toFixed(3)}, one-tailed).`;
+
+  document.getElementById('conclusion-text').innerHTML =
+    `On the data so far, the bench answer is "can't yet tell." Across ${fmt(totalAnalyzed)} single-penalty matches ` +
+    `in the top 5 leagues, conversion when the fouled player takes the kick himself is ${pct(t.rate)} ` +
+    `(95% CI [${t.ci_lo}%, ${t.ci_hi}%]) against ${pct(c.rate)} (95% CI [${c.ci_lo}%, ${c.ci_hi}%]) for every ` +
+    `other penalty — a ${absDiff.toFixed(2)} pp gap ${dir} in the predicted direction, but well inside what ` +
+    `chance can produce at a treatment cell of ~${fmt(t.attempts)}. ${sigText} ` +
+    `The binding constraint is sample size, not the test design — replicating with more seasons would change the ` +
+    `verdict only by changing n. For now there's no statistical warrant either to insist the fouled player take it, ` +
+    `or to take it off him.`;
+
+  // ─── Sample text ───
+  const seasons = data.metadata.seasons;
+  document.getElementById('sample-text').textContent =
+    `${fmt(totalAnalyzed)} single-penalty matches used for the test ` +
+    `(of ${fmt(data.metadata.n_matches_loose)} matches with any penalty event). ` +
+    `Seasons: ${seasons[0]} → ${seasons[seasons.length-1]}.`;
+
+  document.getElementById('meta-date').textContent = (data.generated_at || '').slice(0,7) || 'May 2026';
+
+  // ─── Chart: by league (descriptive) ───
+  new Chart(document.getElementById('chart-by-league'), {
+    type: 'bar',
+    data: {
+      labels: data.by_league.map(l => l.label),
+      datasets: [{
+        label: 'Conversion rate (%)',
+        data: data.by_league.map(l => l.rate),
+        backgroundColor: C.primary, borderWidth: 0,
+      }],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: { display: true, text: 'Penalty conversion rate by league' },
+        legend: { display: false },
+        tooltip: { callbacks: { afterLabel: (ctx) => {
+          const r = data.by_league[ctx.dataIndex];
+          return `${fmt(r.conversions)} / ${fmt(r.attempts)} penalties`;
+        }}}
+      },
+      scales: { y: { beginAtZero: true, suggestedMax: 100, title: { display: true, text: 'Conversion rate (%)' } } },
+    },
+  });
+
+  // ─── Chart: by season ───
+  new Chart(document.getElementById('chart-by-season'), {
+    type: 'bar',
+    data: {
+      labels: data.by_season.map(s => s.season),
+      datasets: [{
+        label: 'Conversion rate (%)',
+        data: data.by_season.map(s => s.rate),
+        backgroundColor: C.primary, borderWidth: 0,
+      }],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: { display: true, text: 'Conversion rate by season — all leagues pooled' },
+        legend: { display: false },
+        tooltip: { callbacks: { afterLabel: (ctx) => {
+          const r = data.by_season[ctx.dataIndex];
+          return `${fmt(r.conversions)} / ${fmt(r.attempts)} penalties`;
+        }}}
+      },
+      scales: { y: { beginAtZero: true, suggestedMax: 100, title: { display: true, text: 'Conversion rate (%)' } } },
+    },
+  });
+
+  // ─── Chart: primary test (bars + 95% CI whiskers via custom plugin) ───
+  const ciPlugin = {
+    id: 'ciWhiskers',
+    afterDatasetsDraw(chart) {
+      const { ctx, data: chartData, scales: { x, y } } = chart;
+      const meta = chart.getDatasetMeta(0);
+      ctx.save();
+      ctx.strokeStyle = C.tokens.text;
+      ctx.lineWidth = 1.5;
+      chartData.datasets[0].ciData.forEach((ci, i) => {
+        if (ci == null) return;
+        const bar = meta.data[i];
+        const xCenter = bar.x;
+        const yLo = y.getPixelForValue(ci.lo);
+        const yHi = y.getPixelForValue(ci.hi);
+        const cap = 10;
+        ctx.beginPath();
+        ctx.moveTo(xCenter, yLo); ctx.lineTo(xCenter, yHi);
+        ctx.moveTo(xCenter - cap, yLo); ctx.lineTo(xCenter + cap, yLo);
+        ctx.moveTo(xCenter - cap, yHi); ctx.lineTo(xCenter + cap, yHi);
+        ctx.stroke();
+      });
+      ctx.restore();
+    }
+  };
+
+  new Chart(document.getElementById('chart-primary'), {
+    type: 'bar',
+    plugins: [ciPlugin],
+    data: {
+      labels: ['Treatment\n(GK fouled the taker)', 'Control\n(all other penalties)'],
+      datasets: [{
+        label: 'Conversion rate (%)',
+        data: [t.rate, c.rate],
+        ciData: [
+          { lo: t.ci_lo, hi: t.ci_hi },
+          { lo: c.ci_lo, hi: c.ci_hi },
+        ],
+        backgroundColor: [C.primary, C.secondary],
+        borderWidth: 0,
+      }],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: { display: true, text: 'Primary test — treatment vs control conversion rate (95% Wilson CIs)' },
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => `${ctx.parsed.y.toFixed(2)}%`,
+            afterLabel: (ctx) => {
+              const sample = ctx.dataIndex === 0 ? t : c;
+              const ci = ctx.dataset.ciData[ctx.dataIndex];
+              return [
+                `${fmt(sample.conversions)} / ${fmt(sample.attempts)} penalties`,
+                `95% CI: [${ci.lo}%, ${ci.hi}%]`,
+              ];
+            }
+          }
+        }
+      },
+      scales: {
+        y: { suggestedMin: 50, suggestedMax: 95, title: { display: true, text: 'Conversion rate (%)' } },
+        x: { ticks: { callback: function(v) { return this.getLabelForValue(v).split('\n'); } } },
+      },
+    },
+  });
+
+  // ─── Primary result callout ───
+  document.getElementById('p-rate-t').textContent = pct(t.rate);
+  document.getElementById('p-ci-t').textContent  = `n = ${fmt(t.attempts)} · 95% CI [${t.ci_lo}%, ${t.ci_hi}%]`;
+  document.getElementById('p-rate-c').textContent = pct(c.rate);
+  document.getElementById('p-ci-c').textContent  = `n = ${fmt(c.attempts)} · 95% CI [${c.ci_lo}%, ${c.ci_hi}%]`;
+  document.getElementById('p-diff').textContent  = pp(tst.rate_diff_pp);
+  document.getElementById('p-z').textContent     = tst.z_stat == null ? '—' : tst.z_stat.toFixed(3);
+  document.getElementById('p-p').textContent     = tst.p_value == null ? '—' : tst.p_value.toFixed(4);
+  document.getElementById('p-verdict').textContent = tst.significant_at_05 == null ? '—'
+    : (tst.significant_at_05 ? 'Reject H₀' : 'Fail to reject H₀');
+
+  // ─── Per-league table ───
+  const lowPower = (n) => n < 30;
+  const tbody = document.querySelector('#per-league-table tbody');
+  primary.by_league.forEach(blk => {
+    const tt = blk.treatment, cc = blk.control, ts = blk.test;
+    const tr = document.createElement('tr');
+    const lowCls = lowPower(tt.attempts) ? 'lowpower' : '';
+    tr.innerHTML = `
+      <td>${blk.label}</td>
+      <td class="numeric ${lowCls}">${pct(tt.rate)}</td>
+      <td class="numeric ${lowCls}">${fmt(tt.attempts)}</td>
+      <td class="numeric">${pct(cc.rate)}</td>
+      <td class="numeric">${fmt(cc.attempts)}</td>
+      <td class="numeric">${ts.z_stat == null ? '—' : ts.z_stat.toFixed(3)}</td>
+      <td class="numeric">${ts.p_value == null ? '—' : ts.p_value.toFixed(4)}</td>
+      <td class="${ts.significant_at_05 ? 'sig-yes' : 'sig-no'}">${ts.significant_at_05 ? 'Yes' : 'No'}${lowPower(tt.attempts) ? ' · low n' : ''}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // ─── 2×2 matrix ───
+  const m = data.matrix;
+  const cellByRC = {};
+  m.cells.forEach(cc => { cellByRC[`${cc.row}_${cc.col}`] = cc; });
+  const grid = document.getElementById('matrix-grid');
+  grid.innerHTML = `
+    <div class="corner"></div>
+    <div class="col-header">${m.cols[0].label}</div>
+    <div class="col-header">${m.cols[1].label}</div>
+    ${m.rows.map(r => `
+      <div class="row-header">${r.label}</div>
+      <div class="cell ${cellByRC[`${r.key}_${m.cols[0].key}`].is_treatment ? 'treatment' : ''}">
+        <div class="rate">${pct(cellByRC[`${r.key}_${m.cols[0].key}`].rate)}</div>
+        <div class="n">n = ${fmt(cellByRC[`${r.key}_${m.cols[0].key}`].attempts)}</div>
+      </div>
+      <div class="cell ${cellByRC[`${r.key}_${m.cols[1].key}`].is_treatment ? 'treatment' : ''}">
+        <div class="rate">${pct(cellByRC[`${r.key}_${m.cols[1].key}`].rate)}</div>
+        <div class="n">n = ${fmt(cellByRC[`${r.key}_${m.cols[1].key}`].attempts)}</div>
+      </div>
+    `).join('')}
+  `;
+})();
+</script>
+
+</body>
+</html>

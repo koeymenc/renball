@@ -1,0 +1,13 @@
+{
+  "folder": "01-penalty-analysis",
+  "title": "Should the Fouled Player Take the Penalty Himself?",
+  "date": "May 2026",
+  "type": "HTML + PDF",
+  "tags": ["Top 5 Leagues", "Penalties", "One-Tailed Z-Test"],
+  "filter": ["tactical", "set-pieces"],
+  "excerpt": "A player gets fouled by the GK and walks straight to the spot. Should he? Theory says no — jarred, agitated, while the keeper is locked in. A one-tailed z-test on 100 treatment cases vs 3,757 controls in the top 5 European leagues.",
+  "finding": "When the fouled player takes the penalty himself, conversion drops 3.25 pp (75.0% vs 78.25%) — but with only 100 such cases the data can't yet say 'hand it to someone else' (p = 0.22, one-tailed).",
+  "has_html": true,
+  "has_pdf": true,
+  "has_methodology": true
+}

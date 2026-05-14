@@ -1,0 +1,341 @@
+{
+  "generated_at": "2026-05-14T13:59:26.889305+00:00",
+  "metadata": {
+    "leagues": [
+      {
+        "code": "SERIEA",
+        "label": "Serie A"
+      },
+      {
+        "code": "LALIGA",
+        "label": "La Liga"
+      },
+      {
+        "code": "PL",
+        "label": "Premier League"
+      },
+      {
+        "code": "BUNDESLIGA",
+        "label": "Bundesliga"
+      },
+      {
+        "code": "LIGUE1",
+        "label": "Ligue 1"
+      }
+    ],
+    "seasons": [
+      "2017-2018",
+      "2018-2019",
+      "2019-2020",
+      "2020-2021",
+      "2021-2022",
+      "2022-2023",
+      "2023-2024"
+    ],
+    "n_matches_loose": 3492,
+    "n_matches_strict": 3322,
+    "filter_note": "Descriptive stats (overall, by_league, by_season) use the loose filter \u2014 any match with a non-zero penalty event. The primary test and 2x2 matrix use the strict filter \u2014 matches where every penalty column has max <= 1, i.e. single-penalty matches with unambiguous attribution."
+  },
+  "overall": {
+    "attempts": 4110,
+    "conversions": 3232,
+    "rate": 78.64
+  },
+  "by_league": [
+    {
+      "code": "SERIEA",
+      "label": "Serie A",
+      "attempts": 966,
+      "conversions": 762,
+      "rate": 78.88
+    },
+    {
+      "code": "LALIGA",
+      "label": "La Liga",
+      "attempts": 886,
+      "conversions": 677,
+      "rate": 76.41
+    },
+    {
+      "code": "PL",
+      "label": "Premier League",
+      "attempts": 708,
+      "conversions": 567,
+      "rate": 80.08
+    },
+    {
+      "code": "BUNDESLIGA",
+      "label": "Bundesliga",
+      "attempts": 662,
+      "conversions": 520,
+      "rate": 78.55
+    },
+    {
+      "code": "LIGUE1",
+      "label": "Ligue 1",
+      "attempts": 888,
+      "conversions": 706,
+      "rate": 79.5
+    }
+  ],
+  "by_season": [
+    {
+      "season": "2017-2018",
+      "attempts": 540,
+      "conversions": 392,
+      "rate": 72.59
+    },
+    {
+      "season": "2018-2019",
+      "attempts": 585,
+      "conversions": 463,
+      "rate": 79.15
+    },
+    {
+      "season": "2019-2020",
+      "attempts": 589,
+      "conversions": 471,
+      "rate": 79.97
+    },
+    {
+      "season": "2020-2021",
+      "attempts": 688,
+      "conversions": 553,
+      "rate": 80.38
+    },
+    {
+      "season": "2021-2022",
+      "attempts": 583,
+      "conversions": 471,
+      "rate": 80.79
+    },
+    {
+      "season": "2022-2023",
+      "attempts": 574,
+      "conversions": 441,
+      "rate": 76.83
+    },
+    {
+      "season": "2023-2024",
+      "attempts": 551,
+      "conversions": 441,
+      "rate": 80.04
+    }
+  ],
+  "primary": {
+    "label": "Top 5 (pooled)",
+    "treatment": {
+      "attempts": 100,
+      "conversions": 75,
+      "rate": 75.0,
+      "ci_lo": 65.7,
+      "ci_hi": 82.45,
+      "label": "GK fouled the taker (hurt-taker cell)"
+    },
+    "control": {
+      "attempts": 3757,
+      "conversions": 2940,
+      "rate": 78.25,
+      "ci_lo": 76.91,
+      "ci_hi": 79.54,
+      "label": "All other penalties (3 cells pooled)"
+    },
+    "test": {
+      "z_stat": -0.7774,
+      "p_value": 0.218457,
+      "significant_at_05": false,
+      "rate_diff_pp": -3.25,
+      "alternative": "smaller (one-tailed)"
+    },
+    "question": "When the goalkeeper fouls the player who then takes the penalty, is the conversion rate lower than otherwise?",
+    "h0": "Treatment and control have the same conversion rate.",
+    "h1_alt": "Treatment conversion rate is LOWER than control (one-tailed).",
+    "by_league": [
+      {
+        "label": "Serie A",
+        "treatment": {
+          "attempts": 21,
+          "conversions": 17,
+          "rate": 80.95,
+          "ci_lo": 60.0,
+          "ci_hi": 92.33
+        },
+        "control": {
+          "attempts": 888,
+          "conversions": 690,
+          "rate": 77.7,
+          "ci_lo": 74.85,
+          "ci_hi": 80.32
+        },
+        "test": {
+          "z_stat": 0.354,
+          "p_value": 0.638346,
+          "significant_at_05": false,
+          "rate_diff_pp": 3.25,
+          "alternative": "smaller (one-tailed)"
+        },
+        "code": "SERIEA"
+      },
+      {
+        "label": "La Liga",
+        "treatment": {
+          "attempts": 19,
+          "conversions": 11,
+          "rate": 57.89,
+          "ci_lo": 36.28,
+          "ci_hi": 76.86
+        },
+        "control": {
+          "attempts": 803,
+          "conversions": 622,
+          "rate": 77.46,
+          "ci_lo": 74.44,
+          "ci_hi": 80.21
+        },
+        "test": {
+          "z_stat": -2.0031,
+          "p_value": 0.022581,
+          "significant_at_05": true,
+          "rate_diff_pp": -19.57,
+          "alternative": "smaller (one-tailed)"
+        },
+        "code": "LALIGA"
+      },
+      {
+        "label": "Premier League",
+        "treatment": {
+          "attempts": 25,
+          "conversions": 22,
+          "rate": 88.0,
+          "ci_lo": 70.04,
+          "ci_hi": 95.83
+        },
+        "control": {
+          "attempts": 626,
+          "conversions": 492,
+          "rate": 78.59,
+          "ci_lo": 75.21,
+          "ci_hi": 81.63
+        },
+        "test": {
+          "z_stat": 1.1314,
+          "p_value": 0.871047,
+          "significant_at_05": false,
+          "rate_diff_pp": 9.41,
+          "alternative": "smaller (one-tailed)"
+        },
+        "code": "PL"
+      },
+      {
+        "label": "Bundesliga",
+        "treatment": {
+          "attempts": 13,
+          "conversions": 8,
+          "rate": 61.54,
+          "ci_lo": 35.52,
+          "ci_hi": 82.29
+        },
+        "control": {
+          "attempts": 614,
+          "conversions": 480,
+          "rate": 78.18,
+          "ci_lo": 74.74,
+          "ci_hi": 81.26
+        },
+        "test": {
+          "z_stat": -1.4291,
+          "p_value": 0.07649,
+          "significant_at_05": false,
+          "rate_diff_pp": -16.64,
+          "alternative": "smaller (one-tailed)"
+        },
+        "code": "BUNDESLIGA"
+      },
+      {
+        "label": "Ligue 1",
+        "treatment": {
+          "attempts": 22,
+          "conversions": 17,
+          "rate": 77.27,
+          "ci_lo": 56.56,
+          "ci_hi": 89.88
+        },
+        "control": {
+          "attempts": 826,
+          "conversions": 656,
+          "rate": 79.42,
+          "ci_lo": 76.53,
+          "ci_hi": 82.04
+        },
+        "test": {
+          "z_stat": -0.2455,
+          "p_value": 0.403038,
+          "significant_at_05": false,
+          "rate_diff_pp": -2.15,
+          "alternative": "smaller (one-tailed)"
+        },
+        "code": "LIGUE1"
+      }
+    ]
+  },
+  "matrix": {
+    "rows": [
+      {
+        "key": "won",
+        "label": "Taker = the player who was fouled"
+      },
+      {
+        "key": "other",
+        "label": "Taker = a different player"
+      }
+    ],
+    "cols": [
+      {
+        "key": "gk",
+        "label": "Goalkeeper caused the foul"
+      },
+      {
+        "key": "ngk",
+        "label": "Outfielder caused the foul"
+      }
+    ],
+    "cells": [
+      {
+        "row": "won",
+        "col": "gk",
+        "is_treatment": true,
+        "label": "GK fouled the player who then took the penalty",
+        "attempts": 100,
+        "conversions": 75,
+        "rate": 75.0
+      },
+      {
+        "row": "other",
+        "col": "gk",
+        "is_treatment": false,
+        "label": "GK fouled, but a different player took the penalty",
+        "attempts": 265,
+        "conversions": 207,
+        "rate": 78.11
+      },
+      {
+        "row": "won",
+        "col": "ngk",
+        "is_treatment": false,
+        "label": "Outfielder fouled, fouled player took the penalty",
+        "attempts": 549,
+        "conversions": 433,
+        "rate": 78.87
+      },
+      {
+        "row": "other",
+        "col": "ngk",
+        "is_treatment": false,
+        "label": "Outfielder fouled, a different player took the penalty",
+        "attempts": 2943,
+        "conversions": 2300,
+        "rate": 78.15
+      }
+    ]
+  }
+}
