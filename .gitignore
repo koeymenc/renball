@@ -26,6 +26,9 @@ env/
 Thumbs.db
 desktop.ini
 
+# Microsoft Office lock files (e.g. ~$slides.pptx while file is open)
+~$*
+
 # Build artifacts
 *.log
 .pytest_cache/

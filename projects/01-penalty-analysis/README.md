@@ -6,7 +6,7 @@ Two-proportion z-tests across the top 5 European leagues asking: does the goalke
 
 - `analysis.html` — Interactive Chart.js dashboard.
 - `slides.pdf` — Presentation slideshow (built from `slides.pptx`, added separately).
-- `methodology.pdf` — Technical write-up (built from `methodology.md`).
+- `methodology.html` — Technical write-up, styled in Renball design tokens (built from `methodology.md` via `code/build_pdfs.py`).
 - `code/build.py` — Reads `FULL_DICT_ROWS.pkl` from `READY_DATA`, runs the analysis, writes `data/data.json`.
 - `data/data.json` — Aggregated chart data consumed by the dashboard.
 - `config.json` — Card metadata (mirrored in repo-root `projects.json`).

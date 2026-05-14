@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Methodology — Renball Project 01</title>
+<style>
+@page { size: A4; margin: 2.2cm 2.5cm; background: #080c08; }
+
+* { box-sizing: border-box; }
+
+body {
+  background: #080c08;
+  color: #e8efe8;
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.65;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'Instrument Serif', Georgia, serif;
+  color: #e8efe8;
+  letter-spacing: -0.01em;
+  margin-top: 1.6em;
+  margin-bottom: 0.5em;
+  font-weight: normal;
+}
+h1 { font-size: 26pt; margin-top: 0; }
+h2 { font-size: 18pt; border-bottom: 1px solid #1e2e1e; padding-bottom: 0.25em; }
+h3 { font-size: 14pt; color: #c1ff72; }
+
+p { margin: 0.6em 0; color: #cfd8cf; }
+
+strong { color: #e8efe8; font-weight: 600; }
+em { color: #c1ff72; font-style: italic; }
+
+a { color: #c1ff72; text-decoration: none; }
+
+code {
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  font-size: 0.88em;
+  color: #c1ff72;
+  background: #111a11;
+  padding: 0.1em 0.35em;
+  border-radius: 2px;
+}
+
+pre code {
+  display: block;
+  padding: 0.8em 1em;
+  background: #111a11;
+  border-left: 2px solid #c1ff72;
+  white-space: pre-wrap;
+}
+
+blockquote {
+  border-left: 3px solid #c1ff72;
+  padding: 0.4em 1.2em;
+  margin: 1.2em 0;
+  background: rgba(193, 255, 114, 0.06);
+  color: #c1ff72;
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: 1.05em;
+  font-style: italic;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #1e2e1e;
+  margin: 2em 0;
+}
+
+ul, ol { padding-left: 1.4em; color: #cfd8cf; }
+ul li, ol li { margin: 0.25em 0; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  font-size: 0.92em;
+}
+table th, table td {
+  padding: 0.55em 0.8em;
+  border-bottom: 1px solid #1e2e1e;
+  text-align: left;
+}
+table th {
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  font-size: 0.78em;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #8fa68f;
+  border-bottom: 1px solid #2d3d2d;
+  font-weight: normal;
+}
+table td:first-child { color: #e8efe8; }
+
+/* Renball "ren·ball" header bar at top of doc */
+.renball-mark {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: 16pt;
+  margin-bottom: 1.5em;
+  letter-spacing: -0.01em;
+}
+.renball-mark .ball { color: #c1ff72; }
+.renball-mark .sep { color: #5a735a; font-family: 'JetBrains Mono', monospace; font-size: 9pt; margin-left: 0.6em; letter-spacing: 0.16em; }
+</style>
+</head>
+<body>
+<div class="renball-mark"><span>ren</span><span class="ball">ball</span><span class="sep">METHODOLOGY · PROJECT 01</span></div>
+<h1>Should the Fouled Player Take the Penalty Himself? — Conversion After a Goalkeeper Foul on the Taker</h1>
+<p><strong>Author:</strong> Can Luca Köymen
+<strong>Site:</strong> <a href="https://renball.com">renball.com</a>
+<strong>Date:</strong> May 2026</p>
+<hr />
+<h2>Abstract</h2>
+<p>When a goalkeeper fouls a player in the box, the fouled player frequently takes the resulting penalty himself. The practical question for the bench is whether he should — the just-fouled player is theoretically jarred and agitated, the goalkeeper across from him locked in. This study isolates that exact decision point (treatment n = 100) across the top 5 European leagues and compares its conversion rate against every other penalty in scope (control n = 3,757) using a one-tailed two-proportion z-test. The point estimate moves in the predicted direction (75.00% vs 78.25%, a 3.25 percentage-point drop) but the difference is not statistically detectable at α = 0.05 (z = −0.78, p = 0.218 one-tailed). The conclusion is constrained by power: at a treatment cell of ~100, even a moderate true effect would be hard to surface against a control rate so close to the population mean.</p>
+<hr />
+<h2>1. Research Question</h2>
+<blockquote>
+<p>When a goalkeeper fouls a player to give away a penalty, should that fouled player take the penalty himself, or should the team hand the ball to a designated specialist? Equivalently: does conversion drop when the fouled player takes the kick, relative to all other penalties?</p>
+</blockquote>
+<h3>Hypotheses</h3>
+<ul>
+<li><strong>H₀:</strong> conversion_treatment = conversion_control</li>
+<li><strong>H₁:</strong> conversion_treatment &lt; conversion_control &nbsp;&nbsp; <em>(one-tailed)</em></li>
+</ul>
+<h3>Why one-tailed</h3>
+<p>The theory underpinning the test is directional. The taker has just been fouled — typically a body collision that left them on the ground — and is presumed physically jarred and emotionally agitated. The goalkeeper, having committed the foul that elevated their save into a high-leverage situation, is presumed maximally focused. Both mechanisms point the same way: conversion <em>down</em>. A two-tailed test would split α between an upward effect (which the theory does not predict) and the downward effect (which it does), reducing power against the prediction of interest. A one-tailed test directs the entire α=0.05 region to the predicted side.</p>
+<hr />
+<h2>2. Data</h2>
+<p><strong>Sources:</strong>
+- FBref player-match data, consolidated into the local <code>FULL_DICT_ROWS</code> pickle (per-competition / per-season dictionaries of <code>ROWS_DICTS_SPECIALS</code> and <code>ROWS_DICTS_SUMMARY</code> DataFrames).</p>
+<p><strong>Competitions:</strong> Premier League (PL), La Liga (LALIGA), Serie A (SERIEA), Bundesliga (BUNDESLIGA), Ligue 1 (LIGUE1).</p>
+<p><strong>Sample size (strict filter, used for the test):</strong> 3,857 single-penalty matches — 100 in treatment, 3,757 in control. The seasons in scope and counts are written to <code>data/data.json</code> by <code>code/build.py</code> and surfaced in the dashboard.</p>
+<p><strong>Variables used:</strong>
+- <code>Performance_PKatt</code> — penalty attempted by this player in this match
+- <code>Performance_PK</code> — penalty scored by this player in this match
+- <code>Performance_PKwon</code> — penalty foul won by this player in this match (i.e. the fouled player)
+- <code>Performance_PKcon</code> — penalty foul conceded by this player in this match
+- <code>Pos</code> — playing position (GK / DF / MF / FW)
+- <code>match_id</code> — used to group all players involved in the same penalty event</p>
+<p><strong>Cleaning &amp; filtering decisions:</strong></p>
+<ol>
+<li>
+<p><strong>SPECIALS + SUMMARY merge.</strong> For each competition, the per-season <code>ROWS_DICTS_SPECIALS</code> (contains <code>PKwon</code>, <code>PKcon</code>) and <code>ROWS_DICTS_SUMMARY</code> (contains <code>PK</code>, <code>PKatt</code>) DataFrames are concatenated across seasons and merged on the identification + match-context columns (<code>match_id</code>, <code>Player</code>, <code>team_id</code>, <code>Season</code>, etc.) with an outer join, producing one combined DataFrame per competition where every player–match row carries all four penalty fields.</p>
+</li>
+<li>
+<p><strong>Loose penalty filter (descriptive only).</strong> Matches are retained if any row has a non-zero value in any of <code>{PK, PKatt, PKwon, PKcon}</code>. This pool drives the dashboard's <em>Overall</em> / <em>Per-league</em> / <em>Per-season</em> charts.</p>
+</li>
+<li>
+<p><strong>Strict single-penalty filter (used for the test).</strong> For the primary test we additionally require that for each <code>match_id</code>, the per-column maximum across all rows is ≤ 1 and at least one column is &gt; 0. This restricts the test sample to matches with a single penalty event so the GK-caused / taker-was-fouled attribution is unambiguous — in matches with multiple penalties, attribution becomes ambiguous (which penalty did the GK foul? which one did the taker win?), so they are excluded.</p>
+</li>
+<li>
+<p><strong>Treatment construction.</strong> A strict-filter match falls in the <em>treatment</em> group if <strong>both</strong> of the following hold within the same <code>match_id</code>:</p>
+<ul>
+<li>at least one row has <code>PKcon = 1</code> and <code>Pos = GK</code> (the GK conceded the penalty foul); and</li>
+<li>at least one row has <code>PKwon = 1</code> and <code>PKatt = 1</code> (the same player won the foul and took the penalty).</li>
+</ul>
+</li>
+<li>
+<p><strong>Control construction.</strong> Every strict-filter match that is <em>not</em> in treatment. This pools three of the four cells in the GK × taker 2×2 matrix (see §4 below).</p>
+</li>
+</ol>
+<hr />
+<h2>3. Methodology</h2>
+<p><strong>Test.</strong> Two-proportion z-test, one-tailed (alternative: treatment proportion smaller).</p>
+<p>For p̂₁ = k₁/n₁ (treatment) and p̂₂ = k₂/n₂ (control), pooled p̂ = (k₁ + k₂) / (n₁ + n₂):</p>
+<p>$$
+Z \;=\; \frac{\hat{p}_1 - \hat{p}_2}{\sqrt{\hat{p}(1-\hat{p})\left(\tfrac{1}{n_1}+\tfrac{1}{n_2}\right)}}
+$$</p>
+<p>P-value: P(Z ≤ z_obs). Reject H₀ if p &lt; 0.05.</p>
+<p>Implementation: <code>statsmodels.stats.proportion.proportions_ztest([k_t, k_c], [n_t, n_c], alternative='smaller')</code>.</p>
+<p><strong>Confidence intervals.</strong> 95% Wilson intervals on each proportion (<code>statsmodels.stats.proportion.proportion_confint(..., method='wilson')</code>) — chosen over the normal approximation because the treatment cell is small (n=100) and Wilson is well-behaved at moderate n.</p>
+<p><strong>Per-league replication.</strong> The same test is applied within each of the five leagues, partitioning treatment / control identically but restricting to a single league at a time. Treatment-cell sample sizes within a single league are 13–25 — these tests are reported for transparency but are severely underpowered and any individual league's verdict should be read with that caveat.</p>
+<p><strong>Assumptions and how they are met:</strong>
+- <em>Independence within and between groups.</em> Each penalty is taken in a distinct match (strict filter); treatment and control match-id sets are disjoint by construction.
+- <em>Approximate normality of the sampling distribution.</em> The standard rule of thumb (n·p̂ ≥ 10 and n·(1−p̂) ≥ 10) holds for the pooled treatment cell (100 × 0.75 = 75; 100 × 0.25 = 25) — the test is well-conditioned, but the small n caps achievable power.
+- <em>Same underlying population.</em> All penalties are in-game (non-shootout) top-5-league penalties, from a single consolidated FBref-derived dataset.</p>
+<p><strong>Software stack.</strong>
+- Python 3.12 (project venv at repo root)
+- <code>pandas</code> — data wrangling, match-level grouping
+- <code>statsmodels</code> — <code>proportions_ztest</code>, <code>proportion_confint</code>
+- Output: JSON to <code>data/data.json</code>; Chart.js dashboard at <code>analysis.html</code></p>
+<hr />
+<h2>4. Results</h2>
+<blockquote>
+<p>All numbers in this section come from <code>code/build.py</code> → <code>data/data.json</code> and are surfaced live in the dashboard.</p>
+</blockquote>
+<h3>4.1 Primary test (pooled across leagues)</h3>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th style="text-align: right;">n (attempts)</th>
+<th style="text-align: right;">Conversions</th>
+<th style="text-align: right;">Rate</th>
+<th>95% CI (Wilson)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Treatment — GK fouled the taker</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">75</td>
+<td style="text-align: right;">75.00%</td>
+<td>[65.70%, 82.45%]</td>
+</tr>
+<tr>
+<td>Control — all other penalties</td>
+<td style="text-align: right;">3,757</td>
+<td style="text-align: right;">2,940</td>
+<td style="text-align: right;">78.25%</td>
+<td>[76.91%, 79.54%]</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Difference: <strong>−3.25 pp</strong> (point estimate, treatment − control)</li>
+<li>z = <strong>−0.778</strong></li>
+<li>p = <strong>0.218</strong> (one-tailed)</li>
+<li><strong>Verdict: fail to reject H₀ at α = 0.05.</strong></li>
+</ul>
+<p>The point estimate moves in the predicted direction but the 95% CI on the treatment proportion alone spans roughly 65.7%–82.5%, comfortably overlapping the entire control CI. The data is consistent with anything from a meaningful negative effect to no effect at all.</p>
+<h3>4.2 Per-league replication</h3>
+<p>Per-league treatment cells (n = 13–25) leave each test severely underpowered, and individual verdicts are noisy:</p>
+<table>
+<thead>
+<tr>
+<th>League</th>
+<th style="text-align: right;">Treatment rate (n)</th>
+<th style="text-align: right;">Control rate (n)</th>
+<th style="text-align: right;">Z</th>
+<th style="text-align: right;">p (one-tailed)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Premier League</td>
+<td style="text-align: right;">88.00% (25)</td>
+<td style="text-align: right;">78.59% (626)</td>
+<td style="text-align: right;">+1.13</td>
+<td style="text-align: right;">0.87</td>
+</tr>
+<tr>
+<td>La Liga</td>
+<td style="text-align: right;">57.89% (19)</td>
+<td style="text-align: right;">77.46% (803)</td>
+<td style="text-align: right;">−2.00</td>
+<td style="text-align: right;">0.023</td>
+</tr>
+<tr>
+<td>Serie A</td>
+<td style="text-align: right;">80.95% (21)</td>
+<td style="text-align: right;">77.70% (888)</td>
+<td style="text-align: right;">+0.35</td>
+<td style="text-align: right;">0.64</td>
+</tr>
+<tr>
+<td>Bundesliga</td>
+<td style="text-align: right;">61.54% (13)</td>
+<td style="text-align: right;">78.18% (614)</td>
+<td style="text-align: right;">−1.43</td>
+<td style="text-align: right;">0.077</td>
+</tr>
+<tr>
+<td>Ligue 1</td>
+<td style="text-align: right;">77.27% (22)</td>
+<td style="text-align: right;">79.42% (826)</td>
+<td style="text-align: right;">−0.24</td>
+<td style="text-align: right;">0.40</td>
+</tr>
+</tbody>
+</table>
+<p>La Liga clears p&lt;0.05 in the predicted direction; Bundesliga is marginal in the same direction; Premier League and Serie A swing the other way. With single-cell counts in the teens, this is approximately what one would expect from noise. The pooled test is the only inference to take seriously.</p>
+<h3>4.3 2×2 matrix (context)</h3>
+<p>The treatment is one of the four cells in a 2×2 of (GK caused foul) × (taker was the fouled player):</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>GK caused the foul</th>
+<th>Outfielder caused the foul</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Taker = the player who was fouled</td>
+<td><strong>75.00% (n=100)</strong> ◀ treatment</td>
+<td>78.87% (n=549)</td>
+</tr>
+<tr>
+<td>Taker = a different player</td>
+<td>78.11% (n=265)</td>
+<td>78.15% (n=2,943)</td>
+</tr>
+</tbody>
+</table>
+<p>Visual inspection: the three control cells cluster tightly around 78%; the treatment cell sits ~3 pp below. The 2×2 makes the comparison transparent but does not change the inference — only the single primary test does.</p>
+<hr />
+<h2>5. Limitations</h2>
+<ul>
+<li><strong>Power is the binding constraint.</strong> At a treatment-cell n of ~100 and a control rate around 78%, the minimum detectable effect at α=0.05 one-tailed and 80% power is roughly 9–10 percentage points. A real 3–5 pp effect would consistently fail to reject under this design. A null result here is not strong evidence <em>against</em> the theory — it is consistent with both no effect and a moderate effect the data cannot resolve.</li>
+<li><strong>Penalties only, no shootouts.</strong> All analysis is restricted to in-game penalties.</li>
+<li><strong>No score-state / time controls.</strong> Conversion rates might vary by minute or scoreline; this analysis pools across all in-game situations.</li>
+<li><strong>No taker fixed effect.</strong> Elite penalty specialists are concentrated in the control group (most are not the player just fouled by a GK in their own match), which would tend to <em>raise</em> the control rate and inflate the apparent treatment−control gap rather than mask it; the direction of this bias is, if anything, working in the theory's favour, so does not threaten the null verdict.</li>
+<li><strong>No injury observation.</strong> "Hurt taker" is the theoretical mechanism, but the dataset does not record whether the fouled player was actually injured or merely fouled. The treatment cell is therefore an <em>intent-to-treat</em> approximation of the mechanism.</li>
+<li><strong>FBref attribution edge cases.</strong> Some <code>PKcon</code> allocations in goal-mouth scrambles depend on FBref's labelling and could carry small measurement error. The strict single-penalty filter mitigates but does not eliminate this.</li>
+</ul>
+<hr />
+<h2>6. Conclusion</h2>
+<p>The bench-decision question — <em>should the fouled player take the penalty himself?</em> — does not get a clean answer from the available data. The point estimate moves the way the theory predicts (−3.25 pp), the per-league pattern is mixed, and the binding constraint is the size of the treatment cell, not the test design. A follow-up that pools additional seasons (or extends to other leagues with comparable data) would change the conclusion only by changing n — the analytical framing is in place.</p>
+<p>For now, the practical takeaway is conservative: there is no clear data warrant either to override the fouled player who wants to take it himself, or to insist that he does. The verdict is "not yet detectable", not "false".</p>
+<hr />
+<h2>References</h2>
+<ol>
+<li>FBref — <em>Player-match penalty statistics by league and season.</em> https://fbref.com</li>
+<li>statsmodels — <em>proportions_ztest</em> documentation. https://www.statsmodels.org/</li>
+<li>Wilson, E. B. (1927). <em>Probable Inference, the Law of Succession, and Statistical Inference.</em> JASA.</li>
+</ol>
+<hr />
+<p><em>Methodology document generated alongside <a href="analysis.html">analysis.html</a> and <a href="slides.pdf">slides.pdf</a>. Source code: <a href="code/build.py"><code>code/build.py</code></a>.</em></p>
+</body>
+</html>

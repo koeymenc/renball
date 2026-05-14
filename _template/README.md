@@ -6,7 +6,7 @@
 
 - `analysis.html` — Interactive dashboard (live on website).
 - `slides.pdf` — Presentation slideshow.
-- `methodology.pdf` — Technical write-up of methodology.
+- `methodology.html` — Technical write-up, styled in Renball design tokens (generated from `methodology.md`).
 - `code/build.py` — Python script that processes raw data into `data/data.json`.
 - `data/data.json` — Pre-aggregated chart data consumed by the dashboard.
 - `config.json` — Card metadata (mirrored in repo-root `projects.json`).

@@ -37,10 +37,10 @@ renball/
 │   │   └── build.py             ← Python build script (raw data → data.json).
 │   ├── data/
 │   │   └── data.json            ← Pre-aggregated chart data.
-│   ├── methodology.md           ← Source for methodology.pdf.
+│   ├── methodology.md           ← Source for methodology.html.
+│   ├── methodology.html         ← Generated, styled, browser-readable (canonical deploy).
 │   ├── slides.pptx              ← Editable PowerPoint.
-│   ├── slides.pdf               ← Exported PDF (final).
-│   ├── methodology.pdf          ← Exported PDF (final).
+│   ├── slides.pdf               ← Exported PDF (final, manual export from PowerPoint).
 │   ├── config.json              ← Card metadata.
 │   └── README.md                ← Project notes.
 └── projects/
@@ -110,7 +110,7 @@ Every project gets an `analysis.html` dashboard. Rules:
 2. **Hero header**: project title (serif large), date + tags meta line (mono).
 3. **Key finding banner**: accent-glow box with the headline result.
 4. **Sections**: Overview → Data & Methodology summary → Charts/Visuals → Findings → Conclusion.
-5. **Download row**: links to `slides.pdf` and `methodology.pdf` near the top.
+5. **Download row**: links to `slides.pdf` and `methodology.html` near the top.
 
 ### Charts
 - **Default library: Chart.js** (via CDN: `https://cdn.jsdelivr.net/npm/chart.js`).
@@ -153,12 +153,12 @@ Every project ships a slideshow. Rules:
 
 ---
 
-## 6. METHODOLOGY PDF RULES
+## 6. METHODOLOGY HTML RULES
 
-Every project ships a `methodology.pdf` for technical depth.
+Every project ships a `methodology.html` for technical depth. It is generated from `methodology.md` by `code/build_pdfs.py`, styled in the Renball design tokens (dark background, accent headlines, mono code blocks), and deployed alongside the dashboard. A PDF is opportunistically generated when WeasyPrint + GTK are available locally, but the **HTML is the canonical artifact** — readers open it in a browser; anyone who wants a PDF can use the browser's print-to-PDF.
 
 ### Source: `methodology.md`
-Written in Markdown, converted to PDF on build.
+Markdown is the single source of truth — write it there, regenerate the HTML with `python code/build_pdfs.py`.
 
 ### Structure
 1. **Title + Author + Date**
@@ -178,7 +178,7 @@ Written in Markdown, converted to PDF on build.
 8. **References**
 
 ### Style
-- Match website design via the markdown PDF template (dark theme PDF when rendered).
+- Renders with the dark Renball theme via the inline stylesheet in `build_pdfs.py`.
 - Citations in footnotes.
 - Code snippets in monospace.
 
@@ -294,7 +294,7 @@ When writing project copy:
 - Use mono captions for numbers and stats.
 - Keep excerpts to 1-2 sentences.
 - One headline number per project, in accent color.
-- Avoid jargon in card excerpts. Save technical depth for methodology.pdf.
+- Avoid jargon in card excerpts. Save technical depth for methodology.html.
 
 ---
 
@@ -304,7 +304,7 @@ When writing project copy:
 - Don't hardcode data in `analysis.html` — always read from `data/data.json`.
 - Don't add inline `<style>` per project — use the shared `assets/css/design-tokens.css`.
 - Don't break the design system — no new colors, fonts, or random spacing.
-- Don't deviate from the 4-file deliverable per project (analysis.html, slides.pdf, methodology.pdf, config.json).
+- Don't deviate from the 4-file deliverable per project (analysis.html, slides.pdf, methodology.html, config.json).
 - Don't ship a project without a `finding` field in config.json — the green key-finding box is part of the brand.
 - Don't write project titles longer than ~12 words.
 - Don't commit `.pyc`, `__pycache__`, `.DS_Store`, or IDE files.
