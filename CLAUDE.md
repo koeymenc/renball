@@ -115,9 +115,11 @@ Every project gets an `analysis.html` dashboard. Rules:
 ### Charts
 - **Default library: Chart.js** (via CDN: `https://cdn.jsdelivr.net/npm/chart.js`).
 - **Football-specific visuals (pitch maps, passing networks): D3.js**.
-- Every chart must use the design tokens via the shared `chart-defaults.js` (grid color, font, accent).
+- Every chart must use the design tokens via the shared `chart-defaults.js` (grid color, font, accent, font sizes, layout).
 - Charts read from `data/data.json` — never hardcode data in HTML.
 - Each chart must have: a serif title above, mono caption below explaining context.
+- **Use `RENBALL_HELPERS.niceRange(values, opts?)`** for the y-axis on percentage / proportion charts. Forcing `beginAtZero: true` + `suggestedMax: 100` crushes 60–85% variation flat — `niceRange` snaps to multiples of 5 (configurable), pads ±4 pp by default, and clamps to [0, 100]. Pass CI bounds too when the chart shows error whiskers.
+- Default chart aspect ratio is `3:1` (wide, laptop-friendly height ~325px). Set globally in `chart-defaults.js` — don't override per-chart unless there's a good reason.
 
 ### Interactivity
 - Filters (competition, season, etc.) at top of chart section.

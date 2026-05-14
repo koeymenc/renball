@@ -403,7 +403,6 @@
       }],
     },
     options: {
-      responsive: true,
       plugins: {
         title: { display: true, text: 'Penalty conversion rate by league' },
         legend: { display: false },
@@ -412,7 +411,12 @@
           return `${fmt(r.conversions)} / ${fmt(r.attempts)} penalties`;
         }}}
       },
-      scales: { y: { beginAtZero: true, suggestedMax: 100, title: { display: true, text: 'Conversion rate (%)' } } },
+      scales: {
+        y: {
+          ...RENBALL_HELPERS.niceRange(data.by_league.map(l => l.rate)),
+          title: { display: true, text: 'Conversion rate (%)' },
+        },
+      },
     },
   });
 
@@ -428,7 +432,6 @@
       }],
     },
     options: {
-      responsive: true,
       plugins: {
         title: { display: true, text: 'Conversion rate by season — all leagues pooled' },
         legend: { display: false },
@@ -437,7 +440,12 @@
           return `${fmt(r.conversions)} / ${fmt(r.attempts)} penalties`;
         }}}
       },
-      scales: { y: { beginAtZero: true, suggestedMax: 100, title: { display: true, text: 'Conversion rate (%)' } } },
+      scales: {
+        y: {
+          ...RENBALL_HELPERS.niceRange(data.by_season.map(s => s.rate)),
+          title: { display: true, text: 'Conversion rate (%)' },
+        },
+      },
     },
   });
 
@@ -481,10 +489,10 @@
         ],
         backgroundColor: [C.primary, C.secondary],
         borderWidth: 0,
+        maxBarThickness: 110,
       }],
     },
     options: {
-      responsive: true,
       plugins: {
         title: { display: true, text: 'Primary test — treatment vs control conversion rate (95% Wilson CIs)' },
         legend: { display: false },
@@ -503,7 +511,10 @@
         }
       },
       scales: {
-        y: { suggestedMin: 50, suggestedMax: 95, title: { display: true, text: 'Conversion rate (%)' } },
+        y: {
+          ...RENBALL_HELPERS.niceRange([t.rate, c.rate, t.ci_lo, t.ci_hi, c.ci_lo, c.ci_hi], { padding: 3 }),
+          title: { display: true, text: 'Conversion rate (%)' },
+        },
         x: { ticks: { callback: function(v) { return this.getLabelForValue(v).split('\n'); } } },
       },
     },

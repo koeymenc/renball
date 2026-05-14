@@ -309,7 +309,11 @@
   document.getElementById('stat-2').textContent = data.stat2 ?? '—';
   document.getElementById('stat-3').textContent = data.stat3 ?? '—';
 
-  // ── CHART 1 ──
+  // ── CHART 1 — single series ──
+  // Default Renball chart size is a wide/short 3:1 aspect ratio (set in
+  // chart-defaults.js). Use RENBALL_HELPERS.niceRange() to auto-zoom the
+  // y-axis to the data range with sensible padding — never force 0–100
+  // when values cluster (e.g. football percentages in the 70s).
   new Chart(document.getElementById('chart-1'), {
     type: 'bar',
     data: {
@@ -322,19 +326,21 @@
       }],
     },
     options: {
-      responsive: true,
       plugins: {
         title: { display: true, text: '[Chart Title]' },
         legend: { display: false },
       },
       scales: {
-        y: { beginAtZero: true, title: { display: true, text: '[Y axis]' } },
+        y: {
+          ...RENBALL_HELPERS.niceRange(data.chart1.values),
+          title: { display: true, text: '[Y axis]' },
+        },
         x: { title: { display: true, text: '[X axis]' } },
       },
     },
   });
 
-  // ── CHART 2 ──
+  // ── CHART 2 — two series ──
   new Chart(document.getElementById('chart-2'), {
     type: 'bar',
     data: {
@@ -355,12 +361,13 @@
       ],
     },
     options: {
-      responsive: true,
       plugins: {
         title: { display: true, text: '[Chart Title]' },
       },
       scales: {
-        y: { beginAtZero: true },
+        y: {
+          ...RENBALL_HELPERS.niceRange([...data.chart2.seriesA, ...data.chart2.seriesB]),
+        },
       },
     },
   });
