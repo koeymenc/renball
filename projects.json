@@ -1,0 +1,14 @@
+[
+  {
+    "folder": "01-example-project",
+    "title": "High-Press Intensity & Defensive Transitions in the Bundesliga",
+    "date": "Mar 2026",
+    "type": "HTML + PDF",
+    "tags": ["Bundesliga", "Pressing", "PPDA"],
+    "filter": ["tactical", "physical"],
+    "excerpt": "Analysing PPDA and high-press sequences across all 18 Bundesliga clubs. How sustainable is gegenpressing over a full season?",
+    "finding": "Clubs with PPDA < 9.5 convert recovered possession to shots 2.3× faster",
+    "has_html": true,
+    "has_pdf": true
+  }
+]
