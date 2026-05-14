@@ -1,0 +1,37 @@
+# Raw data — never commit
+*.pkl
+*.pickle
+READY_DATA/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Build artifacts
+*.log
+.pytest_cache/
+
+# Local-only secrets
+.env
+.env.local
+
+# Large output files (anything >5MB should be ignored)
+*.parquet

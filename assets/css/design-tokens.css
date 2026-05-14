@@ -1,0 +1,122 @@
+/* ─────────────────────────────────────────────────
+   RENBALL DESIGN TOKENS
+   Shared CSS variables and base styles.
+   Used by index.html and all projects/XX/analysis.html
+   ───────────────────────────────────────────────── */
+
+:root {
+  /* Backgrounds */
+  --bg: #080c08;
+  --bg-elevated: #0e150e;
+  --bg-card: #111a11;
+  --bg-card-hover: #162016;
+  --surface: #1a261a;
+
+  /* Borders */
+  --border: #1e2e1e;
+  --border-light: #2d3d2d;
+
+  /* Text */
+  --text: #e8efe8;
+  --text-secondary: #8fa68f;
+  --text-muted: #5a735a;
+
+  /* Accent */
+  --accent: #c1ff72;
+  --accent-dim: #8fbf45;
+  --accent-bright: #d4ff9e;
+  --accent-glow: rgba(193, 255, 114, 0.06);
+  --accent-glow-strong: rgba(193, 255, 114, 0.12);
+
+  /* Typography */
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'DM Sans', system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', 'Courier New', monospace;
+
+  /* Spacing */
+  --section-padding: 6rem 3rem;
+  --section-padding-mobile: 4rem 1.5rem;
+  --container-max: 1300px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Grain overlay - applies to all pages */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ── Shared utility classes ── */
+
+.mono-label {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.accent-pill {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.accent-pill::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+
+.finding-box {
+  background: var(--accent-glow);
+  border-left: 3px solid var(--accent);
+  padding: 1.25rem 1.5rem;
+  margin: 2rem 0;
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  color: var(--accent);
+  line-height: 1.6;
+}
+
+/* Back-to-home link, used on every project page */
+.back-link {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 3rem;
+  transition: color 0.2s;
+}
+.back-link:hover { color: var(--accent); }

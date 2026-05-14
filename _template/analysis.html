@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[PROJECT TITLE] — Renball</title>
+<meta name="description" content="[ONE-LINE PROJECT DESCRIPTION]">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Shared design tokens -->
+<link rel="stylesheet" href="../../assets/css/design-tokens.css">
+
+<!-- Chart.js + Renball defaults -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+  /* ─── Project page layout ─── */
+  body {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem;
+  }
+
+  /* ─── Hero ─── */
+  .project-hero {
+    margin-bottom: 3rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .project-hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4.5vw, 3.4rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.25rem;
+    color: var(--text);
+  }
+  .project-hero h1 em { font-style: italic; color: var(--accent); }
+
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  .meta-pill {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+  .meta-pill.accent {
+    background: var(--accent-glow);
+    color: var(--accent);
+    border-color: var(--accent-dim);
+  }
+
+  /* ─── Downloads row ─── */
+  .downloads {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 2rem;
+  }
+  .download-btn {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.6rem 1.1rem;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .download-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent-dim);
+    background: var(--accent-glow);
+  }
+
+  /* ─── Section ─── */
+  section.proj { margin: 3.5rem 0; }
+  section.proj h2 {
+    font-family: var(--serif);
+    font-size: 1.8rem;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.01em;
+  }
+  section.proj p {
+    color: var(--text-secondary);
+    margin-bottom: 1.25rem;
+  }
+  section.proj p strong { color: var(--text); }
+
+  /* ─── Chart container ─── */
+  .chart-wrap {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 1.75rem;
+    margin: 1.5rem 0;
+  }
+  .chart-wrap canvas { max-width: 100%; }
+  .chart-caption {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 0.75rem;
+    line-height: 1.6;
+    letter-spacing: 0.04em;
+  }
+
+  /* ─── Filters above charts ─── */
+  .chart-filters {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  .chart-filters button {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.35rem 0.75rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .chart-filters button:hover { color: var(--accent); border-color: var(--accent-dim); }
+  .chart-filters button.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+
+  /* ─── Two-column grid ─── */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.25rem;
+  }
+
+  /* ─── Stat callouts ─── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+  .stat-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+  }
+  .stat-value {
+    font-family: var(--serif);
+    font-size: 2.2rem;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  /* ─── Table ─── */
+  table.proj {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+  }
+  table.proj th, table.proj td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  table.proj th {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-light);
+  }
+  table.proj td { color: var(--text-secondary); }
+  table.proj td:first-child { color: var(--text); }
+
+  @media (max-width: 768px) {
+    body { padding: 2rem 1.25rem 3rem; }
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── BACK LINK ── -->
+<a href="../../index.html" class="back-link">← Back to Renball</a>
+
+<!-- ── HERO ── -->
+<header class="project-hero">
+  <div class="meta-row">
+    <span class="meta-pill accent">RESEARCH</span>
+    <span class="meta-pill">[DATE — e.g. May 2026]</span>
+    <span class="meta-pill">[TAG 1]</span>
+    <span class="meta-pill">[TAG 2]</span>
+  </div>
+  <h1>[PROJECT TITLE WITH <em>ACCENT WORDS</em>]</h1>
+  <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 720px; line-height: 1.7;">
+    [ONE-PARAGRAPH HOOK — what the project investigates, in 2-3 sentences.]
+  </p>
+</header>
+
+<!-- ── DOWNLOADS ── -->
+<div class="downloads">
+  <a href="slides.pdf" class="download-btn" target="_blank">📊 Slides PDF</a>
+  <a href="methodology.pdf" class="download-btn" target="_blank">📄 Methodology PDF</a>
+  <a href="code/build.py" class="download-btn" target="_blank">🐍 Source Code</a>
+</div>
+
+<!-- ── KEY FINDING ── -->
+<div class="finding-box">
+  <strong style="color: var(--accent); display: block; margin-bottom: 0.3rem; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em;">KEY FINDING</strong>
+  [HEADLINE RESULT — the one number or sentence that summarizes everything.]
+</div>
+
+<!-- ── STAT CALLOUTS ── -->
+<div class="stats-row">
+  <div class="stat-box">
+    <div class="stat-value" id="stat-1">—</div>
+    <div class="stat-label">[Label 1]</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-value" id="stat-2">—</div>
+    <div class="stat-label">[Label 2]</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-value" id="stat-3">—</div>
+    <div class="stat-label">[Label 3]</div>
+  </div>
+</div>
+
+<!-- ── OVERVIEW ── -->
+<section class="proj">
+  <h2>Overview</h2>
+  <p>[Why this question matters. Context. What previous research has said. The hypothesis being tested.]</p>
+</section>
+
+<!-- ── DATA & METHOD ── -->
+<section class="proj">
+  <h2>Data & Method</h2>
+  <p><strong>Sources:</strong> [e.g. FBref, StatsBomb Open Data, Transfermarkt.]</p>
+  <p><strong>Sample:</strong> [Number of matches / players / shots.]</p>
+  <p><strong>Period:</strong> [Time range covered.]</p>
+  <p><strong>Approach:</strong> [Short summary of statistical tests / methodology. Full details in methodology.pdf.]</p>
+</section>
+
+<!-- ── RESULTS: chart 1 ── -->
+<section class="proj">
+  <h2>[Chart 1 — Section Title]</h2>
+  <p>[Setup sentence explaining what the chart shows.]</p>
+  <div class="chart-wrap">
+    <canvas id="chart-1" height="320"></canvas>
+    <div class="chart-caption">[Chart caption — data source, methodology note.]</div>
+  </div>
+</section>
+
+<!-- ── RESULTS: chart 2 ── -->
+<section class="proj">
+  <h2>[Chart 2 — Section Title]</h2>
+  <p>[Setup sentence.]</p>
+  <div class="chart-wrap">
+    <canvas id="chart-2" height="320"></canvas>
+    <div class="chart-caption">[Chart caption.]</div>
+  </div>
+</section>
+
+<!-- ── CONCLUSION ── -->
+<section class="proj">
+  <h2>Conclusion</h2>
+  <p>[Final takeaway. What does this mean for the sport, recruitment, tactical decisions, etc.]</p>
+  <div class="finding-box">
+    [Restate headline finding with a slight expansion for context.]
+  </div>
+</section>
+
+<!-- ── CHART RENDERING ── -->
+<script src="../../assets/js/chart-defaults.js"></script>
+<script>
+(async function () {
+  // Load pre-built data from data/data.json
+  const data = await fetch('data/data.json').then(r => r.json());
+
+  // Update stat callouts (replace keys with your actual data.json fields)
+  document.getElementById('stat-1').textContent = data.stat1 ?? '—';
+  document.getElementById('stat-2').textContent = data.stat2 ?? '—';
+  document.getElementById('stat-3').textContent = data.stat3 ?? '—';
+
+  // ── CHART 1 ──
+  new Chart(document.getElementById('chart-1'), {
+    type: 'bar',
+    data: {
+      labels: data.chart1.labels,
+      datasets: [{
+        label: 'Series 1',
+        data: data.chart1.values,
+        backgroundColor: RENBALL_COLORS.primary,
+        borderWidth: 0,
+      }],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: { display: true, text: '[Chart Title]' },
+        legend: { display: false },
+      },
+      scales: {
+        y: { beginAtZero: true, title: { display: true, text: '[Y axis]' } },
+        x: { title: { display: true, text: '[X axis]' } },
+      },
+    },
+  });
+
+  // ── CHART 2 ──
+  new Chart(document.getElementById('chart-2'), {
+    type: 'bar',
+    data: {
+      labels: data.chart2.labels,
+      datasets: [
+        {
+          label: 'Series A',
+          data: data.chart2.seriesA,
+          backgroundColor: RENBALL_COLORS.primary,
+          borderWidth: 0,
+        },
+        {
+          label: 'Series B',
+          data: data.chart2.seriesB,
+          backgroundColor: RENBALL_COLORS.secondary,
+          borderWidth: 0,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: { display: true, text: '[Chart Title]' },
+      },
+      scales: {
+        y: { beginAtZero: true },
+      },
+    },
+  });
+})();
+</script>
+
+</body>
+</html>
