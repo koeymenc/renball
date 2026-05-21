@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Methodology — Renball Project 02</title>
+<style>
+@page { size: A4; margin: 2.2cm 2.5cm; background: #080c08; }
+
+* { box-sizing: border-box; }
+
+body {
+  background: #080c08;
+  color: #e8efe8;
+  font-family: 'DM Sans', 'Segoe UI', sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.65;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'Instrument Serif', Georgia, serif;
+  color: #e8efe8;
+  letter-spacing: -0.01em;
+  margin-top: 1.6em;
+  margin-bottom: 0.5em;
+  font-weight: normal;
+}
+h1 { font-size: 26pt; margin-top: 0; }
+h2 { font-size: 18pt; border-bottom: 1px solid #1e2e1e; padding-bottom: 0.25em; }
+h3 { font-size: 14pt; color: #c1ff72; }
+
+p { margin: 0.6em 0; color: #cfd8cf; }
+
+strong { color: #e8efe8; font-weight: 600; }
+em { color: #c1ff72; font-style: italic; }
+
+a { color: #c1ff72; text-decoration: none; }
+
+code {
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  font-size: 0.88em;
+  color: #c1ff72;
+  background: #111a11;
+  padding: 0.1em 0.35em;
+  border-radius: 2px;
+}
+
+pre code {
+  display: block;
+  padding: 0.8em 1em;
+  background: #111a11;
+  border-left: 2px solid #c1ff72;
+  white-space: pre-wrap;
+}
+
+blockquote {
+  border-left: 3px solid #c1ff72;
+  padding: 0.4em 1.2em;
+  margin: 1.2em 0;
+  background: rgba(193, 255, 114, 0.06);
+  color: #c1ff72;
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: 1.05em;
+  font-style: italic;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #1e2e1e;
+  margin: 2em 0;
+}
+
+ul, ol { padding-left: 1.4em; color: #cfd8cf; }
+ul li, ol li { margin: 0.25em 0; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  font-size: 0.92em;
+}
+table th, table td {
+  padding: 0.55em 0.8em;
+  border-bottom: 1px solid #1e2e1e;
+  text-align: left;
+}
+table th {
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  font-size: 0.78em;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #8fa68f;
+  border-bottom: 1px solid #2d3d2d;
+  font-weight: normal;
+}
+table td:first-child { color: #e8efe8; }
+
+/* Renball "ren·ball" header bar at top of doc */
+.renball-mark {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: 16pt;
+  margin-bottom: 1.5em;
+  letter-spacing: -0.01em;
+}
+.renball-mark .ball { color: #c1ff72; }
+.renball-mark .sep { color: #5a735a; font-family: 'JetBrains Mono', monospace; font-size: 9pt; margin-left: 0.6em; letter-spacing: 0.16em; }
+</style>
+</head>
+<body>
+<div class="renball-mark"><span>ren</span><span class="ball">ball</span><span class="sep">METHODOLOGY · PROJECT 02</span></div>
+<h1>Not All Goals Are Equal: A Time-Aware Expected-Points Framework for Goal Valuation</h1>
+<p><strong>Author:</strong> Can Luca Köymen
+<strong>Site:</strong> <a href="https://renball.com">renball.com</a>
+<strong>Date:</strong> May 2026</p>
+<hr />
+<h2>Abstract</h2>
+<p>The standard scoreboard treats every goal as one unit of contribution, indifferent to the gamestate it altered or the minute it landed. A consolation goal at 4–0 down is filed under the same column as a 90th-minute equaliser. This project builds a time-aware expected-points (EP) framework that prices every goal by both dimensions: the <code>(gd_before, minute_bin)</code> pre-goal state it transitioned out of and the <code>(gd_after, minute_bin)</code> post-goal state it transitioned into. Across <strong>39,381 goals</strong> in six top-flight European leagues over seven seasons, the time-aware model produces a substantively different player ranking from the time-blind baseline. The most valuable single transition observed is the <strong>0→1 in the 75–90 minute bin (1.68 expected points collected, 2.14× the same transition in 0–15 minutes)</strong>. Mário Rui (Napoli, 28 G+A) is the model's biggest gainer at <strong>+3.43 ΔEP</strong> between the timed and untimed rankings — a late-equaliser specialist the time-blind model materially underrates.</p>
+<hr />
+<h2>1. Research Question</h2>
+<blockquote>
+<p>Does conditioning a goal's expected-points value on the minute it was scored — in addition to the goal-difference transition it produced — yield a materially different ranking of players from the time-blind baseline, and does that difference cleanly identify players whose contributions cluster in high-leverage minutes?</p>
+</blockquote>
+<p>This is not a hypothesis test. The framework rests on two evaluable claims:</p>
+<ol>
+<li><strong>Estimation:</strong> the empirical state-value table <code>EP(gd, minute_bin)</code> is well-conditioned given the sample size in each cell.</li>
+<li><strong>Interpretability:</strong> the timed-vs-untimed delta on the player leaderboards reshuffles in directions a domain expert would predict (late equalisers ↑, garbage-time goals ↓).</li>
+</ol>
+<p>Both are addressed in §4.</p>
+<hr />
+<h2>2. Data</h2>
+<p><strong>Sources:</strong> Per-match shot-event tables, FBref-derived, consolidated into one pickle per league. Files named <code>match_data_final_&lt;league&gt;.pkl</code> in <code>RENBALL_MATCH_DATA_PATH</code>. Files containing <code>CHECK</code> in the basename are excluded.</p>
+<p><strong>Leagues (6):</strong> Premier League, Serie A, Bundesliga, La Liga, Ligue 1, Eredivisie.</p>
+<p><strong>Seasons (7):</strong> 2017-2018 through 2023-2024.</p>
+<p><strong>Sample:</strong> 39,381 goal events across the 6 × 7 league-season cells.</p>
+<p><strong>Per-event variables used:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Source column (after <code>_normalize_cols</code>)</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Scoring team</td>
+<td><code>…__Squad</code></td>
+<td>Disambiguated against the inferred home/away pair</td>
+</tr>
+<tr>
+<td>Outcome</td>
+<td><code>…__Outcome</code></td>
+<td>Filtered to <code>"goal"</code></td>
+</tr>
+<tr>
+<td>Goalscorer</td>
+<td><code>…__Player</code></td>
+<td>Cleaned by <code>_clean_player_name</code> (strips <code>"(pen)"</code> etc.)</td>
+</tr>
+<tr>
+<td>SCA1 (assist)</td>
+<td><code>SCA 1__Player</code></td>
+<td>Same cleaning</td>
+</tr>
+<tr>
+<td>Minute (raw)</td>
+<td><code>…__Minute</code></td>
+<td>May include stoppage suffix <code>45+1</code>, <code>90+3</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Cleaning decisions:</strong></p>
+<ol>
+<li>Drop matches with <code>error == "Failed to retrieve data after repeated attempts."</code></li>
+<li>Drop matches where the shot table (<code>shots.shots_all</code>) is missing or empty</li>
+<li>Drop goal events where the scoring team cannot be matched to the inferred home/away team pair (rare; ~0.1% of events)</li>
+<li><strong>Parse minute strings:</strong> <code>"45+1"</code> → 46, <code>"90+3"</code> → 93. <strong>Stoppage-time rules:</strong> any <code>"45+X"</code> falls in the <code>30-45</code> bin; any <code>"90+X"</code> (or <code>minute &gt; 90</code>) falls in the <code>75-90</code> bin</li>
+<li>Goal events with unparseable minutes are assigned to an <code>unknown</code> bin and excluded from all timed analyses</li>
+<li>The editorial leaderboards drop <code>"Unknown"</code> contributors — FBref shot rows where the goalscorer/SCA1 string couldn't be parsed (mostly own goals and fragmented entries). They aggregate to a fake "player" who would otherwise top the time-aware leaderboard with ~2,250 events. The Tabulator dashboard retains them for transparency.</li>
+</ol>
+<hr />
+<h2>3. Methodology</h2>
+<h3>3.1 State space</h3>
+<ul>
+<li><strong>Goal differences (15 states):</strong> integer in <code>[−7, +7]</code> from the scoring team's perspective</li>
+<li><strong>Minute bins (6 states):</strong> <code>0-15</code>, <code>15-30</code>, <code>30-45</code>, <code>45-60</code>, <code>60-75</code>, <code>75-90</code></li>
+<li><strong>Pre-goal state space size:</strong> 15 × 6 = <strong>90 theoretical states; 82 observed empirically</strong> (8 extreme <code>(gd, bin)</code> combinations had no events)</li>
+<li><strong>One-step transitions kept:</strong> <code>{(gd, gd+1) for gd in [−7, +7]}</code> (15 transitions, scoring team's perspective)</li>
+</ul>
+<h3>3.2 Time-bin rationale</h3>
+<p>A continuous-time model (minute-by-minute) would over-fit at the seam minutes 45 and 90, where stoppage muddies the assignment. 15-minute bins are <strong>coarse enough</strong> to keep each cell well-populated (median bin n ≫ 1,000 in the central GD rows) and <strong>fine enough</strong> to detect the late-game value premium — the headline result is that the 0–15 vs 75–90 difference for 0→1 is 2.14×, which a 2-bin (early/late) cut would still surface but more granular phases (e.g. how 30–45 differs from 45–60) would not.</p>
+<h3>3.3 State value function (<code>EP(state)</code>)</h3>
+<p>For each pre-goal state <code>(gd, minute_bin)</code>:</p>
+<ol>
+<li><strong>Symmetric expansion of events.</strong> Each goal event in the dataset produces two pre-goal-state rows: the scoring team gets a row with <code>(gd_before, minute_bin)</code>, the conceding team gets a row with <code>(−gd_before, minute_bin)</code>. Each row carries the <strong>owning team's</strong> final result — scorer rows use the scoring team's <code>final_points</code>, conceder rows use the conceder's (W↔L / 3↔0 flip applied; draws stay D / 1 point). This is critical: without the flip, both rows would carry the scoring team's outcome and the table would alias the two sides together, so <code>EP(gd=+7)</code> and <code>EP(gd=−7)</code> would come out equal instead of mirror images.</li>
+<li><strong>Empirical distribution of final results.</strong> Group by <code>(gd, minute_bin)</code>, compute <code>pW</code>, <code>pD</code>, <code>pL</code> as the value-counts normalised across that cell's rows.</li>
+<li><strong>Expected final points:</strong> <code>EP(gd, minute_bin) = 3·pW + 1·pD</code>. Implementation uses the mean of <code>final_points</code> over the group, which is mathematically identical and numerically more stable.</li>
+</ol>
+<p>The time-agnostic state value <code>EP_untimed(gd)</code> is computed identically except the grouping drops <code>minute_bin</code>.</p>
+<p>The state-value table on the editorial page shows <code>EP(gd, minute_bin)</code> for <code>gd ∈ [−4, +4]</code> (the populated rows). Numerically the table runs from ≈ 0 along the bottom-most row (team trailing badly with little time left) up to ≈ 3 along the top-most (team leading comfortably late), with the level-score row <code>gd = 0</code> settling near the long-run home/away mean of ~1.5 expected points.</p>
+<h3>3.4 Goal value (EP credit per event)</h3>
+<p>For a goal event producing transition <code>gd_before → gd_after</code> in minute bin <code>b</code> (scoring team's perspective):</p>
+<ul>
+<li><strong>Timed credit:</strong> <code>EP(gd_after, b) − EP(gd_before, b)</code></li>
+<li><strong>Untimed credit:</strong> <code>EP_untimed(gd_after) − EP_untimed(gd_before)</code></li>
+</ul>
+<p>The conceding team gets the negation of the same number. Only one-step transitions in the <code>[−7, +7]</code> GD range are retained; multi-step transitions (impossible in football without intervening events) and out-of-range states are dropped.</p>
+<p>The full value map <code>val_map_timed[(gd_before, gd_after, b)] → ep_collected</code> and its untimed counterpart <code>val_map_untimed[(gd_before, gd_after)] → ep_collected</code> are the canonical lookup tables used downstream.</p>
+<h3>3.5 Attribution</h3>
+<p>Goals are credited to three different roles, producing three parallel contributor tables:</p>
+<ul>
+<li><strong><code>Goalscorer</code></strong> — credit to the player who scored</li>
+<li><strong><code>Assist</code></strong> — credit to the FBref SCA1 (first shot-creating action) for that shot</li>
+<li><strong><code>Goals+Assists</code></strong> — additive pooling of both, the editorial-page default</li>
+</ul>
+<p>Each table is built per <code>(scoring_team, contributor)</code> for every league-season, then rolled up into four views:</p>
+<table>
+<thead>
+<tr>
+<th>View</th>
+<th>Aggregation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Per League &amp; Season</code></td>
+<td>Raw per-season tables (42 sub-tables = 6 leagues × 7 seasons)</td>
+</tr>
+<tr>
+<td><code>Totals by League</code></td>
+<td>Sum across seasons within a league</td>
+</tr>
+<tr>
+<td><code>Totals by Season</code></td>
+<td>Sum across leagues within a season</td>
+</tr>
+<tr>
+<td><code>All</code></td>
+<td>Sum across both axes</td>
+</tr>
+</tbody>
+</table>
+<p>The editorial-page leaderboards pool further to one row per <code>contributor</code>, picking the team where the player has the most goals_involved as the <code>primary_team</code> label. The Tabulator dashboard exposes the per-<code>(scoring_team, contributor)</code> rows for users who want to inspect transfers and joint affiliations.</p>
+<p>Each contributor row also stores transition-resolved breakdowns: <code>cnt_&lt;gd_before&gt;_to_&lt;gd_after&gt;</code> for every kept transition, <code>cnt_bin_X</code> per time bin, and <code>ep_bin_X</code> per time bin (the slice of <code>exp_points_collected_timed</code> that came from goals in bin X).</p>
+<h3>3.6 Per-90 normalisation</h3>
+<p>Total EP rewards volume of involvement; <strong>EP per 90 minutes</strong> rewards rate. Total minutes played per player are pooled across all leagues and seasons in scope from the per-match player tables (FBref <code>ROWS_DICTS_SUMMARY</code> inside <code>FULL_DICT_ROWS.pkl</code>, top-5 leagues only — Eredivisie is not in this source and Eredivisie-only players are excluded from the per-90 leaderboard). For each pooled contributor row the build computes:</p>
+<pre><code>ep_per_90 = (exp_points_collected_timed / minutes_played) × 90
+</code></pre>
+<p>The editorial-page leaderboard applies a <code>minutes_played ≥ 900</code> filter (≈ ten full matches) to keep the ranking meaningful. The Tabulator dashboard surfaces <code>minutes_played</code> and <code>ep_per_90</code> as additional columns on every Goalscorer / Assist / Goals+Assists view; sorting by <code>ep_per_90</code> with the smart filter (e.g. <code>&gt;0.4</code>) lets the reader apply their own threshold.</p>
+<h3>3.7 Pooled vs per-league treatment</h3>
+<p>The editorial page (<code>analysis.html</code>) uses pooled value functions — a single <code>EP(gd, minute_bin)</code> table built from all six leagues combined. The Tabulator dashboard (<code>dashboard.html</code>) exposes both pooled and per-league state-value and transition tables. Per-league tables share most of the qualitative features of the pooled table (the late equaliser ranks high in every league) but vary in magnitude at the extremes — a function of sample size more than league effect. The pooled choice for the editorial page is deliberate: the headline narrative is about the universal shape of the value function, not league-specific calibration.</p>
+<h3>3.8 Software stack</h3>
+<ul>
+<li>Python 3.12 (project venv at repo root)</li>
+<li><code>pandas</code> — data wrangling, group-by aggregation</li>
+<li><code>numpy</code> — numeric primitives</li>
+<li><code>openpyxl</code> — Excel sheet writing (local-only, not committed)</li>
+<li>Output: <code>data/data.json</code> (editorial payload) and <code>data/dashboard/</code> (18 per-<code>(dataset, view)</code> JSONs + manifest, sparse-encoded, each ≤ 4 MB)</li>
+</ul>
+<hr />
+<h2>4. Results</h2>
+<blockquote>
+<p>All numbers in this section come from <code>code/build.py</code> → <code>data/data.json</code> and are surfaced live in the editorial page.</p>
+</blockquote>
+<h3>4.1 Headline numbers</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th style="text-align: right;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Total goal events</td>
+<td style="text-align: right;">39,381</td>
+</tr>
+<tr>
+<td>Modelled <code>(gd, minute_bin)</code> states</td>
+<td style="text-align: right;">82 of 90</td>
+</tr>
+<tr>
+<td>Best transition (most EP collected per event)</td>
+<td style="text-align: right;"><strong>0→1 @ 75–90: 1.68 EP</strong></td>
+</tr>
+<tr>
+<td>Worst observed transition</td>
+<td style="text-align: right;">−2→−1 @ 0–15: 0.00 EP (n=1)</td>
+</tr>
+<tr>
+<td>Early-vs-late opener ratio</td>
+<td style="text-align: right;"><strong>2.14×</strong> (1.68 / 0.79)</td>
+</tr>
+</tbody>
+</table>
+<h3>4.2 0→1 by minute bin (the cleanest single-transition story)</h3>
+<table>
+<thead>
+<tr>
+<th>Bin</th>
+<th style="text-align: right;">EP collected</th>
+<th style="text-align: right;">n</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0–15</td>
+<td style="text-align: right;">0.79</td>
+<td style="text-align: right;">4,359</td>
+</tr>
+<tr>
+<td>15–30</td>
+<td style="text-align: right;">0.74</td>
+<td style="text-align: right;">3,539</td>
+</tr>
+<tr>
+<td>30–45</td>
+<td style="text-align: right;">0.84</td>
+<td style="text-align: right;">2,998</td>
+</tr>
+<tr>
+<td>45–60</td>
+<td style="text-align: right;">1.05</td>
+<td style="text-align: right;">2,367</td>
+</tr>
+<tr>
+<td>60–75</td>
+<td style="text-align: right;">1.22</td>
+<td style="text-align: right;">1,934</td>
+</tr>
+<tr>
+<td>75–90</td>
+<td style="text-align: right;"><strong>1.68</strong></td>
+<td style="text-align: right;">2,300</td>
+</tr>
+</tbody>
+</table>
+<h3>4.3 Top 10 EP collectors (Goals + Assists, pooled)</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">#</th>
+<th>Player</th>
+<th>Primary team</th>
+<th style="text-align: right;">G+A</th>
+<th style="text-align: right;">EP collected (timed)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">1</td>
+<td>Lionel Messi</td>
+<td>Barcelona</td>
+<td style="text-align: right;">267</td>
+<td style="text-align: right;">157.75</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td>Mohamed Salah</td>
+<td>Liverpool</td>
+<td style="text-align: right;">251</td>
+<td style="text-align: right;">154.78</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td>Kylian Mbappé</td>
+<td>Paris S-G</td>
+<td style="text-align: right;">274</td>
+<td style="text-align: right;">154.53</td>
+</tr>
+<tr>
+<td style="text-align: right;">4</td>
+<td>Harry Kane</td>
+<td>Tottenham</td>
+<td style="text-align: right;">240</td>
+<td style="text-align: right;">150.72</td>
+</tr>
+<tr>
+<td style="text-align: right;">5</td>
+<td>Robert Lewandowski</td>
+<td>Bayern Munich</td>
+<td style="text-align: right;">270</td>
+<td style="text-align: right;">149.10</td>
+</tr>
+<tr>
+<td style="text-align: right;">6</td>
+<td>Ciro Immobile</td>
+<td>Lazio</td>
+<td style="text-align: right;">208</td>
+<td style="text-align: right;">128.34</td>
+</tr>
+<tr>
+<td style="text-align: right;">7</td>
+<td>Iago Aspas</td>
+<td>Celta Vigo</td>
+<td style="text-align: right;">179</td>
+<td style="text-align: right;">120.56</td>
+</tr>
+<tr>
+<td style="text-align: right;">8</td>
+<td>Cristiano Ronaldo</td>
+<td>Juventus</td>
+<td style="text-align: right;">174</td>
+<td style="text-align: right;">119.25</td>
+</tr>
+<tr>
+<td style="text-align: right;">9</td>
+<td>Wissam Ben Yedder</td>
+<td>Monaco</td>
+<td style="text-align: right;">182</td>
+<td style="text-align: right;">116.41</td>
+</tr>
+<tr>
+<td style="text-align: right;">10</td>
+<td>Karim Benzema</td>
+<td>Real Madrid</td>
+<td style="text-align: right;">174</td>
+<td style="text-align: right;">110.76</td>
+</tr>
+</tbody>
+</table>
+<h3>4.4 Top 10 timed upgrades (largest positive ΔEP, min 5 G+A)</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">#</th>
+<th>Player</th>
+<th>Primary team</th>
+<th style="text-align: right;">G+A</th>
+<th style="text-align: right;">ΔEP (timed − untimed)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">1</td>
+<td><strong>Mário Rui</strong></td>
+<td><strong>Napoli</strong></td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;"><strong>+3.43</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td>Evann Guessand</td>
+<td>Nice</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">+3.34</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td>Cristian Tello</td>
+<td>Betis</td>
+<td style="text-align: right;">36</td>
+<td style="text-align: right;">+2.82</td>
+</tr>
+<tr>
+<td style="text-align: right;">4</td>
+<td>Adama Traoré</td>
+<td>Wolves</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;">+2.69</td>
+</tr>
+<tr>
+<td style="text-align: right;">5</td>
+<td>Youssoufa Moukoko</td>
+<td>Dortmund</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">+2.58</td>
+</tr>
+<tr>
+<td style="text-align: right;">6</td>
+<td>Viktor Kovalenko</td>
+<td>Spezia</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">+2.53</td>
+</tr>
+<tr>
+<td style="text-align: right;">7</td>
+<td>Sasa Kalajdzic</td>
+<td>Stuttgart</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: right;">+2.50</td>
+</tr>
+<tr>
+<td style="text-align: right;">8</td>
+<td>Mario Hermoso</td>
+<td>Atlético Madrid</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">+2.33</td>
+</tr>
+<tr>
+<td style="text-align: right;">9</td>
+<td>Leo Dubois</td>
+<td>Lyon</td>
+<td style="text-align: right;">26</td>
+<td style="text-align: right;">+2.27</td>
+</tr>
+<tr>
+<td style="text-align: right;">10</td>
+<td>Lee Kang-in</td>
+<td>Mallorca</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: right;">+2.20</td>
+</tr>
+</tbody>
+</table>
+<p>The upgrade leaderboard reads as a domain expert would predict: a cluster of defenders and super-subs whose goal records are dominated by late, score-tied moments the time-blind model materially underrates.</p>
+<hr />
+<h2>5. Limitations</h2>
+<ol>
+<li><strong>No expected-goal weighting.</strong> Every goal is treated as 1.0 — a 2-yard tap-in and a 30-yard volley contribute identically. An xG-weighted version would price by chance creation rather than chance conversion.</li>
+<li><strong>Penalties and own goals are not separated.</strong> Penalty goals trigger the same transition value as any other; own goals are credited to the scoring team and (when present) the SCA1, even when the actual scorer was an opposition defender. Both effects would be cleaned in a v4.</li>
+<li><strong>Assist credit caps at SCA1.</strong> FBref's SCA2 is recorded but unused. Build-up sequences distribute credit further upstream than the framework captures.</li>
+<li><strong>Observational, not causal.</strong> The state-value function is computed empirically against final results. It is a value table, not a causal model — it does not isolate the goal's effect from concurrent factors (red cards, substitutions, fatigue) that also influence the final outcome. The "value of a goal" is "the EP gap between the two states the goal connects" — readers should not interpret it as "the EP this goal added," which would require a counterfactual the data does not provide.</li>
+<li><strong>Pooled value function across leagues and seasons.</strong> The editorial-page rankings use the pooled values. Differences between, say, Eredivisie defensive trends and Premier League ones would mean a "0→1 at minute 80" goal carries slightly different empirical EP in each league. The dashboard surfaces league-specific tables for users who want to inspect this.</li>
+<li><strong>Stoppage-time goals fold into the 75–90 bin.</strong> A 95th-minute goal and a 78th-minute goal contribute to the same cell. A finer split would separate them but at the cost of sample size at the extremes.</li>
+<li><strong>Player attribution does not track transfers within a season.</strong> A player who scored 10 goals at one club and 5 at another in the same season appears as one row per <code>(team, player)</code> in the raw tables. The editorial leaderboards pool further to one row per player by picking the primary team; this loses the transfer signal that the dashboard retains.</li>
+<li><strong>The model rewards proximity to the threshold, not the goal itself.</strong> A late equaliser is worth nearly a full point because the team it credits was about to win zero. A goal valuation framework grounded in counterfactual reasoning (e.g. permutation tests against alternative goal-minute distributions for the same player) would distinguish the player's contribution from the situation's leverage. Future work.</li>
+</ol>
+<hr />
+<h2>6. References</h2>
+<ul>
+<li><strong>Source data:</strong> FBref (<a href="https://fbref.com">fbref.com</a>). Match shot tables consolidated locally into <code>match_data_final_&lt;league&gt;.pkl</code>.</li>
+<li><strong>Interactive dashboard:</strong> <a href="dashboard.html"><code>dashboard.html</code></a> in this project folder</li>
+<li><strong>Editorial summary:</strong> <a href="analysis.html"><code>analysis.html</code></a> in this project folder</li>
+<li><strong>Project page:</strong> <a href="https://renball.com/projects/02-points-by-gamestate/">renball.com/projects/02-points-by-gamestate/</a></li>
+<li><strong>Source code:</strong> <code>code/</code> directory — <code>config.py</code>, <code>extraction.py</code>, <code>analysis.py</code>, <code>dashboard.py</code>, <code>main.py</code>, <code>build.py</code></li>
+</ul>
+</body>
+</html>

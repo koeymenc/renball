@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Points by Gamestate · Dashboard — Renball</title>
+<meta name="description" content="Full interactive Tabulator dashboard for the Points by Gamestate research project — every league, every season, every player, every state.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="../../assets/css/design-tokens.css">
+
+<!-- Tabulator + XLSX from CDN -->
+<link rel="stylesheet" href="https://unpkg.com/tabulator-tables@6.2.5/dist/css/tabulator.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script defer src="https://unpkg.com/tabulator-tables@6.2.5/dist/js/tabulator.min.js"></script>
+
+<style>
+  /* ─── Page chrome ─── */
+  body { max-width: 1500px; margin: 0 auto; padding: 2rem 2rem 4rem; }
+
+  .dash-header { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+  .renball-mark {
+    font-family: var(--serif); font-size: 1.3rem; color: var(--text);
+    letter-spacing: -0.01em; margin-bottom: 0.5rem;
+  }
+  .renball-mark .ball { color: var(--accent); }
+  .renball-mark .sep {
+    font-family: var(--mono); font-size: 0.65rem; color: var(--text-muted);
+    margin-left: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase;
+  }
+  .dash-title {
+    font-family: var(--serif); font-size: 2.4rem; line-height: 1.05;
+    letter-spacing: -0.02em; color: var(--text); margin: 0.4rem 0 0.5rem;
+  }
+  .dash-title em { font-style: italic; color: var(--accent); }
+  .dash-subtitle {
+    font-family: var(--mono); font-size: 0.75rem; color: var(--text-muted);
+    letter-spacing: 0.06em;
+  }
+  .dash-subtitle a { color: var(--text-secondary); text-decoration: none; border-bottom: 1px dotted var(--border-light); }
+  .dash-subtitle a:hover { color: var(--accent); border-bottom-color: var(--accent-dim); }
+
+  /* ─── Toolbar ─── */
+  .toolbar {
+    display: flex; gap: 1rem 1.4rem; align-items: center; flex-wrap: wrap;
+    padding: 1.1rem 1.25rem; background: var(--bg-card);
+    border: 1px solid var(--border); margin-bottom: 1rem;
+  }
+  .tb-group { display: flex; flex-direction: column; gap: 0.3rem; }
+  .tb-label {
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--text-muted);
+  }
+  .toolbar select,
+  .toolbar input[type="text"] {
+    font-family: var(--mono); font-size: 0.78rem;
+    background: var(--bg); color: var(--text);
+    border: 1px solid var(--border); padding: 0.45rem 0.7rem;
+    min-width: 180px; transition: border-color 0.15s;
+  }
+  .toolbar select:focus,
+  .toolbar input[type="text"]:focus {
+    outline: none; border-color: var(--accent-dim);
+  }
+  .toolbar select option { background: var(--bg); color: var(--text); }
+
+  .tb-toggles { display: flex; gap: 1rem; align-items: center; }
+  .tb-toggle {
+    display: flex; align-items: center; gap: 0.45rem;
+    font-family: var(--mono); font-size: 0.7rem; color: var(--text-secondary);
+    letter-spacing: 0.04em; cursor: pointer; user-select: none;
+  }
+  .tb-toggle input[type="checkbox"] { accent-color: var(--accent); }
+
+  .tb-buttons { display: flex; gap: 0.5rem; margin-left: auto; align-items: flex-end; }
+  .tb-btn {
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 0.55rem 1rem;
+    background: transparent; color: var(--text-secondary);
+    border: 1px solid var(--border); cursor: pointer; transition: all 0.15s;
+  }
+  .tb-btn:hover { color: var(--accent); border-color: var(--accent-dim); background: var(--accent-glow); }
+  .tb-btn.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .tb-btn.primary:hover { background: var(--accent-bright); }
+
+  /* ─── Loading pill ─── */
+  .loader {
+    display: none; align-items: center; gap: 0.5rem;
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--accent);
+    padding: 0.55rem 0.9rem; border: 1px solid var(--accent-dim);
+    background: var(--accent-glow);
+  }
+  .loader.visible { display: inline-flex; }
+  .loader::before {
+    content: ''; width: 8px; height: 8px; background: var(--accent);
+    border-radius: 50%; animation: pulse 1s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.3; transform: scale(0.85); }
+    50%      { opacity: 1; transform: scale(1.1); }
+  }
+
+  /* ─── Table meta + title ─── */
+  .table-meta {
+    display: flex; gap: 1.5rem; padding: 0.65rem 0;
+    font-family: var(--mono); font-size: 0.7rem; color: var(--text-muted);
+    letter-spacing: 0.04em;
+  }
+  .table-meta strong { color: var(--text-secondary); font-weight: 500; }
+
+  #table-title {
+    font-family: var(--serif); font-size: 1.25rem; color: var(--text);
+    margin: 0.4rem 0 0.75rem; letter-spacing: -0.005em;
+  }
+  #table-title .rowcount {
+    font-family: var(--mono); font-size: 0.75rem; color: var(--text-muted);
+    margin-left: 0.5rem; letter-spacing: 0.06em;
+  }
+
+  /* ─── Tabulator restyle ─── */
+  #table {
+    background: var(--bg-card); border: 1px solid var(--border);
+  }
+  .tabulator {
+    background: var(--bg-card) !important; border: none !important;
+    font-family: var(--sans) !important; font-size: 0.82rem;
+    color: var(--text);
+  }
+  .tabulator .tabulator-header {
+    background: var(--bg-elevated) !important;
+    border-bottom: 1px solid var(--accent-dim) !important;
+    color: var(--text-secondary);
+  }
+  .tabulator .tabulator-header .tabulator-col {
+    background: var(--bg-elevated) !important;
+    border-right: 1px solid var(--border) !important;
+  }
+  .tabulator .tabulator-header .tabulator-col .tabulator-col-content {
+    padding: 0.55rem 0.65rem;
+  }
+  .tabulator .tabulator-header .tabulator-col .tabulator-col-title {
+    font-family: var(--mono); font-size: 0.68rem; font-weight: 500;
+    color: var(--text-secondary); letter-spacing: 0.04em;
+    text-transform: none;
+  }
+  .tabulator .tabulator-header .tabulator-col.tabulator-sortable:hover {
+    background: var(--bg-card-hover) !important;
+  }
+  .tabulator .tabulator-header .tabulator-col.tabulator-sortable:hover .tabulator-col-title {
+    color: var(--accent);
+  }
+  .tabulator .tabulator-arrow { border-bottom-color: var(--text-muted) !important; }
+  .tabulator .tabulator-col.tabulator-sortable[aria-sort="ascending"] .tabulator-arrow {
+    border-bottom-color: var(--accent) !important;
+  }
+  .tabulator .tabulator-col.tabulator-sortable[aria-sort="descending"] .tabulator-arrow {
+    border-top-color: var(--accent) !important; border-bottom-color: transparent !important;
+  }
+
+  .tabulator .tabulator-header-filter input {
+    background: var(--bg) !important; color: var(--text) !important;
+    border: 1px solid var(--border) !important;
+    font-family: var(--mono); font-size: 0.7rem;
+    padding: 0.3rem 0.45rem;
+  }
+  .tabulator .tabulator-header-filter input:focus {
+    outline: none; border-color: var(--accent-dim) !important;
+  }
+  .tabulator .tabulator-header-filter input::placeholder { color: var(--text-muted); }
+
+  .tabulator .tabulator-row {
+    background: var(--bg-card) !important;
+    border-bottom: 1px solid var(--border) !important;
+  }
+  .tabulator .tabulator-row.tabulator-row-even {
+    background: var(--bg-elevated) !important;
+  }
+  .tabulator .tabulator-row:hover {
+    background: var(--bg-card-hover) !important;
+  }
+  .tabulator .tabulator-cell {
+    border-right: 1px solid var(--border) !important;
+    color: var(--text); padding: 0.45rem 0.65rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .tabulator .tabulator-cell[tabulator-field="contributor"],
+  .tabulator .tabulator-cell[tabulator-field="scoring_team"] {
+    color: var(--text); font-weight: 500;
+  }
+
+  .tabulator .tabulator-footer {
+    background: var(--bg-elevated) !important;
+    border-top: 1px solid var(--border) !important;
+    color: var(--text-secondary);
+    font-family: var(--mono); font-size: 0.7rem;
+    padding: 0.5rem 0.8rem;
+  }
+  .tabulator .tabulator-footer .tabulator-paginator { color: var(--text-secondary); }
+  .tabulator .tabulator-footer .tabulator-page {
+    background: var(--bg) !important; color: var(--text-secondary) !important;
+    border: 1px solid var(--border) !important;
+    font-family: var(--mono); font-size: 0.7rem;
+    padding: 0.25rem 0.6rem; margin: 0 0.1rem;
+  }
+  .tabulator .tabulator-footer .tabulator-page:hover {
+    background: var(--bg-card) !important; color: var(--accent) !important;
+    border-color: var(--accent-dim) !important;
+  }
+  .tabulator .tabulator-footer .tabulator-page.active {
+    background: var(--accent) !important; color: var(--bg) !important;
+    border-color: var(--accent) !important; font-weight: 500;
+  }
+  .tabulator .tabulator-footer select {
+    background: var(--bg); color: var(--text);
+    border: 1px solid var(--border); padding: 0.2rem 0.4rem;
+    font-family: var(--mono); font-size: 0.7rem;
+  }
+  .tabulator .tabulator-footer .tabulator-paginator label { color: var(--text-muted); }
+
+  /* ─── Tips footer ─── */
+  .tips {
+    margin-top: 1rem; font-family: var(--mono); font-size: 0.7rem;
+    color: var(--text-muted); line-height: 1.7; letter-spacing: 0.04em;
+  }
+  .tips strong { color: var(--text-secondary); font-weight: 500; }
+  .tips code {
+    color: var(--accent); background: var(--accent-glow);
+    padding: 0.05em 0.3em;
+  }
+
+  /* ─── Empty / error states ─── */
+  .table-empty {
+    padding: 4rem 2rem; text-align: center;
+    font-family: var(--mono); font-size: 0.85rem; color: var(--text-muted);
+  }
+  .table-empty.error { color: #ff8866; }
+
+  @media (max-width: 768px) {
+    body { padding: 1.25rem 1rem 3rem; }
+    .toolbar { gap: 0.65rem 0.85rem; padding: 0.85rem; }
+    .toolbar select, .toolbar input[type="text"] { min-width: 130px; }
+    .tb-buttons { margin-left: 0; width: 100%; justify-content: flex-end; }
+  }
+</style>
+</head>
+<body>
+
+<a href="analysis.html" class="back-link">← Back to research write-up</a>
+
+<header class="dash-header">
+  <div class="renball-mark"><span>ren</span><span class="ball">ball</span><span class="sep">DASHBOARD · PROJECT 02</span></div>
+  <h1 class="dash-title">Points by <em>Gamestate</em>.</h1>
+  <div class="dash-subtitle">
+    Time-aware expected-points framework · Top 5 leagues + Eredivisie · Six datasets · Full drill-down ·
+    <a href="analysis.html">read the editorial &nearr;</a>
+  </div>
+</header>
+
+<!-- ── Toolbar ── -->
+<div class="toolbar">
+  <div class="tb-group">
+    <label class="tb-label" for="datasetSel">Dataset</label>
+    <select id="datasetSel"></select>
+  </div>
+  <div class="tb-group">
+    <label class="tb-label" for="viewSel">View</label>
+    <select id="viewSel"></select>
+  </div>
+  <div class="tb-group" id="keyWrap" style="display: none;">
+    <label class="tb-label" id="keyLabel" for="keySel">League</label>
+    <select id="keySel"></select>
+  </div>
+  <div class="tb-group" id="seasonWrap" style="display: none;">
+    <label class="tb-label" for="seasonSel">Season</label>
+    <select id="seasonSel"></select>
+  </div>
+  <div class="tb-group" style="min-width: 220px;">
+    <label class="tb-label" for="searchBox">Search rows</label>
+    <input id="searchBox" type="text" placeholder="type to filter any cell…" />
+  </div>
+  <div class="tb-toggles">
+    <label class="tb-toggle"><input type="checkbox" id="showCnt" checked /> Show cnt_* columns</label>
+    <label class="tb-toggle"><input type="checkbox" id="showEpBin" checked /> Show ep_bin_* columns</label>
+  </div>
+  <div class="tb-buttons">
+    <span class="loader" id="loader">Loading…</span>
+    <button class="tb-btn" id="resetBtn">Reset filters</button>
+    <button class="tb-btn primary" id="xlsxBtn">XLSX</button>
+    <button class="tb-btn" id="csvBtn">CSV</button>
+  </div>
+</div>
+
+<div class="table-meta">
+  <span>Generated: <strong id="genAt">…</strong></span>
+  <span>Datasets loaded: <strong id="datasetsLoaded">0</strong></span>
+</div>
+
+<div id="table-title">…<span class="rowcount" id="rowcount"></span></div>
+<div id="table"></div>
+
+<div class="tips">
+  <strong>Column filters</strong> support numeric operators: <code>&gt;</code>, <code>&gt;=</code>,
+  <code>&lt;</code>, <code>&lt;=</code>, <code>=</code>, <code>!=</code>. Try
+  <code>&gt;4</code>, <code>&lt;=0.7</code>. Click headers to sort. Hover for column explanations.
+</div>
+
+<script>
+(async function () {
+  // ════════════════════════════════════════════════════════════════
+  // State
+  // ════════════════════════════════════════════════════════════════
+  const MANIFEST_URL = 'data/dashboard/manifest.json';
+  const DATA_ROOT    = 'data/dashboard/';
+
+  let MANIFEST = null;
+  const cache = new Map();   // file path -> decoded view container
+  let table = null;
+  let loadingCount = 0;
+
+  const $ = (id) => document.getElementById(id);
+  const datasetSel = $('datasetSel');
+  const viewSel    = $('viewSel');
+  const keySel     = $('keySel');
+  const seasonSel  = $('seasonSel');
+  const keyWrap    = $('keyWrap');
+  const seasonWrap = $('seasonWrap');
+  const keyLabel   = $('keyLabel');
+  const showCnt    = $('showCnt');
+  const showEpBin  = $('showEpBin');
+  const searchBox  = $('searchBox');
+  const loader     = $('loader');
+
+  function showLoading() { loadingCount++; loader.classList.add('visible'); }
+  function hideLoading() { loadingCount = Math.max(0, loadingCount - 1); if (!loadingCount) loader.classList.remove('visible'); }
+
+  // ════════════════════════════════════════════════════════════════
+  // Sparse decoder: g.X.Y -> cnt_X_to_Y, b.X -> cnt_bin_X, e.X -> ep_bin_X
+  // ════════════════════════════════════════════════════════════════
+  function expandKey(k, scheme) {
+    if (k.startsWith(scheme.cnt_gd_prefix)) {
+      const body = k.slice(scheme.cnt_gd_prefix.length);
+      const i = body.lastIndexOf('.');
+      if (i > 0) return `cnt_${body.slice(0, i)}_to_${body.slice(i + 1)}`;
+    }
+    if (k.startsWith(scheme.cnt_bin_prefix)) return 'cnt_bin_' + k.slice(scheme.cnt_bin_prefix.length);
+    if (k.startsWith(scheme.ep_bin_prefix))  return 'ep_bin_'  + k.slice(scheme.ep_bin_prefix.length);
+    return k;
+  }
+
+  function decodeRecord(row, isContrib, scheme) {
+    if (!isContrib) return row;
+    const out = {};
+    for (const k in row) out[expandKey(k, scheme)] = row[k];
+    // Recompute derived columns (dropped at build time to save bytes)
+    const goals = +out.goals_involved || 0;
+    const t = +out.exp_points_collected_timed   || 0;
+    const u = +out.exp_points_collected_untimed || 0;
+    out.delta_ep_timed_vs_untimed = +(t - u).toFixed(3);
+    out.delta_ep_minus_goals      = +(t - goals).toFixed(3);
+    out.ratio_ep_per_goal         = goals > 0 ? +(t / goals).toFixed(3) : null;
+    return out;
+  }
+
+  function decodeRecords(records, isContrib, scheme) {
+    return records.map(r => decodeRecord(r, isContrib, scheme));
+  }
+
+  function decodeView(view, isContrib) {
+    const scheme = MANIFEST.key_scheme;
+    if (Array.isArray(view)) {
+      return decodeRecords(view, isContrib, scheme);
+    }
+    if (view && typeof view === 'object') {
+      const out = {};
+      for (const k in view) {
+        const v = view[k];
+        if (Array.isArray(v)) out[k] = decodeRecords(v, isContrib, scheme);
+        else if (v && typeof v === 'object') {
+          const inner = {};
+          for (const k2 in v) {
+            const v2 = v[k2];
+            inner[k2] = Array.isArray(v2) ? decodeRecords(v2, isContrib, scheme) : v2;
+          }
+          out[k] = inner;
+        } else out[k] = v;
+      }
+      return out;
+    }
+    return view;
+  }
+
+  // ════════════════════════════════════════════════════════════════
+  // Lazy fetch (with in-memory cache)
+  // ════════════════════════════════════════════════════════════════
+  async function loadView(dsName, vwName) {
+    const entry = MANIFEST.datasets[dsName].views[vwName];
+    const path = DATA_ROOT + entry.file;
+    if (cache.has(path)) return cache.get(path);
+
+    showLoading();
+    try {
+      const raw = await fetch(path).then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status} on ${entry.file}`);
+        return r.json();
+      });
+      const isContrib = MANIFEST.datasets[dsName].contributor;
+      const decoded = decodeView(raw, isContrib);
+      cache.set(path, decoded);
+      $('datasetsLoaded').textContent = cache.size;
+      return decoded;
+    } finally {
+      hideLoading();
+    }
+  }
+
+  // ════════════════════════════════════════════════════════════════
+  // Container shape helpers (mirror dashboard.py logic)
+  //   - nested  = {league: {season: records}}
+  //   - keyed   = {key: records}      (multi-key)
+  //   - single  = {only_key: records} (single-key)
+  // ════════════════════════════════════════════════════════════════
+  function isNested(obj) {
+    if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return false;
+    const k1 = Object.keys(obj); if (!k1.length) return false;
+    const v1 = obj[k1[0]];
+    if (!v1 || typeof v1 !== 'object' || Array.isArray(v1)) return false;
+    const k2 = Object.keys(v1);
+    return k2.length > 0 && Array.isArray(v1[k2[0]]);
+  }
+  function isKeyed(obj) {
+    if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return false;
+    const k = Object.keys(obj);
+    return k.length > 1 && Array.isArray(obj[k[0]]);
+  }
+  function isSingle(obj) {
+    if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return false;
+    const k = Object.keys(obj);
+    return k.length === 1 && Array.isArray(obj[k[0]]);
+  }
+
+  // ════════════════════════════════════════════════════════════════
+  // Smart filter (>X, <Y, =Z, !=)
+  // ════════════════════════════════════════════════════════════════
+  function smartFilter(hv, rv) {
+    if (hv == null) return true;
+    const h = String(hv).trim();
+    if (!h) return true;
+    const r = (rv == null) ? '' : rv;
+    const m = h.match(/^(>=|<=|!=|>|<|=)\s*(-?\d+(?:\.\d+)?)\s*$/);
+    if (m) {
+      const op = m[1], x = parseFloat(m[2]), y = parseFloat(r);
+      if (Number.isNaN(y)) return false;
+      if (op === '>')  return y >  x;
+      if (op === '>=') return y >= x;
+      if (op === '<')  return y <  x;
+      if (op === '<=') return y <= x;
+      if (op === '=')  return y === x;
+      if (op === '!=') return y !== x;
+    }
+    return String(r).toLowerCase().includes(h.toLowerCase());
+  }
+
+  // ════════════════════════════════════════════════════════════════
+  // Column generation
+  // ════════════════════════════════════════════════════════════════
+  function colTooltip(col) {
+    const h = MANIFEST.columnHelp || {};
+    if (h[col]) return h[col];
+    let m = /^cnt_(-?\d+)_to_(-?\d+)$/.exec(col);
+    if (m) return `Events where scoring team moved from GD ${m[1]} to ${m[2]}.`;
+    m = /^cnt_bin_(.+)$/.exec(col);
+    if (m) return `Number of goal events in the ${m[1]} minute bin.`;
+    m = /^ep_bin_(.+)$/.exec(col);
+    if (m) return `Timed EP collected from goals in the ${m[1]} minute bin.`;
+    return '';
+  }
+
+  function deltaFormatter(cell) {
+    const v = cell.getValue();
+    if (v == null) return '';
+    const num = parseFloat(v);
+    if (Number.isNaN(num)) return String(v);
+    const f = num.toFixed(3);
+    if (num >  0.001) return `<span style="color:var(--accent);font-weight:500">+${f}</span>`;
+    if (num < -0.001) return `<span style="color:#ff8866;font-weight:500">${f}</span>`;
+    return `<span style="color:var(--text-muted)">${f}</span>`;
+  }
+
+  function fillSparse(rows) {
+    // Compute union of all keys across rows, then fill missing cnt_/ep_bin_ cells with 0.
+    // (String / always-kept keys are present on every row already.)
+    const allKeys = new Set();
+    for (const r of rows) for (const k in r) allKeys.add(k);
+    const sparseLike = [...allKeys].filter(k =>
+      k.startsWith('cnt_') || k.startsWith('ep_bin_'));
+    for (const r of rows) {
+      for (const k of sparseLike) {
+        if (!(k in r)) r[k] = 0;
+      }
+    }
+    return rows;
+  }
+
+  function buildColumns(data, dsName) {
+    if (!data.length) return [];
+    const keys = new Set();
+    for (const r of data) for (const k in r) keys.add(k);
+
+    const baseOrder = [
+      'scoring_team', 'contributor', 'goals_involved',
+      'minutes_played', 'ep_per_90',
+      'exp_points_collected_timed', 'exp_points_collected_untimed', 'delta_ep_timed_vs_untimed',
+      'gd_before', 'gd_after', 'minute_bin', 'n', 'pW', 'pD', 'pL', 'exp_points',
+      'exp_points_collected', 'delta_exp_points',
+      'delta_ep_minus_goals', 'ratio_ep_per_goal',
+    ];
+
+    const base   = baseOrder.filter(k => keys.has(k));
+    const cnt_gd = [...keys].filter(k => k.startsWith('cnt_') && !k.startsWith('cnt_bin_')).sort();
+    const cnt_bin = [...keys].filter(k => k.startsWith('cnt_bin_')).sort();
+    const ep_bin  = [...keys].filter(k => k.startsWith('ep_bin_')).sort();
+    const rest = [...keys].filter(k =>
+      !base.includes(k) && !cnt_gd.includes(k) && !cnt_bin.includes(k) && !ep_bin.includes(k));
+
+    let final = [...base, ...rest];
+    if (showCnt.checked)   final = final.concat(cnt_gd).concat(cnt_bin);
+    if (showEpBin.checked) final = final.concat(ep_bin);
+
+    // Transitions: drop the last 3 internal helper columns the original hides
+    if (dsName === 'Transitions' && final.length >= 3) {
+      final = final.slice(0, final.length - 3);
+    }
+
+    const deltaCols = new Set([
+      'delta_ep_timed_vs_untimed', 'delta_ep_minus_goals', 'delta_exp_points',
+      'exp_points_collected',
+    ]);
+
+    return final.map(k => {
+      const col = {
+        title: k, field: k,
+        headerTooltip: colTooltip(k),
+        headerFilter: 'input',
+        headerFilterFunc: smartFilter,
+        headerFilterPlaceholder: 'filter…',
+      };
+      if (deltaCols.has(k)) col.formatter = deltaFormatter;
+      // Right-align numeric columns
+      if (k !== 'scoring_team' && k !== 'contributor' && k !== 'minute_bin') {
+        col.hozAlign = 'right';
+      }
+      return col;
+    });
+  }
+
+  // ════════════════════════════════════════════════════════════════
+  // UI plumbing
+  // ════════════════════════════════════════════════════════════════
+  function setOptions(sel, opts, preferred) {
+    const prev = sel.value;
+    sel.innerHTML = '';
+    for (const o of opts) {
+      const el = document.createElement('option');
+      el.value = o; el.textContent = o;
+      sel.appendChild(el);
+    }
+    const pick =
+      (preferred && opts.includes(preferred)) ? preferred :
+      (prev && opts.includes(prev)) ? prev :
+      (opts.length ? opts[0] : '');
+    if (pick) sel.value = pick;
+  }
+
+  function setKeyLabel(ds, vw) {
+    const v = (vw || '').toLowerCase();
+    if (v.includes('league') || v.includes('per league')) { keyLabel.textContent = 'League'; return; }
+    if (v.includes('season')) { keyLabel.textContent = 'Season'; return; }
+    if (v.includes('pooled') || v.includes('all')) { keyLabel.textContent = ''; return; }
+    keyLabel.textContent = 'Key';
+  }
+
+  async function updateSelectors() {
+    const ds = datasetSel.value, vw = viewSel.value;
+    if (!ds || !vw) return null;
+
+    // Make sure this view is loaded so we can read its shape.
+    const container = await loadView(ds, vw);
+
+    keyWrap.style.display = 'none';
+    seasonWrap.style.display = 'none';
+    setKeyLabel(ds, vw);
+
+    if (isNested(container)) {
+      setOptions(keySel, Object.keys(container).sort(), keySel.value);
+      keyWrap.style.display = '';
+      const inner = container[keySel.value] || {};
+      setOptions(seasonSel, Object.keys(inner).sort(), seasonSel.value);
+      seasonWrap.style.display = '';
+      return container;
+    }
+    if (isKeyed(container)) {
+      setOptions(keySel, Object.keys(container).sort(), keySel.value);
+      keyWrap.style.display = '';
+      return container;
+    }
+    if (isSingle(container)) {
+      // exactly one key; no selector needed
+      return container;
+    }
+    return container;
+  }
+
+  function getActiveData(container) {
+    const ds = datasetSel.value, vw = viewSel.value;
+    let rows = [], title = `${ds} · ${vw}`;
+
+    if (isNested(container)) {
+      const lg = keySel.value, ss = seasonSel.value;
+      rows = (container[lg] && container[lg][ss]) ? container[lg][ss] : [];
+      title += ` · ${lg} · ${ss}`;
+    } else if (isKeyed(container)) {
+      rows = container[keySel.value] || [];
+      title += ` · ${keySel.value}`;
+    } else if (isSingle(container)) {
+      const k = Object.keys(container)[0];
+      rows = container[k] || [];
+      if (k !== 'Pooled' && k !== 'All') title += ` · ${k}`;
+    } else if (Array.isArray(container)) {
+      rows = container;
+    }
+    return { rows, title };
+  }
+
+  function applySearch() {
+    if (!table) return;
+    const q = (searchBox.value || '').trim().toLowerCase();
+    if (!q) { table.clearFilter(true); return; }
+    table.setFilter(row => {
+      for (const k in row) {
+        const v = row[k];
+        if (v != null && String(v).toLowerCase().includes(q)) return true;
+      }
+      return false;
+    });
+  }
+
+  async function renderTable() {
+    const container = await updateSelectors();
+    if (!container) return;
+    const { rows, title } = getActiveData(container);
+    const dense = fillSparse(rows.map(r => ({ ...r })));  // shallow clone, fill 0s
+
+    $('table-title').firstChild.textContent = title + '  ';
+    $('rowcount').textContent = `(${dense.length.toLocaleString()} rows)`;
+
+    if (table) table.destroy();
+    table = new Tabulator('#table', {
+      data: dense,
+      columns: buildColumns(dense, datasetSel.value),
+      layout: 'fitDataStretch',
+      height: '70vh',
+      movableColumns: true,
+      pagination: true,
+      paginationSize: 50,
+      paginationSizeSelector: [25, 50, 100, 250, 500],
+      downloadRowRange: 'active',
+      placeholder: 'No rows in this slice.',
+    });
+    applySearch();
+  }
+
+  // ════════════════════════════════════════════════════════════════
+  // Boot
+  // ════════════════════════════════════════════════════════════════
+  async function boot() {
+    showLoading();
+    try {
+      MANIFEST = await fetch(MANIFEST_URL).then(r => {
+        if (!r.ok) throw new Error(`Manifest fetch failed: ${r.status}`);
+        return r.json();
+      });
+    } catch (e) {
+      $('table').innerHTML = `<div class="table-empty error">Failed to load manifest.<br>${e.message}</div>`;
+      hideLoading();
+      return;
+    }
+
+    $('genAt').textContent = (MANIFEST.meta && MANIFEST.meta.created_at) || '—';
+
+    const datasets = Object.keys(MANIFEST.datasets);
+    setOptions(datasetSel, datasets);
+    const views = Object.keys(MANIFEST.datasets[datasets[0]].views);
+    setOptions(viewSel, views);
+
+    hideLoading();
+    await renderTable();
+  }
+
+  // ────────────────────────────────────────────
+  // Event wiring
+  // ────────────────────────────────────────────
+  datasetSel.addEventListener('change', () => {
+    const ds = datasetSel.value;
+    const views = Object.keys(MANIFEST.datasets[ds].views);
+    setOptions(viewSel, views);
+    renderTable();
+  });
+  viewSel.addEventListener('change', renderTable);
+  keySel.addEventListener('change', async () => {
+    // For nested containers we have to refresh the season list before re-rendering
+    const ds = datasetSel.value, vw = viewSel.value;
+    const container = await loadView(ds, vw);
+    if (isNested(container)) {
+      const inner = container[keySel.value] || {};
+      setOptions(seasonSel, Object.keys(inner).sort(), seasonSel.value);
+    }
+    renderTable();
+  });
+  seasonSel.addEventListener('change', renderTable);
+  showCnt.addEventListener('change', renderTable);
+  showEpBin.addEventListener('change', renderTable);
+  searchBox.addEventListener('input', applySearch);
+
+  $('resetBtn').addEventListener('click', () => {
+    searchBox.value = '';
+    if (table) { table.clearFilter(true); table.clearHeaderFilter(); table.clearSort(); }
+  });
+
+  function cleanName() {
+    const t = ($('table-title').textContent || 'table').replace(/\s+\(\d[\d,]*\s+rows\)$/, '');
+    return t.replace(/\s*[·/]\s*/g, '_').replace(/[^a-zA-Z0-9_\-]/g, '_').slice(0, 80);
+  }
+  $('xlsxBtn').addEventListener('click', () => {
+    if (table) table.download('xlsx', cleanName() + '.xlsx', { sheetName: 'data' });
+  });
+  $('csvBtn').addEventListener('click', () => {
+    if (table) table.download('csv', cleanName() + '.csv');
+  });
+
+  // Wait for Tabulator + xlsx scripts (loaded with defer) before booting
+  if (typeof Tabulator === 'undefined') {
+    window.addEventListener('load', boot);
+  } else {
+    boot();
+  }
+})();
+</script>
+
+</body>
+</html>

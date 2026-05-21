@@ -1,0 +1,159 @@
+{
+  "meta": {
+    "created_at": "2026-05-19 22:36:33"
+  },
+  "columnHelp": {
+    "scoring_team": "Team that scored the goal.",
+    "contributor": "Player credited (Goalscorer / Assist / Goals+Assists depending on dataset).",
+    "goals_involved": "Count of credited events.",
+    "exp_points_collected_timed": "Sum of EP increments using time-aware values (accounts for when in the match the goal was scored).",
+    "exp_points_collected_untimed": "Sum of EP increments using time-agnostic values (v2 methodology).",
+    "delta_ep_timed_vs_untimed": "Difference: timed EP minus untimed EP. Positive = player scores in more valuable minutes.",
+    "delta_ep_minus_goals": "Timed EP collected minus goals involved.",
+    "ratio_ep_per_goal": "Timed EP collected divided by goals involved.",
+    "gd_before": "Goal difference for the scoring team before the goal.",
+    "gd_after": "Goal difference for the scoring team after the goal.",
+    "minute_bin": "15-minute time bin when the goal occurred.",
+    "n": "Number of observed goal events.",
+    "pW": "Probability the scoring team ultimately wins.",
+    "pD": "Probability of draw.",
+    "pL": "Probability the scoring team ultimately loses.",
+    "exp_points": "Expected final points (3·pW + 1·pD).",
+    "exp_points_collected": "Incremental EP for this transition.",
+    "delta_exp_points": "EP delta from state value function (Approach A).",
+    "minutes_played": "Total minutes played in scope (Top-5 leagues only; Eredivisie players show 0).",
+    "ep_per_90": "Time-aware EP collected normalised per 90 minutes played. 0 when minutes_played is unavailable."
+  },
+  "always_keep": [
+    "contributor",
+    "ep_per_90",
+    "exp_points",
+    "exp_points_collected",
+    "exp_points_collected_timed",
+    "exp_points_collected_untimed",
+    "gd_after",
+    "gd_before",
+    "goals_involved",
+    "minute_bin",
+    "minutes_played",
+    "n",
+    "pD",
+    "pL",
+    "pW",
+    "scoring_team"
+  ],
+  "derived_columns": [
+    "delta_ep_minus_goals",
+    "delta_ep_timed_vs_untimed",
+    "ratio_ep_per_goal"
+  ],
+  "key_scheme": {
+    "cnt_gd_prefix": "g.",
+    "cnt_bin_prefix": "b.",
+    "ep_bin_prefix": "e."
+  },
+  "datasets": {
+    "Goalscorer": {
+      "contributor": true,
+      "views": {
+        "Per League & Season": {
+          "file": "goalscorer/per_league_season.json",
+          "size_kb": 2915.9
+        },
+        "Totals by League": {
+          "file": "goalscorer/totals_by_league.json",
+          "size_kb": 1780.6
+        },
+        "Totals by Season": {
+          "file": "goalscorer/totals_by_season.json",
+          "size_kb": 2915.7
+        },
+        "All": {
+          "file": "goalscorer/all.json",
+          "size_kb": 1780.9
+        }
+      }
+    },
+    "Assist": {
+      "contributor": true,
+      "views": {
+        "Per League & Season": {
+          "file": "assist/per_league_season.json",
+          "size_kb": 3310.0
+        },
+        "Totals by League": {
+          "file": "assist/totals_by_league.json",
+          "size_kb": 1948.8
+        },
+        "Totals by Season": {
+          "file": "assist/totals_by_season.json",
+          "size_kb": 3309.8
+        },
+        "All": {
+          "file": "assist/all.json",
+          "size_kb": 1949.1
+        }
+      }
+    },
+    "Goals+Assists": {
+      "contributor": true,
+      "views": {
+        "Per League & Season": {
+          "file": "goals_assists/per_league_season.json",
+          "size_kb": 4410.3
+        },
+        "Totals by League": {
+          "file": "goals_assists/totals_by_league.json",
+          "size_kb": 2514.2
+        },
+        "Totals by Season": {
+          "file": "goals_assists/totals_by_season.json",
+          "size_kb": 4409.8
+        },
+        "All": {
+          "file": "goals_assists/all.json",
+          "size_kb": 2514.2
+        }
+      }
+    },
+    "Transitions": {
+      "contributor": false,
+      "views": {
+        "Pooled": {
+          "file": "transitions/pooled.json",
+          "size_kb": 2.5
+        },
+        "By League": {
+          "file": "transitions/by_league.json",
+          "size_kb": 13.3
+        }
+      }
+    },
+    "Transitions (Timed)": {
+      "contributor": false,
+      "views": {
+        "Pooled": {
+          "file": "transitions_timed/pooled.json",
+          "size_kb": 12.1
+        },
+        "By League": {
+          "file": "transitions_timed/by_league.json",
+          "size_kb": 62.3
+        }
+      }
+    },
+    "Transition Heatmap": {
+      "contributor": false,
+      "views": {
+        "Pooled": {
+          "file": "heatmap/pooled.json",
+          "size_kb": 6.6
+        },
+        "By League": {
+          "file": "heatmap/by_league.json",
+          "size_kb": 34.5
+        }
+      }
+    }
+  }
+}

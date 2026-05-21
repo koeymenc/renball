@@ -1,0 +1,14 @@
+{
+  "folder": "02-points-by-gamestate",
+  "title": "Not All Goals Are Equal: A Time-Aware Expected-Points Model",
+  "date": "May 2026",
+  "type": "HTML + Dashboard + Methodology",
+  "tags": ["Top 5 Leagues + Eredivisie", "Expected Points", "Player Rating", "Time-Aware", "39,381 Goals"],
+  "filter": ["modelling", "player-rating"],
+  "excerpt": "A goal from 0–0 to 1–0 in the fifth minute and the same goal in the eighty-fifth are not the same thing. Expected points (EP) prices every goal by the goal-difference transition it produced and the minute it landed — across 39,381 goals in six top-flight leagues and seven seasons.",
+  "finding": "A late equaliser is worth 2.1× an early opener — and Mário Rui collects more late points than anyone.",
+  "has_html": true,
+  "has_pdf": true,
+  "has_methodology": true,
+  "has_dashboard": true
+}

@@ -1,0 +1,1245 @@
+{
+  "meta": {
+    "generated_at": "2026-05-19 22:36:33",
+    "leagues": [
+      "Bundesliga",
+      "Eredivisie",
+      "La-Liga",
+      "Ligue-1",
+      "Premier-League",
+      "Serie-A"
+    ],
+    "seasons": [
+      "2017-2018",
+      "2018-2019",
+      "2019-2020",
+      "2020-2021",
+      "2021-2022",
+      "2022-2023",
+      "2023-2024"
+    ],
+    "time_bins": [
+      "0-15",
+      "15-30",
+      "30-45",
+      "45-60",
+      "60-75",
+      "75-90"
+    ],
+    "gd_range": [
+      -7,
+      -6,
+      -5,
+      -4,
+      -3,
+      -2,
+      -1,
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ]
+  },
+  "callouts": {
+    "total_goals": 39381,
+    "unique_states": 82,
+    "ep_value_gap": {
+      "gap": 1.6766,
+      "best": 1.6766,
+      "worst": 0.0,
+      "best_label": "0→1 @ 75-90",
+      "worst_label": "−2→−1 @ 0-15"
+    },
+    "biggest_upgrade": {
+      "player": "Mário Rui",
+      "team": "Napoli",
+      "goals_involved": 28,
+      "delta_ep": 3.428,
+      "ep_timed": 24.106,
+      "ep_untimed": 20.678
+    }
+  },
+  "state_value_table": {
+    "gd_range": [
+      -7,
+      -6,
+      -5,
+      -4,
+      -3,
+      -2,
+      -1,
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "time_bins": [
+      "0-15",
+      "15-30",
+      "30-45",
+      "45-60",
+      "60-75",
+      "75-90"
+    ],
+    "matrix": [
+      [
+        null,
+        null,
+        null,
+        {
+          "exp_points": 0.0,
+          "n": 1
+        },
+        null,
+        {
+          "exp_points": 0.0,
+          "n": 14
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        {
+          "exp_points": 0.0,
+          "n": 4
+        },
+        {
+          "exp_points": 0.0,
+          "n": 6
+        },
+        {
+          "exp_points": 0.0,
+          "n": 25
+        }
+      ],
+      [
+        null,
+        null,
+        {
+          "exp_points": 0.0,
+          "n": 2
+        },
+        {
+          "exp_points": 0.0,
+          "n": 15
+        },
+        {
+          "exp_points": 0.0,
+          "n": 41
+        },
+        {
+          "exp_points": 0.0,
+          "n": 88
+        }
+      ],
+      [
+        null,
+        {
+          "exp_points": 0.0,
+          "n": 4
+        },
+        {
+          "exp_points": 0.0,
+          "n": 18
+        },
+        {
+          "exp_points": 0.0164,
+          "n": 61
+        },
+        {
+          "exp_points": 0.0,
+          "n": 145
+        },
+        {
+          "exp_points": 0.0,
+          "n": 296
+        }
+      ],
+      [
+        {
+          "exp_points": 0.0,
+          "n": 2
+        },
+        {
+          "exp_points": 0.0,
+          "n": 18
+        },
+        {
+          "exp_points": 0.0352,
+          "n": 142
+        },
+        {
+          "exp_points": 0.0461,
+          "n": 282
+        },
+        {
+          "exp_points": 0.0317,
+          "n": 473
+        },
+        {
+          "exp_points": 0.0012,
+          "n": 805
+        }
+      ],
+      [
+        {
+          "exp_points": 0.375,
+          "n": 32
+        },
+        {
+          "exp_points": 0.3277,
+          "n": 235
+        },
+        {
+          "exp_points": 0.2385,
+          "n": 763
+        },
+        {
+          "exp_points": 0.2118,
+          "n": 1001
+        },
+        {
+          "exp_points": 0.1765,
+          "n": 1269
+        },
+        {
+          "exp_points": 0.07,
+          "n": 1842
+        }
+      ],
+      [
+        {
+          "exp_points": 0.748,
+          "n": 615
+        },
+        {
+          "exp_points": 0.753,
+          "n": 1858
+        },
+        {
+          "exp_points": 0.7368,
+          "n": 2781
+        },
+        {
+          "exp_points": 0.7045,
+          "n": 2711
+        },
+        {
+          "exp_points": 0.6384,
+          "n": 2732
+        },
+        {
+          "exp_points": 0.5566,
+          "n": 3595
+        }
+      ],
+      [
+        {
+          "exp_points": 1.3977,
+          "n": 8718
+        },
+        {
+          "exp_points": 1.4022,
+          "n": 7078
+        },
+        {
+          "exp_points": 1.3946,
+          "n": 5996
+        },
+        {
+          "exp_points": 1.3969,
+          "n": 4734
+        },
+        {
+          "exp_points": 1.4064,
+          "n": 3868
+        },
+        {
+          "exp_points": 1.4583,
+          "n": 4600
+        }
+      ],
+      [
+        {
+          "exp_points": 2.0699,
+          "n": 615
+        },
+        {
+          "exp_points": 2.0689,
+          "n": 1858
+        },
+        {
+          "exp_points": 2.0669,
+          "n": 2781
+        },
+        {
+          "exp_points": 2.0812,
+          "n": 2711
+        },
+        {
+          "exp_points": 2.101,
+          "n": 2732
+        },
+        {
+          "exp_points": 2.0662,
+          "n": 3595
+        }
+      ],
+      [
+        {
+          "exp_points": 2.5312,
+          "n": 32
+        },
+        {
+          "exp_points": 2.5617,
+          "n": 235
+        },
+        {
+          "exp_points": 2.6645,
+          "n": 763
+        },
+        {
+          "exp_points": 2.6993,
+          "n": 1001
+        },
+        {
+          "exp_points": 2.7321,
+          "n": 1269
+        },
+        {
+          "exp_points": 2.8795,
+          "n": 1842
+        }
+      ],
+      [
+        {
+          "exp_points": 3.0,
+          "n": 2
+        },
+        {
+          "exp_points": 3.0,
+          "n": 18
+        },
+        {
+          "exp_points": 2.9296,
+          "n": 142
+        },
+        {
+          "exp_points": 2.9291,
+          "n": 282
+        },
+        {
+          "exp_points": 2.9493,
+          "n": 473
+        },
+        {
+          "exp_points": 2.9975,
+          "n": 805
+        }
+      ],
+      [
+        null,
+        {
+          "exp_points": 3.0,
+          "n": 4
+        },
+        {
+          "exp_points": 3.0,
+          "n": 18
+        },
+        {
+          "exp_points": 2.9672,
+          "n": 61
+        },
+        {
+          "exp_points": 3.0,
+          "n": 145
+        },
+        {
+          "exp_points": 3.0,
+          "n": 296
+        }
+      ],
+      [
+        null,
+        null,
+        {
+          "exp_points": 3.0,
+          "n": 2
+        },
+        {
+          "exp_points": 3.0,
+          "n": 15
+        },
+        {
+          "exp_points": 3.0,
+          "n": 41
+        },
+        {
+          "exp_points": 3.0,
+          "n": 88
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        {
+          "exp_points": 3.0,
+          "n": 4
+        },
+        {
+          "exp_points": 3.0,
+          "n": 6
+        },
+        {
+          "exp_points": 3.0,
+          "n": 25
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        {
+          "exp_points": 3.0,
+          "n": 1
+        },
+        null,
+        {
+          "exp_points": 3.0,
+          "n": 14
+        }
+      ]
+    ]
+  },
+  "value_heatmap": {
+    "time_bins": [
+      "0-15",
+      "15-30",
+      "30-45",
+      "45-60",
+      "60-75",
+      "75-90"
+    ],
+    "transitions": [
+      {
+        "gd_before": -7,
+        "gd_after": -6,
+        "label": "−7→−6"
+      },
+      {
+        "gd_before": -6,
+        "gd_after": -5,
+        "label": "−6→−5"
+      },
+      {
+        "gd_before": -5,
+        "gd_after": -4,
+        "label": "−5→−4"
+      },
+      {
+        "gd_before": -4,
+        "gd_after": -3,
+        "label": "−4→−3"
+      },
+      {
+        "gd_before": -3,
+        "gd_after": -2,
+        "label": "−3→−2"
+      },
+      {
+        "gd_before": -2,
+        "gd_after": -1,
+        "label": "−2→−1"
+      },
+      {
+        "gd_before": -1,
+        "gd_after": 0,
+        "label": "−1→0"
+      },
+      {
+        "gd_before": 0,
+        "gd_after": 1,
+        "label": "0→1"
+      },
+      {
+        "gd_before": 1,
+        "gd_after": 2,
+        "label": "1→2"
+      },
+      {
+        "gd_before": 2,
+        "gd_after": 3,
+        "label": "2→3"
+      },
+      {
+        "gd_before": 3,
+        "gd_after": 4,
+        "label": "3→4"
+      },
+      {
+        "gd_before": 4,
+        "gd_after": 5,
+        "label": "4→5"
+      },
+      {
+        "gd_before": 5,
+        "gd_after": 6,
+        "label": "5→6"
+      },
+      {
+        "gd_before": 6,
+        "gd_after": 7,
+        "label": "6→7"
+      },
+      {
+        "gd_before": 7,
+        "gd_after": 8,
+        "label": "7→8"
+      }
+    ],
+    "matrix": [
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "ep_collected": 0.0,
+          "n": 1
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        null,
+        null,
+        {
+          "ep_collected": 0.0,
+          "n": 7
+        }
+      ],
+      [
+        null,
+        null,
+        {
+          "ep_collected": 0.0,
+          "n": 1
+        },
+        {
+          "ep_collected": 0.0,
+          "n": 5
+        },
+        {
+          "ep_collected": 0.0,
+          "n": 14
+        },
+        {
+          "ep_collected": 0.0,
+          "n": 26
+        }
+      ],
+      [
+        null,
+        null,
+        {
+          "ep_collected": 0.0,
+          "n": 3
+        },
+        {
+          "ep_collected": 0.0435,
+          "n": 23
+        },
+        {
+          "ep_collected": 0.0,
+          "n": 40
+        },
+        {
+          "ep_collected": 0.0,
+          "n": 87
+        }
+      ],
+      [
+        null,
+        {
+          "ep_collected": 0.0,
+          "n": 4
+        },
+        {
+          "ep_collected": 0.0714,
+          "n": 56
+        },
+        {
+          "ep_collected": 0.084,
+          "n": 102
+        },
+        {
+          "ep_collected": 0.0789,
+          "n": 190
+        },
+        {
+          "ep_collected": 0.0037,
+          "n": 272
+        }
+      ],
+      [
+        {
+          "ep_collected": 0.0,
+          "n": 17
+        },
+        {
+          "ep_collected": 0.7158,
+          "n": 95
+        },
+        {
+          "ep_collected": 0.4823,
+          "n": 307
+        },
+        {
+          "ep_collected": 0.3788,
+          "n": 403
+        },
+        {
+          "ep_collected": 0.3433,
+          "n": 521
+        },
+        {
+          "ep_collected": 0.1607,
+          "n": 785
+        }
+      ],
+      [
+        {
+          "ep_collected": 0.6112,
+          "n": 287
+        },
+        {
+          "ep_collected": 0.7057,
+          "n": 828
+        },
+        {
+          "ep_collected": 0.8292,
+          "n": 1324
+        },
+        {
+          "ep_collected": 0.8193,
+          "n": 1321
+        },
+        {
+          "ep_collected": 0.873,
+          "n": 1270
+        },
+        {
+          "ep_collected": 0.979,
+          "n": 1730
+        }
+      ],
+      [
+        {
+          "ep_collected": 0.785,
+          "n": 4359
+        },
+        {
+          "ep_collected": 0.7449,
+          "n": 3539
+        },
+        {
+          "ep_collected": 0.8392,
+          "n": 2998
+        },
+        {
+          "ep_collected": 1.0505,
+          "n": 2367
+        },
+        {
+          "ep_collected": 1.2233,
+          "n": 1934
+        },
+        {
+          "ep_collected": 1.6766,
+          "n": 2300
+        }
+      ],
+      [
+        {
+          "ep_collected": 0.5351,
+          "n": 328
+        },
+        {
+          "ep_collected": 0.5336,
+          "n": 1030
+        },
+        {
+          "ep_collected": 0.561,
+          "n": 1457
+        },
+        {
+          "ep_collected": 0.4492,
+          "n": 1390
+        },
+        {
+          "ep_collected": 0.3747,
+          "n": 1462
+        },
+        {
+          "ep_collected": 0.1586,
+          "n": 1865
+        }
+      ],
+      [
+        {
+          "ep_collected": 0.3628,
+          "n": 15
+        },
+        {
+          "ep_collected": 0.1929,
+          "n": 140
+        },
+        {
+          "ep_collected": 0.1708,
+          "n": 456
+        },
+        {
+          "ep_collected": 0.1581,
+          "n": 598
+        },
+        {
+          "ep_collected": 0.096,
+          "n": 748
+        },
+        {
+          "ep_collected": 0.0214,
+          "n": 1057
+        }
+      ],
+      [
+        {
+          "ep_collected": 0.0,
+          "n": 2
+        },
+        {
+          "ep_collected": 0.1071,
+          "n": 14
+        },
+        {
+          "ep_collected": 0.0228,
+          "n": 86
+        },
+        {
+          "ep_collected": 0.0167,
+          "n": 180
+        },
+        {
+          "ep_collected": 0.0107,
+          "n": 283
+        },
+        {
+          "ep_collected": 0.0,
+          "n": 533
+        }
+      ],
+      [
+        null,
+        {
+          "ep_collected": 0.0,
+          "n": 4
+        },
+        {
+          "ep_collected": 0.0233,
+          "n": 15
+        },
+        {
+          "ep_collected": 0.0,
+          "n": 38
+        },
+        {
+          "ep_collected": 0.0,
+          "n": 105
+        },
+        {
+          "ep_collected": 0.0,
+          "n": 209
+        }
+      ],
+      [
+        null,
+        null,
+        {
+          "ep_collected": 0.0,
+          "n": 1
+        },
+        {
+          "ep_collected": 0.0,
+          "n": 10
+        },
+        {
+          "ep_collected": 0.0,
+          "n": 27
+        },
+        {
+          "ep_collected": 0.0,
+          "n": 62
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        {
+          "ep_collected": 0.0,
+          "n": 4
+        },
+        {
+          "ep_collected": 0.0,
+          "n": 6
+        },
+        {
+          "ep_collected": 0.0,
+          "n": 18
+        }
+      ],
+      [
+        null,
+        null,
+        null,
+        {
+          "ep_collected": 0.0,
+          "n": 1
+        },
+        null,
+        {
+          "ep_collected": 0.0,
+          "n": 13
+        }
+      ]
+    ]
+  },
+  "early_vs_late_0to1": {
+    "time_bins": [
+      "0-15",
+      "15-30",
+      "30-45",
+      "45-60",
+      "60-75",
+      "75-90"
+    ],
+    "ep_collected": [
+      0.785,
+      0.7449,
+      0.8392,
+      1.0505,
+      1.2233,
+      1.6766
+    ]
+  },
+  "top10_ep_collectors": [
+    {
+      "player": "Lionel Messi",
+      "team": "Barcelona",
+      "goals_involved": 267,
+      "ep_timed": 157.751,
+      "ep_untimed": 177.374,
+      "ep_bins": {
+        "0-15": 14.068,
+        "15-30": 35.854,
+        "30-45": 30.465,
+        "45-60": 22.16,
+        "60-75": 26.142,
+        "75-90": 29.062
+      }
+    },
+    {
+      "player": "Mohamed Salah",
+      "team": "Liverpool",
+      "goals_involved": 251,
+      "ep_timed": 154.777,
+      "ep_untimed": 166.979,
+      "ep_bins": {
+        "0-15": 19.315,
+        "15-30": 23.05,
+        "30-45": 31.898,
+        "45-60": 19.529,
+        "60-75": 26.131,
+        "75-90": 34.853
+      }
+    },
+    {
+      "player": "Kylian Mbappé",
+      "team": "Paris S-G",
+      "goals_involved": 274,
+      "ep_timed": 154.529,
+      "ep_untimed": 168.708,
+      "ep_bins": {
+        "0-15": 26.441,
+        "15-30": 24.679,
+        "30-45": 23.865,
+        "45-60": 19.003,
+        "60-75": 24.765,
+        "75-90": 35.777
+      }
+    },
+    {
+      "player": "Harry Kane",
+      "team": "Tottenham",
+      "goals_involved": 240,
+      "ep_timed": 150.715,
+      "ep_untimed": 162.286,
+      "ep_bins": {
+        "0-15": 25.628,
+        "15-30": 21.926,
+        "30-45": 31.145,
+        "45-60": 26.483,
+        "60-75": 17.991,
+        "75-90": 27.54
+      }
+    },
+    {
+      "player": "Robert Lewandowski",
+      "team": "Bayern Munich",
+      "goals_involved": 270,
+      "ep_timed": 149.105,
+      "ep_untimed": 161.977,
+      "ep_bins": {
+        "0-15": 22.605,
+        "15-30": 25.067,
+        "30-45": 31.796,
+        "45-60": 19.357,
+        "60-75": 17.187,
+        "75-90": 33.092
+      }
+    },
+    {
+      "player": "Ciro Immobile",
+      "team": "Lazio",
+      "goals_involved": 208,
+      "ep_timed": 128.338,
+      "ep_untimed": 139.173,
+      "ep_bins": {
+        "0-15": 19.737,
+        "15-30": 22.219,
+        "30-45": 23.228,
+        "45-60": 18.014,
+        "60-75": 17.676,
+        "75-90": 27.464
+      }
+    },
+    {
+      "player": "Iago Aspas",
+      "team": "Celta Vigo",
+      "goals_involved": 179,
+      "ep_timed": 120.563,
+      "ep_untimed": 134.443,
+      "ep_bins": {
+        "0-15": 17.382,
+        "15-30": 15.615,
+        "30-45": 28.359,
+        "45-60": 19.3,
+        "60-75": 16.859,
+        "75-90": 23.048
+      }
+    },
+    {
+      "player": "Cristiano Ronaldo",
+      "team": "Juventus",
+      "goals_involved": 174,
+      "ep_timed": 119.253,
+      "ep_untimed": 127.426,
+      "ep_bins": {
+        "0-15": 14.492,
+        "15-30": 14.658,
+        "30-45": 24.323,
+        "45-60": 22.28,
+        "60-75": 18.264,
+        "75-90": 25.237
+      }
+    },
+    {
+      "player": "Wissam Ben Yedder",
+      "team": "Monaco",
+      "goals_involved": 182,
+      "ep_timed": 116.412,
+      "ep_untimed": 129.506,
+      "ep_bins": {
+        "0-15": 15.812,
+        "15-30": 21.097,
+        "30-45": 22.146,
+        "45-60": 23.214,
+        "60-75": 12.285,
+        "75-90": 21.858
+      }
+    },
+    {
+      "player": "Karim Benzema",
+      "team": "Real Madrid",
+      "goals_involved": 174,
+      "ep_timed": 110.764,
+      "ep_untimed": 121.309,
+      "ep_bins": {
+        "0-15": 17.743,
+        "15-30": 13.784,
+        "30-45": 17.497,
+        "45-60": 18.601,
+        "60-75": 14.831,
+        "75-90": 28.308
+      }
+    }
+  ],
+  "top10_timed_upgrade": [
+    {
+      "player": "Mário Rui",
+      "team": "Napoli",
+      "goals_involved": 28,
+      "ep_timed": 24.106,
+      "ep_untimed": 20.678,
+      "delta_ep": 3.428
+    },
+    {
+      "player": "Evann Guessand",
+      "team": "Nice",
+      "goals_involved": 19,
+      "ep_timed": 20.714,
+      "ep_untimed": 17.37,
+      "delta_ep": 3.344
+    },
+    {
+      "player": "Cristian Tello",
+      "team": "Betis",
+      "goals_involved": 36,
+      "ep_timed": 31.205,
+      "ep_untimed": 28.387,
+      "delta_ep": 2.817
+    },
+    {
+      "player": "Adama Traoré",
+      "team": "Wolves",
+      "goals_involved": 43,
+      "ep_timed": 36.511,
+      "ep_untimed": 33.826,
+      "delta_ep": 2.686
+    },
+    {
+      "player": "Youssoufa Moukoko",
+      "team": "Dortmund",
+      "goals_involved": 22,
+      "ep_timed": 16.262,
+      "ep_untimed": 13.68,
+      "delta_ep": 2.581
+    },
+    {
+      "player": "Viktor Kovalenko",
+      "team": "Spezia",
+      "goals_involved": 7,
+      "ep_timed": 9.449,
+      "ep_untimed": 6.923,
+      "delta_ep": 2.526
+    },
+    {
+      "player": "Sasa Kalajdzic",
+      "team": "Stuttgart",
+      "goals_involved": 37,
+      "ep_timed": 32.198,
+      "ep_untimed": 29.695,
+      "delta_ep": 2.503
+    },
+    {
+      "player": "Mario Hermoso",
+      "team": "Atlético Madrid",
+      "goals_involved": 20,
+      "ep_timed": 17.791,
+      "ep_untimed": 15.457,
+      "delta_ep": 2.334
+    },
+    {
+      "player": "Leo Dubois",
+      "team": "Lyon",
+      "goals_involved": 26,
+      "ep_timed": 24.801,
+      "ep_untimed": 22.533,
+      "delta_ep": 2.268
+    },
+    {
+      "player": "Lee Kang-in",
+      "team": "Mallorca",
+      "goals_involved": 31,
+      "ep_timed": 28.151,
+      "ep_untimed": 25.948,
+      "delta_ep": 2.203
+    }
+  ],
+  "top10_ep_per_90": [
+    {
+      "player": "Victor Boniface",
+      "team": "Leverkusen",
+      "goals_involved": 26,
+      "minutes_played": 1546,
+      "ep_timed": 15.235,
+      "ep_per_90": 0.887
+    },
+    {
+      "player": "Georges Mikautadze",
+      "team": "Metz",
+      "goals_involved": 21,
+      "minutes_played": 1756,
+      "ep_timed": 17.035,
+      "ep_per_90": 0.873
+    },
+    {
+      "player": "Lionel Messi",
+      "team": "Barcelona",
+      "goals_involved": 267,
+      "minutes_played": 16516,
+      "ep_timed": 157.751,
+      "ep_per_90": 0.86
+    },
+    {
+      "player": "Kylian Mbappé",
+      "team": "Paris S-G",
+      "goals_involved": 274,
+      "minutes_played": 16403,
+      "ep_timed": 154.529,
+      "ep_per_90": 0.848
+    },
+    {
+      "player": "Clinton N'Jie",
+      "team": "Marseille",
+      "goals_involved": 16,
+      "minutes_played": 1238,
+      "ep_timed": 11.441,
+      "ep_per_90": 0.832
+    },
+    {
+      "player": "Cole Palmer",
+      "team": "Chelsea",
+      "goals_involved": 39,
+      "minutes_played": 3111,
+      "ep_timed": 27.602,
+      "ep_per_90": 0.799
+    },
+    {
+      "player": "Cristiano Ronaldo",
+      "team": "Juventus",
+      "goals_involved": 174,
+      "minutes_played": 13704,
+      "ep_timed": 119.253,
+      "ep_per_90": 0.783
+    },
+    {
+      "player": "Neymar",
+      "team": "Paris S-G",
+      "goals_involved": 149,
+      "minutes_played": 9354,
+      "ep_timed": 78.834,
+      "ep_per_90": 0.759
+    },
+    {
+      "player": "Erling Haaland",
+      "team": "Dortmund",
+      "goals_involved": 169,
+      "minutes_played": 10702,
+      "ep_timed": 89.203,
+      "ep_per_90": 0.75
+    },
+    {
+      "player": "Artem Dovbyk",
+      "team": "Girona",
+      "goals_involved": 34,
+      "minutes_played": 2587,
+      "ep_timed": 21.185,
+      "ep_per_90": 0.737
+    }
+  ],
+  "top10_ep_collectors_with_minutes": [
+    {
+      "player": "Lionel Messi",
+      "team": "Barcelona",
+      "goals_involved": 267,
+      "minutes_played": 16516,
+      "ep_timed": 157.751,
+      "ep_per_90": 0.86
+    },
+    {
+      "player": "Mohamed Salah",
+      "team": "Liverpool",
+      "goals_involved": 251,
+      "minutes_played": 20697,
+      "ep_timed": 154.777,
+      "ep_per_90": 0.673
+    },
+    {
+      "player": "Kylian Mbappé",
+      "team": "Paris S-G",
+      "goals_involved": 274,
+      "minutes_played": 16403,
+      "ep_timed": 154.529,
+      "ep_per_90": 0.848
+    },
+    {
+      "player": "Harry Kane",
+      "team": "Tottenham",
+      "goals_involved": 240,
+      "minutes_played": 20645,
+      "ep_timed": 150.715,
+      "ep_per_90": 0.657
+    },
+    {
+      "player": "Robert Lewandowski",
+      "team": "Bayern Munich",
+      "goals_involved": 270,
+      "minutes_played": 18888,
+      "ep_timed": 149.105,
+      "ep_per_90": 0.71
+    },
+    {
+      "player": "Ciro Immobile",
+      "team": "Lazio",
+      "goals_involved": 208,
+      "minutes_played": 18144,
+      "ep_timed": 128.338,
+      "ep_per_90": 0.637
+    },
+    {
+      "player": "Iago Aspas",
+      "team": "Celta Vigo",
+      "goals_involved": 179,
+      "minutes_played": 19975,
+      "ep_timed": 120.563,
+      "ep_per_90": 0.543
+    },
+    {
+      "player": "Cristiano Ronaldo",
+      "team": "Juventus",
+      "goals_involved": 174,
+      "minutes_played": 13704,
+      "ep_timed": 119.253,
+      "ep_per_90": 0.783
+    },
+    {
+      "player": "Wissam Ben Yedder",
+      "team": "Monaco",
+      "goals_involved": 182,
+      "minutes_played": 16242,
+      "ep_timed": 116.412,
+      "ep_per_90": 0.645
+    },
+    {
+      "player": "Karim Benzema",
+      "team": "Real Madrid",
+      "goals_involved": 174,
+      "minutes_played": 15769,
+      "ep_timed": 110.764,
+      "ep_per_90": 0.632
+    }
+  ]
+}

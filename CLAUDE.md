@@ -130,34 +130,84 @@ Every project gets an `analysis.html` dashboard. Rules:
 
 ## 5. POWERPOINT (slides.pptx) RULES
 
-Every project ships a slideshow. Rules:
+Every project ships a slideshow built programmatically with python-pptx.
 
-### Branding
-- Background: `--bg` (#080c08).
-- Headlines: Instrument Serif, white/off-white.
-- Body: DM Sans.
-- Accent color: `--accent` (#c1ff72) for highlights, key numbers, divider lines.
-- Logo top-left: "ren**ball**" — "ball" in accent.
+### Canonical builder: `assets/slides/renball_slide_master.py`
 
-### Slide Structure
-1. **Title slide**: Project name (serif, big), subtitle in mono, date.
-2. **Agenda / TL;DR**: 3-5 bullets, one key finding highlighted in accent.
-3. **Context**: Why this question matters.
-4. **Data & Method**: Sources, sample size, approach (1-2 slides max).
-5. **Results**: One chart/insight per slide. Use mono captions.
-6. **Discussion**: What it means.
-7. **Conclusion**: Key takeaway + accent-highlighted headline number.
-8. **Sources & Contact**: Last slide with renball.com.
+**Never reimplement styling in a per-project `build_slides.py`.** Import from the shared module and use its high-level slide builders. The module owns all Renball design tokens, fonts, matplotlib equivalents, page numbering, the wordmark, and the standard slide layouts. If a project needs a bespoke layout, drop down to the low-level primitives (`add_blank_slide`, `add_text`, `add_rect`, `new_chart`, etc.) — still imported from the same module.
+
+```python
+# code/build_slides.py
+import sys
+from pathlib import Path
+SHARED = Path(__file__).resolve().parents[3] / "assets" / "slides"
+sys.path.insert(0, str(SHARED))
+import renball_slide_master as R
+
+prs = R.create_deck()
+R.add_title_slide(prs, "Not All Goals Are Equal", subtitle="…", project_num="02")
+R.add_bullet_slide(prs, "TL;DR", ["Bullet 1", "Bullet 2", "Bullet 3"])
+# … more slides …
+R.finalize_deck(prs)          # stamps page numbers
+prs.save("slides.pptx")
+```
+
+High-level slide functions available: `add_title_slide`, `add_section_slide`, `add_bullet_slide`, `add_two_column_slide`, `add_chart_slide`, `add_table_slide`, `add_quote_slide`, `add_closing_slide`. See the module docstring for full parameters.
+
+### Branding (enforced by the module)
+- 16:9 (13.333" × 7.5")
+- **Strict slide zones** (constants exported from the module):
+  - `TITLE_AREA_TOP=0.4` – `TITLE_AREA_BOTTOM=1.3` — eyebrow + serif title + accent underline
+  - `BODY_TOP=1.6` – `BODY_BOTTOM=6.8` — charts, cards, tables, bullet lists, custom layouts
+  - `CAPTION_TOP=6.5` – `CAPTION_BOTTOM=6.8` — mono caption row (inside body zone)
+  - `FOOTER_TOP=6.9` – `FOOTER_BOTTOM=7.4` — logo bottom-left, page number bottom-right
+- Background: `BG` (#080c08)
+- Headlines: Instrument Serif, `TEXT` (#e8efe8). **Accent phrases** marked with `*…*` in the title string render in `ACCENT` (#c1ff72), italic.
+- Body: DM Sans, `TEXT_SECONDARY` (#8fa68f)
+- Captions / eyebrows / labels: JetBrains Mono uppercase, `TEXT_MUTED` (#5a735a) by default; `ACCENT` for emphasis
+- **Bottom-left:** ren·ball wordmark ("ball" in accent), 16pt
+- **Bottom-right:** page number in muted mono (auto-stamped by `finalize_deck`; title + closing slides skipped)
+- Every text run sets `font.name` explicitly — the module never relies on PowerPoint's theme default
+- Charts: matplotlib palette via `MPL_*` constants; `add_chart_slide` auto-fits the figure inside the body zone (preserves aspect ratio, clamps height)
+
+#### Accent runs in titles
+
+Wrap any phrase in asterisks to mark it for italic + accent rendering:
+
+```python
+R.add_title_slide(prs, "Not All Goals Are *Equal*.")
+R.add_section_slide(prs, "01", "Why the *late* equaliser matters")
+R.add_bullet_slide(prs, "What this *changes*", bullets=[...])
+```
+
+The asterisks are stripped at render time; the marked segment becomes a separate Run with `italic=True` and `color=ACCENT`. The parser is exposed as `parse_accent_runs(text)` for callers building bespoke layouts.
+
+### Slide structure (default narrative)
+1. **Title slide** — project name (with optional italic accent phrase), subtitle in mono, date
+2. **TL;DR / Agenda** — 3–5 bullets, one finding in accent
+3. **Context** — why the question matters
+4. **Data & Method** — sources, sample size, approach (1–2 slides max)
+5. **Results** — one chart/insight per slide; mono captions
+6. **Discussion** — what it means
+7. **Conclusion** — key takeaway + accent-highlighted headline number
+8. **Sources & Contact** — closing slide with `renball.com` in accent
+
+Project-specific decks may insert extra slides (e.g. a "spotlight" callout on a player). Keep the overall arc.
 
 ### Export
-- Always export as `slides.pdf` once finalized.
-- Keep `slides.pptx` editable in the folder for future updates.
+- Generate `slides.pptx` programmatically: `python code/build_slides.py`
+- Open in PowerPoint, refine if needed, then **manually export to `slides.pdf`** (File → Export → Create PDF/XPS). LibreOffice CLI conversion is supported as a fallback if `soffice` is on the path.
+- Keep both `slides.pptx` and `slides.pdf` committed.
 
 ---
 
 ## 6. METHODOLOGY HTML RULES
 
-Every project ships a `methodology.html` for technical depth. It is generated from `methodology.md` by `code/build_pdfs.py`, styled in the Renball design tokens (dark background, accent headlines, mono code blocks), and deployed alongside the dashboard. A PDF is opportunistically generated when WeasyPrint + GTK are available locally, but the **HTML is the canonical artifact** — readers open it in a browser; anyone who wants a PDF can use the browser's print-to-PDF.
+**Standing rule (current toolchain):** Every project ships a `methodology.html` and **no methodology PDF**. The HTML is the sole canonical deploy artifact — readers open it directly in a browser, and anyone who wants a PDF can use the browser's print-to-PDF.
+
+This rule applies until a proper Markdown→PDF toolchain is set up locally (WeasyPrint + GTK, or equivalent). Until then: do not commit a `methodology.pdf`, do not link to one from `analysis.html`, and `has_pdf` in `config.json` refers to `slides.pdf` only.
+
+`methodology.html` is generated from `methodology.md` by `code/build_pdfs.py`, styled inline with the Renball design tokens (dark background, accent headlines, mono code blocks), and deployed alongside the dashboard.
 
 ### Source: `methodology.md`
 Markdown is the single source of truth — write it there, regenerate the HTML with `python code/build_pdfs.py`.
@@ -202,9 +252,12 @@ Every project folder contains a `config.json`. Same schema as the entry in `proj
   "finding": "No statistically significant difference — neither GK fouling nor self-won penalties affect conversion.",
   "has_html": true,
   "has_pdf": true,
-  "has_methodology": true
+  "has_methodology": true,
+  "has_dashboard": false
 }
 ```
+
+**`has_dashboard`** (optional, defaults to `false` if omitted): set to `true` when the project ships an interactive Tabulator-based `dashboard.html` alongside the editorial `analysis.html` (see §4 for the dual-page pattern). The homepage card uses this to render an explicit "Dashboard" link.
 
 When adding a project, this same JSON object must also be appended to `projects.json` at the repo root.
 
@@ -228,10 +281,10 @@ Put the original Python script in `code/`. Adapt it so it outputs:
 Edit `analysis.html` — swap in project title, key finding text, and Chart.js configs that read from `data/data.json`.
 
 ### Step 5 — Write methodology
-Edit `methodology.md`. Export to PDF.
+Edit `methodology.md`, then run `python code/build_pdfs.py` to regenerate `methodology.html`. No PDF (see §6).
 
 ### Step 6 — Build slides
-Edit `slides.pptx`. Export to PDF as `slides.pdf`.
+Edit `slides.pptx`. Manually export to PDF as `slides.pdf` (File → Export → Create PDF/XPS in PowerPoint).
 
 ### Step 7 — Add to master projects list
 Append the same `config.json` object to `projects.json` at repo root.
@@ -249,17 +302,18 @@ Site updates in ~60 seconds.
 
 ## 9. RAW DATA HANDLING
 
-CK works with large pickle files in `C:\Users\Can Luca Köymen\OneDrive\Desktop\MONEYBALLYTICS\READY_DATA\`. Examples:
-- `MATCH_WAGES_FEATURES.pkl`
-- `FULL_DICT_ROWS.pkl`
-- `FULL_DATA_DICT.pkl`
-- `ALL_TEAMS_MAPPED.xlsx`
+CK works with large pickle files in two source directories:
+- `C:\Users\Can Luca Köymen\OneDrive\Desktop\MONEYBALLYTICS\READY_DATA\` — aggregate / feature pickles (e.g. `MATCH_WAGES_FEATURES.pkl`, `FULL_DICT_ROWS.pkl`, `FULL_DATA_DICT.pkl`, `ALL_TEAMS_MAPPED.xlsx`).
+- `C:\Users\Can Luca Köymen\OneDrive\Desktop\MONEYBALLYTICS\DATA\MATCH_DATA\` — per-league match-event pickles `match_data_final_<league>.pkl` (Premier-League, Serie-A, Bundesliga, La-Liga, Ligue-1, Eredivisie). Files containing `CHECK` in the name are ignored.
 
 **Rules:**
 - **Never commit raw pickle files or large datasets to the repo.** Use `.gitignore`.
-- The Python build script (`code/build.py`) loads raw data from the local READY_DATA folder, processes it, and outputs only the aggregated `data.json` needed for the dashboard.
-- Sample/processed CSVs under ~5MB may be committed for transparency. Anything larger stays local.
-- Always paths-as-variables — never hardcode absolute paths in committed code. Use `os.environ.get("RENBALL_DATA_PATH", "default/relative/path")`.
+- The Python build script (`code/build.py`) loads raw data from the local source folder, processes it, and outputs only the aggregated artefacts the front-end needs — `data/data.json` for the editorial page, plus a `data/dashboard/` tree if the project ships a Tabulator dashboard.
+- **5 MB limit is per individual file**, not per project. Sample/processed JSON/CSV under ~5 MB may be committed for transparency. Anything larger should be **split across multiple files** with a `manifest.json` listing them — every chunk stays under the cap and the front-end lazy-loads on demand. The Project 02 dashboard demonstrates this: `data/dashboard/manifest.json` + per-`(dataset, view)` JSONs in dataset-named subfolders, each ≤ ~4 MB. To shrink large tabular payloads, combine: compact JSON (no whitespace), 3-decimal float rounding, sparse encoding (drop numeric-zero keys), short keys (`cnt_X_to_Y` → `g.X.Y`, etc.) reconstructed client-side, and dropping derived columns the front-end can recompute. Sparse keys + the recompute spec belong in the manifest so the dashboard JS can decode without out-of-band knowledge.
+- Always paths-as-variables — never hardcode absolute paths in committed code. Standard env vars:
+  - `RENBALL_DATA_PATH` → READY_DATA folder.
+  - `RENBALL_MATCH_DATA_PATH` → MATCH_DATA folder.
+  Read them with `os.environ.get("...", "<sensible default>")`.
 
 ---
 
@@ -306,7 +360,8 @@ When writing project copy:
 - Don't hardcode data in `analysis.html` — always read from `data/data.json`.
 - Don't add inline `<style>` per project — use the shared `assets/css/design-tokens.css`.
 - Don't break the design system — no new colors, fonts, or random spacing.
-- Don't deviate from the 4-file deliverable per project (analysis.html, slides.pdf, methodology.html, config.json).
+- Don't deviate from the 4-file deliverable per project (analysis.html, slides.pdf, methodology.html, config.json). Some projects also ship a `dashboard.html` (full interactive Tabulator drill-down — see §4) as a 5th file.
+- Don't commit a `methodology.pdf` until the toolchain is set up — methodology.html is the sole canonical artifact.
 - Don't ship a project without a `finding` field in config.json — the green key-finding box is part of the brand.
 - Don't write project titles longer than ~12 words.
 - Don't commit `.pyc`, `__pycache__`, `.DS_Store`, or IDE files.
