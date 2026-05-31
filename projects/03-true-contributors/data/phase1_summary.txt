@@ -1,0 +1,356 @@
+[report] team->league map: 145 teams loaded
+
+
+====================================================================================================
+  Q1a - FULL-CREDIT EP/90 - Top 15 (>=1000 min, Top-5 leagues)
+====================================================================================================
+  #  PLAYER                    TEAM                POS    AGE  LEAGUE              MINS   EP/90   TOTAL_EP
+----------------------------------------------------------------------------------------------------
+  1  Lionel Messi              Barcelona           FW    35.9  La-Liga           16,516   1.141     209.44
+  2  Kylian Mbappé             Paris S-G           FW    25.4  Ligue-1           16,403   1.054     192.08
+  3  Neymar                    Paris S-G           FW    31.0  Ligue-1            9,354   0.986     102.45
+  4  Cole Palmer               Chelsea             FW    22.0  Premier-League     3,111   0.983      33.98
+  5  Josip Iličić              Atalanta            FW    34.3  Serie-A            8,176   0.958      87.01
+  6  Victor Boniface           Leverkusen          FW    23.4  Bundesliga         1,546   0.956      16.43
+  7  Clinton N'Jie             Marseille           FW    25.8  Ligue-1            1,238   0.941      12.94
+  8  Cristiano Ronaldo         Juventus            FW    37.8  Serie-A           13,704   0.915     139.33
+  9  Georges Mikautadze        Metz                FW    23.6  Ligue-1            1,756   0.873      17.04
+ 10  Lucas Beltrán             Fiorentina          FW    23.2  Serie-A            1,692   0.872      16.40
+ 11  Erling Haaland            Dortmund            FW    23.8  Bundesliga        10,702   0.865     102.88
+ 12  Paulo Dybala              Juventus            FW    30.5  Serie-A           13,538   0.858     129.03
+ 13  Ablie Jallow              Metz                FW    25.5  Ligue-1            1,047   0.853       9.93
+ 14  Adem Ljajić               Torino              MF    26.9  Serie-A            2,185   0.845      20.51
+ 15  Jamie Bynoe-Gittens       Dortmund            FW    19.8  Bundesliga         1,725   0.839      16.08
+
+====================================================================================================
+  Q1b - WEIGHTED EP/90 - Top 15 (0.40 scorer / 0.35 SCA1 / 0.25 SCA2)
+====================================================================================================
+  #  PLAYER                    TEAM                POS    AGE  LEAGUE              MINS  wEP/90    wEP_TOT   dRANK
+--------------------------------------------------------------------------------------------------------------
+  1  Lionel Messi              Barcelona           FW    35.9  La-Liga           16,516   0.394      72.34      +0
+  2  Kylian Mbappé             Paris S-G           FW    25.4  Ligue-1           16,403   0.375      68.34      +0
+  3  Cole Palmer               Chelsea             FW    22.0  Premier-League     3,111   0.351      12.14      +1
+  4  Victor Boniface           Leverkusen          FW    23.4  Bundesliga         1,546   0.349       5.99      +2
+  5  Clinton N'Jie             Marseille           FW    25.8  Ligue-1            1,238   0.346       4.75      +2
+  6  Neymar                    Paris S-G           FW    31.0  Ligue-1            9,354   0.345      35.89      -3
+  7  Cristiano Ronaldo         Juventus            FW    37.8  Serie-A           13,704   0.335      51.07      +1
+  8  Georges Mikautadze        Metz                FW    23.6  Ligue-1            1,756   0.333       6.49      +1
+  9  Josip Iličić              Atalanta            FW    34.3  Serie-A            8,176   0.322      29.24      -4
+ 10  Erling Haaland            Dortmund            FW    23.8  Bundesliga        10,702   0.320      38.03      +1
+ 11  Robert Lewandowski        Bayern Munich       FW    35.8  Bundesliga        18,888   0.305      63.97      +6
+ 12  Artem Dovbyk              Girona              FW    26.9  La-Liga            2,587   0.305       8.77      +7
+ 13  Paulo Dybala              Juventus            FW    30.5  Serie-A           13,538   0.300      45.05      -1
+ 14  Lucas Beltrán             Fiorentina          FW    23.2  Serie-A            1,692   0.299       5.63      -4
+ 15  Mohamed Salah             Liverpool           FW    31.9  Premier-League    20,697   0.297      68.36      +1
+
+====================================================================================================
+  Q1 - BIGGEST RANK SHIFTS (A=full credit vs B=weighted)
+====================================================================================================
+PLAYER                          A    B   DELTA  (+ = weighting HELPED, - = weighting HURT)
+------------------------------------------------------------
+Ablie Jallow                   13   22      -9
+Adem Ljajić                    14   23      -9
+Sasa Kalajdzic                 27   19      +8
+Artem Dovbyk                   19   12      +7
+Robert Lewandowski             17   11      +6
+Josip Iličić                    5    9      -4
+Lucas Beltrán                  10   14      -4
+Zlatan Ibrahimović             20   16      +4
+Felipe Caicedo                 21   17      +4
+Luis Suárez                    29   25      +4
+
+====================================================================================================
+  Q2 - PER-(LEAGUE, SEASON) MVP GRID  (most recent 3 seasons)
+====================================================================================================
+
+  Season 2021-2022:
+    LEAGUE            PLAYER                      TEAM                   EP/90    MINS  CREDS
+    --------------------------------------------------------------------------------
+    Bundesliga        Patrik Schick               Leverkusen             1.066   2,076     38
+    La-Liga           Karim Benzema               Real Madrid            1.032   2,593     49
+    Ligue-1           Kylian Mbappé               Paris S-G              1.205   3,023     68
+    Premier-League    Mohamed Salah               Liverpool              1.032   2,762     48
+    Serie-A           Domenico Berardi            Sassuolo               0.905   2,819     37
+
+  Season 2022-2023:
+    LEAGUE            PLAYER                      TEAM                   EP/90    MINS  CREDS
+    --------------------------------------------------------------------------------
+    Bundesliga        Christopher Nkunku          RB Leipzig             1.030   1,897     30
+    La-Liga           Nicolas Jackson             Villarreal             1.211   1,598     26
+    Ligue-1           Lionel Messi                Paris S-G              1.014   2,837     51
+    Premier-League    Callum Wilson               Newcastle Utd          1.043   1,877     28
+    Serie-A           Domenico Berardi            Sassuolo               1.068   1,866     29
+
+  Season 2023-2024:
+    LEAGUE            PLAYER                      TEAM                   EP/90    MINS  CREDS
+    --------------------------------------------------------------------------------
+    Bundesliga        Serhou Guirassy             Stuttgart              1.303   2,208     41
+    La-Liga           Brahim Díaz                 Real Madrid            1.027   1,545     26
+    Ligue-1           Kylian Mbappé               Paris S-G              1.091   2,158     46
+    Premier-League    Michael Olise               Crystal Palace         1.189   1,275     24
+    Serie-A           Paulo Dybala                Roma                   1.103   1,959     32
+
+  Combined 5L MVP (all 7 seasons shown):
+    SEASON       PLAYER                      TEAM                   EP/90    MINS
+    --------------------------------------------------------------------------------
+    2017-2018    Nabil Fekir                 Lyon                   1.322   2,477
+    2018-2019    Lionel Messi                Barcelona              1.446   2,713
+    2019-2020    Neymar                      Paris S-G              1.235   1,318
+    2020-2021    Luis Muriel                 Atalanta               1.605   1,436
+    2021-2022    Kylian Mbappé               Paris S-G              1.205   3,023
+    2022-2023    Nicolas Jackson             Villarreal             1.211   1,598
+    2023-2024    Serhou Guirassy             Stuttgart              1.303   2,208
+
+====================================================================================================
+  Q3 - LATE-GAME SPECIALISTS  Top 10  (>=15 3-layer credits)
+====================================================================================================
+  #  PLAYER                      TEAM                  LATE_SHARE   TOTAL_EP   LATE_EP  CREDITS
+----------------------------------------------------------------------------------------------------
+  1  Marc Cardona                Las Palmas                 0.826      15.96     13.18       20
+  2  Danny Rose                  Tottenham                  0.821      10.43      8.56       15
+  3  Daniel Bessa                Genoa                      0.789      15.92     12.57       22
+  4  Manu Vallejo                Valencia                   0.783      16.89     13.22       16
+  5  Evann Guessand              Nice                       0.779      24.31     18.94       22
+  6  Ibrahima Koné               Lorient                    0.747      12.34      9.22       17
+  7  Roberto Piccoli             Lecce                      0.741      12.83      9.50       18
+  8  Cristian Tello              Betis                      0.738      38.19     28.20       44
+  9  Sargis Adamyan              Hoffenheim                 0.721      24.16     17.41       28
+ 10  Youssoufa Moukoko           Dortmund                   0.719      19.86     14.28       28
+
+====================================================================================================
+  Q4a - EP PER GOAL INVOLVED  Top 10  (>=5 credits)
+====================================================================================================
+  #  PLAYER                       RATIO   TOTAL_EP  CREDITS
+----------------------------------------------------------------------
+  1  Kelvin Yeboah                1.304       7.83        6
+  2  Malick Fofana                1.292       7.75        6
+  3  Viktor Kovalenko             1.285      10.28        8
+  4  Keinan Davis                 1.264      10.11        8
+  5  Bilal Başaçıkoğlu            1.255       7.53        6
+  6  Emre Mor                     1.237       8.66        7
+  7  Javier Vet                   1.229       7.37        6
+  8  Alexander Bannink            1.214       6.07        5
+  9  Gabriel Mercado              1.209       6.04        5
+ 10  Jon Pacheco                  1.206       6.03        5
+
+====================================================================================================
+  Q4b - TIME-AWARE MULTIPLIER  Top 10  (ep_timed / ep_untimed, >=5 credits)
+====================================================================================================
+  #  PLAYER                       MULT   EP_TIMED  EP_UNTIMED  CREDITS
+--------------------------------------------------------------------------------
+  1  Ardian Ismajli              1.471       6.94        4.72        6
+  2  Keinan Davis                1.453      10.11        6.96        8
+  3  Oscar Bobb                  1.398       6.46        4.62        7
+  4  Emre Mor                    1.387       8.66        6.24        7
+  5  Souleymane Camara           1.369      10.12        7.39        9
+  6  Ângelo Borges               1.354       7.19        5.31        6
+  7  Malick Fofana               1.335       7.75        5.81        6
+  8  Kelvin Yeboah               1.325       7.83        5.91        6
+  9  Keidi Bare                  1.323       3.83        2.90        5
+ 10  Javier Vet                  1.313       7.37        5.62        6
+
+  [Q4c] EP per shot deferred - requires non-goal shot extraction (TODO).
+
+====================================================================================================
+  Q5 - POSITION-ADJUSTED EP/90  Top 5 per panel  (>=1000 min, Top-5)
+====================================================================================================
+
+  [DF]
+     #  PLAYER                      TEAM                    AGE    MINS   EP/90  CREDITS
+    ------------------------------------------------------------------------------------------
+     1  Samuel Iling-Junior         Juventus               20.6   1,128   0.785       11
+     2  Álex Grimaldo               Leverkusen             28.7   2,784   0.633       31
+     3  Maximilian Wittek           Bochum                 28.7   1,070   0.613       10
+     4  Raphaël Guerreiro           Dortmund               30.4  11,903   0.468       97
+     5  Guela Doué                  Rennes                 21.6   1,246   0.467        8
+
+  [MF]
+     #  PLAYER                      TEAM                    AGE    MINS   EP/90  CREDITS
+    ------------------------------------------------------------------------------------------
+     1  Adem Ljajić                 Torino                 26.9   2,185   0.845       26
+     2  Jamal Musiala               Bayern Munich          21.1   6,302   0.786       95
+     3  Kevin De Bruyne             Manchester City        32.9  14,674   0.734      206
+     4  Andrej Kramarić             Hoffenheim             32.9  15,717   0.712      183
+     5  Kamory Doumbia              Brest                  21.2   2,386   0.706       22
+
+  [FW]
+     #  PLAYER                      TEAM                    AGE    MINS   EP/90  CREDITS
+    ------------------------------------------------------------------------------------------
+     1  Lionel Messi                Barcelona              35.9  16,516   1.141      356
+     2  Kylian Mbappé               Paris S-G              25.4  16,403   1.054      334
+     3  Neymar                      Paris S-G              31.0   9,354   0.986      205
+     4  Cole Palmer                 Chelsea                22.0   3,111   0.983       50
+     5  Josip Iličić                Atalanta               34.3   8,176   0.958      139
+
+====================================================================================================
+  Q6a - SCA2 ABSOLUTE EP  Top 10  (all leagues)
+====================================================================================================
+  #  PLAYER                      TEAM                     SCA2_EP  SCA2_CREDITS
+------------------------------------------------------------------------------------------
+  1  Lionel Messi                Barcelona                  51.69            89
+  2  Julian Brandt               Dortmund                   40.93            66
+  3  Kylian Mbappé               Paris S-G                  37.55            60
+  4  Mohamed Salah               Liverpool                  37.44            58
+  5  Nabil Fekir                 Betis                      34.65            41
+  6  Joshua Kimmich              Bayern Munich              34.35            66
+  7  Daniel Parejo               Valencia                   32.87            48
+  8  Bruno Fernandes             Manchester Utd             32.79            39
+  9  Iago Aspas                  Celta Vigo                 32.71            45
+ 10  Piotr Zieliński             Napoli                     32.66            44
+
+====================================================================================================
+  Q6b - SCA2 EP/90  Top 10  (>=1000 min, Top-5)
+====================================================================================================
+  #  PLAYER                      TEAM                    POS    MINS  SCA2_EP/90  SCA2_CREDITS
+--------------------------------------------------------------------------------------------------------------
+  1  Jamie Bynoe-Gittens         Dortmund                FW    1,725       0.408            11
+  2  Samuel Iling-Junior         Juventus                DF    1,128       0.370             5
+  3  Ablie Jallow                Metz                    FW    1,047       0.362             5
+  4  Guela Doué                  Rennes                  DF    1,246       0.335             5
+  5  Tommy Doyle                 Wolves                  MF    1,238       0.304             5
+  6  Naouirou Ahamada            Stuttgart               MF    2,154       0.302             8
+  7  Yuya Kubo                   Nürnberg                FW    1,274       0.299             3
+  8  Brahim Díaz                 Milan                   MF    7,049       0.296            32
+  9  Kostas Mitroglou            Marseille               FW    1,456       0.296             5
+ 10  Arne Engels                 Augsburg                MF    2,845       0.293             9
+
+====================================================================================================
+  Q6 - LAYER BREAKDOWN  Top 10 by absolute SCA2 EP
+====================================================================================================
+PLAYER                          TOTAL   SCORER%    SCA1%    SCA2%
+----------------------------------------------------------------------
+Lionel Messi                   209.44     40.2%    35.1%    24.7%
+Julian Brandt                  105.78     24.7%    36.6%    38.7%
+Kylian Mbappé                  192.08     50.6%    29.8%    19.6%
+Mohamed Salah                  192.22     50.2%    30.3%    19.5%
+Nabil Fekir                    109.65     32.1%    36.3%    31.6%
+Joshua Kimmich                  85.66     12.3%    47.6%    40.1%
+Daniel Parejo                   94.41     29.9%    35.3%    34.8%
+Bruno Fernandes                 98.92     39.9%    26.9%    33.2%
+Iago Aspas                     153.28     46.6%    32.1%    21.3%
+Piotr Zieliński                 82.67     26.2%    34.3%    39.5%
+
+====================================================================================================
+  Q7 - YOUNG PLAYERS TO WATCH  Top 10  (age <=23, >=500 min, Top-5)
+====================================================================================================
+  #  PLAYER                      TEAM                    AGE  LEAGUE              MINS   EP/90  CREDITS
+--------------------------------------------------------------------------------------------------------------
+  1  Malick Fofana               Lyon                   19.1  Ligue-1              559   1.249        6
+  2  Jhon Durán                  Aston Villa            20.4  Premier-League       611   1.240        9
+  3  Cole Palmer                 Chelsea                22.0  Premier-League     3,111   0.983       50
+  4  Jamie Bynoe-Gittens         Dortmund               19.8  Bundesliga         1,725   0.839       23
+  5  Jamal Musiala               Bayern Munich          21.1  Bundesliga         6,302   0.786       95
+  6  Samuel Iling-Junior         Juventus               20.6  Serie-A            1,128   0.785       11
+  7  Siriné Doucouré             Lorient                21.7  Ligue-1              559   0.759        7
+  8  Morgan Rogers               Aston Villa            21.8  Premier-League       638   0.743        7
+  9  Youssoufa Moukoko           Dortmund               19.5  Bundesliga         2,411   0.741       28
+ 10  Lamine Yamal                Barcelona              16.9  La-Liga            2,209   0.738       23
+
+====================================================================================================
+  EDITORIAL NOTES (Claude's reading of the data)
+====================================================================================================
+
+CANDIDATES FOR THE 'NAMED PICKS' CLOSING SECTION
+-------------------------------------------------
+5 picks from the data the editorial 'The Picks' card row would feature:
+
+1. Julian Brandt (Dortmund) - SCA2 specialist
+   Q6: #2 absolute SCA2 EP (40.93). Only Messi creates more pre-assist
+   value in Europe. Layer breakdown: 25% scorer / 37% SCA1 / 39% SCA2
+   - the most balanced 'true architect' profile in the dataset.
+
+2. Cole Palmer (Chelsea) - the half-season case
+   Q1a: #4 EP/90 in Europe (0.983) in only 3,111 minutes, age 22.0.
+   Also #3 in Q7 young leaderboard. Sample-size caveat applies.
+
+3. Kevin De Bruyne (Manchester City) - the heavy-sample king
+   Q5 MF: #3 (0.734 EP/90) over 14,674 minutes and 206 credits. By
+   FAR the most-sampled top-3 pick anywhere in the analysis. The
+   model's most stable elite pick.
+
+4. Nicolas Jackson (Villarreal -> Chelsea) - model's 2022-23 5L MVP
+   Q2: combined-5L MVP for 2022-23 at Villarreal (1.21 EP/90). The
+   model says he was the most valuable player in Europe that season -
+   a year before Chelsea paid for him.
+
+5. Jamal Musiala (Bayern Munich) - young + sampled
+   Q5 MF: #2 (0.786 EP/90, 6,302 minutes, age 21.1). Q7 #5. The
+   rare young player whose per-90 number isn't a small-sample mirage.
+
+(Optional 6th if you want a left-field name: Serhou Guirassy - model's
+2023-24 5L MVP at Stuttgart, 1.30 EP/90. Now at Dortmund.)
+
+
+STRONGEST SINGLE-SENTENCE FINDING (across all 7 Qs)
+----------------------------------------------------
+'Across seven seasons of Europe's six biggest leagues, only Lionel
+Messi creates more pre-assist value than Julian Brandt - whose 40.93
+EP from SCA2 alone represents 39% of his total contribution, more
+than double the SCA2 share of Mbappé or Salah.'
+
+This works because: (a) it's surprising, (b) it's specific (named
+player + number + comparison), (c) Brandt has the volume to back it
+up (66 SCA2 events, 105.78 total EP), (d) it's unique to this model
+- no traditional stat surfaces him.
+
+
+RED FLAGS / ODDITIES TO INVESTIGATE BEFORE PUBLISHING
+------------------------------------------------------
+
+[1] Borja Iglesias 2020-21 La Liga MVP (1.29 EP/90)
+    Q2 grid. He played most of his career at Real Betis, a mid-table
+    side - exactly the team profile the EP model rewards (their goals
+    change game states often). Worth a sanity check: his minutes for
+    Betis 2020-21 should be ~2,500+ to justify the pick. Verify.
+
+[2] Q3 'late-game share' top 10 dominated by super-subs
+    Marc Cardona (20 credits, 82.6% late), Danny Rose (15 credits,
+    82.1%) - these are players whose almost-entire-contribution was
+    late substitute appearances. Not a 'late-game specialist' in
+    the meaningful sense. The section's framing should acknowledge:
+    'these are super-sub specialists; players with high LATE EP at
+    high TOTAL EP (e.g. Cristian Tello, 44 credits) are the more
+    substantive finding.'
+
+[3] Q4a/b top 10s are all 5-9 credit samples
+    Kelvin Yeboah (6 credits, 1.30 ratio) leading Q4a is noise. The
+    minimum threshold of 5 was set deliberately loose but the editorial
+    section needs a higher cut. Suggest filtering Q4a/b in analysis.html
+    to >=20 credits for display while keeping the full list in the
+    dashboard.
+
+[4] Q5 DF panel has Iling-Junior at 1,128 minutes
+    Samuel Iling-Junior #1 at 0.785 EP/90 in just 1,128 mins (~12.5
+    full matches) at Juventus. Half-season pick. The DF panel is
+    structurally noisier than MF/FW because defender contributions
+    are rare events. Worth a 'sample-size warning' caveat on the panel.
+
+[5] Q6b per-90 Top 10 still has 4 players under 1,300 mins
+    Bynoe-Gittens 1,725, Iling-Junior 1,128, Jallow 1,047, Mitroglou
+    1,456. SCA2 events are rarer than goals, so the per-90 number
+    is even more volatile. Suggest >=2,000 min for Q6b editorial
+    display, keep >=1,000 in dashboard.
+
+[6] Lamine Yamal in Q7 (age 16.9, 2,209 mins, 0.738 EP/90)
+    NOT a red flag - this is actually a credible result and a great
+    'editorial detail'. Flagging only because the age might prompt
+    'is that right?' from a reader. Confirmed: 16.9 is correct (he
+    debuted 2023-24).
+
+[7] Q2 grid sparseness in early seasons
+    The 2017-18 to 2019-20 rows often have lower 'EP/90' picks
+    (Gnabry 0.92, Hazard 1.01, Bruno Fernandes 0.95, Dybala 0.98)
+    than 2020-21+. Suspect early seasons had fewer KEEP_SET-eligible
+    transitions per match (extreme blowouts excluded). Not a bug;
+    just worth noting on the chart.
+
+
+PHASE 2 RECOMMENDATIONS (data-side adjustments before HTML)
+------------------------------------------------------------
+None blocking. Suggested polishes:
+ - Bump Q4a/b editorial display threshold to >=20 credits (apply in
+   analysis.html slice, keep data wide).
+ - Add 'sample-size cohort' visual coding: minutes <1,800 shown in
+   muted color or with a small dot; minutes >=3,600 in accent. This
+   honestly addresses the half-season picks without removing them.
+

@@ -1,0 +1,14 @@
+{
+  "folder": "03-true-contributors",
+  "title": "The True Contributors: Who Actually Moves the Table?",
+  "date": "May 2026",
+  "type": "HTML + Dashboard + PDF",
+  "tags": ["Top 5 Leagues + Eredivisie", "Player Value", "EP Model"],
+  "filter": ["players", "value-model", "rankings"],
+  "excerpt": "Applies the expected-points value model from project 02 to rank players whose true contribution diverges from their box-score reputation. Scorer, assist-creator and pre-assist-creator all credited.",
+  "finding": "Julian Brandt creates more pre-assist value than any player in Europe except Lionel Messi — 40.93 EP from SCA2 alone, 39% of his total contribution.",
+  "has_html": true,
+  "has_pdf": true,
+  "has_methodology": true,
+  "has_dashboard": true
+}

@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The True Contributors — Renball</title>
+<meta name="description" content="Applies the expected-points value model from project 02 to discover and rank players whose true contribution diverges from their box-score reputation. Scorer, assist-creator and pre-assist-creator all credited.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="../../assets/css/design-tokens.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+  body { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+
+  /* ── Hero ── */
+  .project-hero { margin-bottom: 3rem; padding-bottom: 2.5rem; border-bottom: 1px solid var(--border); }
+  .project-hero h1 {
+    font-family: var(--serif); font-size: clamp(2.2rem, 5vw, 3.8rem);
+    line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 1.5rem; color: var(--text);
+  }
+  .project-hero h1 em { font-style: italic; color: var(--accent); }
+  .project-hero .lede { color: var(--text-secondary); font-size: 1.1rem; max-width: 760px; line-height: 1.7; }
+  .project-hero .lede strong { color: var(--text); font-weight: 500; }
+
+  .meta-row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 1.5rem; }
+  .meta-pill {
+    font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 0.3rem 0.7rem;
+    border: 1px solid var(--border); color: var(--text-muted);
+  }
+  .meta-pill.accent { background: var(--accent-glow); color: var(--accent); border-color: var(--accent-dim); }
+
+  /* ── Downloads ── */
+  .downloads { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 2rem; }
+  .download-btn {
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 0.6rem 1.1rem;
+    border: 1px solid var(--border); color: var(--text-secondary);
+    text-decoration: none; transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .download-btn:hover { color: var(--accent); border-color: var(--accent-dim); background: var(--accent-glow); }
+  .download-btn.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .download-btn.primary:hover { background: var(--accent-bright); }
+
+  /* ── Stat callouts ── */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem; margin: 2rem 0;
+  }
+  .stat-box { background: var(--bg-card); border: 1px solid var(--border); padding: 1.5rem; }
+  .stat-value {
+    font-family: var(--serif); font-size: 2.2rem; color: var(--accent);
+    line-height: 1; margin-bottom: 0.4rem;
+  }
+  .stat-label {
+    font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-muted);
+  }
+  .stat-sub {
+    font-family: var(--mono); font-size: 0.7rem; color: var(--text-secondary);
+    margin-top: 0.55rem; line-height: 1.5;
+  }
+
+  /* ── Sections ── */
+  section.proj { margin: 4rem 0; }
+  section.proj h2 {
+    font-family: var(--serif); font-size: 1.85rem;
+    margin-bottom: 1.25rem; letter-spacing: -0.01em;
+  }
+  section.proj h2 em { font-style: italic; color: var(--accent); }
+  section.proj p { color: var(--text-secondary); margin-bottom: 1.25rem; }
+  section.proj p strong { color: var(--text); }
+  section.proj code {
+    font-family: var(--mono); font-size: 0.85em; color: var(--accent);
+    background: var(--accent-glow); padding: 0.05em 0.35em; border-radius: 2px;
+  }
+
+  /* ── Chart container ── */
+  .chart-wrap {
+    background: var(--bg-card); border: 1px solid var(--border);
+    padding: 1.75rem; margin: 1.5rem 0;
+  }
+  .chart-wrap canvas { max-width: 100%; }
+  .chart-caption {
+    font-family: var(--mono); font-size: 0.7rem; color: var(--text-muted);
+    margin-top: 0.85rem; line-height: 1.6; letter-spacing: 0.04em;
+  }
+  .chart-caption .scope {
+    display: inline-block; color: var(--accent-dim);
+    border-left: 2px solid var(--accent-dim); padding-left: 0.5rem; margin-left: 0.5rem;
+  }
+  .chart-title {
+    font-family: var(--serif); font-size: 1.4rem; color: var(--text);
+    letter-spacing: -0.01em; margin-bottom: 1rem;
+  }
+
+  /* ── Sub-finding pull ── */
+  .sub-finding {
+    background: var(--bg-elevated); border: 1px solid var(--border);
+    border-left: 3px solid var(--accent-dim); padding: 1rem 1.25rem;
+    margin: 1.5rem 0; font-family: var(--mono); font-size: 0.78rem;
+    color: var(--text-secondary); line-height: 1.7;
+  }
+  .sub-finding strong { color: var(--accent); font-weight: 500; }
+
+  /* ── Slope chart (custom SVG) ── */
+  .slope-wrap { background: var(--bg-card); border: 1px solid var(--border); padding: 1.5rem; margin: 1.5rem 0; }
+  #slope-svg { width: 100%; height: 380px; display: block; }
+  .slope-legend {
+    font-family: var(--mono); font-size: 0.65rem; color: var(--text-muted);
+    letter-spacing: 0.06em; display: flex; gap: 1.5rem; margin-top: 0.75rem;
+  }
+  .slope-legend .swatch { display: inline-block; width: 14px; height: 3px; vertical-align: middle; margin-right: 0.5rem; }
+
+  /* ── Q2 MVP grid table ── */
+  .grid-wrap { overflow-x: auto; }
+  table.mvp-grid {
+    width: 100%; border-collapse: collapse;
+    font-family: var(--sans); font-size: 0.85rem; margin: 1rem 0;
+  }
+  table.mvp-grid th, table.mvp-grid td {
+    padding: 0.7rem 0.8rem; text-align: left; border: 1px solid var(--border);
+    vertical-align: top;
+  }
+  table.mvp-grid thead th {
+    background: var(--bg-elevated); color: var(--text-secondary);
+    font-family: var(--mono); font-weight: 500; font-size: 0.65rem;
+    letter-spacing: 0.08em; text-transform: uppercase; text-align: center;
+  }
+  table.mvp-grid thead th.season-col { text-align: left; }
+  table.mvp-grid tbody th {
+    background: var(--bg-elevated); color: var(--text-secondary);
+    font-family: var(--mono); font-weight: 500; font-size: 0.7rem;
+    letter-spacing: 0.06em; text-align: left;
+  }
+  table.mvp-grid td .player { color: var(--text); font-weight: 500; display: block; line-height: 1.3; }
+  table.mvp-grid td .team-line {
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.05em;
+    color: var(--text-muted); margin-top: 0.2rem;
+  }
+  table.mvp-grid td .ep-val { color: var(--accent); font-family: var(--mono); font-size: 0.7rem; }
+  table.mvp-grid td.empty { color: var(--text-muted); text-align: center; font-style: italic; font-size: 0.75rem; }
+  table.mvp-grid td.spotlight {
+    background: var(--accent-glow); border-color: var(--accent-dim);
+    position: relative;
+  }
+  table.mvp-grid td.spotlight::after {
+    content: '✓ MODEL SPOTTED';
+    position: absolute; top: 0.25rem; right: 0.4rem;
+    font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.1em;
+    color: var(--accent);
+  }
+
+  /* ── Position panels (Q5) ── */
+  .pos-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0;
+  }
+  .pos-panel {
+    background: var(--bg-card); border: 1px solid var(--border); padding: 1.25rem;
+  }
+  .pos-panel h3 {
+    font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 1rem;
+  }
+  table.pos-table {
+    width: 100%; border-collapse: collapse;
+    font-family: var(--sans); font-size: 0.78rem;
+  }
+  table.pos-table td {
+    padding: 0.45rem 0.4rem; border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  table.pos-table td:first-child {
+    font-family: var(--mono); color: var(--text-muted); width: 1.5rem; font-size: 0.7rem;
+  }
+  table.pos-table td .player { color: var(--text); font-weight: 500; }
+  table.pos-table td .team {
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.04em;
+    color: var(--text-muted); display: block; margin-top: 0.15rem;
+  }
+  table.pos-table td.ep { color: var(--accent); font-family: var(--mono); text-align: right; white-space: nowrap; }
+  table.pos-table td.mins {
+    font-family: var(--mono); font-size: 0.68rem; color: var(--text-secondary); text-align: right;
+  }
+  table.pos-table td.mins.small { color: var(--text-muted); font-style: italic; }
+  .gk-empty {
+    background: var(--bg-card); border: 1px dashed var(--border-light);
+    padding: 1.5rem 1.75rem; margin: 1.5rem 0; position: relative;
+  }
+  .gk-empty::before {
+    content: 'GK · STRUCTURAL BLIND SPOT';
+    position: absolute; top: -0.55rem; left: 1rem; background: var(--bg);
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em;
+    padding: 0.1rem 0.6rem; color: var(--text-muted);
+  }
+  .gk-empty p {
+    color: var(--text-secondary); font-size: 0.85rem; line-height: 1.7; margin: 0;
+  }
+  .gk-empty p strong { color: var(--text); }
+
+  /* ── Q6 MARQUEE section ── */
+  section.marquee {
+    background: var(--bg-elevated); border: 1px solid var(--accent-dim);
+    padding: 2.5rem 2rem; margin: 5rem -0.5rem; position: relative;
+  }
+  section.marquee::before {
+    content: 'THE MARQUEE FINDING';
+    position: absolute; top: -0.7rem; left: 1.5rem; background: var(--accent);
+    color: var(--bg); font-family: var(--mono); font-size: 0.65rem;
+    letter-spacing: 0.18em; padding: 0.25rem 0.85rem; font-weight: 500;
+  }
+  section.marquee h2 {
+    font-size: 2.15rem; margin-top: 0.5rem;
+  }
+  .marquee-spotlight {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 2rem 0;
+    align-items: stretch;
+  }
+  .marquee-card {
+    background: var(--bg-card); border: 1px solid var(--accent);
+    padding: 2rem; position: relative;
+  }
+  .marquee-card::before {
+    content: 'SPOTLIGHT';
+    position: absolute; top: -0.6rem; left: 1rem;
+    background: var(--accent); color: var(--bg);
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.16em;
+    padding: 0.18rem 0.6rem;
+  }
+  .marquee-card h3 {
+    font-family: var(--serif); font-size: 2rem;
+    color: var(--text); letter-spacing: -0.01em;
+    margin-bottom: 0.4rem; margin-top: 0.5rem; line-height: 1.1;
+  }
+  .marquee-card .role {
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.4rem;
+  }
+  .marquee-card .big-number {
+    font-family: var(--serif); font-size: 3.5rem; color: var(--accent);
+    line-height: 1; margin-bottom: 0.4rem;
+  }
+  .marquee-card .big-label {
+    font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.4rem;
+  }
+  .marquee-card .layer-rows {
+    display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.2rem;
+  }
+  .marquee-card .layer-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--mono); font-size: 0.75rem;
+  }
+  .marquee-card .layer-row .who { color: var(--text-muted); letter-spacing: 0.06em; }
+  .marquee-card .layer-row .val { color: var(--text); font-size: 0.85rem; }
+  .marquee-card .layer-row.brandt .who { color: var(--accent); }
+  .marquee-card .layer-row.brandt .val { color: var(--accent); }
+  .marquee-card p {
+    color: var(--text-secondary); font-size: 0.92rem; line-height: 1.65; margin: 0;
+  }
+  .marquee-card p strong { color: var(--text); }
+
+  /* ── Q7 Yamal pull ── */
+  .yamal-pull {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-left: 4px solid var(--accent); padding: 1.5rem 1.75rem; margin: 1.5rem 0;
+    display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;
+  }
+  .yamal-pull .big {
+    font-family: var(--serif); font-size: 4rem; color: var(--accent);
+    line-height: 1; flex-shrink: 0;
+  }
+  .yamal-pull .copy { flex: 1; min-width: 240px; }
+  .yamal-pull .copy .name {
+    font-family: var(--serif); font-size: 1.5rem; color: var(--text);
+    margin-bottom: 0.3rem; letter-spacing: -0.01em;
+  }
+  .yamal-pull .copy .meta {
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em;
+    color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.6rem;
+  }
+  .yamal-pull .copy p {
+    margin: 0; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.6;
+  }
+
+  /* ── The Picks ── */
+  .picks-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem; margin: 2rem 0;
+  }
+  .pick-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    padding: 1.5rem; display: flex; flex-direction: column; gap: 0.6rem;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .pick-card:hover { border-color: var(--accent-dim); background: var(--bg-card-hover); }
+  .pick-card .pick-rank {
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.16em;
+    color: var(--accent); text-transform: uppercase;
+  }
+  .pick-card .pick-name {
+    font-family: var(--serif); font-size: 1.45rem; color: var(--text);
+    letter-spacing: -0.01em; line-height: 1.15;
+  }
+  .pick-card .pick-team {
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em;
+    color: var(--text-muted); text-transform: uppercase;
+  }
+  .pick-card .pick-number {
+    font-family: var(--serif); font-size: 1.7rem; color: var(--accent);
+    line-height: 1; margin-top: 0.5rem;
+  }
+  .pick-card .pick-number-label {
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em;
+    color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.4rem;
+  }
+  .pick-card .pick-rationale {
+    color: var(--text-secondary); font-size: 0.88rem; line-height: 1.6; margin-top: 0.5rem;
+  }
+  .pick-card .pick-rationale strong { color: var(--text); }
+
+  /* ── Coming-soon pill (Q4c) ── */
+  .coming-soon {
+    display: inline-block; font-family: var(--mono); font-size: 0.62rem;
+    letter-spacing: 0.14em; color: var(--text-muted); text-transform: uppercase;
+    padding: 0.35rem 0.7rem; border: 1px dashed var(--border-light);
+    margin-top: 0.5rem;
+  }
+
+  /* ── CTA box ── */
+  .cta-box {
+    background: var(--accent-glow); border: 1px solid var(--accent-dim);
+    padding: 2rem 2.25rem; margin: 3rem 0; display: flex; gap: 1.5rem;
+    align-items: center; justify-content: space-between; flex-wrap: wrap;
+  }
+  .cta-box .copy { flex: 1; min-width: 260px; }
+  .cta-box h3 {
+    font-family: var(--serif); font-size: 1.6rem; color: var(--text);
+    margin-bottom: 0.5rem; letter-spacing: -0.01em;
+  }
+  .cta-box p { color: var(--text-secondary); margin: 0; line-height: 1.6; }
+
+  /* Two-up chart layout for Q4 */
+  .ratio-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0;
+  }
+
+  @media (max-width: 900px) {
+    .pos-grid { grid-template-columns: 1fr; }
+    .ratio-grid { grid-template-columns: 1fr; }
+    .marquee-spotlight { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    body { padding: 2rem 1.25rem 3rem; }
+    section.marquee { margin: 3rem -0.25rem; padding: 1.75rem 1.25rem; }
+    .picks-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<a href="../../index.html" class="back-link">← Back to Renball</a>
+
+<!-- ── HERO ── -->
+<header class="project-hero">
+  <div class="meta-row">
+    <span class="meta-pill accent">RESEARCH · 03</span>
+    <span class="meta-pill" id="meta-date">May 2026</span>
+    <span class="meta-pill">Top 5 Leagues + Eredivisie</span>
+    <span class="meta-pill">Player Value</span>
+    <span class="meta-pill">EP Model</span>
+  </div>
+  <h1>The True <em>Contributors</em>.</h1>
+  <p class="lede">
+    The standard scoreboard is generous to the prolific and unkind to the subtle. Goals and assists get
+    name-checked; pre-assists, late equalisers and high-leverage build-up play disappear into the squad page.
+    This project applies the <strong>expected-points value model from <a href="../02-points-by-gamestate/analysis.html" style="color: var(--accent);">project 02</a></strong>
+    to seven seasons of Europe's six biggest leagues — and credits <strong>three</strong> touchpoints
+    per goal (scorer, assist-creator, pre-assist-creator) — to find the players the box score systematically
+    undervalues.
+  </p>
+</header>
+
+<!-- ── DOWNLOADS ── -->
+<div class="downloads">
+  <a href="dashboard.html" class="download-btn primary">FULL DASHBOARD →</a>
+  <a href="methodology.html" class="download-btn" target="_blank">METHODOLOGY</a>
+  <a href="slides.pdf" class="download-btn" target="_blank">SLIDES · PDF</a>
+  <a href="code/build.py" class="download-btn" target="_blank">SOURCE · PYTHON</a>
+</div>
+
+<!-- ── KEY FINDING ── -->
+<div class="finding-box">
+  <strong style="color: var(--accent); display: block; margin-bottom: 0.3rem; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em;">KEY FINDING</strong>
+  Only Lionel Messi creates more pre-assist value than Julian Brandt — whose <strong>40.93 EP from SCA2 alone</strong> makes up <strong>39%</strong> of his total contribution, more than double Mbappé or Salah.
+</div>
+
+<!-- ── STAT CALLOUTS ── -->
+<div class="stats-row">
+  <div class="stat-box">
+    <div class="stat-value" id="stat-goals">—</div>
+    <div class="stat-label">Goal Events Modelled</div>
+    <div class="stat-sub" id="stat-goals-sub"></div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-value" id="stat-players">—</div>
+    <div class="stat-label">Players with Meta</div>
+    <div class="stat-sub">Minutes · position · age · league</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-value" id="stat-brandt">—</div>
+    <div class="stat-label">Brandt · SCA2 EP</div>
+    <div class="stat-sub">39% of his total — vs ~20% for Mbappé / Salah</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-value" id="stat-top1">—</div>
+    <div class="stat-label">Top EP / 90</div>
+    <div class="stat-sub" id="stat-top1-sub"></div>
+  </div>
+</div>
+
+<!-- ── 1 · SETUP ── -->
+<section class="proj">
+  <h2>1 · The framework</h2>
+  <p>
+    For every goal in the dataset, project 02 computes <strong>expected points (EP) collected</strong> — the
+    swing in win/draw/loss probability before and after the goal, conditioned on the scoreline and the minute
+    bin. A late equaliser is worth almost a full league point; a 4–0 consolation, almost nothing. This project
+    extends that credit to <strong>three</strong> roles per goal — the scorer, the assist-creator (SCA1) and
+    the pre-assist-creator (SCA2) — then asks who the model elevates that the box score does not.
+  </p>
+</section>
+
+<!-- ── 2 · Q1a + Q1b — Per-90 leaderboards ── -->
+<section class="proj">
+  <h2>2 · Per-90, full credit · the model agrees with the eye test</h2>
+  <p>
+    Open with the leaderboard. <strong>Each goal credits up to three players equally</strong> (scorer + SCA1 +
+    SCA2 = 1 each). Sum the EP, normalise per 90 minutes, filter to ≥ 1,000 minutes played and Top-5 leagues
+    only. The top of the list is Messi, Mbappé, Neymar — exactly who you'd expect, which is the point. Before
+    we show you the surprises, the framework has to clear the eye test.
+  </p>
+  <p style="font-size: 0.85rem; color: var(--text-muted);">
+    Bars at <strong style="color: var(--text-secondary);">full opacity</strong> are players with
+    <strong style="color: var(--text-secondary);">≥ 3,600 minutes</strong> in scope (~40 full matches).
+    Bars at <strong style="color: var(--text-secondary);">half opacity</strong> are <strong style="color: var(--text-secondary);">half-season samples</strong> — the model has them, but the volume is thinner.
+  </p>
+  <div class="chart-wrap">
+    <canvas id="chart-q1a"></canvas>
+    <div class="chart-caption">
+      Top 15 by EP per 90, three-layer credit (scorer + SCA1 + SCA2 each = 1). ≥ 1,000 minutes played.
+      <span class="scope">Top 5 leagues only — Eredivisie excluded for minutes-data unavailability.</span>
+    </div>
+  </div>
+
+  <h2 style="margin-top: 3rem;">Does weighting the credits change the answer?</h2>
+  <p>
+    Maybe a finishing touch is worth more than a pre-assist. Re-run the same leaderboard with credits weighted
+    <strong>0.40 / 0.35 / 0.25</strong> (scorer / SCA1 / SCA2) — only the EP is weighted, the qualifying-minutes
+    threshold doesn't change. The result: <strong>the top eight is essentially identical</strong>. The biggest
+    movers under weighting are pure scorers gaining a few places (Lewandowski +6, Dovbyk +7) and a few
+    creator-heavy names losing a few (Jallow −9, Ljajić −9). Conclusion: the simpler 1/1/1 model is doing the
+    same work as the carefully-tuned weights, which is reassuring.
+  </p>
+  <div class="slope-wrap">
+    <div class="chart-title">Biggest rank shifts · full credit (Q1a) → weighted credit (Q1b)</div>
+    <svg id="slope-svg"></svg>
+    <div class="slope-legend">
+      <span><span class="swatch" style="background: var(--accent);"></span>Weighting HELPED (pure scorer)</span>
+      <span><span class="swatch" style="background: var(--text-muted);"></span>Weighting HURT (creator-heavy)</span>
+    </div>
+  </div>
+  <div class="sub-finding">
+    Under credit weighting <strong>Robert Lewandowski jumps 6 ranks</strong> and <strong>Artem Dovbyk jumps 7</strong> — the model rewards consistent scorers more than fleeting playmakers when you give scoring extra weight. The fact that this only moves the list by a handful of positions is itself the finding.
+  </div>
+</section>
+
+<!-- ── 3 · Q2 MVP grid ── -->
+<section class="proj">
+  <h2>3 · The model's MVPs, season by season</h2>
+  <p>
+    For every (league × season) cell, the top EP per 90 player who cleared 1,000 minutes. The
+    highlighted cell is the one we want to draw attention to: <strong>Nicolas Jackson at Villarreal in
+    2022-23</strong>. The model named him Europe's most-valuable per-90 player a year before Chelsea
+    paid £30m+ for him. There are five more cells like that on the grid where the model's pick is unusual —
+    Bayern's Lewandowski only takes the Bundesliga title once, Liverpool's Salah twice, and the 5-league
+    Ballon d'Or model pick in 2020-21 is Luis Muriel at Atalanta. Not what the trophy actually said.
+  </p>
+  <div class="grid-wrap">
+    <table class="mvp-grid" id="mvp-grid"></table>
+  </div>
+  <div class="chart-caption">
+    Each cell: model's top EP-per-90 pick that season. ≥ 1,000 minutes played in that league-season.
+    <span class="scope">Top 5 leagues only.</span>
+    Where <code style="color: var(--accent);">data/static/actual_mvps.json</code> has the real award winner,
+    the cell carries a "Model = Actual" tick. Otherwise no annotation. Highlighted cell = featured pick.
+  </div>
+</section>
+
+<!-- ── 4 · Q3 Late-Game Substantives ── -->
+<section class="proj">
+  <h2>4 · The late-game substantives</h2>
+  <p>
+    Of every player's total EP from goals (across all three roles), what share is collected in the last 30
+    minutes? Restrict to players with <strong>≥ 30 credits</strong> across the dataset and the super-sub
+    cohort drops away. Cristian Tello at Betis tops the list — <strong>73.8% of his contribution comes after
+    the 60th minute</strong> across 44 credits. Yoane Wissa, Ángel Rodríguez, Adama Traoré, Giacomo Raspadori
+    all in the same bracket: high-volume, high-leverage closers.
+  </p>
+  <div class="chart-wrap">
+    <canvas id="chart-q3"></canvas>
+    <div class="chart-caption">
+      Top 10 by late share, ≥ 30 three-layer credits. Late = EP collected in 60-75 + 75-90 bins.
+      Includes Eredivisie (no per-90 dependency).
+      <span style="color: var(--text-muted);">Players with high late share but low credit volume (super-sub specialists) are excluded from this view — see the full data in the <a href="dashboard.html" style="color: var(--accent);">dashboard</a>.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── 5 · Q4 Efficiency ratios ── -->
+<section class="proj">
+  <h2>5 · Efficiency ratios</h2>
+  <p>
+    Two ways a player can be "efficient" in this framework: their <strong>EP per credit</strong> (do they
+    score high-leverage goals?) and their <strong>time-aware multiplier</strong> (how much does the model
+    upgrade them vs the time-blind baseline?). Both filtered to ≥ 20 credits to keep the noise out.
+  </p>
+  <div class="ratio-grid">
+    <div class="chart-wrap" style="margin: 0;">
+      <canvas id="chart-q4a"></canvas>
+      <div class="chart-caption">EP per credit (≥ 20 credits). Higher = scores/creates in higher-leverage moments per goal.</div>
+    </div>
+    <div class="chart-wrap" style="margin: 0;">
+      <canvas id="chart-q4b"></canvas>
+      <div class="chart-caption">Time-aware multiplier = ep_timed / ep_untimed (≥ 20 credits). Higher = the time dimension upgrades them more.</div>
+    </div>
+  </div>
+  <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem;">
+    <strong style="color: var(--text-secondary);">EP per shot</strong>
+    <span class="coming-soon">Coming soon</span>
+    — requires non-goal shot extraction (deferred from project 02's pipeline).
+  </p>
+</section>
+
+<!-- ── 6 · Q5 Position-adjusted ── -->
+<section class="proj">
+  <h2>6 · Top 5 per position · outfield only</h2>
+  <p>
+    Same per-90 board, sliced by modal position. Wing-back archetypes dominate the defender panel (Grimaldo,
+    Guerreiro). The midfielder panel surfaces the model's most stable elite pick: <strong>Kevin De Bruyne at
+    14,674 minutes and 206 credits</strong> — by far the largest sample of any top-3 pick anywhere on this
+    page. The forward panel is the Q1a top 5.
+  </p>
+  <div class="pos-grid" id="pos-panels"></div>
+  <div class="chart-caption" style="margin: 0.5rem 0 1.5rem;">
+    <strong style="color: var(--text-secondary);">Minutes shown</strong> so readers can self-assess sample
+    size. Players at <strong style="color: var(--text-secondary);">&lt; 2,000 mins</strong> (half-season)
+    are flagged in muted text.
+    <span class="scope">Top 5 leagues only — ≥ 1,000 minutes played.</span>
+  </div>
+  <div class="gk-empty">
+    <p>
+      <strong>The model has no opinion on goalkeepers.</strong> The EP framework credits scorers, assist-creators
+      and pre-assist-creators — three touchpoints GKs occupy rarely. In this dataset the top GK posts ~0.13 EP/90
+      against ~1.14 for the top forward, an order-of-magnitude gap that reflects the framework's coverage, not
+      the keepers' actual value. Quantifying GK contribution requires a different model (shot-stopping over
+      expected, distribution value); we defer it to a future project.
+    </p>
+  </div>
+</section>
+
+<!-- ── 7 · Q6 — MARQUEE — Hidden Architects ── -->
+<section class="proj marquee">
+  <h2>7 · The Hidden <em>Architects</em></h2>
+  <p>
+    Here is the discovery. <strong>SCA2</strong> — the pre-assist-creator, the player whose pass set up the
+    pass that set up the goal — is the layer of contribution football's mainstream stats rarely credit. The
+    model does. Stack the top 10 SCA2 EP collectors and segment each bar by where their EP came from
+    (scorer / SCA1 / SCA2 in three colours), and one player is structurally different from everyone else.
+  </p>
+  <div class="chart-wrap" style="margin: 2rem 0;">
+    <canvas id="chart-q6-stack"></canvas>
+    <div class="chart-caption">
+      Top 10 by absolute SCA2 EP. Bars stacked by contribution role.
+      <strong style="color: var(--accent);">Bright accent</strong> = SCA2 (pre-assist) layer.
+      Dim = scorer, mid = SCA1.
+    </div>
+  </div>
+  <div class="marquee-spotlight">
+    <div class="marquee-card">
+      <h3 id="brandt-name">Julian Brandt</h3>
+      <div class="role" id="brandt-role">Borussia Dortmund · MF</div>
+      <div class="big-number" id="brandt-big">+40.93</div>
+      <div class="big-label">EP collected from SCA2 alone</div>
+      <div class="layer-rows">
+        <div class="layer-row brandt"><span class="who">BRANDT — SCA2 SHARE</span><span class="val">39%</span></div>
+        <div class="layer-row"><span class="who">FEKIR</span><span class="val">32%</span></div>
+        <div class="layer-row"><span class="who">PAREJO</span><span class="val">35%</span></div>
+        <div class="layer-row"><span class="who">MBAPPÉ</span><span class="val">20%</span></div>
+        <div class="layer-row"><span class="who">SALAH</span><span class="val">19%</span></div>
+        <div class="layer-row"><span class="who">IAGO ASPAS</span><span class="val">21%</span></div>
+      </div>
+      <p>
+        Only Messi creates more pre-assist EP in this dataset. <strong>Brandt's layer profile is unique among
+        elite contributors</strong> — 25% scorer, 37% SCA1, 39% SCA2 — meaning the pre-assist is his
+        single largest contribution layer. Pure goalscorers like Mbappé and Salah collect under 20% of their
+        EP from SCA2. Brandt is what the model exists to find.
+      </p>
+    </div>
+    <div class="chart-wrap" style="margin: 0;">
+      <canvas id="chart-q6-per90"></canvas>
+      <div class="chart-caption">
+        SCA2 EP per 90 · ≥ 2,000 minutes. Editorial threshold lifted from the dashboard's 1,000 to remove
+        sub-half-season noise.
+        <span class="scope">Top 5 leagues only.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 8 · Q7 Young players ── -->
+<section class="proj">
+  <h2>8 · Young players to watch</h2>
+  <p>
+    Same per-90 board, restricted to players aged ≤ 23 at end of their most recent season, with the minutes
+    threshold dropped to 500 (young players have less PT). The leaderboard mixes credible established names
+    (Musiala, Palmer, Bynoe-Gittens, Moukoko) with very-low-sample flyers (Fofana, Durán, Doucouré, Rogers
+    at under 700 minutes). The most interesting name is at the bottom of the list:
+  </p>
+  <div class="yamal-pull">
+    <div class="big">16.9</div>
+    <div class="copy">
+      <div class="name">Lamine Yamal</div>
+      <div class="meta">Barcelona · La Liga · 2,209 mins · 23 credits</div>
+      <p>
+        The youngest player in the dataset to clear 500 minutes. At <strong>0.738 EP per 90 across 2,209 minutes
+        at age 16.9</strong>, his per-90 number is built on real volume — not a four-game cameo. The Q7 #10
+        cell that requires the loudest second-look.
+      </p>
+    </div>
+  </div>
+  <div class="chart-wrap">
+    <canvas id="chart-q7"></canvas>
+    <div class="chart-caption">
+      Top 10 EP per 90 with age ≤ 23, ≥ 500 minutes played.
+      <span class="scope">Top 5 leagues only.</span>
+      <strong style="color: var(--text-muted);">Bar opacity</strong> = minutes-played cohort (full = ≥ 2,000;
+      half = under).
+    </div>
+  </div>
+</section>
+
+<!-- ── 9 · The Picks ── -->
+<section class="proj">
+  <h2>9 · The Picks</h2>
+  <p>
+    Five names the data says the box score systematically undervalues — chosen to span the page's findings,
+    not to chase the headline numbers.
+  </p>
+  <div class="picks-grid" id="picks-grid"></div>
+</section>
+
+<!-- ── CTA ── -->
+<div class="cta-box">
+  <div class="copy">
+    <h3>Every player, every league, every season.</h3>
+    <p>The full dashboard exposes all seven ranking datasets with per-league and per-season drilldown, search, column filtering, and XLSX/CSV export.</p>
+  </div>
+  <a href="dashboard.html" class="download-btn primary">OPEN DASHBOARD →</a>
+</div>
+
+<script src="../../assets/js/chart-defaults.js"></script>
+<script>
+(async function () {
+  const data = await fetch('data/data.json').then(r => r.json());
+  const C = window.RENBALL_COLORS;
+  const tok = C.tokens;
+  const fmt = (n, d=0) => (n == null ? '—' : Number(n).toLocaleString(undefined, { maximumFractionDigits: d, minimumFractionDigits: d }));
+
+  // ──────────────────────────────────────────────────────
+  // Hero meta + stat callouts
+  // ──────────────────────────────────────────────────────
+  const meta = data.meta;
+  document.getElementById('meta-date').textContent =
+    (meta.generated_at || '').slice(0, 7).replace('-', '·') || 'May 2026';
+
+  document.getElementById('stat-goals').textContent = fmt(meta.total_goals);
+  document.getElementById('stat-goals-sub').textContent =
+    `${meta.leagues.length} leagues · ${meta.seasons.length} seasons`;
+  document.getElementById('stat-players').textContent = fmt(meta.total_players_with_meta);
+
+  const brandt = (data.q6_architects.layer_breakdown || []).find(r => r.player === 'Julian Brandt');
+  if (brandt) {
+    document.getElementById('stat-brandt').textContent = `${brandt.ep_sca2.toFixed(1)} EP`;
+  }
+  const top1 = data.q1a_full_credit.rows[0];
+  document.getElementById('stat-top1').textContent = `${top1.ep_per_90.toFixed(2)} EP`;
+  document.getElementById('stat-top1-sub').textContent =
+    `${top1.player} · ${top1.primary_team} · ${fmt(top1.minutes)} min`;
+
+  // ──────────────────────────────────────────────────────
+  // Helpers
+  // ──────────────────────────────────────────────────────
+  const HALF_SEASON_MIN = 3600;
+
+  // Opacity callback: full for ≥ HALF_SEASON_MIN, half-transparent otherwise.
+  function muteByMinutes(rows, minKey, baseColor) {
+    return rows.map(r => {
+      const m = r[minKey];
+      if (m == null || m >= HALF_SEASON_MIN) return baseColor;
+      // Inject alpha 0.4 onto the hex. Accent = #c1ff72.
+      return 'rgba(193, 255, 114, 0.4)';
+    });
+  }
+
+  function shortLabel(r) {
+    const m = r.minutes != null ? r.minutes : null;
+    const mintag = m != null ? `  ·  ${m.toLocaleString()} min` : '';
+    return `${r.player} · ${r.primary_team}${mintag}`;
+  }
+
+  // ──────────────────────────────────────────────────────
+  // Section 2 · Q1a — top 15 horizontal bar, muted half-season
+  // ──────────────────────────────────────────────────────
+  (function renderQ1a() {
+    const rows = data.q1a_full_credit.rows.slice(0, 15);
+    const bg = muteByMinutes(rows, 'minutes', C.primary);
+    new Chart(document.getElementById('chart-q1a'), {
+      type: 'bar',
+      data: {
+        labels: rows.map(shortLabel),
+        datasets: [{
+          label: 'EP per 90',
+          data: rows.map(r => r.ep_per_90),
+          backgroundColor: bg,
+          borderWidth: 0,
+        }],
+      },
+      options: {
+        indexAxis: 'y',
+        aspectRatio: 1.15,
+        layout: { padding: { bottom: 12, left: 12 } },
+        plugins: {
+          title: { display: true, text: 'EP per 90 · full credit · top 15' },
+          legend: { display: false },
+          tooltip: { callbacks: {
+            label: (ctx) => `${ctx.parsed.x.toFixed(3)} EP / 90`,
+            afterLabel: (ctx) => {
+              const r = rows[ctx.dataIndex];
+              const cohort = (r.minutes >= HALF_SEASON_MIN) ? 'full-season cohort' : 'HALF-SEASON SAMPLE';
+              return [
+                `Minutes:       ${fmt(r.minutes)}  (${cohort})`,
+                `Credits (3-layer): ${r.goals_involved}`,
+                `Total EP timed:    ${r.ep_timed.toFixed(2)}`,
+                `Position:      ${r.pos || '—'}`,
+                `Age:           ${r.age != null ? r.age.toFixed(1) : '—'}`,
+              ];
+            }
+          }}
+        },
+        scales: {
+          x: {
+            beginAtZero: true,
+            title: { display: true, text: 'EP per 90', padding: { top: 10 } },
+          },
+          y: { ticks: { font: { family: tok.mono, size: 11 } } },
+        },
+      },
+    });
+  })();
+
+  // ──────────────────────────────────────────────────────
+  // Section 2 · Q1 slope chart (SVG, biggest movers)
+  // ──────────────────────────────────────────────────────
+  (function renderSlope() {
+    const shifts = (data.q1_rank_shift || [])
+      .filter(s => s.delta != null && s.rank_a != null && s.rank_b != null)
+      .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta))
+      .slice(0, 10);
+
+    const svg = document.getElementById('slope-svg');
+    const width = svg.clientWidth || 900;
+    const height = 380;
+    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+    const margin = { top: 36, bottom: 28, left: 18, right: 18 };
+    const colLeftX  = 175;
+    const colRightX = width - 175;
+    const topY = margin.top;
+    const botY = height - margin.bottom;
+
+    // Rank domain — use max observed
+    const allRanks = shifts.flatMap(s => [s.rank_a, s.rank_b]);
+    const minRank = 1;
+    const maxRank = Math.max(...allRanks);
+    const rankY = (r) => topY + ((r - minRank) / (maxRank - minRank)) * (botY - topY);
+
+    function add(tag, attrs, text) {
+      const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      for (const k in attrs) el.setAttribute(k, attrs[k]);
+      if (text != null) el.textContent = text;
+      svg.appendChild(el);
+      return el;
+    }
+
+    // Column titles
+    add('text', { x: colLeftX, y: 18, fill: tok.textSecondary,
+      'font-family': tok.mono, 'font-size': 11, 'text-anchor': 'end',
+      'letter-spacing': 1.2 }, 'Q1a · FULL CREDIT');
+    add('text', { x: colRightX, y: 18, fill: tok.textSecondary,
+      'font-family': tok.mono, 'font-size': 11, 'text-anchor': 'start',
+      'letter-spacing': 1.2 }, 'Q1b · WEIGHTED');
+
+    // Lines + endpoints
+    shifts.forEach(s => {
+      const yA = rankY(s.rank_a);
+      const yB = rankY(s.rank_b);
+      const color = s.delta > 0 ? tok.accent : tok.textMuted;
+      const strokeW = Math.max(1, Math.min(3, Math.abs(s.delta) * 0.4 + 1));
+
+      add('line', { x1: colLeftX, y1: yA, x2: colRightX, y2: yB,
+        stroke: color, 'stroke-width': strokeW, opacity: 0.85 });
+      add('circle', { cx: colLeftX, cy: yA, r: 4, fill: color });
+      add('circle', { cx: colRightX, cy: yB, r: 4, fill: color });
+
+      // Left label: name + rank
+      add('text', { x: colLeftX - 12, y: yA + 4, fill: tok.text,
+        'font-family': tok.mono, 'font-size': 11, 'text-anchor': 'end' },
+        `${s.rank_a}.  ${s.player}`);
+      // Right label: rank + delta
+      const deltaStr = (s.delta > 0 ? '+' : '') + s.delta;
+      add('text', { x: colRightX + 12, y: yB + 4, fill: tok.text,
+        'font-family': tok.mono, 'font-size': 11, 'text-anchor': 'start' },
+        `${s.rank_b}.  ${s.player}`);
+      add('text', { x: colRightX + 12, y: yB + 18, fill: color,
+        'font-family': tok.mono, 'font-size': 9.5, 'text-anchor': 'start',
+        'letter-spacing': 1 }, `Δ ${deltaStr}`);
+    });
+  })();
+
+  // ──────────────────────────────────────────────────────
+  // Section 3 · Q2 MVP grid (HTML table)
+  // ──────────────────────────────────────────────────────
+  (function renderMVPGrid() {
+    const grid = data.q2_mvp_grid.grid;
+    const leagues = data.q2_mvp_grid.leagues;
+    const seasons = data.q2_mvp_grid.seasons;
+    const combined = data.q2_mvp_grid.combined_5l;
+
+    // Highlight: Jackson, 2022-2023, La-Liga
+    function isSpotlight(league, season, pick) {
+      return pick && pick.player === 'Nicolas Jackson' && season === '2022-2023';
+    }
+
+    const t = document.getElementById('mvp-grid');
+    let html = '<thead><tr><th class="season-col">Season</th>';
+    for (const lg of leagues) html += `<th>${lg.replace('-', ' ')}</th>`;
+    html += `<th style="background: var(--accent-glow); color: var(--accent);">5L COMBINED</th></tr></thead><tbody>`;
+
+    for (const s of seasons) {
+      html += `<tr><th>${s}</th>`;
+      for (const lg of leagues) {
+        const cell = (grid[lg] || {})[s];
+        const pick = cell && cell.model_pick;
+        const actual = cell && cell.actual;
+        if (!pick) { html += '<td class="empty">no qualifier</td>'; continue; }
+        const spotClass = isSpotlight(lg, s, pick) ? 'spotlight' : '';
+        const actualMatch = actual && actual.name && actual.name === pick.player;
+        const actualHTML = actualMatch
+          ? `<div style="color: var(--accent); font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.08em; margin-top: 0.3rem;">✓ MATCHES ${actual.source || 'AWARD'}</div>`
+          : (actual && actual.name
+              ? `<div style="color: var(--text-muted); font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.06em; margin-top: 0.3rem;">actual: ${actual.name}</div>`
+              : '');
+        html += `<td class="${spotClass}">
+          <span class="player">${pick.player}</span>
+          <div class="team-line">${pick.primary_team} · ${pick.minutes.toLocaleString()} min</div>
+          <div class="ep-val">${pick.ep_per_90.toFixed(3)} EP/90</div>
+          ${actualHTML}
+        </td>`;
+      }
+      // Combined column
+      const ccell = combined[s];
+      const cpick = ccell && ccell.model_pick;
+      const cactual = ccell && ccell.actual_ballon_dor;
+      if (!cpick) { html += '<td class="empty">—</td>'; }
+      else {
+        const cMatch = cactual && cactual.name && cactual.name === cpick.player;
+        const cActualHTML = cMatch
+          ? `<div style="color: var(--accent); font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.08em; margin-top: 0.3rem;">✓ BALLON D'OR MATCH</div>`
+          : (cactual && cactual.name
+              ? `<div style="color: var(--text-muted); font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.06em; margin-top: 0.3rem;">actual: ${cactual.name}</div>`
+              : '');
+        html += `<td style="background: var(--accent-glow);">
+          <span class="player">${cpick.player}</span>
+          <div class="team-line">${cpick.primary_team} · ${cpick.minutes.toLocaleString()} min</div>
+          <div class="ep-val">${cpick.ep_per_90.toFixed(3)} EP/90</div>
+          ${cActualHTML}
+        </td>`;
+      }
+      html += '</tr>';
+    }
+    html += '</tbody>';
+    t.innerHTML = html;
+  })();
+
+  // ──────────────────────────────────────────────────────
+  // Section 4 · Q3 late-game substantives
+  // ──────────────────────────────────────────────────────
+  (function renderQ3() {
+    const rows = (data.q3_late_game.rows_substantive || []).slice(0, 10);
+    new Chart(document.getElementById('chart-q3'), {
+      type: 'bar',
+      data: {
+        labels: rows.map(r => `${r.player} · ${r.primary_team}`),
+        datasets: [{
+          label: 'Share of EP from 60-90 mins',
+          data: rows.map(r => r.share_late * 100),
+          backgroundColor: C.primary,
+          borderWidth: 0,
+        }],
+      },
+      options: {
+        indexAxis: 'y',
+        aspectRatio: 1.4,
+        layout: { padding: { bottom: 12, left: 12 } },
+        plugins: {
+          title: { display: true, text: 'Late-game share · ≥ 30 credits · top 10' },
+          legend: { display: false },
+          tooltip: { callbacks: {
+            label: (ctx) => `${ctx.parsed.x.toFixed(1)}% late share`,
+            afterLabel: (ctx) => {
+              const r = rows[ctx.dataIndex];
+              return [
+                `Credits (3-layer):  ${r.goals_involved}`,
+                `Total EP timed:     ${r.ep_total.toFixed(2)}`,
+                `Late EP (60-90):    ${r.ep_late.toFixed(2)}`,
+              ];
+            }
+          }}
+        },
+        scales: {
+          x: {
+            ...RENBALL_HELPERS.niceRange(rows.map(r => r.share_late * 100),
+              { padding: 2, step: 5, floor: 0, ceil: 100 }),
+            title: { display: true, text: 'Late share (%)', padding: { top: 10 } },
+          },
+          y: { ticks: { font: { family: tok.mono, size: 11 } } },
+        },
+      },
+    });
+  })();
+
+  // ──────────────────────────────────────────────────────
+  // Section 5 · Q4a + Q4b efficiency ratios
+  // ──────────────────────────────────────────────────────
+  (function renderQ4() {
+    const a = (data.q4_efficiency.q4a_substantive || []).slice(0, 10);
+    const b = (data.q4_efficiency.q4b_substantive || []).slice(0, 10);
+
+    new Chart(document.getElementById('chart-q4a'), {
+      type: 'bar',
+      data: {
+        labels: a.map(r => `${r.player} · ${r.primary_team}`),
+        datasets: [{
+          label: 'EP per credit',
+          data: a.map(r => r.ratio_ep_per_goal),
+          backgroundColor: C.primary,
+          borderWidth: 0,
+        }],
+      },
+      options: {
+        indexAxis: 'y',
+        aspectRatio: 0.9,
+        layout: { padding: { bottom: 12, left: 12 } },
+        plugins: {
+          title: { display: true, text: 'EP per credit · ≥ 20 credits' },
+          legend: { display: false },
+          tooltip: { callbacks: {
+            label: (ctx) => `${ctx.parsed.x.toFixed(3)} EP / credit`,
+            afterLabel: (ctx) => {
+              const r = a[ctx.dataIndex];
+              return [`Credits: ${r.goals_involved}`, `Total EP: ${r.ep_timed.toFixed(2)}`];
+            }
+          }}
+        },
+        scales: {
+          x: { beginAtZero: true,
+            title: { display: true, text: 'EP per credit', padding: { top: 10 } } },
+          y: { ticks: { font: { family: tok.mono, size: 10.5 } } },
+        },
+      },
+    });
+
+    new Chart(document.getElementById('chart-q4b'), {
+      type: 'bar',
+      data: {
+        labels: b.map(r => `${r.player} · ${r.primary_team}`),
+        datasets: [{
+          label: 'Time-aware multiplier',
+          data: b.map(r => r.multiplier),
+          backgroundColor: C.secondary,
+          borderWidth: 0,
+        }],
+      },
+      options: {
+        indexAxis: 'y',
+        aspectRatio: 0.9,
+        layout: { padding: { bottom: 12, left: 12 } },
+        plugins: {
+          title: { display: true, text: 'Time-aware multiplier · ≥ 20 credits' },
+          legend: { display: false },
+          tooltip: { callbacks: {
+            label: (ctx) => `×${ctx.parsed.x.toFixed(3)}`,
+            afterLabel: (ctx) => {
+              const r = b[ctx.dataIndex];
+              return [
+                `Credits:    ${r.goals_involved}`,
+                `EP timed:   ${r.ep_timed.toFixed(2)}`,
+                `EP untimed: ${r.ep_untimed.toFixed(2)}`,
+              ];
+            }
+          }}
+        },
+        scales: {
+          x: {
+            ...RENBALL_HELPERS.niceRange(b.map(r => r.multiplier), { padding: 0.02, step: 0.05, floor: 0.9, ceil: 1.3 }),
+            title: { display: true, text: 'multiplier (×)', padding: { top: 10 } },
+          },
+          y: { ticks: { font: { family: tok.mono, size: 10.5 } } },
+        },
+      },
+    });
+  })();
+
+  // ──────────────────────────────────────────────────────
+  // Section 6 · Q5 position panels (HTML tables)
+  // ──────────────────────────────────────────────────────
+  (function renderQ5() {
+    const panels = data.q5_position.panels;
+    const order = ['DF', 'MF', 'FW'];
+    const labels = { DF: 'Defenders', MF: 'Midfielders', FW: 'Forwards' };
+    const wrap = document.getElementById('pos-panels');
+    let html = '';
+    for (const pos of order) {
+      const entry = panels[pos];
+      if (!entry) continue;
+      html += `<div class="pos-panel"><h3>${labels[pos]}</h3><table class="pos-table">`;
+      for (const r of entry.rows) {
+        const minsClass = (r.minutes != null && r.minutes < 2000) ? 'small' : '';
+        const minsLabel = r.minutes != null ? `${r.minutes.toLocaleString()} min` : '— min';
+        html += `<tr>
+          <td>${r.rank}.</td>
+          <td><span class="player">${r.player}</span><span class="team">${r.primary_team} · age ${r.age != null ? r.age.toFixed(1) : '—'}</span></td>
+          <td class="ep">${r.ep_per_90.toFixed(3)}</td>
+          <td class="mins ${minsClass}">${minsLabel}</td>
+        </tr>`;
+      }
+      html += `</table></div>`;
+    }
+    wrap.innerHTML = html;
+  })();
+
+  // ──────────────────────────────────────────────────────
+  // Section 7 · Q6 marquee — stacked horizontal bar
+  // ──────────────────────────────────────────────────────
+  (function renderQ6Stack() {
+    const rows = (data.q6_architects.layer_breakdown || []).slice(0, 10);
+    new Chart(document.getElementById('chart-q6-stack'), {
+      type: 'bar',
+      data: {
+        labels: rows.map(r => `${r.player} · ${r.primary_team}`),
+        datasets: [
+          { label: 'Scorer EP',
+            data: rows.map(r => r.ep_scorer),
+            backgroundColor: 'rgba(143, 191, 69, 0.6)',
+            borderWidth: 0,
+            stack: 's' },
+          { label: 'SCA1 (assist) EP',
+            data: rows.map(r => r.ep_sca1),
+            backgroundColor: 'rgba(143, 191, 69, 0.85)',
+            borderWidth: 0,
+            stack: 's' },
+          { label: 'SCA2 (pre-assist) EP',
+            data: rows.map(r => r.ep_sca2),
+            backgroundColor: C.primary,  // bright accent
+            borderWidth: 0,
+            stack: 's' },
+        ],
+      },
+      options: {
+        indexAxis: 'y',
+        aspectRatio: 1.4,
+        layout: { padding: { bottom: 12, left: 12 } },
+        plugins: {
+          title: { display: true, text: 'Top 10 SCA2 EP collectors · layered by role' },
+          legend: { display: true, position: 'bottom' },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.x.toFixed(2)} EP`,
+              afterLabel: (ctx) => {
+                if (ctx.datasetIndex !== 2) return null;
+                const r = rows[ctx.dataIndex];
+                const sca2Pct = (r.ep_sca2 / r.ep_total * 100);
+                return [`Total EP: ${r.ep_total.toFixed(2)}`,
+                        `SCA2 share: ${sca2Pct.toFixed(1)}%`];
+              }
+            },
+          },
+        },
+        scales: {
+          x: { stacked: true, beginAtZero: true,
+            title: { display: true, text: 'EP collected (cumulative)', padding: { top: 10 } } },
+          y: { stacked: true, ticks: { font: { family: tok.mono, size: 11 } } },
+        },
+      },
+    });
+  })();
+
+  // ──────────────────────────────────────────────────────
+  // Section 7 · Q6 per-90 board (≥ 2,000 min editorial filter)
+  // ──────────────────────────────────────────────────────
+  (function renderQ6Per90() {
+    const all = data.q6_architects.per_90_top.rows || [];
+    const rows = all.filter(r => r.minutes >= 2000).slice(0, 10);
+    new Chart(document.getElementById('chart-q6-per90'), {
+      type: 'bar',
+      data: {
+        labels: rows.map(r => `${r.player} · ${r.primary_team}`),
+        datasets: [{
+          label: 'SCA2 EP / 90',
+          data: rows.map(r => r.ep_per_90),
+          backgroundColor: C.primary,
+          borderWidth: 0,
+        }],
+      },
+      options: {
+        indexAxis: 'y',
+        aspectRatio: 1.0,
+        layout: { padding: { bottom: 12, left: 12 } },
+        plugins: {
+          title: { display: true, text: 'SCA2 EP / 90 · ≥ 2,000 min' },
+          legend: { display: false },
+          tooltip: { callbacks: {
+            label: (ctx) => `${ctx.parsed.x.toFixed(3)} SCA2 EP / 90`,
+            afterLabel: (ctx) => {
+              const r = rows[ctx.dataIndex];
+              return [
+                `Minutes:  ${fmt(r.minutes)}`,
+                `SCA2 credits: ${r.goals_involved}`,
+                `Position: ${r.pos || '—'}`,
+              ];
+            }
+          }}
+        },
+        scales: {
+          x: { beginAtZero: true,
+            title: { display: true, text: 'SCA2 EP per 90', padding: { top: 10 } } },
+          y: { ticks: { font: { family: tok.mono, size: 10.5 } } },
+        },
+      },
+    });
+  })();
+
+  // ──────────────────────────────────────────────────────
+  // Section 8 · Q7 young players bar
+  // ──────────────────────────────────────────────────────
+  (function renderQ7() {
+    const rows = data.q7_young.rows.slice(0, 10);
+    const bg = rows.map(r => (r.minutes != null && r.minutes >= 2000)
+      ? C.primary : 'rgba(193, 255, 114, 0.4)');
+    new Chart(document.getElementById('chart-q7'), {
+      type: 'bar',
+      data: {
+        labels: rows.map(r => `${r.player} · ${r.primary_team} · age ${r.age != null ? r.age.toFixed(1) : '?'}`),
+        datasets: [{
+          label: 'EP / 90',
+          data: rows.map(r => r.ep_per_90),
+          backgroundColor: bg,
+          borderWidth: 0,
+        }],
+      },
+      options: {
+        indexAxis: 'y',
+        aspectRatio: 1.3,
+        layout: { padding: { bottom: 12, left: 12 } },
+        plugins: {
+          title: { display: true, text: 'Age ≤ 23 · EP/90 · top 10' },
+          legend: { display: false },
+          tooltip: { callbacks: {
+            label: (ctx) => `${ctx.parsed.x.toFixed(3)} EP / 90`,
+            afterLabel: (ctx) => {
+              const r = rows[ctx.dataIndex];
+              const cohort = (r.minutes >= 2000) ? 'sampled cohort' : 'LOW-VOLUME';
+              return [
+                `Minutes:  ${fmt(r.minutes)}  (${cohort})`,
+                `Credits:  ${r.goals_involved}`,
+                `Position: ${r.pos || '—'}`,
+              ];
+            }
+          }}
+        },
+        scales: {
+          x: { beginAtZero: true,
+            title: { display: true, text: 'EP per 90', padding: { top: 10 } } },
+          y: { ticks: { font: { family: tok.mono, size: 11 } } },
+        },
+      },
+    });
+  })();
+
+  // ──────────────────────────────────────────────────────
+  // Section 9 · The Picks
+  // ──────────────────────────────────────────────────────
+  (function renderPicks() {
+    // Data refs
+    const brandt = (data.q6_architects.layer_breakdown || []).find(r => r.player === 'Julian Brandt');
+    const q5mf = data.q5_position.panels.MF.rows;
+    const musiala = q5mf.find(r => r.player === 'Jamal Musiala');
+    const kdb = q5mf.find(r => r.player === 'Kevin De Bruyne');
+    const tello = (data.q3_late_game.rows || data.q3_late_game.rows_substantive || [])
+      .find(r => r.player === 'Cristian Tello');
+    const yamal = data.q7_young.rows.find(r => r.player === 'Lamine Yamal');
+
+    const picks = [
+      brandt ? {
+        rank: '01 · THE MARQUEE',
+        name: 'Julian Brandt',
+        team: 'Borussia Dortmund · MF',
+        number: `${brandt.ep_sca2.toFixed(2)} EP`,
+        numberLabel: 'from SCA2 alone',
+        copy: `The page's headline finding. <strong>Only Messi creates more pre-assist value</strong>, and Brandt's layer breakdown — 25% scorer, 37% SCA1, 39% SCA2 — is the most balanced architect profile in the dataset. Mbappé and Salah each collect under 20% of their EP from pre-assists; Brandt almost doubles them.`,
+      } : null,
+      musiala ? {
+        rank: '02 · YOUNG · SAMPLED',
+        name: 'Jamal Musiala',
+        team: `Bayern Munich · MF · age ${musiala.age != null ? musiala.age.toFixed(1) : '?'}`,
+        number: `${musiala.ep_per_90.toFixed(3)} EP/90`,
+        numberLabel: `Q5 MF #${musiala.rank}`,
+        copy: `<strong>${musiala.minutes.toLocaleString()} minutes</strong> across the dataset, <strong>${musiala.goals_involved} credits</strong>. The rare young player whose per-90 number isn't a small-sample mirage. Sits in the top 5 of both the position-adjusted board and the under-23 board.`,
+      } : null,
+      kdb ? {
+        rank: '03 · THE EYE TEST',
+        name: 'Kevin De Bruyne',
+        team: 'Manchester City · MF',
+        number: `${kdb.ep_per_90.toFixed(3)} EP/90`,
+        numberLabel: 'over 14,674 minutes',
+        copy: `By far the most-sampled top-3 pick on the page — <strong>${kdb.minutes.toLocaleString()} minutes and ${kdb.goals_involved} credits</strong> of evidence behind the EP/90. Doesn't qualify as a "discovery" by any reasonable definition, which is the point: when the model agrees with conventional wisdom about elite midfielders, the model is doing its job.`,
+      } : null,
+      tello ? {
+        rank: '04 · LATE-GAME',
+        name: 'Cristian Tello',
+        team: `${tello.primary_team} · Q3 #${tello.rank}`,
+        number: `${(tello.share_late * 100).toFixed(1)}%`,
+        numberLabel: 'EP from 60-90 mins',
+        copy: `The only Q3 name with both <strong>${tello.goals_involved} credits</strong> and a late share above 70%. The substantive version of "late-game specialist" — not a super-sub, just a player whose contribution lives almost entirely in the high-leverage minutes. <strong>${tello.ep_late.toFixed(1)} of his ${tello.ep_total.toFixed(1)} EP</strong> came in the last 30.`,
+      } : null,
+      yamal ? {
+        rank: '05 · THE DETAIL',
+        name: 'Lamine Yamal',
+        team: `Barcelona · age ${yamal.age != null ? yamal.age.toFixed(1) : '?'}`,
+        number: `${yamal.ep_per_90.toFixed(3)} EP/90`,
+        numberLabel: `${yamal.minutes.toLocaleString()} mins · age ${yamal.age != null ? yamal.age.toFixed(1) : '?'}`,
+        copy: `The youngest player in the dataset to clear 500 minutes. At <strong>${yamal.minutes.toLocaleString()} minutes</strong> his per-90 isn't a four-game flash — it's almost a full season's evidence. <strong>${yamal.goals_involved} credits at age ${yamal.age != null ? yamal.age.toFixed(1) : '?'}</strong>. The Q7 cell that requires the loudest second-look.`,
+      } : null,
+    ].filter(Boolean);
+
+    const wrap = document.getElementById('picks-grid');
+    wrap.innerHTML = picks.map(p => `
+      <div class="pick-card">
+        <div class="pick-rank">${p.rank}</div>
+        <div class="pick-name">${p.name}</div>
+        <div class="pick-team">${p.team}</div>
+        <div class="pick-number-label">${p.numberLabel}</div>
+        <div class="pick-number">${p.number}</div>
+        <div class="pick-rationale">${p.copy}</div>
+      </div>
+    `).join('');
+  })();
+
+})();
+</script>
+
+</body>
+</html>

@@ -39,3 +39,7 @@ desktop.ini
 
 # Large output files (anything >5MB should be ignored)
 *.parquet
+
+# Scratch verification screenshots (local-only diagnostics)
+_verify_*.png
+_diag*

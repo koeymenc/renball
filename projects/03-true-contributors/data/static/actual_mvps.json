@@ -1,0 +1,22 @@
+{
+  "_README": "MANUAL POPULATION REQUIRED. This file is a curated lookup of real-world player-of-the-season winners, used to annotate the per-(league, season) MVP grid in project 03's analysis page. The build pipeline does NOT write to this file — keep it source-controlled and edit it by hand. Set `name: null` for cells where no award was given or the winner is unknown. `source` is a short label like 'Ballon d'Or' or 'PFA POTY' or 'Kicker' — used as a tooltip / footnote on the chart.",
+  "_format_example": {
+    "by_league": {
+      "Premier-League": {
+        "2019-2020": { "name": "Kevin De Bruyne", "source": "PFA POTY" }
+      }
+    },
+    "combined_ballon_dor": {
+      "2019-2020": { "name": null, "source": "Ballon d'Or cancelled (COVID)" }
+    }
+  },
+  "by_league": {
+    "Premier-League": {},
+    "Serie-A": {},
+    "Bundesliga": {},
+    "La-Liga": {},
+    "Ligue-1": {},
+    "Eredivisie": {}
+  },
+  "combined_ballon_dor": {}
+}

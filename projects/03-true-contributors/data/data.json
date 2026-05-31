@@ -1,0 +1,3778 @@
+{
+  "meta": {
+    "generated_at": "2026-05-23 05:52:26",
+    "leagues": [
+      "Bundesliga",
+      "Eredivisie",
+      "La-Liga",
+      "Ligue-1",
+      "Premier-League",
+      "Serie-A"
+    ],
+    "seasons": [
+      "2017-2018",
+      "2018-2019",
+      "2019-2020",
+      "2020-2021",
+      "2021-2022",
+      "2022-2023",
+      "2023-2024"
+    ],
+    "total_goals": 39381,
+    "total_players_with_meta": 6516
+  },
+  "scope_note_global": "Per-90 calculations exclude Eredivisie due to unavailable minutes data (FULL_DICT_ROWS.pkl covers Premier League, La Liga, Serie A, Bundesliga, Ligue 1 only).",
+  "q1a_full_credit": {
+    "scope": "Top 5 leagues only",
+    "scope_note": "Per-90 calculations exclude Eredivisie due to unavailable minutes data (FULL_DICT_ROWS.pkl covers Premier League, La Liga, Serie A, Bundesliga, Ligue 1 only).",
+    "min_minutes": 1000,
+    "credit_model": "full (each role = 1)",
+    "rows": [
+      {
+        "rank": 1,
+        "player": "Lionel Messi",
+        "primary_team": "Barcelona",
+        "minutes": 16516,
+        "goals_involved": 356,
+        "pos": "FW",
+        "age": 35.94,
+        "ep_timed": 209.438,
+        "ep_per_90": 1.141
+      },
+      {
+        "rank": 2,
+        "player": "Kylian Mbappé",
+        "primary_team": "Paris S-G",
+        "minutes": 16403,
+        "goals_involved": 334,
+        "pos": "FW",
+        "age": 25.39,
+        "ep_timed": 192.08,
+        "ep_per_90": 1.054
+      },
+      {
+        "rank": 3,
+        "player": "Neymar",
+        "primary_team": "Paris S-G",
+        "minutes": 9354,
+        "goals_involved": 205,
+        "pos": "FW",
+        "age": 31.04,
+        "ep_timed": 102.447,
+        "ep_per_90": 0.986
+      },
+      {
+        "rank": 4,
+        "player": "Cole Palmer",
+        "primary_team": "Chelsea",
+        "minutes": 3111,
+        "goals_involved": 50,
+        "pos": "FW",
+        "age": 22.04,
+        "ep_timed": 33.983,
+        "ep_per_90": 0.983
+      },
+      {
+        "rank": 5,
+        "player": "Josip Iličić",
+        "primary_team": "Atalanta",
+        "minutes": 8176,
+        "goals_involved": 139,
+        "pos": "FW",
+        "age": 34.31,
+        "ep_timed": 87.009,
+        "ep_per_90": 0.958
+      },
+      {
+        "rank": 6,
+        "player": "Victor Boniface",
+        "primary_team": "Leverkusen",
+        "minutes": 1546,
+        "goals_involved": 29,
+        "pos": "FW",
+        "age": 23.4,
+        "ep_timed": 16.429,
+        "ep_per_90": 0.956
+      },
+      {
+        "rank": 7,
+        "player": "Clinton N'Jie",
+        "primary_team": "Marseille",
+        "minutes": 1238,
+        "goals_involved": 20,
+        "pos": "FW",
+        "age": 25.77,
+        "ep_timed": 12.94,
+        "ep_per_90": 0.941
+      },
+      {
+        "rank": 8,
+        "player": "Cristiano Ronaldo",
+        "primary_team": "Juventus",
+        "minutes": 13704,
+        "goals_involved": 203,
+        "pos": "FW",
+        "age": 37.75,
+        "ep_timed": 139.328,
+        "ep_per_90": 0.915
+      },
+      {
+        "rank": 9,
+        "player": "Georges Mikautadze",
+        "primary_team": "Metz",
+        "minutes": 1756,
+        "goals_involved": 21,
+        "pos": "FW",
+        "age": 23.55,
+        "ep_timed": 17.035,
+        "ep_per_90": 0.873
+      },
+      {
+        "rank": 10,
+        "player": "Lucas Beltrán",
+        "primary_team": "Fiorentina",
+        "minutes": 1692,
+        "goals_involved": 16,
+        "pos": "FW",
+        "age": 23.18,
+        "ep_timed": 16.402,
+        "ep_per_90": 0.872
+      },
+      {
+        "rank": 11,
+        "player": "Erling Haaland",
+        "primary_team": "Dortmund",
+        "minutes": 10702,
+        "goals_involved": 193,
+        "pos": "FW",
+        "age": 23.83,
+        "ep_timed": 102.878,
+        "ep_per_90": 0.865
+      },
+      {
+        "rank": 12,
+        "player": "Paulo Dybala",
+        "primary_team": "Juventus",
+        "minutes": 13538,
+        "goals_involved": 176,
+        "pos": "FW",
+        "age": 30.53,
+        "ep_timed": 129.035,
+        "ep_per_90": 0.858
+      },
+      {
+        "rank": 13,
+        "player": "Ablie Jallow",
+        "primary_team": "Metz",
+        "minutes": 1047,
+        "goals_involved": 10,
+        "pos": "FW",
+        "age": 25.47,
+        "ep_timed": 9.928,
+        "ep_per_90": 0.853
+      },
+      {
+        "rank": 14,
+        "player": "Adem Ljajić",
+        "primary_team": "Torino",
+        "minutes": 2185,
+        "goals_involved": 26,
+        "pos": "MF",
+        "age": 26.91,
+        "ep_timed": 20.51,
+        "ep_per_90": 0.845
+      },
+      {
+        "rank": 15,
+        "player": "Jamie Bynoe-Gittens",
+        "primary_team": "Dortmund",
+        "minutes": 1725,
+        "goals_involved": 23,
+        "pos": "FW",
+        "age": 19.78,
+        "ep_timed": 16.08,
+        "ep_per_90": 0.839
+      },
+      {
+        "rank": 16,
+        "player": "Mohamed Salah",
+        "primary_team": "Liverpool",
+        "minutes": 20697,
+        "goals_involved": 309,
+        "pos": "FW",
+        "age": 31.93,
+        "ep_timed": 192.22,
+        "ep_per_90": 0.836
+      },
+      {
+        "rank": 17,
+        "player": "Robert Lewandowski",
+        "primary_team": "Bayern Munich",
+        "minutes": 18888,
+        "goals_involved": 313,
+        "pos": "FW",
+        "age": 35.76,
+        "ep_timed": 172.749,
+        "ep_per_90": 0.823
+      },
+      {
+        "rank": 18,
+        "player": "Paco Alcácer",
+        "primary_team": "Dortmund",
+        "minutes": 5691,
+        "goals_involved": 69,
+        "pos": "FW",
+        "age": 28.73,
+        "ep_timed": 51.99,
+        "ep_per_90": 0.822
+      },
+      {
+        "rank": 19,
+        "player": "Artem Dovbyk",
+        "primary_team": "Girona",
+        "minutes": 2587,
+        "goals_involved": 37,
+        "pos": "FW",
+        "age": 26.93,
+        "ep_timed": 23.598,
+        "ep_per_90": 0.821
+      },
+      {
+        "rank": 20,
+        "player": "Zlatan Ibrahimović",
+        "primary_team": "Milan",
+        "minutes": 4123,
+        "goals_involved": 55,
+        "pos": "FW",
+        "age": 41.45,
+        "ep_timed": 36.945,
+        "ep_per_90": 0.806
+      },
+      {
+        "rank": 21,
+        "player": "Felipe Caicedo",
+        "primary_team": "Lazio",
+        "minutes": 4729,
+        "goals_involved": 52,
+        "pos": "FW",
+        "age": 33.71,
+        "ep_timed": 42.321,
+        "ep_per_90": 0.805
+      },
+      {
+        "rank": 22,
+        "player": "Isaac Bernal",
+        "primary_team": "Sevilla",
+        "minutes": 1039,
+        "goals_involved": 12,
+        "pos": "FW",
+        "age": 23.95,
+        "ep_timed": 9.159,
+        "ep_per_90": 0.793
+      },
+      {
+        "rank": 23,
+        "player": "Harry Kane",
+        "primary_team": "Tottenham",
+        "minutes": 20645,
+        "goals_involved": 283,
+        "pos": "FW",
+        "age": 30.77,
+        "ep_timed": 181.483,
+        "ep_per_90": 0.791
+      },
+      {
+        "rank": 24,
+        "player": "Jamal Musiala",
+        "primary_team": "Bayern Munich",
+        "minutes": 6302,
+        "goals_involved": 95,
+        "pos": "MF",
+        "age": 21.13,
+        "ep_timed": 55.009,
+        "ep_per_90": 0.786
+      },
+      {
+        "rank": 25,
+        "player": "Samuel Iling-Junior",
+        "primary_team": "Juventus",
+        "minutes": 1128,
+        "goals_involved": 11,
+        "pos": "DF",
+        "age": 20.64,
+        "ep_timed": 9.835,
+        "ep_per_90": 0.785
+      },
+      {
+        "rank": 26,
+        "player": "Karim Benzema",
+        "primary_team": "Real Madrid",
+        "minutes": 15769,
+        "goals_involved": 216,
+        "pos": "FW",
+        "age": 35.46,
+        "ep_timed": 136.447,
+        "ep_per_90": 0.779
+      },
+      {
+        "rank": 27,
+        "player": "Sasa Kalajdzic",
+        "primary_team": "Stuttgart",
+        "minutes": 4126,
+        "goals_involved": 41,
+        "pos": "FW",
+        "age": 26.62,
+        "ep_timed": 35.587,
+        "ep_per_90": 0.776
+      },
+      {
+        "rank": 28,
+        "player": "Jadon Sancho",
+        "primary_team": "Dortmund",
+        "minutes": 12110,
+        "goals_involved": 163,
+        "pos": "FW",
+        "age": 24.15,
+        "ep_timed": 103.361,
+        "ep_per_90": 0.768
+      },
+      {
+        "rank": 29,
+        "player": "Luis Suárez",
+        "primary_team": "Barcelona",
+        "minutes": 12067,
+        "goals_involved": 168,
+        "pos": "FW",
+        "age": 35.32,
+        "ep_timed": 102.835,
+        "ep_per_90": 0.767
+      },
+      {
+        "rank": 30,
+        "player": "Luis Muriel",
+        "primary_team": "Atalanta",
+        "minutes": 8889,
+        "goals_involved": 131,
+        "pos": "FW",
+        "age": 32.81,
+        "ep_timed": 75.791,
+        "ep_per_90": 0.767
+      },
+      {
+        "rank": 31,
+        "player": "Kostas Mitroglou",
+        "primary_team": "Marseille",
+        "minutes": 1456,
+        "goals_involved": 18,
+        "pos": "FW",
+        "age": 30.87,
+        "ep_timed": 12.401,
+        "ep_per_90": 0.767
+      },
+      {
+        "rank": 32,
+        "player": "Memphis",
+        "primary_team": "Lyon",
+        "minutes": 12361,
+        "goals_involved": 156,
+        "pos": "FW",
+        "age": 30.26,
+        "ep_timed": 105.114,
+        "ep_per_90": 0.765
+      },
+      {
+        "rank": 33,
+        "player": "Dries Mertens",
+        "primary_team": "Napoli",
+        "minutes": 9786,
+        "goals_involved": 131,
+        "pos": "FW",
+        "age": 35.04,
+        "ep_timed": 82.811,
+        "ep_per_90": 0.762
+      },
+      {
+        "rank": 34,
+        "player": "Ciro Immobile",
+        "primary_team": "Lazio",
+        "minutes": 18144,
+        "goals_involved": 248,
+        "pos": "FW",
+        "age": 34.26,
+        "ep_timed": 152.406,
+        "ep_per_90": 0.756
+      },
+      {
+        "rank": 35,
+        "player": "Eden Hazard",
+        "primary_team": "Chelsea",
+        "minutes": 7867,
+        "goals_involved": 100,
+        "pos": "FW",
+        "age": 32.35,
+        "ep_timed": 66.038,
+        "ep_per_90": 0.755
+      },
+      {
+        "rank": 36,
+        "player": "Mauro Icardi",
+        "primary_team": "Inter",
+        "minutes": 8599,
+        "goals_involved": 100,
+        "pos": "FW",
+        "age": 29.16,
+        "ep_timed": 72.038,
+        "ep_per_90": 0.754
+      },
+      {
+        "rank": 37,
+        "player": "Dimitri Payet",
+        "primary_team": "Marseille",
+        "minutes": 12025,
+        "goals_involved": 132,
+        "pos": "FW",
+        "age": 36.13,
+        "ep_timed": 100.79,
+        "ep_per_90": 0.754
+      },
+      {
+        "rank": 38,
+        "player": "Carlos Vinícius",
+        "primary_team": "Fulham",
+        "minutes": 2255,
+        "goals_involved": 20,
+        "pos": "FW",
+        "age": 28.76,
+        "ep_timed": 18.72,
+        "ep_per_90": 0.747
+      },
+      {
+        "rank": 39,
+        "player": "Wissam Ben Yedder",
+        "primary_team": "Monaco",
+        "minutes": 16242,
+        "goals_involved": 216,
+        "pos": "FW",
+        "age": 33.77,
+        "ep_timed": 134.492,
+        "ep_per_90": 0.745
+      },
+      {
+        "rank": 40,
+        "player": "Manu Vallejo",
+        "primary_team": "Valencia",
+        "minutes": 2042,
+        "goals_involved": 16,
+        "pos": "FW",
+        "age": 25.69,
+        "ep_timed": 16.886,
+        "ep_per_90": 0.744
+      },
+      {
+        "rank": 41,
+        "player": "Youssoufa Moukoko",
+        "primary_team": "Dortmund",
+        "minutes": 2411,
+        "goals_involved": 28,
+        "pos": "FW",
+        "age": 19.47,
+        "ep_timed": 19.856,
+        "ep_per_90": 0.741
+      },
+      {
+        "rank": 42,
+        "player": "Souleymane Camara",
+        "primary_team": "Montpellier",
+        "minutes": 1234,
+        "goals_involved": 9,
+        "pos": "FW",
+        "age": 37.17,
+        "ep_timed": 10.124,
+        "ep_per_90": 0.738
+      },
+      {
+        "rank": 43,
+        "player": "Lamine Yamal",
+        "primary_team": "Barcelona",
+        "minutes": 2209,
+        "goals_involved": 23,
+        "pos": "FW",
+        "age": 16.87,
+        "ep_timed": 18.111,
+        "ep_per_90": 0.738
+      },
+      {
+        "rank": 44,
+        "player": "Riyad Mahrez",
+        "primary_team": "Manchester City",
+        "minutes": 11604,
+        "goals_involved": 164,
+        "pos": "FW",
+        "age": 32.26,
+        "ep_timed": 95.171,
+        "ep_per_90": 0.738
+      },
+      {
+        "rank": 45,
+        "player": "Ángel Di María",
+        "primary_team": "Paris S-G",
+        "minutes": 11296,
+        "goals_involved": 143,
+        "pos": "FW",
+        "age": 35.3,
+        "ep_timed": 92.54,
+        "ep_per_90": 0.737
+      },
+      {
+        "rank": 46,
+        "player": "Kevin De Bruyne",
+        "primary_team": "Manchester City",
+        "minutes": 14674,
+        "goals_involved": 206,
+        "pos": "MF",
+        "age": 32.89,
+        "ep_timed": 119.607,
+        "ep_per_90": 0.734
+      },
+      {
+        "rank": 47,
+        "player": "Alexis Sánchez",
+        "primary_team": "Inter",
+        "minutes": 9818,
+        "goals_involved": 122,
+        "pos": "FW",
+        "age": 35.44,
+        "ep_timed": 79.931,
+        "ep_per_90": 0.733
+      },
+      {
+        "rank": 48,
+        "player": "Jermain Defoe",
+        "primary_team": "Bournemouth",
+        "minutes": 1113,
+        "goals_involved": 8,
+        "pos": "FW",
+        "age": 36.09,
+        "ep_timed": 9.007,
+        "ep_per_90": 0.728
+      },
+      {
+        "rank": 49,
+        "player": "Christopher Nkunku",
+        "primary_team": "RB Leipzig",
+        "minutes": 10667,
+        "goals_involved": 149,
+        "pos": "FW",
+        "age": 26.51,
+        "ep_timed": 86.045,
+        "ep_per_90": 0.726
+      },
+      {
+        "rank": 50,
+        "player": "Sargis Adamyan",
+        "primary_team": "Hoffenheim",
+        "minutes": 3001,
+        "goals_involved": 28,
+        "pos": "FW",
+        "age": 30.97,
+        "ep_timed": 24.157,
+        "ep_per_90": 0.724
+      }
+    ]
+  },
+  "q1b_weighted_credit": {
+    "scope": "Top 5 leagues only",
+    "scope_note": "Per-90 calculations exclude Eredivisie due to unavailable minutes data (FULL_DICT_ROWS.pkl covers Premier League, La Liga, Serie A, Bundesliga, Ligue 1 only).",
+    "min_minutes": 1000,
+    "weights": {
+      "scorer": 0.4,
+      "sca1": 0.35,
+      "sca2": 0.25
+    },
+    "rows": [
+      {
+        "rank": 1,
+        "player": "Lionel Messi",
+        "primary_team": "Barcelona",
+        "minutes": 16516,
+        "goals_involved": 356,
+        "pos": "FW",
+        "age": 35.94,
+        "ep_weighted_timed": 72.342,
+        "ep_weighted_per_90": 0.394,
+        "credits_scorer": 145,
+        "credits_sca1": 122,
+        "credits_sca2": 89
+      },
+      {
+        "rank": 2,
+        "player": "Kylian Mbappé",
+        "primary_team": "Paris S-G",
+        "minutes": 16403,
+        "goals_involved": 334,
+        "pos": "FW",
+        "age": 25.39,
+        "ep_weighted_timed": 68.337,
+        "ep_weighted_per_90": 0.375,
+        "credits_scorer": 175,
+        "credits_sca1": 99,
+        "credits_sca2": 60
+      },
+      {
+        "rank": 3,
+        "player": "Cole Palmer",
+        "primary_team": "Chelsea",
+        "minutes": 3111,
+        "goals_involved": 50,
+        "pos": "FW",
+        "age": 22.04,
+        "ep_weighted_timed": 12.138,
+        "ep_weighted_per_90": 0.351,
+        "credits_scorer": 22,
+        "credits_sca1": 17,
+        "credits_sca2": 11
+      },
+      {
+        "rank": 4,
+        "player": "Victor Boniface",
+        "primary_team": "Leverkusen",
+        "minutes": 1546,
+        "goals_involved": 29,
+        "pos": "FW",
+        "age": 23.4,
+        "ep_weighted_timed": 5.988,
+        "ep_weighted_per_90": 0.349,
+        "credits_scorer": 14,
+        "credits_sca1": 12,
+        "credits_sca2": 3
+      },
+      {
+        "rank": 5,
+        "player": "Clinton N'Jie",
+        "primary_team": "Marseille",
+        "minutes": 1238,
+        "goals_involved": 20,
+        "pos": "FW",
+        "age": 25.77,
+        "ep_weighted_timed": 4.755,
+        "ep_weighted_per_90": 0.346,
+        "credits_scorer": 10,
+        "credits_sca1": 6,
+        "credits_sca2": 4
+      },
+      {
+        "rank": 6,
+        "player": "Neymar",
+        "primary_team": "Paris S-G",
+        "minutes": 9354,
+        "goals_involved": 205,
+        "pos": "FW",
+        "age": 31.04,
+        "ep_weighted_timed": 35.887,
+        "ep_weighted_per_90": 0.345,
+        "credits_scorer": 82,
+        "credits_sca1": 67,
+        "credits_sca2": 56
+      },
+      {
+        "rank": 7,
+        "player": "Cristiano Ronaldo",
+        "primary_team": "Juventus",
+        "minutes": 13704,
+        "goals_involved": 203,
+        "pos": "FW",
+        "age": 37.75,
+        "ep_weighted_timed": 51.068,
+        "ep_weighted_per_90": 0.335,
+        "credits_scorer": 126,
+        "credits_sca1": 48,
+        "credits_sca2": 29
+      },
+      {
+        "rank": 8,
+        "player": "Georges Mikautadze",
+        "primary_team": "Metz",
+        "minutes": 1756,
+        "goals_involved": 21,
+        "pos": "FW",
+        "age": 23.55,
+        "ep_weighted_timed": 6.493,
+        "ep_weighted_per_90": 0.333,
+        "credits_scorer": 13,
+        "credits_sca1": 8,
+        "credits_sca2": 0
+      },
+      {
+        "rank": 9,
+        "player": "Josip Iličić",
+        "primary_team": "Atalanta",
+        "minutes": 8176,
+        "goals_involved": 139,
+        "pos": "FW",
+        "age": 34.31,
+        "ep_weighted_timed": 29.243,
+        "ep_weighted_per_90": 0.322,
+        "credits_scorer": 47,
+        "credits_sca1": 52,
+        "credits_sca2": 40
+      },
+      {
+        "rank": 10,
+        "player": "Erling Haaland",
+        "primary_team": "Dortmund",
+        "minutes": 10702,
+        "goals_involved": 193,
+        "pos": "FW",
+        "age": 23.83,
+        "ep_weighted_timed": 38.035,
+        "ep_weighted_per_90": 0.32,
+        "credits_scorer": 125,
+        "credits_sca1": 44,
+        "credits_sca2": 24
+      },
+      {
+        "rank": 11,
+        "player": "Robert Lewandowski",
+        "primary_team": "Bayern Munich",
+        "minutes": 18888,
+        "goals_involved": 313,
+        "pos": "FW",
+        "age": 35.76,
+        "ep_weighted_timed": 63.967,
+        "ep_weighted_per_90": 0.305,
+        "credits_scorer": 203,
+        "credits_sca1": 67,
+        "credits_sca2": 43
+      },
+      {
+        "rank": 12,
+        "player": "Artem Dovbyk",
+        "primary_team": "Girona",
+        "minutes": 2587,
+        "goals_involved": 37,
+        "pos": "FW",
+        "age": 26.93,
+        "ep_weighted_timed": 8.767,
+        "ep_weighted_per_90": 0.305,
+        "credits_scorer": 24,
+        "credits_sca1": 10,
+        "credits_sca2": 3
+      },
+      {
+        "rank": 13,
+        "player": "Paulo Dybala",
+        "primary_team": "Juventus",
+        "minutes": 13538,
+        "goals_involved": 176,
+        "pos": "FW",
+        "age": 30.53,
+        "ep_weighted_timed": 45.053,
+        "ep_weighted_per_90": 0.3,
+        "credits_scorer": 76,
+        "credits_sca1": 58,
+        "credits_sca2": 42
+      },
+      {
+        "rank": 14,
+        "player": "Lucas Beltrán",
+        "primary_team": "Fiorentina",
+        "minutes": 1692,
+        "goals_involved": 16,
+        "pos": "FW",
+        "age": 23.18,
+        "ep_weighted_timed": 5.629,
+        "ep_weighted_per_90": 0.299,
+        "credits_scorer": 6,
+        "credits_sca1": 5,
+        "credits_sca2": 5
+      },
+      {
+        "rank": 15,
+        "player": "Mohamed Salah",
+        "primary_team": "Liverpool",
+        "minutes": 20697,
+        "goals_involved": 309,
+        "pos": "FW",
+        "age": 31.93,
+        "ep_weighted_timed": 68.362,
+        "ep_weighted_per_90": 0.297,
+        "credits_scorer": 155,
+        "credits_sca1": 96,
+        "credits_sca2": 58
+      },
+      {
+        "rank": 16,
+        "player": "Zlatan Ibrahimović",
+        "primary_team": "Milan",
+        "minutes": 4123,
+        "goals_involved": 55,
+        "pos": "FW",
+        "age": 41.45,
+        "ep_weighted_timed": 13.622,
+        "ep_weighted_per_90": 0.297,
+        "credits_scorer": 34,
+        "credits_sca1": 15,
+        "credits_sca2": 6
+      },
+      {
+        "rank": 17,
+        "player": "Felipe Caicedo",
+        "primary_team": "Lazio",
+        "minutes": 4729,
+        "goals_involved": 52,
+        "pos": "FW",
+        "age": 33.71,
+        "ep_weighted_timed": 15.548,
+        "ep_weighted_per_90": 0.296,
+        "credits_scorer": 29,
+        "credits_sca1": 17,
+        "credits_sca2": 6
+      },
+      {
+        "rank": 18,
+        "player": "Paco Alcácer",
+        "primary_team": "Dortmund",
+        "minutes": 5691,
+        "goals_involved": 69,
+        "pos": "FW",
+        "age": 28.73,
+        "ep_weighted_timed": 18.636,
+        "ep_weighted_per_90": 0.295,
+        "credits_scorer": 38,
+        "credits_sca1": 20,
+        "credits_sca2": 11
+      },
+      {
+        "rank": 19,
+        "player": "Sasa Kalajdzic",
+        "primary_team": "Stuttgart",
+        "minutes": 4126,
+        "goals_involved": 41,
+        "pos": "FW",
+        "age": 26.62,
+        "ep_weighted_timed": 13.168,
+        "ep_weighted_per_90": 0.287,
+        "credits_scorer": 24,
+        "credits_sca1": 13,
+        "credits_sca2": 4
+      },
+      {
+        "rank": 20,
+        "player": "Harry Kane",
+        "primary_team": "Tottenham",
+        "minutes": 20645,
+        "goals_involved": 283,
+        "pos": "FW",
+        "age": 30.77,
+        "ep_weighted_timed": 65.897,
+        "ep_weighted_per_90": 0.287,
+        "credits_scorer": 171,
+        "credits_sca1": 69,
+        "credits_sca2": 43
+      },
+      {
+        "rank": 21,
+        "player": "Isaac Bernal",
+        "primary_team": "Sevilla",
+        "minutes": 1039,
+        "goals_involved": 12,
+        "pos": "FW",
+        "age": 23.95,
+        "ep_weighted_timed": 3.249,
+        "ep_weighted_per_90": 0.281,
+        "credits_scorer": 4,
+        "credits_sca1": 6,
+        "credits_sca2": 2
+      },
+      {
+        "rank": 22,
+        "player": "Ablie Jallow",
+        "primary_team": "Metz",
+        "minutes": 1047,
+        "goals_involved": 10,
+        "pos": "FW",
+        "age": 25.47,
+        "ep_weighted_timed": 3.265,
+        "ep_weighted_per_90": 0.281,
+        "credits_scorer": 3,
+        "credits_sca1": 2,
+        "credits_sca2": 5
+      },
+      {
+        "rank": 23,
+        "player": "Adem Ljajić",
+        "primary_team": "Torino",
+        "minutes": 2185,
+        "goals_involved": 26,
+        "pos": "MF",
+        "age": 26.91,
+        "ep_weighted_timed": 6.818,
+        "ep_weighted_per_90": 0.281,
+        "credits_scorer": 6,
+        "credits_sca1": 12,
+        "credits_sca2": 8
+      },
+      {
+        "rank": 24,
+        "player": "Karim Benzema",
+        "primary_team": "Real Madrid",
+        "minutes": 15769,
+        "goals_involved": 216,
+        "pos": "FW",
+        "age": 35.46,
+        "ep_weighted_timed": 48.936,
+        "ep_weighted_per_90": 0.279,
+        "credits_scorer": 116,
+        "credits_sca1": 58,
+        "credits_sca2": 42
+      },
+      {
+        "rank": 25,
+        "player": "Luis Suárez",
+        "primary_team": "Barcelona",
+        "minutes": 12067,
+        "goals_involved": 168,
+        "pos": "FW",
+        "age": 35.32,
+        "ep_weighted_timed": 37.258,
+        "ep_weighted_per_90": 0.278,
+        "credits_scorer": 94,
+        "credits_sca1": 45,
+        "credits_sca2": 29
+      },
+      {
+        "rank": 26,
+        "player": "Ciro Immobile",
+        "primary_team": "Lazio",
+        "minutes": 18144,
+        "goals_involved": 248,
+        "pos": "FW",
+        "age": 34.26,
+        "ep_weighted_timed": 55.79,
+        "ep_weighted_per_90": 0.277,
+        "credits_scorer": 146,
+        "credits_sca1": 62,
+        "credits_sca2": 40
+      },
+      {
+        "rank": 27,
+        "player": "Luis Muriel",
+        "primary_team": "Atalanta",
+        "minutes": 8889,
+        "goals_involved": 131,
+        "pos": "FW",
+        "age": 32.81,
+        "ep_weighted_timed": 27.329,
+        "ep_weighted_per_90": 0.277,
+        "credits_scorer": 68,
+        "credits_sca1": 42,
+        "credits_sca2": 21
+      },
+      {
+        "rank": 28,
+        "player": "Memphis",
+        "primary_team": "Lyon",
+        "minutes": 12361,
+        "goals_involved": 156,
+        "pos": "FW",
+        "age": 30.26,
+        "ep_weighted_timed": 37.665,
+        "ep_weighted_per_90": 0.274,
+        "credits_scorer": 80,
+        "credits_sca1": 52,
+        "credits_sca2": 24
+      },
+      {
+        "rank": 29,
+        "player": "Wissam Ben Yedder",
+        "primary_team": "Monaco",
+        "minutes": 16242,
+        "goals_involved": 216,
+        "pos": "FW",
+        "age": 33.77,
+        "ep_weighted_timed": 49.414,
+        "ep_weighted_per_90": 0.274,
+        "credits_scorer": 125,
+        "credits_sca1": 57,
+        "credits_sca2": 34
+      },
+      {
+        "rank": 30,
+        "player": "Mauro Icardi",
+        "primary_team": "Inter",
+        "minutes": 8599,
+        "goals_involved": 100,
+        "pos": "FW",
+        "age": 29.16,
+        "ep_weighted_timed": 26.08,
+        "ep_weighted_per_90": 0.273,
+        "credits_scorer": 62,
+        "credits_sca1": 26,
+        "credits_sca2": 12
+      },
+      {
+        "rank": 31,
+        "player": "Dries Mertens",
+        "primary_team": "Napoli",
+        "minutes": 9786,
+        "goals_involved": 131,
+        "pos": "FW",
+        "age": 35.04,
+        "ep_weighted_timed": 29.228,
+        "ep_weighted_per_90": 0.269,
+        "credits_scorer": 63,
+        "credits_sca1": 47,
+        "credits_sca2": 21
+      },
+      {
+        "rank": 32,
+        "player": "Loïs Openda",
+        "primary_team": "RB Leipzig",
+        "minutes": 5214,
+        "goals_involved": 70,
+        "pos": "FW",
+        "age": 24.25,
+        "ep_weighted_timed": 15.513,
+        "ep_weighted_per_90": 0.268,
+        "credits_scorer": 45,
+        "credits_sca1": 18,
+        "credits_sca2": 7
+      },
+      {
+        "rank": 33,
+        "player": "Youssoufa Moukoko",
+        "primary_team": "Dortmund",
+        "minutes": 2411,
+        "goals_involved": 28,
+        "pos": "FW",
+        "age": 19.47,
+        "ep_weighted_timed": 7.139,
+        "ep_weighted_per_90": 0.266,
+        "credits_scorer": 17,
+        "credits_sca1": 5,
+        "credits_sca2": 6
+      },
+      {
+        "rank": 34,
+        "player": "Jamal Musiala",
+        "primary_team": "Bayern Munich",
+        "minutes": 6302,
+        "goals_involved": 95,
+        "pos": "MF",
+        "age": 21.13,
+        "ep_weighted_timed": 18.548,
+        "ep_weighted_per_90": 0.265,
+        "credits_scorer": 33,
+        "credits_sca1": 34,
+        "credits_sca2": 28
+      },
+      {
+        "rank": 35,
+        "player": "Jamie Bynoe-Gittens",
+        "primary_team": "Dortmund",
+        "minutes": 1725,
+        "goals_involved": 23,
+        "pos": "FW",
+        "age": 19.78,
+        "ep_weighted_timed": 5.058,
+        "ep_weighted_per_90": 0.264,
+        "credits_scorer": 4,
+        "credits_sca1": 8,
+        "credits_sca2": 11
+      },
+      {
+        "rank": 36,
+        "player": "Deniz Undav",
+        "primary_team": "Stuttgart",
+        "minutes": 2717,
+        "goals_involved": 44,
+        "pos": "FW",
+        "age": 27.83,
+        "ep_weighted_timed": 7.976,
+        "ep_weighted_per_90": 0.264,
+        "credits_scorer": 23,
+        "credits_sca1": 17,
+        "credits_sca2": 4
+      },
+      {
+        "rank": 37,
+        "player": "Kostas Mitroglou",
+        "primary_team": "Marseille",
+        "minutes": 1456,
+        "goals_involved": 18,
+        "pos": "FW",
+        "age": 30.87,
+        "ep_weighted_timed": 4.242,
+        "ep_weighted_per_90": 0.262,
+        "credits_scorer": 12,
+        "credits_sca1": 1,
+        "credits_sca2": 5
+      },
+      {
+        "rank": 38,
+        "player": "Jadon Sancho",
+        "primary_team": "Dortmund",
+        "minutes": 12110,
+        "goals_involved": 163,
+        "pos": "FW",
+        "age": 24.15,
+        "ep_weighted_timed": 35.038,
+        "ep_weighted_per_90": 0.26,
+        "credits_scorer": 49,
+        "credits_sca1": 66,
+        "credits_sca2": 48
+      },
+      {
+        "rank": 39,
+        "player": "Cristhian Stuani",
+        "primary_team": "Girona",
+        "minutes": 7333,
+        "goals_involved": 76,
+        "pos": "FW",
+        "age": 37.62,
+        "ep_weighted_timed": 21.113,
+        "ep_weighted_per_90": 0.259,
+        "credits_scorer": 58,
+        "credits_sca1": 11,
+        "credits_sca2": 7
+      },
+      {
+        "rank": 40,
+        "player": "Eden Hazard",
+        "primary_team": "Chelsea",
+        "minutes": 7867,
+        "goals_involved": 100,
+        "pos": "FW",
+        "age": 32.35,
+        "ep_weighted_timed": 22.492,
+        "ep_weighted_per_90": 0.257,
+        "credits_scorer": 32,
+        "credits_sca1": 44,
+        "credits_sca2": 24
+      },
+      {
+        "rank": 41,
+        "player": "Alexandre Lacazette",
+        "primary_team": "Arsenal",
+        "minutes": 15505,
+        "goals_involved": 174,
+        "pos": "FW",
+        "age": 32.98,
+        "ep_weighted_timed": 44.256,
+        "ep_weighted_per_90": 0.257,
+        "credits_scorer": 100,
+        "credits_sca1": 55,
+        "credits_sca2": 19
+      },
+      {
+        "rank": 42,
+        "player": "Victor Osimhen",
+        "primary_team": "Napoli",
+        "minutes": 10677,
+        "goals_involved": 115,
+        "pos": "FW",
+        "age": 25.41,
+        "ep_weighted_timed": 30.117,
+        "ep_weighted_per_90": 0.254,
+        "credits_scorer": 78,
+        "credits_sca1": 26,
+        "credits_sca2": 11
+      },
+      {
+        "rank": 43,
+        "player": "Carlos Vinícius",
+        "primary_team": "Fulham",
+        "minutes": 2255,
+        "goals_involved": 20,
+        "pos": "FW",
+        "age": 28.76,
+        "ep_weighted_timed": 6.361,
+        "ep_weighted_per_90": 0.254,
+        "credits_scorer": 10,
+        "credits_sca1": 4,
+        "credits_sca2": 6
+      },
+      {
+        "rank": 44,
+        "player": "Stevan Jovetić",
+        "primary_team": "Monaco",
+        "minutes": 4336,
+        "goals_involved": 52,
+        "pos": "FW",
+        "age": 33.55,
+        "ep_weighted_timed": 12.259,
+        "ep_weighted_per_90": 0.254,
+        "credits_scorer": 28,
+        "credits_sca1": 11,
+        "credits_sca2": 13
+      },
+      {
+        "rank": 45,
+        "player": "Souleymane Camara",
+        "primary_team": "Montpellier",
+        "minutes": 1234,
+        "goals_involved": 9,
+        "pos": "FW",
+        "age": 37.17,
+        "ep_weighted_timed": 3.485,
+        "ep_weighted_per_90": 0.254,
+        "credits_scorer": 5,
+        "credits_sca1": 2,
+        "credits_sca2": 2
+      },
+      {
+        "rank": 46,
+        "player": "Dimitri Payet",
+        "primary_team": "Marseille",
+        "minutes": 12025,
+        "goals_involved": 132,
+        "pos": "FW",
+        "age": 36.13,
+        "ep_weighted_timed": 33.896,
+        "ep_weighted_per_90": 0.254,
+        "credits_scorer": 42,
+        "credits_sca1": 55,
+        "credits_sca2": 35
+      },
+      {
+        "rank": 47,
+        "player": "Edinson Cavani",
+        "primary_team": "Paris S-G",
+        "minutes": 8447,
+        "goals_involved": 105,
+        "pos": "FW",
+        "age": 36.28,
+        "ep_weighted_timed": 23.761,
+        "ep_weighted_per_90": 0.253,
+        "credits_scorer": 67,
+        "credits_sca1": 32,
+        "credits_sca2": 6
+      },
+      {
+        "rank": 48,
+        "player": "Domenico Berardi",
+        "primary_team": "Sassuolo",
+        "minutes": 16254,
+        "goals_involved": 177,
+        "pos": "FW",
+        "age": 29.59,
+        "ep_weighted_timed": 45.664,
+        "ep_weighted_per_90": 0.253,
+        "credits_scorer": 79,
+        "credits_sca1": 58,
+        "credits_sca2": 40
+      },
+      {
+        "rank": 49,
+        "player": "Andrej Kramarić",
+        "primary_team": "Hoffenheim",
+        "minutes": 15717,
+        "goals_involved": 183,
+        "pos": "MF",
+        "age": 32.92,
+        "ep_weighted_timed": 44.235,
+        "ep_weighted_per_90": 0.253,
+        "credits_scorer": 95,
+        "credits_sca1": 47,
+        "credits_sca2": 41
+      },
+      {
+        "rank": 50,
+        "player": "Hugo Ekitike",
+        "primary_team": "Reims",
+        "minutes": 3241,
+        "goals_involved": 37,
+        "pos": "FW",
+        "age": 21.91,
+        "ep_weighted_timed": 9.021,
+        "ep_weighted_per_90": 0.251,
+        "credits_scorer": 17,
+        "credits_sca1": 14,
+        "credits_sca2": 6
+      }
+    ]
+  },
+  "q1_rank_shift": [
+    {
+      "player": "Lionel Messi",
+      "rank_a": 1,
+      "rank_b": 1,
+      "delta": 0
+    },
+    {
+      "player": "Kylian Mbappé",
+      "rank_a": 2,
+      "rank_b": 2,
+      "delta": 0
+    },
+    {
+      "player": "Neymar",
+      "rank_a": 3,
+      "rank_b": 6,
+      "delta": -3
+    },
+    {
+      "player": "Cole Palmer",
+      "rank_a": 4,
+      "rank_b": 3,
+      "delta": 1
+    },
+    {
+      "player": "Josip Iličić",
+      "rank_a": 5,
+      "rank_b": 9,
+      "delta": -4
+    },
+    {
+      "player": "Victor Boniface",
+      "rank_a": 6,
+      "rank_b": 4,
+      "delta": 2
+    },
+    {
+      "player": "Clinton N'Jie",
+      "rank_a": 7,
+      "rank_b": 5,
+      "delta": 2
+    },
+    {
+      "player": "Cristiano Ronaldo",
+      "rank_a": 8,
+      "rank_b": 7,
+      "delta": 1
+    },
+    {
+      "player": "Georges Mikautadze",
+      "rank_a": 9,
+      "rank_b": 8,
+      "delta": 1
+    },
+    {
+      "player": "Lucas Beltrán",
+      "rank_a": 10,
+      "rank_b": 14,
+      "delta": -4
+    },
+    {
+      "player": "Erling Haaland",
+      "rank_a": 11,
+      "rank_b": 10,
+      "delta": 1
+    },
+    {
+      "player": "Paulo Dybala",
+      "rank_a": 12,
+      "rank_b": 13,
+      "delta": -1
+    },
+    {
+      "player": "Ablie Jallow",
+      "rank_a": 13,
+      "rank_b": 22,
+      "delta": -9
+    },
+    {
+      "player": "Adem Ljajić",
+      "rank_a": 14,
+      "rank_b": 23,
+      "delta": -9
+    },
+    {
+      "player": "Jamie Bynoe-Gittens",
+      "rank_a": 15,
+      "rank_b": null,
+      "delta": null
+    },
+    {
+      "player": "Mohamed Salah",
+      "rank_a": 16,
+      "rank_b": 15,
+      "delta": 1
+    },
+    {
+      "player": "Robert Lewandowski",
+      "rank_a": 17,
+      "rank_b": 11,
+      "delta": 6
+    },
+    {
+      "player": "Paco Alcácer",
+      "rank_a": 18,
+      "rank_b": 18,
+      "delta": 0
+    },
+    {
+      "player": "Artem Dovbyk",
+      "rank_a": 19,
+      "rank_b": 12,
+      "delta": 7
+    },
+    {
+      "player": "Zlatan Ibrahimović",
+      "rank_a": 20,
+      "rank_b": 16,
+      "delta": 4
+    },
+    {
+      "player": "Felipe Caicedo",
+      "rank_a": 21,
+      "rank_b": 17,
+      "delta": 4
+    },
+    {
+      "player": "Isaac Bernal",
+      "rank_a": 22,
+      "rank_b": 21,
+      "delta": 1
+    },
+    {
+      "player": "Harry Kane",
+      "rank_a": 23,
+      "rank_b": 20,
+      "delta": 3
+    },
+    {
+      "player": "Jamal Musiala",
+      "rank_a": 24,
+      "rank_b": null,
+      "delta": null
+    },
+    {
+      "player": "Samuel Iling-Junior",
+      "rank_a": 25,
+      "rank_b": null,
+      "delta": null
+    },
+    {
+      "player": "Karim Benzema",
+      "rank_a": 26,
+      "rank_b": 24,
+      "delta": 2
+    },
+    {
+      "player": "Sasa Kalajdzic",
+      "rank_a": 27,
+      "rank_b": 19,
+      "delta": 8
+    },
+    {
+      "player": "Jadon Sancho",
+      "rank_a": 28,
+      "rank_b": null,
+      "delta": null
+    },
+    {
+      "player": "Luis Suárez",
+      "rank_a": 29,
+      "rank_b": 25,
+      "delta": 4
+    },
+    {
+      "player": "Luis Muriel",
+      "rank_a": 30,
+      "rank_b": 27,
+      "delta": 3
+    },
+    {
+      "player": "Ciro Immobile",
+      "rank_a": null,
+      "rank_b": 26,
+      "delta": null
+    },
+    {
+      "player": "Memphis",
+      "rank_a": null,
+      "rank_b": 28,
+      "delta": null
+    },
+    {
+      "player": "Wissam Ben Yedder",
+      "rank_a": null,
+      "rank_b": 29,
+      "delta": null
+    },
+    {
+      "player": "Mauro Icardi",
+      "rank_a": null,
+      "rank_b": 30,
+      "delta": null
+    }
+  ],
+  "q2_mvp_grid": {
+    "scope": "Top 5 leagues only",
+    "scope_note": "Per-90 calculations exclude Eredivisie due to unavailable minutes data (FULL_DICT_ROWS.pkl covers Premier League, La Liga, Serie A, Bundesliga, Ligue 1 only).",
+    "min_minutes": 1000,
+    "leagues": [
+      "Bundesliga",
+      "La-Liga",
+      "Ligue-1",
+      "Premier-League",
+      "Serie-A"
+    ],
+    "seasons": [
+      "2017-2018",
+      "2018-2019",
+      "2019-2020",
+      "2020-2021",
+      "2021-2022",
+      "2022-2023",
+      "2023-2024"
+    ],
+    "grid": {
+      "Bundesliga": {
+        "2017-2018": {
+          "model_pick": {
+            "player": "Serge Gnabry",
+            "primary_team": "Hoffenheim",
+            "minutes": 1487,
+            "ep_timed": 15.199,
+            "ep_per_90": 0.92,
+            "goals_involved": 23
+          },
+          "actual": null
+        },
+        "2018-2019": {
+          "model_pick": {
+            "player": "Paco Alcácer",
+            "primary_team": "Dortmund",
+            "minutes": 1211,
+            "ep_timed": 19.107,
+            "ep_per_90": 1.42,
+            "goals_involved": 25
+          },
+          "actual": null
+        },
+        "2019-2020": {
+          "model_pick": {
+            "player": "Jadon Sancho",
+            "primary_team": "Dortmund",
+            "minutes": 2287,
+            "ep_timed": 24.983,
+            "ep_per_90": 0.983,
+            "goals_involved": 49
+          },
+          "actual": null
+        },
+        "2020-2021": {
+          "model_pick": {
+            "player": "Robert Lewandowski",
+            "primary_team": "Bayern Munich",
+            "minutes": 2458,
+            "ep_timed": 29.454,
+            "ep_per_90": 1.078,
+            "goals_involved": 58
+          },
+          "actual": null
+        },
+        "2021-2022": {
+          "model_pick": {
+            "player": "Patrik Schick",
+            "primary_team": "Leverkusen",
+            "minutes": 2076,
+            "ep_timed": 24.593,
+            "ep_per_90": 1.066,
+            "goals_involved": 38
+          },
+          "actual": null
+        },
+        "2022-2023": {
+          "model_pick": {
+            "player": "Christopher Nkunku",
+            "primary_team": "RB Leipzig",
+            "minutes": 1897,
+            "ep_timed": 21.712,
+            "ep_per_90": 1.03,
+            "goals_involved": 30
+          },
+          "actual": null
+        },
+        "2023-2024": {
+          "model_pick": {
+            "player": "Serhou Guirassy",
+            "primary_team": "Stuttgart",
+            "minutes": 2208,
+            "ep_timed": 31.959,
+            "ep_per_90": 1.303,
+            "goals_involved": 41
+          },
+          "actual": null
+        }
+      },
+      "La-Liga": {
+        "2017-2018": {
+          "model_pick": {
+            "player": "Lionel Messi",
+            "primary_team": "Barcelona",
+            "minutes": 3000,
+            "ep_timed": 42.55,
+            "ep_per_90": 1.277,
+            "goals_involved": 77
+          },
+          "actual": null
+        },
+        "2018-2019": {
+          "model_pick": {
+            "player": "Lionel Messi",
+            "primary_team": "Barcelona",
+            "minutes": 2713,
+            "ep_timed": 43.595,
+            "ep_per_90": 1.446,
+            "goals_involved": 72
+          },
+          "actual": null
+        },
+        "2019-2020": {
+          "model_pick": {
+            "player": "Lionel Messi",
+            "primary_team": "Barcelona",
+            "minutes": 2880,
+            "ep_timed": 38.579,
+            "ep_per_90": 1.206,
+            "goals_involved": 62
+          },
+          "actual": null
+        },
+        "2020-2021": {
+          "model_pick": {
+            "player": "Borja Iglesias",
+            "primary_team": "Betis",
+            "minutes": 1411,
+            "ep_timed": 20.207,
+            "ep_per_90": 1.289,
+            "goals_involved": 18
+          },
+          "actual": null
+        },
+        "2021-2022": {
+          "model_pick": {
+            "player": "Karim Benzema",
+            "primary_team": "Real Madrid",
+            "minutes": 2593,
+            "ep_timed": 29.743,
+            "ep_per_90": 1.032,
+            "goals_involved": 49
+          },
+          "actual": null
+        },
+        "2022-2023": {
+          "model_pick": {
+            "player": "Nicolas Jackson",
+            "primary_team": "Villarreal",
+            "minutes": 1598,
+            "ep_timed": 21.496,
+            "ep_per_90": 1.211,
+            "goals_involved": 26
+          },
+          "actual": null
+        },
+        "2023-2024": {
+          "model_pick": {
+            "player": "Brahim Díaz",
+            "primary_team": "Real Madrid",
+            "minutes": 1545,
+            "ep_timed": 17.624,
+            "ep_per_90": 1.027,
+            "goals_involved": 26
+          },
+          "actual": null
+        }
+      },
+      "Ligue-1": {
+        "2017-2018": {
+          "model_pick": {
+            "player": "Nabil Fekir",
+            "primary_team": "Lyon",
+            "minutes": 2477,
+            "ep_timed": 36.373,
+            "ep_per_90": 1.322,
+            "goals_involved": 44
+          },
+          "actual": null
+        },
+        "2018-2019": {
+          "model_pick": {
+            "player": "Kylian Mbappé",
+            "primary_team": "Paris S-G",
+            "minutes": 2343,
+            "ep_timed": 30.954,
+            "ep_per_90": 1.189,
+            "goals_involved": 55
+          },
+          "actual": null
+        },
+        "2019-2020": {
+          "model_pick": {
+            "player": "Neymar",
+            "primary_team": "Paris S-G",
+            "minutes": 1318,
+            "ep_timed": 18.08,
+            "ep_per_90": 1.235,
+            "goals_involved": 31
+          },
+          "actual": null
+        },
+        "2020-2021": {
+          "model_pick": {
+            "player": "Kylian Mbappé",
+            "primary_team": "Paris S-G",
+            "minutes": 2380,
+            "ep_timed": 33.982,
+            "ep_per_90": 1.285,
+            "goals_involved": 54
+          },
+          "actual": null
+        },
+        "2021-2022": {
+          "model_pick": {
+            "player": "Kylian Mbappé",
+            "primary_team": "Paris S-G",
+            "minutes": 3023,
+            "ep_timed": 40.465,
+            "ep_per_90": 1.205,
+            "goals_involved": 68
+          },
+          "actual": null
+        },
+        "2022-2023": {
+          "model_pick": {
+            "player": "Lionel Messi",
+            "primary_team": "Paris S-G",
+            "minutes": 2837,
+            "ep_timed": 31.954,
+            "ep_per_90": 1.014,
+            "goals_involved": 51
+          },
+          "actual": null
+        },
+        "2023-2024": {
+          "model_pick": {
+            "player": "Kylian Mbappé",
+            "primary_team": "Paris S-G",
+            "minutes": 2158,
+            "ep_timed": 26.165,
+            "ep_per_90": 1.091,
+            "goals_involved": 46
+          },
+          "actual": null
+        }
+      },
+      "Premier-League": {
+        "2017-2018": {
+          "model_pick": {
+            "player": "Mohamed Salah",
+            "primary_team": "Liverpool",
+            "minutes": 2907,
+            "ep_timed": 37.837,
+            "ep_per_90": 1.171,
+            "goals_involved": 65
+          },
+          "actual": null
+        },
+        "2018-2019": {
+          "model_pick": {
+            "player": "Eden Hazard",
+            "primary_team": "Chelsea",
+            "minutes": 2923,
+            "ep_timed": 32.735,
+            "ep_per_90": 1.008,
+            "goals_involved": 49
+          },
+          "actual": null
+        },
+        "2019-2020": {
+          "model_pick": {
+            "player": "Bruno Fernandes",
+            "primary_team": "Manchester Utd",
+            "minutes": 1186,
+            "ep_timed": 12.562,
+            "ep_per_90": 0.953,
+            "goals_involved": 20
+          },
+          "actual": null
+        },
+        "2020-2021": {
+          "model_pick": {
+            "player": "Harry Kane",
+            "primary_team": "Tottenham",
+            "minutes": 3082,
+            "ep_timed": 33.418,
+            "ep_per_90": 0.976,
+            "goals_involved": 49
+          },
+          "actual": null
+        },
+        "2021-2022": {
+          "model_pick": {
+            "player": "Mohamed Salah",
+            "primary_team": "Liverpool",
+            "minutes": 2762,
+            "ep_timed": 31.67,
+            "ep_per_90": 1.032,
+            "goals_involved": 48
+          },
+          "actual": null
+        },
+        "2022-2023": {
+          "model_pick": {
+            "player": "Callum Wilson",
+            "primary_team": "Newcastle Utd",
+            "minutes": 1877,
+            "ep_timed": 21.753,
+            "ep_per_90": 1.043,
+            "goals_involved": 28
+          },
+          "actual": null
+        },
+        "2023-2024": {
+          "model_pick": {
+            "player": "Michael Olise",
+            "primary_team": "Crystal Palace",
+            "minutes": 1275,
+            "ep_timed": 16.847,
+            "ep_per_90": 1.189,
+            "goals_involved": 24
+          },
+          "actual": null
+        }
+      },
+      "Serie-A": {
+        "2017-2018": {
+          "model_pick": {
+            "player": "Paulo Dybala",
+            "primary_team": "Juventus",
+            "minutes": 2355,
+            "ep_timed": 25.565,
+            "ep_per_90": 0.977,
+            "goals_involved": 40
+          },
+          "actual": null
+        },
+        "2018-2019": {
+          "model_pick": {
+            "player": "Duván Zapata",
+            "primary_team": "Atalanta",
+            "minutes": 2896,
+            "ep_timed": 29.367,
+            "ep_per_90": 0.913,
+            "goals_involved": 40
+          },
+          "actual": null
+        },
+        "2019-2020": {
+          "model_pick": {
+            "player": "Cristiano Ronaldo",
+            "primary_team": "Juventus",
+            "minutes": 2917,
+            "ep_timed": 38.899,
+            "ep_per_90": 1.2,
+            "goals_involved": 51
+          },
+          "actual": null
+        },
+        "2020-2021": {
+          "model_pick": {
+            "player": "Luis Muriel",
+            "primary_team": "Atalanta",
+            "minutes": 1436,
+            "ep_timed": 25.616,
+            "ep_per_90": 1.605,
+            "goals_involved": 43
+          },
+          "actual": null
+        },
+        "2021-2022": {
+          "model_pick": {
+            "player": "Domenico Berardi",
+            "primary_team": "Sassuolo",
+            "minutes": 2819,
+            "ep_timed": 28.336,
+            "ep_per_90": 0.905,
+            "goals_involved": 37
+          },
+          "actual": null
+        },
+        "2022-2023": {
+          "model_pick": {
+            "player": "Domenico Berardi",
+            "primary_team": "Sassuolo",
+            "minutes": 1866,
+            "ep_timed": 22.153,
+            "ep_per_90": 1.068,
+            "goals_involved": 29
+          },
+          "actual": null
+        },
+        "2023-2024": {
+          "model_pick": {
+            "player": "Paulo Dybala",
+            "primary_team": "Roma",
+            "minutes": 1959,
+            "ep_timed": 24.01,
+            "ep_per_90": 1.103,
+            "goals_involved": 32
+          },
+          "actual": null
+        }
+      }
+    },
+    "combined_5l": {
+      "2017-2018": {
+        "model_pick": {
+          "player": "Nabil Fekir",
+          "primary_team": "Lyon",
+          "minutes": 2477,
+          "ep_timed": 36.373,
+          "ep_per_90": 1.322,
+          "goals_involved": 44
+        },
+        "actual_ballon_dor": null
+      },
+      "2018-2019": {
+        "model_pick": {
+          "player": "Lionel Messi",
+          "primary_team": "Barcelona",
+          "minutes": 2713,
+          "ep_timed": 43.595,
+          "ep_per_90": 1.446,
+          "goals_involved": 72
+        },
+        "actual_ballon_dor": null
+      },
+      "2019-2020": {
+        "model_pick": {
+          "player": "Neymar",
+          "primary_team": "Paris S-G",
+          "minutes": 1318,
+          "ep_timed": 18.08,
+          "ep_per_90": 1.235,
+          "goals_involved": 31
+        },
+        "actual_ballon_dor": null
+      },
+      "2020-2021": {
+        "model_pick": {
+          "player": "Luis Muriel",
+          "primary_team": "Atalanta",
+          "minutes": 1436,
+          "ep_timed": 25.616,
+          "ep_per_90": 1.605,
+          "goals_involved": 43
+        },
+        "actual_ballon_dor": null
+      },
+      "2021-2022": {
+        "model_pick": {
+          "player": "Kylian Mbappé",
+          "primary_team": "Paris S-G",
+          "minutes": 3023,
+          "ep_timed": 40.465,
+          "ep_per_90": 1.205,
+          "goals_involved": 68
+        },
+        "actual_ballon_dor": null
+      },
+      "2022-2023": {
+        "model_pick": {
+          "player": "Nicolas Jackson",
+          "primary_team": "Villarreal",
+          "minutes": 1598,
+          "ep_timed": 21.496,
+          "ep_per_90": 1.211,
+          "goals_involved": 26
+        },
+        "actual_ballon_dor": null
+      },
+      "2023-2024": {
+        "model_pick": {
+          "player": "Serhou Guirassy",
+          "primary_team": "Stuttgart",
+          "minutes": 2208,
+          "ep_timed": 31.959,
+          "ep_per_90": 1.303,
+          "goals_involved": 41
+        },
+        "actual_ballon_dor": null
+      }
+    }
+  },
+  "q3_late_game": {
+    "min_goals_involved": 15,
+    "editorial_min": 30,
+    "top_n": 20,
+    "rows": [
+      {
+        "rank": 1,
+        "player": "Marc Cardona",
+        "primary_team": "Las Palmas",
+        "goals_involved": 20,
+        "ep_total": 15.961,
+        "ep_late": 13.182,
+        "share_late": 0.8259
+      },
+      {
+        "rank": 2,
+        "player": "Danny Rose",
+        "primary_team": "Tottenham",
+        "goals_involved": 15,
+        "ep_total": 10.427,
+        "ep_late": 8.56,
+        "share_late": 0.821
+      },
+      {
+        "rank": 3,
+        "player": "Daniel Bessa",
+        "primary_team": "Genoa",
+        "goals_involved": 22,
+        "ep_total": 15.919,
+        "ep_late": 12.566,
+        "share_late": 0.7893
+      },
+      {
+        "rank": 4,
+        "player": "Manu Vallejo",
+        "primary_team": "Valencia",
+        "goals_involved": 16,
+        "ep_total": 16.886,
+        "ep_late": 13.221,
+        "share_late": 0.7829
+      },
+      {
+        "rank": 5,
+        "player": "Evann Guessand",
+        "primary_team": "Nice",
+        "goals_involved": 22,
+        "ep_total": 24.314,
+        "ep_late": 18.94,
+        "share_late": 0.779
+      },
+      {
+        "rank": 6,
+        "player": "Ibrahima Koné",
+        "primary_team": "Lorient",
+        "goals_involved": 17,
+        "ep_total": 12.344,
+        "ep_late": 9.217,
+        "share_late": 0.7466
+      },
+      {
+        "rank": 7,
+        "player": "Roberto Piccoli",
+        "primary_team": "Lecce",
+        "goals_involved": 18,
+        "ep_total": 12.83,
+        "ep_late": 9.504,
+        "share_late": 0.7407
+      },
+      {
+        "rank": 8,
+        "player": "Cristian Tello",
+        "primary_team": "Betis",
+        "goals_involved": 44,
+        "ep_total": 38.189,
+        "ep_late": 28.2,
+        "share_late": 0.7384
+      },
+      {
+        "rank": 9,
+        "player": "Sargis Adamyan",
+        "primary_team": "Hoffenheim",
+        "goals_involved": 28,
+        "ep_total": 24.157,
+        "ep_late": 17.413,
+        "share_late": 0.7208
+      },
+      {
+        "rank": 10,
+        "player": "Youssoufa Moukoko",
+        "primary_team": "Dortmund",
+        "goals_involved": 28,
+        "ep_total": 19.856,
+        "ep_late": 14.277,
+        "share_late": 0.719
+      },
+      {
+        "rank": 11,
+        "player": "Raphaël Varane",
+        "primary_team": "Real Madrid",
+        "goals_involved": 16,
+        "ep_total": 17.671,
+        "ep_late": 12.603,
+        "share_late": 0.7132
+      },
+      {
+        "rank": 12,
+        "player": "Abdoul Kader Bamba",
+        "primary_team": "Nantes",
+        "goals_involved": 18,
+        "ep_total": 14.533,
+        "ep_late": 10.273,
+        "share_late": 0.7069
+      },
+      {
+        "rank": 13,
+        "player": "Antonio Raillo",
+        "primary_team": "Mallorca",
+        "goals_involved": 20,
+        "ep_total": 17.062,
+        "ep_late": 12.005,
+        "share_late": 0.7036
+      },
+      {
+        "rank": 14,
+        "player": "Reza Ghoochannejad",
+        "primary_team": "Zwolle",
+        "goals_involved": 15,
+        "ep_total": 10.843,
+        "ep_late": 7.592,
+        "share_late": 0.7002
+      },
+      {
+        "rank": 15,
+        "player": "Mohammed Daramy",
+        "primary_team": "Reims",
+        "goals_involved": 17,
+        "ep_total": 12.876,
+        "ep_late": 8.88,
+        "share_late": 0.6896
+      },
+      {
+        "rank": 16,
+        "player": "Mohamed Fares",
+        "primary_team": "SPAL",
+        "goals_involved": 17,
+        "ep_total": 17.23,
+        "ep_late": 11.854,
+        "share_late": 0.688
+      },
+      {
+        "rank": 17,
+        "player": "Fábio Silva",
+        "primary_team": "Wolves",
+        "goals_involved": 17,
+        "ep_total": 10.349,
+        "ep_late": 7.11,
+        "share_late": 0.6871
+      },
+      {
+        "rank": 18,
+        "player": "Lys Mousset",
+        "primary_team": "Sheffield Utd",
+        "goals_involved": 16,
+        "ep_total": 14.22,
+        "ep_late": 9.77,
+        "share_late": 0.6871
+      },
+      {
+        "rank": 19,
+        "player": "Ndombe Mubele",
+        "primary_team": "Rennes",
+        "goals_involved": 15,
+        "ep_total": 13.266,
+        "ep_late": 9.111,
+        "share_late": 0.6868
+      },
+      {
+        "rank": 20,
+        "player": "Faouzi Ghoulam",
+        "primary_team": "Napoli",
+        "goals_involved": 17,
+        "ep_total": 9.635,
+        "ep_late": 6.571,
+        "share_late": 0.682
+      }
+    ],
+    "rows_substantive": [
+      {
+        "rank": 1,
+        "player": "Cristian Tello",
+        "primary_team": "Betis",
+        "goals_involved": 44,
+        "ep_total": 38.189,
+        "ep_late": 28.2,
+        "share_late": 0.7384
+      },
+      {
+        "rank": 2,
+        "player": "Sergio León",
+        "primary_team": "Betis",
+        "goals_involved": 33,
+        "ep_total": 25.908,
+        "ep_late": 17.283,
+        "share_late": 0.6671
+      },
+      {
+        "rank": 3,
+        "player": "Matías Vecino",
+        "primary_team": "Inter",
+        "goals_involved": 47,
+        "ep_total": 36.704,
+        "ep_late": 24.195,
+        "share_late": 0.6592
+      },
+      {
+        "rank": 4,
+        "player": "Adama Traoré",
+        "primary_team": "Wolves",
+        "goals_involved": 57,
+        "ep_total": 46.565,
+        "ep_late": 30.533,
+        "share_late": 0.6557
+      },
+      {
+        "rank": 5,
+        "player": "Nicolas Viola",
+        "primary_team": "Benevento",
+        "goals_involved": 33,
+        "ep_total": 31.844,
+        "ep_late": 20.87,
+        "share_late": 0.6554
+      },
+      {
+        "rank": 6,
+        "player": "Ángel Rodríguez",
+        "primary_team": "Getafe",
+        "goals_involved": 67,
+        "ep_total": 50.412,
+        "ep_late": 32.87,
+        "share_late": 0.652
+      },
+      {
+        "rank": 7,
+        "player": "Ibai Gómez",
+        "primary_team": "Alavés",
+        "goals_involved": 30,
+        "ep_total": 19.918,
+        "ep_late": 12.865,
+        "share_late": 0.6459
+      },
+      {
+        "rank": 8,
+        "player": "Alejandro Garnacho",
+        "primary_team": "Manchester Utd",
+        "goals_involved": 31,
+        "ep_total": 24.062,
+        "ep_late": 15.048,
+        "share_late": 0.6254
+      },
+      {
+        "rank": 9,
+        "player": "Gerard Gumbau",
+        "primary_team": "Elche",
+        "goals_involved": 31,
+        "ep_total": 22.418,
+        "ep_late": 13.758,
+        "share_late": 0.6137
+      },
+      {
+        "rank": 10,
+        "player": "Yoane Wissa",
+        "primary_team": "Brentford",
+        "goals_involved": 72,
+        "ep_total": 55.97,
+        "ep_late": 34.342,
+        "share_late": 0.6136
+      },
+      {
+        "rank": 11,
+        "player": "Giacomo Raspadori",
+        "primary_team": "Sassuolo",
+        "goals_involved": 55,
+        "ep_total": 44.674,
+        "ep_late": 27.404,
+        "share_late": 0.6134
+      },
+      {
+        "rank": 12,
+        "player": "Max Gradel",
+        "primary_team": "Toulouse",
+        "goals_involved": 47,
+        "ep_total": 37.665,
+        "ep_late": 22.863,
+        "share_late": 0.607
+      },
+      {
+        "rank": 13,
+        "player": "Nemanja Matić",
+        "primary_team": "Manchester Utd",
+        "goals_involved": 38,
+        "ep_total": 30.051,
+        "ep_late": 18.2,
+        "share_late": 0.6056
+      },
+      {
+        "rank": 14,
+        "player": "Matt Doherty",
+        "primary_team": "Wolves",
+        "goals_involved": 45,
+        "ep_total": 38.218,
+        "ep_late": 23.144,
+        "share_late": 0.6056
+      },
+      {
+        "rank": 15,
+        "player": "Antonio Puertas",
+        "primary_team": "Granada",
+        "goals_involved": 39,
+        "ep_total": 28.025,
+        "ep_late": 16.904,
+        "share_late": 0.6032
+      },
+      {
+        "rank": 16,
+        "player": "Dimitri Liénard",
+        "primary_team": "Strasbourg",
+        "goals_involved": 53,
+        "ep_total": 42.69,
+        "ep_late": 25.706,
+        "share_late": 0.6022
+      },
+      {
+        "rank": 17,
+        "player": "Federico Bonazzoli",
+        "primary_team": "Salernitana",
+        "goals_involved": 39,
+        "ep_total": 32.475,
+        "ep_late": 19.472,
+        "share_late": 0.5996
+      },
+      {
+        "rank": 18,
+        "player": "Mário Rui",
+        "primary_team": "Napoli",
+        "goals_involved": 48,
+        "ep_total": 37.413,
+        "ep_late": 22.406,
+        "share_late": 0.5989
+      },
+      {
+        "rank": 19,
+        "player": "Nemanja Radonjić",
+        "primary_team": "Torino",
+        "goals_involved": 33,
+        "ep_total": 23.814,
+        "ep_late": 14.174,
+        "share_late": 0.5952
+      },
+      {
+        "rank": 20,
+        "player": "M'Baye Niang",
+        "primary_team": "Rennes",
+        "goals_involved": 66,
+        "ep_total": 57.56,
+        "ep_late": 34.232,
+        "share_late": 0.5947
+      }
+    ]
+  },
+  "q4_efficiency": {
+    "q4a": [
+      {
+        "rank": 1,
+        "player": "Kelvin Yeboah",
+        "primary_team": "Genoa",
+        "goals_involved": 6,
+        "ep_timed": 7.827,
+        "ratio_ep_per_goal": 1.3045
+      },
+      {
+        "rank": 2,
+        "player": "Malick Fofana",
+        "primary_team": "Lyon",
+        "goals_involved": 6,
+        "ep_timed": 7.755,
+        "ratio_ep_per_goal": 1.2925
+      },
+      {
+        "rank": 3,
+        "player": "Viktor Kovalenko",
+        "primary_team": "Spezia",
+        "goals_involved": 8,
+        "ep_timed": 10.279,
+        "ratio_ep_per_goal": 1.2848
+      },
+      {
+        "rank": 4,
+        "player": "Keinan Davis",
+        "primary_team": "Aston Villa",
+        "goals_involved": 8,
+        "ep_timed": 10.108,
+        "ratio_ep_per_goal": 1.2636
+      },
+      {
+        "rank": 5,
+        "player": "Bilal Başaçıkoğlu",
+        "primary_team": "Heracles Almelo",
+        "goals_involved": 6,
+        "ep_timed": 7.528,
+        "ratio_ep_per_goal": 1.2546
+      },
+      {
+        "rank": 6,
+        "player": "Emre Mor",
+        "primary_team": "Celta Vigo",
+        "goals_involved": 7,
+        "ep_timed": 8.66,
+        "ratio_ep_per_goal": 1.2372
+      },
+      {
+        "rank": 7,
+        "player": "Javier Vet",
+        "primary_team": "NEC Nijmegen",
+        "goals_involved": 6,
+        "ep_timed": 7.373,
+        "ratio_ep_per_goal": 1.2288
+      },
+      {
+        "rank": 8,
+        "player": "Alexander Bannink",
+        "primary_team": "Emmen",
+        "goals_involved": 5,
+        "ep_timed": 6.067,
+        "ratio_ep_per_goal": 1.2135
+      },
+      {
+        "rank": 9,
+        "player": "Gabriel Mercado",
+        "primary_team": "Sevilla",
+        "goals_involved": 5,
+        "ep_timed": 6.045,
+        "ratio_ep_per_goal": 1.2089
+      },
+      {
+        "rank": 10,
+        "player": "Jon Pacheco",
+        "primary_team": "Real Sociedad",
+        "goals_involved": 5,
+        "ep_timed": 6.028,
+        "ratio_ep_per_goal": 1.2056
+      },
+      {
+        "rank": 11,
+        "player": "Ângelo Borges",
+        "primary_team": "Strasbourg",
+        "goals_involved": 6,
+        "ep_timed": 7.191,
+        "ratio_ep_per_goal": 1.1986
+      },
+      {
+        "rank": 12,
+        "player": "Daniel Maldini",
+        "primary_team": "Monza",
+        "goals_involved": 9,
+        "ep_timed": 10.627,
+        "ratio_ep_per_goal": 1.1808
+      },
+      {
+        "rank": 13,
+        "player": "Williot Swedberg",
+        "primary_team": "Celta Vigo",
+        "goals_involved": 7,
+        "ep_timed": 8.242,
+        "ratio_ep_per_goal": 1.1774
+      },
+      {
+        "rank": 14,
+        "player": "Rashaan Fernandes",
+        "primary_team": "Go Ahead Eag",
+        "goals_involved": 6,
+        "ep_timed": 7.006,
+        "ratio_ep_per_goal": 1.1677
+      },
+      {
+        "rank": 15,
+        "player": "Jake O'Brien",
+        "primary_team": "Lyon",
+        "goals_involved": 6,
+        "ep_timed": 6.98,
+        "ratio_ep_per_goal": 1.1633
+      },
+      {
+        "rank": 16,
+        "player": "Kobbie Mainoo",
+        "primary_team": "Manchester Utd",
+        "goals_involved": 11,
+        "ep_timed": 12.77,
+        "ratio_ep_per_goal": 1.1609
+      },
+      {
+        "rank": 17,
+        "player": "Ardian Ismajli",
+        "primary_team": "Spezia",
+        "goals_involved": 6,
+        "ep_timed": 6.942,
+        "ratio_ep_per_goal": 1.1569
+      },
+      {
+        "rank": 18,
+        "player": "José Arnaiz",
+        "primary_team": "Osasuna",
+        "goals_involved": 12,
+        "ep_timed": 13.567,
+        "ratio_ep_per_goal": 1.1306
+      },
+      {
+        "rank": 19,
+        "player": "Valon Berisha",
+        "primary_team": "Reims",
+        "goals_involved": 11,
+        "ep_timed": 12.398,
+        "ratio_ep_per_goal": 1.1271
+      },
+      {
+        "rank": 20,
+        "player": "Jermain Defoe",
+        "primary_team": "Bournemouth",
+        "goals_involved": 8,
+        "ep_timed": 9.007,
+        "ratio_ep_per_goal": 1.1259
+      }
+    ],
+    "q4b": [
+      {
+        "rank": 1,
+        "player": "Ardian Ismajli",
+        "primary_team": "Spezia",
+        "goals_involved": 6,
+        "ep_timed": 6.942,
+        "ep_untimed": 4.718,
+        "multiplier": 1.4713
+      },
+      {
+        "rank": 2,
+        "player": "Keinan Davis",
+        "primary_team": "Aston Villa",
+        "goals_involved": 8,
+        "ep_timed": 10.108,
+        "ep_untimed": 6.958,
+        "multiplier": 1.4528
+      },
+      {
+        "rank": 3,
+        "player": "Oscar Bobb",
+        "primary_team": "Manchester City",
+        "goals_involved": 7,
+        "ep_timed": 6.455,
+        "ep_untimed": 4.617,
+        "multiplier": 1.3982
+      },
+      {
+        "rank": 4,
+        "player": "Emre Mor",
+        "primary_team": "Celta Vigo",
+        "goals_involved": 7,
+        "ep_timed": 8.66,
+        "ep_untimed": 6.243,
+        "multiplier": 1.3872
+      },
+      {
+        "rank": 5,
+        "player": "Souleymane Camara",
+        "primary_team": "Montpellier",
+        "goals_involved": 9,
+        "ep_timed": 10.124,
+        "ep_untimed": 7.393,
+        "multiplier": 1.3694
+      },
+      {
+        "rank": 6,
+        "player": "Ângelo Borges",
+        "primary_team": "Strasbourg",
+        "goals_involved": 6,
+        "ep_timed": 7.191,
+        "ep_untimed": 5.312,
+        "multiplier": 1.3538
+      },
+      {
+        "rank": 7,
+        "player": "Malick Fofana",
+        "primary_team": "Lyon",
+        "goals_involved": 6,
+        "ep_timed": 7.755,
+        "ep_untimed": 5.807,
+        "multiplier": 1.3354
+      },
+      {
+        "rank": 8,
+        "player": "Kelvin Yeboah",
+        "primary_team": "Genoa",
+        "goals_involved": 6,
+        "ep_timed": 7.827,
+        "ep_untimed": 5.906,
+        "multiplier": 1.3253
+      },
+      {
+        "rank": 9,
+        "player": "Keidi Bare",
+        "primary_team": "Espanyol",
+        "goals_involved": 5,
+        "ep_timed": 3.831,
+        "ep_untimed": 2.895,
+        "multiplier": 1.3233
+      },
+      {
+        "rank": 10,
+        "player": "Javier Vet",
+        "primary_team": "NEC Nijmegen",
+        "goals_involved": 6,
+        "ep_timed": 7.373,
+        "ep_untimed": 5.616,
+        "multiplier": 1.3128
+      },
+      {
+        "rank": 11,
+        "player": "Viktor Kovalenko",
+        "primary_team": "Spezia",
+        "goals_involved": 8,
+        "ep_timed": 10.279,
+        "ep_untimed": 7.842,
+        "multiplier": 1.3107
+      },
+      {
+        "rank": 12,
+        "player": "Javier Guerra",
+        "primary_team": "Valencia",
+        "goals_involved": 6,
+        "ep_timed": 5.051,
+        "ep_untimed": 3.86,
+        "multiplier": 1.3087
+      },
+      {
+        "rank": 13,
+        "player": "Nicklas Pedersen",
+        "primary_team": "Emmen",
+        "goals_involved": 5,
+        "ep_timed": 5.472,
+        "ep_untimed": 4.196,
+        "multiplier": 1.3041
+      },
+      {
+        "rank": 14,
+        "player": "Rémy Vita",
+        "primary_team": "Fortuna Sittard",
+        "goals_involved": 5,
+        "ep_timed": 5.192,
+        "ep_untimed": 4.017,
+        "multiplier": 1.2925
+      },
+      {
+        "rank": 15,
+        "player": "Cedric Teuchert",
+        "primary_team": "Union Berlin",
+        "goals_involved": 5,
+        "ep_timed": 4.491,
+        "ep_untimed": 3.485,
+        "multiplier": 1.2887
+      },
+      {
+        "rank": 16,
+        "player": "Aleksa Terzić",
+        "primary_team": "Fiorentina",
+        "goals_involved": 7,
+        "ep_timed": 6.131,
+        "ep_untimed": 4.794,
+        "multiplier": 1.2789
+      },
+      {
+        "rank": 17,
+        "player": "Bilal Başaçıkoğlu",
+        "primary_team": "Heracles Almelo",
+        "goals_involved": 6,
+        "ep_timed": 7.528,
+        "ep_untimed": 5.906,
+        "multiplier": 1.2745
+      },
+      {
+        "rank": 18,
+        "player": "Leo Sauer",
+        "primary_team": "Feyenoord",
+        "goals_involved": 8,
+        "ep_timed": 4.491,
+        "ep_untimed": 3.533,
+        "multiplier": 1.2711
+      },
+      {
+        "rank": 19,
+        "player": "Daniel Maldini",
+        "primary_team": "Monza",
+        "goals_involved": 9,
+        "ep_timed": 10.627,
+        "ep_untimed": 8.364,
+        "multiplier": 1.2705
+      },
+      {
+        "rank": 20,
+        "player": "Recio",
+        "primary_team": "Málaga",
+        "goals_involved": 5,
+        "ep_timed": 5.088,
+        "ep_untimed": 4.011,
+        "multiplier": 1.2686
+      }
+    ],
+    "q4a_substantive": [
+      {
+        "rank": 1,
+        "player": "Evann Guessand",
+        "primary_team": "Nice",
+        "goals_involved": 22,
+        "ep_timed": 24.314,
+        "ratio_ep_per_goal": 1.1052
+      },
+      {
+        "rank": 2,
+        "player": "Nemanja Maksimović",
+        "primary_team": "Getafe",
+        "goals_involved": 22,
+        "ep_timed": 22.033,
+        "ratio_ep_per_goal": 1.0015
+      },
+      {
+        "rank": 3,
+        "player": "Nicolas Viola",
+        "primary_team": "Benevento",
+        "goals_involved": 33,
+        "ep_timed": 31.844,
+        "ratio_ep_per_goal": 0.965
+      },
+      {
+        "rank": 4,
+        "player": "Manu Sánchez",
+        "primary_team": "Osasuna",
+        "goals_involved": 22,
+        "ep_timed": 21.182,
+        "ratio_ep_per_goal": 0.9628
+      },
+      {
+        "rank": 5,
+        "player": "Yunis Abdelhamid",
+        "primary_team": "Reims",
+        "goals_involved": 25,
+        "ep_timed": 23.817,
+        "ratio_ep_per_goal": 0.9527
+      },
+      {
+        "rank": 6,
+        "player": "Julian Lelieveld",
+        "primary_team": "RKC Waalwijk",
+        "goals_involved": 21,
+        "ep_timed": 19.735,
+        "ratio_ep_per_goal": 0.9397
+      },
+      {
+        "rank": 7,
+        "player": "Séamus Coleman",
+        "primary_team": "Everton",
+        "goals_involved": 24,
+        "ep_timed": 22.52,
+        "ratio_ep_per_goal": 0.9383
+      },
+      {
+        "rank": 8,
+        "player": "Ainsley Maitland-Niles",
+        "primary_team": "Lyon",
+        "goals_involved": 22,
+        "ep_timed": 20.413,
+        "ratio_ep_per_goal": 0.9279
+      },
+      {
+        "rank": 9,
+        "player": "Benno Schmitz",
+        "primary_team": "Köln",
+        "goals_involved": 21,
+        "ep_timed": 19.462,
+        "ratio_ep_per_goal": 0.9268
+      },
+      {
+        "rank": 10,
+        "player": "Matt Targett",
+        "primary_team": "Aston Villa",
+        "goals_involved": 25,
+        "ep_timed": 22.915,
+        "ratio_ep_per_goal": 0.9166
+      },
+      {
+        "rank": 11,
+        "player": "Abdoulaye Touré",
+        "primary_team": "Nantes",
+        "goals_involved": 34,
+        "ep_timed": 30.898,
+        "ratio_ep_per_goal": 0.9088
+      },
+      {
+        "rank": 12,
+        "player": "Mohamed El Hankouri",
+        "primary_team": "Groningen",
+        "goals_involved": 21,
+        "ep_timed": 18.942,
+        "ratio_ep_per_goal": 0.902
+      },
+      {
+        "rank": 13,
+        "player": "Gonzalo Escalante",
+        "primary_team": "Eibar",
+        "goals_involved": 35,
+        "ep_timed": 31.516,
+        "ratio_ep_per_goal": 0.9004
+      },
+      {
+        "rank": 14,
+        "player": "André Gomes",
+        "primary_team": "Everton",
+        "goals_involved": 23,
+        "ep_timed": 20.704,
+        "ratio_ep_per_goal": 0.9002
+      },
+      {
+        "rank": 15,
+        "player": "Rubén Alcaraz",
+        "primary_team": "Valladolid",
+        "goals_involved": 33,
+        "ep_timed": 29.637,
+        "ratio_ep_per_goal": 0.8981
+      },
+      {
+        "rank": 16,
+        "player": "Kwon Chang-hoon",
+        "primary_team": "Dijon",
+        "goals_involved": 29,
+        "ep_timed": 26.029,
+        "ratio_ep_per_goal": 0.8976
+      },
+      {
+        "rank": 17,
+        "player": "Diego López",
+        "primary_team": "Valencia",
+        "goals_involved": 20,
+        "ep_timed": 17.929,
+        "ratio_ep_per_goal": 0.8964
+      },
+      {
+        "rank": 18,
+        "player": "Pedro Neto",
+        "primary_team": "Wolves",
+        "goals_involved": 47,
+        "ep_timed": 42.088,
+        "ratio_ep_per_goal": 0.8955
+      },
+      {
+        "rank": 19,
+        "player": "Fayçal Fajr",
+        "primary_team": "Caen",
+        "goals_involved": 25,
+        "ep_timed": 22.371,
+        "ratio_ep_per_goal": 0.8949
+      },
+      {
+        "rank": 20,
+        "player": "Mike van Duinen",
+        "primary_team": "Zwolle",
+        "goals_involved": 28,
+        "ep_timed": 25.035,
+        "ratio_ep_per_goal": 0.8941
+      }
+    ],
+    "q4b_substantive": [
+      {
+        "rank": 1,
+        "player": "Evann Guessand",
+        "primary_team": "Nice",
+        "goals_involved": 22,
+        "ep_timed": 24.314,
+        "ep_untimed": 20.323,
+        "multiplier": 1.1964
+      },
+      {
+        "rank": 2,
+        "player": "Youssoufa Moukoko",
+        "primary_team": "Dortmund",
+        "goals_involved": 28,
+        "ep_timed": 19.856,
+        "ep_untimed": 17.033,
+        "multiplier": 1.1657
+      },
+      {
+        "rank": 3,
+        "player": "Kostas Mitroglou",
+        "primary_team": "Marseille",
+        "goals_involved": 20,
+        "ep_timed": 15.057,
+        "ep_untimed": 13.063,
+        "multiplier": 1.1527
+      },
+      {
+        "rank": 4,
+        "player": "Cristian Tello",
+        "primary_team": "Betis",
+        "goals_involved": 44,
+        "ep_timed": 38.189,
+        "ep_untimed": 33.967,
+        "multiplier": 1.1243
+      },
+      {
+        "rank": 5,
+        "player": "Mike van Duinen",
+        "primary_team": "Zwolle",
+        "goals_involved": 28,
+        "ep_timed": 25.035,
+        "ep_untimed": 22.338,
+        "multiplier": 1.1207
+      },
+      {
+        "rank": 6,
+        "player": "Antonio Rüdiger",
+        "primary_team": "Chelsea",
+        "goals_involved": 34,
+        "ep_timed": 30.379,
+        "ep_untimed": 27.478,
+        "multiplier": 1.1056
+      },
+      {
+        "rank": 7,
+        "player": "Gio Reyna",
+        "primary_team": "Dortmund",
+        "goals_involved": 37,
+        "ep_timed": 25.486,
+        "ep_untimed": 23.12,
+        "multiplier": 1.1023
+      },
+      {
+        "rank": 8,
+        "player": "Benno Schmitz",
+        "primary_team": "Köln",
+        "goals_involved": 21,
+        "ep_timed": 19.462,
+        "ep_untimed": 17.757,
+        "multiplier": 1.096
+      },
+      {
+        "rank": 9,
+        "player": "Mehdi Bourabia",
+        "primary_team": "Sassuolo",
+        "goals_involved": 24,
+        "ep_timed": 20.619,
+        "ep_untimed": 18.823,
+        "multiplier": 1.0955
+      },
+      {
+        "rank": 10,
+        "player": "Mario Hermoso",
+        "primary_team": "Atlético Madrid",
+        "goals_involved": 28,
+        "ep_timed": 24.612,
+        "ep_untimed": 22.52,
+        "multiplier": 1.0929
+      },
+      {
+        "rank": 11,
+        "player": "Nemanja Maksimović",
+        "primary_team": "Getafe",
+        "goals_involved": 22,
+        "ep_timed": 22.033,
+        "ep_untimed": 20.226,
+        "multiplier": 1.0893
+      },
+      {
+        "rank": 12,
+        "player": "Sargis Adamyan",
+        "primary_team": "Hoffenheim",
+        "goals_involved": 28,
+        "ep_timed": 24.157,
+        "ep_untimed": 22.283,
+        "multiplier": 1.0841
+      },
+      {
+        "rank": 13,
+        "player": "Mohamed El Hankouri",
+        "primary_team": "Groningen",
+        "goals_involved": 21,
+        "ep_timed": 18.942,
+        "ep_untimed": 17.524,
+        "multiplier": 1.081
+      },
+      {
+        "rank": 14,
+        "player": "Almamy Touré",
+        "primary_team": "Eint Frankfurt",
+        "goals_involved": 23,
+        "ep_timed": 15.939,
+        "ep_untimed": 14.757,
+        "multiplier": 1.0801
+      },
+      {
+        "rank": 15,
+        "player": "Ainsley Maitland-Niles",
+        "primary_team": "Lyon",
+        "goals_involved": 22,
+        "ep_timed": 20.413,
+        "ep_untimed": 18.932,
+        "multiplier": 1.0782
+      },
+      {
+        "rank": 16,
+        "player": "Gaëtan Charbonnier",
+        "primary_team": "Brest",
+        "goals_involved": 22,
+        "ep_timed": 16.767,
+        "ep_untimed": 15.578,
+        "multiplier": 1.0763
+      },
+      {
+        "rank": 17,
+        "player": "Paolo Faragò",
+        "primary_team": "Cagliari",
+        "goals_involved": 21,
+        "ep_timed": 16.98,
+        "ep_untimed": 15.787,
+        "multiplier": 1.0756
+      },
+      {
+        "rank": 18,
+        "player": "Francisco Portillo",
+        "primary_team": "Getafe",
+        "goals_involved": 28,
+        "ep_timed": 22.744,
+        "ep_untimed": 21.154,
+        "multiplier": 1.0752
+      },
+      {
+        "rank": 19,
+        "player": "Stanislav Lobotka",
+        "primary_team": "Napoli",
+        "goals_involved": 25,
+        "ep_timed": 17.414,
+        "ep_untimed": 16.245,
+        "multiplier": 1.072
+      },
+      {
+        "rank": 20,
+        "player": "Adama Traoré",
+        "primary_team": "Wolves",
+        "goals_involved": 57,
+        "ep_timed": 46.565,
+        "ep_untimed": 43.469,
+        "multiplier": 1.0712
+      }
+    ],
+    "q4c_note": "EP per shot deferred - requires non-goal shot extraction (TODO).",
+    "min_goals_involved": 5,
+    "editorial_min": 20,
+    "top_n": 20
+  },
+  "q5_position": {
+    "scope": "Top 5 leagues only",
+    "scope_note": "Per-90 calculations exclude Eredivisie due to unavailable minutes data (FULL_DICT_ROWS.pkl covers Premier League, La Liga, Serie A, Bundesliga, Ligue 1 only).",
+    "min_minutes": 1000,
+    "top_n": 5,
+    "panels": {
+      "DF": {
+        "rows": [
+          {
+            "rank": 1,
+            "player": "Samuel Iling-Junior",
+            "primary_team": "Juventus",
+            "minutes": 1128,
+            "goals_involved": 11,
+            "pos": "DF",
+            "age": 20.64,
+            "ep_timed": 9.835,
+            "ep_per_90": 0.785
+          },
+          {
+            "rank": 2,
+            "player": "Álex Grimaldo",
+            "primary_team": "Leverkusen",
+            "minutes": 2784,
+            "goals_involved": 31,
+            "pos": "DF",
+            "age": 28.66,
+            "ep_timed": 19.581,
+            "ep_per_90": 0.633
+          },
+          {
+            "rank": 3,
+            "player": "Maximilian Wittek",
+            "primary_team": "Bochum",
+            "minutes": 1070,
+            "goals_involved": 10,
+            "pos": "DF",
+            "age": 28.74,
+            "ep_timed": 7.291,
+            "ep_per_90": 0.613
+          },
+          {
+            "rank": 4,
+            "player": "Raphaël Guerreiro",
+            "primary_team": "Dortmund",
+            "minutes": 11903,
+            "goals_involved": 97,
+            "pos": "DF",
+            "age": 30.37,
+            "ep_timed": 61.887,
+            "ep_per_90": 0.468
+          },
+          {
+            "rank": 5,
+            "player": "Guela Doué",
+            "primary_team": "Rennes",
+            "minutes": 1246,
+            "goals_involved": 8,
+            "pos": "DF",
+            "age": 21.55,
+            "ep_timed": 6.463,
+            "ep_per_90": 0.467
+          }
+        ]
+      },
+      "MF": {
+        "rows": [
+          {
+            "rank": 1,
+            "player": "Adem Ljajić",
+            "primary_team": "Torino",
+            "minutes": 2185,
+            "goals_involved": 26,
+            "pos": "MF",
+            "age": 26.91,
+            "ep_timed": 20.51,
+            "ep_per_90": 0.845
+          },
+          {
+            "rank": 2,
+            "player": "Jamal Musiala",
+            "primary_team": "Bayern Munich",
+            "minutes": 6302,
+            "goals_involved": 95,
+            "pos": "MF",
+            "age": 21.13,
+            "ep_timed": 55.009,
+            "ep_per_90": 0.786
+          },
+          {
+            "rank": 3,
+            "player": "Kevin De Bruyne",
+            "primary_team": "Manchester City",
+            "minutes": 14674,
+            "goals_involved": 206,
+            "pos": "MF",
+            "age": 32.89,
+            "ep_timed": 119.607,
+            "ep_per_90": 0.734
+          },
+          {
+            "rank": 4,
+            "player": "Andrej Kramarić",
+            "primary_team": "Hoffenheim",
+            "minutes": 15717,
+            "goals_involved": 183,
+            "pos": "MF",
+            "age": 32.92,
+            "ep_timed": 124.291,
+            "ep_per_90": 0.712
+          },
+          {
+            "rank": 5,
+            "player": "Kamory Doumbia",
+            "primary_team": "Brest",
+            "minutes": 2386,
+            "goals_involved": 22,
+            "pos": "MF",
+            "age": 21.25,
+            "ep_timed": 18.717,
+            "ep_per_90": 0.706
+          }
+        ]
+      },
+      "FW": {
+        "rows": [
+          {
+            "rank": 1,
+            "player": "Lionel Messi",
+            "primary_team": "Barcelona",
+            "minutes": 16516,
+            "goals_involved": 356,
+            "pos": "FW",
+            "age": 35.94,
+            "ep_timed": 209.438,
+            "ep_per_90": 1.141
+          },
+          {
+            "rank": 2,
+            "player": "Kylian Mbappé",
+            "primary_team": "Paris S-G",
+            "minutes": 16403,
+            "goals_involved": 334,
+            "pos": "FW",
+            "age": 25.39,
+            "ep_timed": 192.08,
+            "ep_per_90": 1.054
+          },
+          {
+            "rank": 3,
+            "player": "Neymar",
+            "primary_team": "Paris S-G",
+            "minutes": 9354,
+            "goals_involved": 205,
+            "pos": "FW",
+            "age": 31.04,
+            "ep_timed": 102.447,
+            "ep_per_90": 0.986
+          },
+          {
+            "rank": 4,
+            "player": "Cole Palmer",
+            "primary_team": "Chelsea",
+            "minutes": 3111,
+            "goals_involved": 50,
+            "pos": "FW",
+            "age": 22.04,
+            "ep_timed": 33.983,
+            "ep_per_90": 0.983
+          },
+          {
+            "rank": 5,
+            "player": "Josip Iličić",
+            "primary_team": "Atalanta",
+            "minutes": 8176,
+            "goals_involved": 139,
+            "pos": "FW",
+            "age": 34.31,
+            "ep_timed": 87.009,
+            "ep_per_90": 0.958
+          }
+        ]
+      }
+    },
+    "gk_limitation_note": "Q5 reports outfield positions (DF/MF/FW) only. Goalkeepers are excluded: the EP framework credits scorers, assist-creators (SCA1) and pre-assist-creators (SCA2), three touchpoints GKs occupy rarely. Top GKs in this dataset post ~0.1 EP/90 vs ~1.1 for top forwards - a structural ratio reflecting the framework's coverage, not the keepers' actual value. Quantifying GK contribution requires a different model (e.g. shot-stopping over expected, distribution value)."
+  },
+  "q6_architects": {
+    "abs_top": [
+      {
+        "rank": 1,
+        "player": "Lionel Messi",
+        "primary_team": "Barcelona",
+        "goals_involved": 89,
+        "ep_timed": 51.686
+      },
+      {
+        "rank": 2,
+        "player": "Julian Brandt",
+        "primary_team": "Dortmund",
+        "goals_involved": 66,
+        "ep_timed": 40.931
+      },
+      {
+        "rank": 3,
+        "player": "Kylian Mbappé",
+        "primary_team": "Paris S-G",
+        "goals_involved": 60,
+        "ep_timed": 37.552
+      },
+      {
+        "rank": 4,
+        "player": "Mohamed Salah",
+        "primary_team": "Liverpool",
+        "goals_involved": 58,
+        "ep_timed": 37.444
+      },
+      {
+        "rank": 5,
+        "player": "Nabil Fekir",
+        "primary_team": "Betis",
+        "goals_involved": 41,
+        "ep_timed": 34.645
+      },
+      {
+        "rank": 6,
+        "player": "Joshua Kimmich",
+        "primary_team": "Bayern Munich",
+        "goals_involved": 66,
+        "ep_timed": 34.348
+      },
+      {
+        "rank": 7,
+        "player": "Daniel Parejo",
+        "primary_team": "Valencia",
+        "goals_involved": 48,
+        "ep_timed": 32.867
+      },
+      {
+        "rank": 8,
+        "player": "Bruno Fernandes",
+        "primary_team": "Manchester Utd",
+        "goals_involved": 39,
+        "ep_timed": 32.793
+      },
+      {
+        "rank": 9,
+        "player": "Iago Aspas",
+        "primary_team": "Celta Vigo",
+        "goals_involved": 45,
+        "ep_timed": 32.714
+      },
+      {
+        "rank": 10,
+        "player": "Piotr Zieliński",
+        "primary_team": "Napoli",
+        "goals_involved": 44,
+        "ep_timed": 32.658
+      },
+      {
+        "rank": 11,
+        "player": "Jordan Veretout",
+        "primary_team": "Roma",
+        "goals_involved": 38,
+        "ep_timed": 31.072
+      },
+      {
+        "rank": 12,
+        "player": "Harry Kane",
+        "primary_team": "Tottenham",
+        "goals_involved": 43,
+        "ep_timed": 30.769
+      },
+      {
+        "rank": 13,
+        "player": "Martin Ødegaard",
+        "primary_team": "Arsenal",
+        "goals_involved": 50,
+        "ep_timed": 30.176
+      },
+      {
+        "rank": 14,
+        "player": "Ángel Correa",
+        "primary_team": "Atlético Madrid",
+        "goals_involved": 44,
+        "ep_timed": 29.688
+      },
+      {
+        "rank": 15,
+        "player": "Kevin De Bruyne",
+        "primary_team": "Manchester City",
+        "goals_involved": 59,
+        "ep_timed": 29.398
+      },
+      {
+        "rank": 16,
+        "player": "Suso",
+        "primary_team": "Sevilla",
+        "goals_involved": 38,
+        "ep_timed": 29.307
+      },
+      {
+        "rank": 17,
+        "player": "Luis Alberto",
+        "primary_team": "Lazio",
+        "goals_involved": 43,
+        "ep_timed": 28.976
+      },
+      {
+        "rank": 18,
+        "player": "Dimitri Payet",
+        "primary_team": "Marseille",
+        "goals_involved": 35,
+        "ep_timed": 28.931
+      },
+      {
+        "rank": 19,
+        "player": "Riyad Mahrez",
+        "primary_team": "Manchester City",
+        "goals_involved": 46,
+        "ep_timed": 28.743
+      },
+      {
+        "rank": 20,
+        "player": "Paulo Dybala",
+        "primary_team": "Juventus",
+        "goals_involved": 42,
+        "ep_timed": 28.707
+      }
+    ],
+    "per_90_top": {
+      "scope": "Top 5 leagues only",
+      "scope_note": "Per-90 calculations exclude Eredivisie due to unavailable minutes data (FULL_DICT_ROWS.pkl covers Premier League, La Liga, Serie A, Bundesliga, Ligue 1 only).",
+      "min_minutes": 1000,
+      "rows": [
+        {
+          "rank": 1,
+          "player": "Jamie Bynoe-Gittens",
+          "primary_team": "Dortmund",
+          "minutes": 1725,
+          "goals_involved": 11,
+          "ep_timed": 7.829,
+          "ep_per_90": 0.408,
+          "pos": "FW"
+        },
+        {
+          "rank": 2,
+          "player": "Samuel Iling-Junior",
+          "primary_team": "Juventus",
+          "minutes": 1128,
+          "goals_involved": 5,
+          "ep_timed": 4.637,
+          "ep_per_90": 0.37,
+          "pos": "DF"
+        },
+        {
+          "rank": 3,
+          "player": "Ablie Jallow",
+          "primary_team": "Metz",
+          "minutes": 1047,
+          "goals_involved": 5,
+          "ep_timed": 4.211,
+          "ep_per_90": 0.362,
+          "pos": "FW"
+        },
+        {
+          "rank": 4,
+          "player": "Guela Doué",
+          "primary_team": "Rennes",
+          "minutes": 1246,
+          "goals_involved": 5,
+          "ep_timed": 4.632,
+          "ep_per_90": 0.335,
+          "pos": "DF"
+        },
+        {
+          "rank": 5,
+          "player": "Tommy Doyle",
+          "primary_team": "Wolves",
+          "minutes": 1238,
+          "goals_involved": 5,
+          "ep_timed": 4.176,
+          "ep_per_90": 0.304,
+          "pos": "MF"
+        },
+        {
+          "rank": 6,
+          "player": "Naouirou Ahamada",
+          "primary_team": "Stuttgart",
+          "minutes": 2154,
+          "goals_involved": 8,
+          "ep_timed": 7.236,
+          "ep_per_90": 0.302,
+          "pos": "MF"
+        },
+        {
+          "rank": 7,
+          "player": "Yuya Kubo",
+          "primary_team": "Nürnberg",
+          "minutes": 1274,
+          "goals_involved": 3,
+          "ep_timed": 4.226,
+          "ep_per_90": 0.299,
+          "pos": "FW"
+        },
+        {
+          "rank": 8,
+          "player": "Brahim Díaz",
+          "primary_team": "Milan",
+          "minutes": 7049,
+          "goals_involved": 32,
+          "ep_timed": 23.212,
+          "ep_per_90": 0.296,
+          "pos": "MF"
+        },
+        {
+          "rank": 9,
+          "player": "Kostas Mitroglou",
+          "primary_team": "Marseille",
+          "minutes": 1456,
+          "goals_involved": 5,
+          "ep_timed": 4.791,
+          "ep_per_90": 0.296,
+          "pos": "FW"
+        },
+        {
+          "rank": 10,
+          "player": "Arne Engels",
+          "primary_team": "Augsburg",
+          "minutes": 2845,
+          "goals_involved": 9,
+          "ep_timed": 9.271,
+          "ep_per_90": 0.293,
+          "pos": "MF"
+        }
+      ]
+    },
+    "layer_breakdown": [
+      {
+        "player": "Lionel Messi",
+        "primary_team": "Barcelona",
+        "ep_scorer": 84.147,
+        "ep_sca1": 73.605,
+        "ep_sca2": 51.686,
+        "ep_total": 209.438
+      },
+      {
+        "player": "Julian Brandt",
+        "primary_team": "Dortmund",
+        "ep_scorer": 26.099,
+        "ep_sca1": 38.751,
+        "ep_sca2": 40.931,
+        "ep_total": 105.781
+      },
+      {
+        "player": "Kylian Mbappé",
+        "primary_team": "Paris S-G",
+        "ep_scorer": 97.282,
+        "ep_sca1": 57.247,
+        "ep_sca2": 37.552,
+        "ep_total": 192.081
+      },
+      {
+        "player": "Mohamed Salah",
+        "primary_team": "Liverpool",
+        "ep_scorer": 96.581,
+        "ep_sca1": 58.196,
+        "ep_sca2": 37.444,
+        "ep_total": 192.221
+      },
+      {
+        "player": "Nabil Fekir",
+        "primary_team": "Betis",
+        "ep_scorer": 35.241,
+        "ep_sca1": 39.762,
+        "ep_sca2": 34.645,
+        "ep_total": 109.648
+      },
+      {
+        "player": "Joshua Kimmich",
+        "primary_team": "Bayern Munich",
+        "ep_scorer": 10.506,
+        "ep_sca1": 40.805,
+        "ep_sca2": 34.348,
+        "ep_total": 85.659
+      },
+      {
+        "player": "Daniel Parejo",
+        "primary_team": "Valencia",
+        "ep_scorer": 28.229,
+        "ep_sca1": 33.318,
+        "ep_sca2": 32.867,
+        "ep_total": 94.414
+      },
+      {
+        "player": "Bruno Fernandes",
+        "primary_team": "Manchester Utd",
+        "ep_scorer": 39.505,
+        "ep_sca1": 26.619,
+        "ep_sca2": 32.793,
+        "ep_total": 98.917
+      },
+      {
+        "player": "Iago Aspas",
+        "primary_team": "Celta Vigo",
+        "ep_scorer": 71.419,
+        "ep_sca1": 49.144,
+        "ep_sca2": 32.714,
+        "ep_total": 153.277
+      },
+      {
+        "player": "Piotr Zieliński",
+        "primary_team": "Napoli",
+        "ep_scorer": 21.681,
+        "ep_sca1": 28.328,
+        "ep_sca2": 32.658,
+        "ep_total": 82.667
+      },
+      {
+        "player": "Jordan Veretout",
+        "primary_team": "Roma",
+        "ep_scorer": 27.888,
+        "ep_sca1": 17.939,
+        "ep_sca2": 31.072,
+        "ep_total": 76.899
+      },
+      {
+        "player": "Harry Kane",
+        "primary_team": "Tottenham",
+        "ep_scorer": 109.085,
+        "ep_sca1": 41.63,
+        "ep_sca2": 30.769,
+        "ep_total": 181.484
+      },
+      {
+        "player": "Martin Ødegaard",
+        "primary_team": "Arsenal",
+        "ep_scorer": 25.626,
+        "ep_sca1": 30.238,
+        "ep_sca2": 30.176,
+        "ep_total": 86.04
+      },
+      {
+        "player": "Ángel Correa",
+        "primary_team": "Atlético Madrid",
+        "ep_scorer": 38.689,
+        "ep_sca1": 27.325,
+        "ep_sca2": 29.688,
+        "ep_total": 95.702
+      },
+      {
+        "player": "Kevin De Bruyne",
+        "primary_team": "Manchester City",
+        "ep_scorer": 32.569,
+        "ep_sca1": 57.64,
+        "ep_sca2": 29.398,
+        "ep_total": 119.607
+      },
+      {
+        "player": "Suso",
+        "primary_team": "Sevilla",
+        "ep_scorer": 15.051,
+        "ep_sca1": 32.569,
+        "ep_sca2": 29.307,
+        "ep_total": 76.927
+      },
+      {
+        "player": "Luis Alberto",
+        "primary_team": "Lazio",
+        "ep_scorer": 28.465,
+        "ep_sca1": 48.703,
+        "ep_sca2": 28.976,
+        "ep_total": 106.144
+      },
+      {
+        "player": "Dimitri Payet",
+        "primary_team": "Marseille",
+        "ep_scorer": 30.259,
+        "ep_sca1": 41.6,
+        "ep_sca2": 28.931,
+        "ep_total": 100.79
+      },
+      {
+        "player": "Riyad Mahrez",
+        "primary_team": "Manchester City",
+        "ep_scorer": 30.241,
+        "ep_sca1": 36.187,
+        "ep_sca2": 28.743,
+        "ep_total": 95.171
+      },
+      {
+        "player": "Paulo Dybala",
+        "primary_team": "Juventus",
+        "ep_scorer": 55.226,
+        "ep_sca1": 45.102,
+        "ep_sca2": 28.707,
+        "ep_total": 129.035
+      }
+    ]
+  },
+  "q7_young": {
+    "scope": "Top 5 leagues only",
+    "scope_note": "Per-90 calculations exclude Eredivisie due to unavailable minutes data (FULL_DICT_ROWS.pkl covers Premier League, La Liga, Serie A, Bundesliga, Ligue 1 only).",
+    "max_age": 23.0,
+    "min_minutes": 500,
+    "rows": [
+      {
+        "rank": 1,
+        "player": "Malick Fofana",
+        "primary_team": "Lyon",
+        "minutes": 559,
+        "goals_involved": 6,
+        "pos": "FW",
+        "age": 19.13,
+        "ep_timed": 7.755,
+        "ep_per_90": 1.249
+      },
+      {
+        "rank": 2,
+        "player": "Jhon Durán",
+        "primary_team": "Aston Villa",
+        "minutes": 611,
+        "goals_involved": 9,
+        "pos": "FW",
+        "age": 20.43,
+        "ep_timed": 8.421,
+        "ep_per_90": 1.24
+      },
+      {
+        "rank": 3,
+        "player": "Cole Palmer",
+        "primary_team": "Chelsea",
+        "minutes": 3111,
+        "goals_involved": 50,
+        "pos": "FW",
+        "age": 22.04,
+        "ep_timed": 33.983,
+        "ep_per_90": 0.983
+      },
+      {
+        "rank": 4,
+        "player": "Jamie Bynoe-Gittens",
+        "primary_team": "Dortmund",
+        "minutes": 1725,
+        "goals_involved": 23,
+        "pos": "FW",
+        "age": 19.78,
+        "ep_timed": 16.08,
+        "ep_per_90": 0.839
+      },
+      {
+        "rank": 5,
+        "player": "Jamal Musiala",
+        "primary_team": "Bayern Munich",
+        "minutes": 6302,
+        "goals_involved": 95,
+        "pos": "MF",
+        "age": 21.13,
+        "ep_timed": 55.009,
+        "ep_per_90": 0.786
+      },
+      {
+        "rank": 6,
+        "player": "Samuel Iling-Junior",
+        "primary_team": "Juventus",
+        "minutes": 1128,
+        "goals_involved": 11,
+        "pos": "DF",
+        "age": 20.64,
+        "ep_timed": 9.835,
+        "ep_per_90": 0.785
+      },
+      {
+        "rank": 7,
+        "player": "Siriné Doucouré",
+        "primary_team": "Lorient",
+        "minutes": 559,
+        "goals_involved": 7,
+        "pos": "FW",
+        "age": 21.69,
+        "ep_timed": 4.711,
+        "ep_per_90": 0.759
+      },
+      {
+        "rank": 8,
+        "player": "Morgan Rogers",
+        "primary_team": "Aston Villa",
+        "minutes": 638,
+        "goals_involved": 7,
+        "pos": "MF",
+        "age": 21.78,
+        "ep_timed": 5.264,
+        "ep_per_90": 0.743
+      },
+      {
+        "rank": 9,
+        "player": "Youssoufa Moukoko",
+        "primary_team": "Dortmund",
+        "minutes": 2411,
+        "goals_involved": 28,
+        "pos": "FW",
+        "age": 19.47,
+        "ep_timed": 19.856,
+        "ep_per_90": 0.741
+      },
+      {
+        "rank": 10,
+        "player": "Lamine Yamal",
+        "primary_team": "Barcelona",
+        "minutes": 2209,
+        "goals_involved": 23,
+        "pos": "FW",
+        "age": 16.87,
+        "ep_timed": 18.111,
+        "ep_per_90": 0.738
+      }
+    ]
+  }
+}

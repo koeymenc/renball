@@ -1,0 +1,61 @@
+{
+  "meta": {
+    "created_at": "2026-05-23 05:52:26",
+    "leagues": [
+      "Bundesliga",
+      "Eredivisie",
+      "La-Liga",
+      "Ligue-1",
+      "Premier-League",
+      "Serie-A"
+    ],
+    "seasons": [
+      "2017-2018",
+      "2018-2019",
+      "2019-2020",
+      "2020-2021",
+      "2021-2022",
+      "2022-2023",
+      "2023-2024"
+    ]
+  },
+  "scope_note_global": "Per-90 calculations exclude Eredivisie due to unavailable minutes data (FULL_DICT_ROWS.pkl covers Premier League, La Liga, Serie A, Bundesliga, Ligue 1 only).",
+  "views": {
+    "Q1a Full-Credit Leaderboard": {
+      "file": "q1a_full_credit.json",
+      "size_kb": 8.0
+    },
+    "Q1b Weighted-Credit Leaderboard": {
+      "file": "q1b_weighted_credit.json",
+      "size_kb": 11.6
+    },
+    "Q1 Rank Shift (A vs B)": {
+      "file": "q1_rank_shift.json",
+      "size_kb": 2.1
+    },
+    "Q2 MVP Grid": {
+      "file": "q2_mvp_grid.json",
+      "size_kb": 7.3
+    },
+    "Q3 Late-Game Specialists": {
+      "file": "q3_late_game.json",
+      "size_kb": 5.4
+    },
+    "Q4 Efficiency Ratios": {
+      "file": "q4_efficiency.json",
+      "size_kb": 10.6
+    },
+    "Q5 Position-Adjusted": {
+      "file": "q5_position.json",
+      "size_kb": 3.1
+    },
+    "Q6 Hidden Architects (SCA2)": {
+      "file": "q6_architects.json",
+      "size_kb": 6.1
+    },
+    "Q7 Young Players": {
+      "file": "q7_young.json",
+      "size_kb": 1.8
+    }
+  }
+}
