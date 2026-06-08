@@ -1,22 +1,67 @@
 {
-  "_README": "MANUAL POPULATION REQUIRED. This file is a curated lookup of real-world player-of-the-season winners, used to annotate the per-(league, season) MVP grid in project 03's analysis page. The build pipeline does NOT write to this file — keep it source-controlled and edit it by hand. Set `name: null` for cells where no award was given or the winner is unknown. `source` is a short label like 'Ballon d'Or' or 'PFA POTY' or 'Kicker' — used as a tooltip / footnote on the chart.",
-  "_format_example": {
-    "by_league": {
-      "Premier-League": {
-        "2019-2020": { "name": "Kevin De Bruyne", "source": "PFA POTY" }
-      }
-    },
-    "combined_ballon_dor": {
-      "2019-2020": { "name": null, "source": "Ballon d'Or cancelled (COVID)" }
-    }
+  "_meta": {
+    "description": "Real-world end-of-season player awards, for comparison against the model's Q2 per-(league x season) MVP picks. Researched and source-verified against authoritative pages (Wikipedia, BBC Sport, PFA). Player names follow the FBref-cleaned convention used in the dataset so name-equality matching works. Schema: each entry is {winner, award, source} (winner null where no award was given).",
+    "caveats": [
+      "Award definitions differ by league. PL = PFA Players' Player of the Year (voted by professionals). La Liga = La Liga Best Player (LaLiga Awards). Serie A = Serie A MVP (Lega Serie A, since 2018-19) / Serie A Footballer of the Year for 2017-18. Ligue 1 = UNFP Ligue 1 Player of the Year. Bundesliga = German Footballer of the Year, a calendar-year, German-nationality award (voted by journalists) used as a proxy: its winners can play OUTSIDE the Bundesliga (e.g. Kroos/Gundogan at Real Madrid/Man City), so it is NOT a strict Bundesliga-league award.",
+      "Calendar-year awards (Ballon d'Or, German Footballer of the Year) are mapped to the season that ENDS in that year (e.g. 2017-2018 -> 2018 award).",
+      "2019-2020: the Ballon d'Or was cancelled (COVID-19) and the UNFP Ligue 1 ceremony was cancelled (season curtailed)."
+    ],
+    "researched_on": "2026-06"
+  },
+  "combined_ballon_dor": {
+    "2017-2018": {"winner": "Luka Modrić", "award": "Ballon d'Or 2018", "source": "https://en.wikipedia.org/wiki/2018_Ballon_d%27Or"},
+    "2018-2019": {"winner": "Lionel Messi", "award": "Ballon d'Or 2019", "source": "https://en.wikipedia.org/wiki/2019_Ballon_d%27Or"},
+    "2019-2020": {"winner": null, "award": "Ballon d'Or 2020", "note": "Cancelled due to COVID-19", "source": "https://en.wikipedia.org/wiki/Ballon_d%27Or"},
+    "2020-2021": {"winner": "Lionel Messi", "award": "Ballon d'Or 2021", "source": "https://en.wikipedia.org/wiki/2021_Ballon_d%27Or"},
+    "2021-2022": {"winner": "Karim Benzema", "award": "Ballon d'Or 2022", "source": "https://en.wikipedia.org/wiki/2022_Ballon_d%27Or"},
+    "2022-2023": {"winner": "Lionel Messi", "award": "Ballon d'Or 2023", "source": "https://en.wikipedia.org/wiki/2023_Ballon_d%27Or"},
+    "2023-2024": {"winner": "Rodri", "award": "Ballon d'Or 2024", "source": "https://en.wikipedia.org/wiki/2024_Ballon_d%27Or"}
   },
   "by_league": {
-    "Premier-League": {},
-    "Serie-A": {},
-    "Bundesliga": {},
-    "La-Liga": {},
-    "Ligue-1": {},
-    "Eredivisie": {}
-  },
-  "combined_ballon_dor": {}
+    "Premier-League": {
+      "2017-2018": {"winner": "Mohamed Salah", "award": "PFA Players' Player of the Year", "source": "https://www.bbc.co.uk/sport/football/43860354"},
+      "2018-2019": {"winner": "Virgil van Dijk", "award": "PFA Players' Player of the Year", "source": "https://www.bbc.co.uk/sport/football/48065752"},
+      "2019-2020": {"winner": "Kevin De Bruyne", "award": "PFA Players' Player of the Year", "source": "https://www.bbc.co.uk/sport/football/54044861"},
+      "2020-2021": {"winner": "Kevin De Bruyne", "award": "PFA Players' Player of the Year", "source": "https://www.bbc.co.uk/sport/football/57376601"},
+      "2021-2022": {"winner": "Mohamed Salah", "award": "PFA Players' Player of the Year", "source": "https://www.bbc.co.uk/sport/football/61736732"},
+      "2022-2023": {"winner": "Erling Haaland", "award": "PFA Players' Player of the Year", "source": "https://www.bbc.co.uk/sport/football/66650723"},
+      "2023-2024": {"winner": "Phil Foden", "award": "PFA Players' Player of the Year", "source": "https://www.thepfa.com/news/2024/8/20/pfa-awards-players-player-phil-foden"}
+    },
+    "La-Liga": {
+      "2017-2018": {"winner": "Lionel Messi", "award": "La Liga Best Player", "source": "https://en.wikipedia.org/wiki/La_Liga_Awards"},
+      "2018-2019": {"winner": "Lionel Messi", "award": "La Liga Best Player", "source": "https://en.wikipedia.org/wiki/La_Liga_Awards"},
+      "2019-2020": {"winner": "Karim Benzema", "award": "La Liga Best Player", "source": "https://en.wikipedia.org/wiki/La_Liga_Awards"},
+      "2020-2021": {"winner": "Jan Oblak", "award": "La Liga Best Player", "source": "https://en.wikipedia.org/wiki/La_Liga_Awards"},
+      "2021-2022": {"winner": "Karim Benzema", "award": "La Liga Best Player", "source": "https://en.wikipedia.org/wiki/La_Liga_Awards"},
+      "2022-2023": {"winner": "Marc-André ter Stegen", "award": "La Liga Best Player", "source": "https://en.wikipedia.org/wiki/La_Liga_Awards"},
+      "2023-2024": {"winner": "Jude Bellingham", "award": "La Liga Best Player", "source": "https://en.wikipedia.org/wiki/La_Liga_Awards"}
+    },
+    "Serie-A": {
+      "2017-2018": {"winner": "Mauro Icardi", "award": "Serie A Footballer of the Year 2018 (Gran Galà del Calcio)", "source": "https://en.wikipedia.org/wiki/Serie_A_Footballer_of_the_Year"},
+      "2018-2019": {"winner": "Cristiano Ronaldo", "award": "Serie A MVP", "source": "https://en.wikipedia.org/wiki/Serie_A_Awards"},
+      "2019-2020": {"winner": "Paulo Dybala", "award": "Serie A MVP", "source": "https://en.wikipedia.org/wiki/Serie_A_Awards"},
+      "2020-2021": {"winner": "Romelu Lukaku", "award": "Serie A MVP", "source": "https://en.wikipedia.org/wiki/Serie_A_Awards"},
+      "2021-2022": {"winner": "Rafael Leão", "award": "Serie A MVP", "source": "https://en.wikipedia.org/wiki/Serie_A_Awards"},
+      "2022-2023": {"winner": "Khvicha Kvaratskhelia", "award": "Serie A MVP", "source": "https://en.wikipedia.org/wiki/Serie_A_Awards"},
+      "2023-2024": {"winner": "Lautaro Martínez", "award": "Serie A MVP", "source": "https://en.wikipedia.org/wiki/Serie_A_Awards"}
+    },
+    "Bundesliga": {
+      "2017-2018": {"winner": "Toni Kroos", "award": "German Footballer of the Year 2018 (proxy; nationality award)", "source": "https://en.wikipedia.org/wiki/German_Footballer_of_the_Year"},
+      "2018-2019": {"winner": "Marco Reus", "award": "German Footballer of the Year 2019 (proxy; nationality award)", "source": "https://en.wikipedia.org/wiki/German_Footballer_of_the_Year"},
+      "2019-2020": {"winner": "Robert Lewandowski", "award": "German Footballer of the Year 2020 (proxy; nationality award)", "source": "https://en.wikipedia.org/wiki/German_Footballer_of_the_Year"},
+      "2020-2021": {"winner": "Robert Lewandowski", "award": "German Footballer of the Year 2021 (proxy; nationality award)", "source": "https://en.wikipedia.org/wiki/German_Footballer_of_the_Year"},
+      "2021-2022": {"winner": "Christopher Nkunku", "award": "German Footballer of the Year 2022 (proxy; nationality award)", "source": "https://en.wikipedia.org/wiki/German_Footballer_of_the_Year"},
+      "2022-2023": {"winner": "İlkay Gündoğan", "award": "German Footballer of the Year 2023 (proxy; nationality award)", "source": "https://en.wikipedia.org/wiki/German_Footballer_of_the_Year"},
+      "2023-2024": {"winner": "Toni Kroos", "award": "German Footballer of the Year 2024 (proxy; nationality award)", "source": "https://en.wikipedia.org/wiki/German_Footballer_of_the_Year"}
+    },
+    "Ligue-1": {
+      "2017-2018": {"winner": "Neymar", "award": "UNFP Ligue 1 Player of the Year", "source": "https://en.wikipedia.org/wiki/Ligue_1_Player_of_the_Year"},
+      "2018-2019": {"winner": "Kylian Mbappé", "award": "UNFP Ligue 1 Player of the Year", "source": "https://en.wikipedia.org/wiki/Ligue_1_Player_of_the_Year"},
+      "2019-2020": {"winner": null, "award": "UNFP Ligue 1 Player of the Year", "note": "Ceremony cancelled — 2019-20 Ligue 1 curtailed by COVID-19", "source": "https://en.wikipedia.org/wiki/Ligue_1_Player_of_the_Year"},
+      "2020-2021": {"winner": "Kylian Mbappé", "award": "UNFP Ligue 1 Player of the Year", "source": "https://en.wikipedia.org/wiki/Ligue_1_Player_of_the_Year"},
+      "2021-2022": {"winner": "Kylian Mbappé", "award": "UNFP Ligue 1 Player of the Year", "source": "https://en.wikipedia.org/wiki/Ligue_1_Player_of_the_Year"},
+      "2022-2023": {"winner": "Kylian Mbappé", "award": "UNFP Ligue 1 Player of the Year", "source": "https://en.wikipedia.org/wiki/Ligue_1_Player_of_the_Year"},
+      "2023-2024": {"winner": "Kylian Mbappé", "award": "UNFP Ligue 1 Player of the Year", "source": "https://en.wikipedia.org/wiki/Ligue_1_Player_of_the_Year"}
+    }
+  }
 }

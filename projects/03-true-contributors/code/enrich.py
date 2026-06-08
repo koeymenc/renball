@@ -74,6 +74,10 @@ PER_90_SCOPE_NOTE = (
 
 DEFAULT_READY_DATA = r"C:\Users\Can Luca Köymen\OneDrive\Desktop\MONEYBALLYTICS\READY_DATA"
 
+# team -> league lookup (e.g. "Barcelona" -> "La-Liga"), populated by build.py
+# before the Q-builders run so per-90 row records can carry a `league` field.
+TEAM_TO_LEAGUE: dict = {}
+
 
 # ════════════════════════════════════════════════════════════════════════
 # Pickle shim (FULL_DICT_ROWS was pickled under pandas < 2)
@@ -439,6 +443,7 @@ def _row_to_record(r, rank: int, *, weighted: bool = False) -> dict:
         "rank": rank,
         "player": str(r["contributor" if "contributor" in r else "player"]),
         "primary_team": str(r["primary_team"]),
+        "league": TEAM_TO_LEAGUE.get(str(r["primary_team"])),
         "minutes": int(r["minutes"]),
         "goals_involved": int(r["goals_involved"]),
         "pos": (r.get("pos") if pd.notna(r.get("pos")) else None),

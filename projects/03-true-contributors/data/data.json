@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated_at": "2026-05-23 05:52:26",
+    "generated_at": "2026-06-07 22:44:16",
     "leagues": [
       "Bundesliga",
       "Eredivisie",
@@ -32,6 +32,7 @@
         "rank": 1,
         "player": "Lionel Messi",
         "primary_team": "Barcelona",
+        "league": "La-Liga",
         "minutes": 16516,
         "goals_involved": 356,
         "pos": "FW",
@@ -43,6 +44,7 @@
         "rank": 2,
         "player": "Kylian Mbappé",
         "primary_team": "Paris S-G",
+        "league": "Ligue-1",
         "minutes": 16403,
         "goals_involved": 334,
         "pos": "FW",
@@ -54,6 +56,7 @@
         "rank": 3,
         "player": "Neymar",
         "primary_team": "Paris S-G",
+        "league": "Ligue-1",
         "minutes": 9354,
         "goals_involved": 205,
         "pos": "FW",
@@ -65,6 +68,7 @@
         "rank": 4,
         "player": "Cole Palmer",
         "primary_team": "Chelsea",
+        "league": "Premier-League",
         "minutes": 3111,
         "goals_involved": 50,
         "pos": "FW",
@@ -76,6 +80,7 @@
         "rank": 5,
         "player": "Josip Iličić",
         "primary_team": "Atalanta",
+        "league": "Serie-A",
         "minutes": 8176,
         "goals_involved": 139,
         "pos": "FW",
@@ -87,6 +92,7 @@
         "rank": 6,
         "player": "Victor Boniface",
         "primary_team": "Leverkusen",
+        "league": "Bundesliga",
         "minutes": 1546,
         "goals_involved": 29,
         "pos": "FW",
@@ -98,6 +104,7 @@
         "rank": 7,
         "player": "Clinton N'Jie",
         "primary_team": "Marseille",
+        "league": "Ligue-1",
         "minutes": 1238,
         "goals_involved": 20,
         "pos": "FW",
@@ -109,6 +116,7 @@
         "rank": 8,
         "player": "Cristiano Ronaldo",
         "primary_team": "Juventus",
+        "league": "Serie-A",
         "minutes": 13704,
         "goals_involved": 203,
         "pos": "FW",
@@ -120,6 +128,7 @@
         "rank": 9,
         "player": "Georges Mikautadze",
         "primary_team": "Metz",
+        "league": "Ligue-1",
         "minutes": 1756,
         "goals_involved": 21,
         "pos": "FW",
@@ -131,6 +140,7 @@
         "rank": 10,
         "player": "Lucas Beltrán",
         "primary_team": "Fiorentina",
+        "league": "Serie-A",
         "minutes": 1692,
         "goals_involved": 16,
         "pos": "FW",
@@ -142,6 +152,7 @@
         "rank": 11,
         "player": "Erling Haaland",
         "primary_team": "Dortmund",
+        "league": "Bundesliga",
         "minutes": 10702,
         "goals_involved": 193,
         "pos": "FW",
@@ -153,6 +164,7 @@
         "rank": 12,
         "player": "Paulo Dybala",
         "primary_team": "Juventus",
+        "league": "Serie-A",
         "minutes": 13538,
         "goals_involved": 176,
         "pos": "FW",
@@ -164,6 +176,7 @@
         "rank": 13,
         "player": "Ablie Jallow",
         "primary_team": "Metz",
+        "league": "Ligue-1",
         "minutes": 1047,
         "goals_involved": 10,
         "pos": "FW",
@@ -175,6 +188,7 @@
         "rank": 14,
         "player": "Adem Ljajić",
         "primary_team": "Torino",
+        "league": "Serie-A",
         "minutes": 2185,
         "goals_involved": 26,
         "pos": "MF",
@@ -186,6 +200,7 @@
         "rank": 15,
         "player": "Jamie Bynoe-Gittens",
         "primary_team": "Dortmund",
+        "league": "Bundesliga",
         "minutes": 1725,
         "goals_involved": 23,
         "pos": "FW",
@@ -197,6 +212,7 @@
         "rank": 16,
         "player": "Mohamed Salah",
         "primary_team": "Liverpool",
+        "league": "Premier-League",
         "minutes": 20697,
         "goals_involved": 309,
         "pos": "FW",
@@ -208,6 +224,7 @@
         "rank": 17,
         "player": "Robert Lewandowski",
         "primary_team": "Bayern Munich",
+        "league": "Bundesliga",
         "minutes": 18888,
         "goals_involved": 313,
         "pos": "FW",
@@ -219,6 +236,7 @@
         "rank": 18,
         "player": "Paco Alcácer",
         "primary_team": "Dortmund",
+        "league": "Bundesliga",
         "minutes": 5691,
         "goals_involved": 69,
         "pos": "FW",
@@ -230,6 +248,7 @@
         "rank": 19,
         "player": "Artem Dovbyk",
         "primary_team": "Girona",
+        "league": "La-Liga",
         "minutes": 2587,
         "goals_involved": 37,
         "pos": "FW",
@@ -241,6 +260,7 @@
         "rank": 20,
         "player": "Zlatan Ibrahimović",
         "primary_team": "Milan",
+        "league": "Serie-A",
         "minutes": 4123,
         "goals_involved": 55,
         "pos": "FW",
@@ -252,6 +272,7 @@
         "rank": 21,
         "player": "Felipe Caicedo",
         "primary_team": "Lazio",
+        "league": "Serie-A",
         "minutes": 4729,
         "goals_involved": 52,
         "pos": "FW",
@@ -263,6 +284,7 @@
         "rank": 22,
         "player": "Isaac Bernal",
         "primary_team": "Sevilla",
+        "league": "La-Liga",
         "minutes": 1039,
         "goals_involved": 12,
         "pos": "FW",
@@ -274,6 +296,7 @@
         "rank": 23,
         "player": "Harry Kane",
         "primary_team": "Tottenham",
+        "league": "Premier-League",
         "minutes": 20645,
         "goals_involved": 283,
         "pos": "FW",
@@ -285,6 +308,7 @@
         "rank": 24,
         "player": "Jamal Musiala",
         "primary_team": "Bayern Munich",
+        "league": "Bundesliga",
         "minutes": 6302,
         "goals_involved": 95,
         "pos": "MF",
@@ -296,6 +320,7 @@
         "rank": 25,
         "player": "Samuel Iling-Junior",
         "primary_team": "Juventus",
+        "league": "Serie-A",
         "minutes": 1128,
         "goals_involved": 11,
         "pos": "DF",
@@ -307,6 +332,7 @@
         "rank": 26,
         "player": "Karim Benzema",
         "primary_team": "Real Madrid",
+        "league": "La-Liga",
         "minutes": 15769,
         "goals_involved": 216,
         "pos": "FW",
@@ -318,6 +344,7 @@
         "rank": 27,
         "player": "Sasa Kalajdzic",
         "primary_team": "Stuttgart",
+        "league": "Bundesliga",
         "minutes": 4126,
         "goals_involved": 41,
         "pos": "FW",
@@ -329,6 +356,7 @@
         "rank": 28,
         "player": "Jadon Sancho",
         "primary_team": "Dortmund",
+        "league": "Bundesliga",
         "minutes": 12110,
         "goals_involved": 163,
         "pos": "FW",
@@ -340,6 +368,7 @@
         "rank": 29,
         "player": "Luis Suárez",
         "primary_team": "Barcelona",
+        "league": "La-Liga",
         "minutes": 12067,
         "goals_involved": 168,
         "pos": "FW",
@@ -351,6 +380,7 @@
         "rank": 30,
         "player": "Luis Muriel",
         "primary_team": "Atalanta",
+        "league": "Serie-A",
         "minutes": 8889,
         "goals_involved": 131,
         "pos": "FW",
@@ -362,6 +392,7 @@
         "rank": 31,
         "player": "Kostas Mitroglou",
         "primary_team": "Marseille",
+        "league": "Ligue-1",
         "minutes": 1456,
         "goals_involved": 18,
         "pos": "FW",
@@ -373,6 +404,7 @@
         "rank": 32,
         "player": "Memphis",
         "primary_team": "Lyon",
+        "league": "Ligue-1",
         "minutes": 12361,
         "goals_involved": 156,
         "pos": "FW",
@@ -384,6 +416,7 @@
         "rank": 33,
         "player": "Dries Mertens",
         "primary_team": "Napoli",
+        "league": "Serie-A",
         "minutes": 9786,
         "goals_involved": 131,
         "pos": "FW",
@@ -395,6 +428,7 @@
         "rank": 34,
         "player": "Ciro Immobile",
         "primary_team": "Lazio",
+        "league": "Serie-A",
         "minutes": 18144,
         "goals_involved": 248,
         "pos": "FW",
@@ -406,6 +440,7 @@
         "rank": 35,
         "player": "Eden Hazard",
         "primary_team": "Chelsea",
+        "league": "Premier-League",
         "minutes": 7867,
         "goals_involved": 100,
         "pos": "FW",
@@ -417,6 +452,7 @@
         "rank": 36,
         "player": "Mauro Icardi",
         "primary_team": "Inter",
+        "league": "Serie-A",
         "minutes": 8599,
         "goals_involved": 100,
         "pos": "FW",
@@ -428,6 +464,7 @@
         "rank": 37,
         "player": "Dimitri Payet",
         "primary_team": "Marseille",
+        "league": "Ligue-1",
         "minutes": 12025,
         "goals_involved": 132,
         "pos": "FW",
@@ -439,6 +476,7 @@
         "rank": 38,
         "player": "Carlos Vinícius",
         "primary_team": "Fulham",
+        "league": "Premier-League",
         "minutes": 2255,
         "goals_involved": 20,
         "pos": "FW",
@@ -450,6 +488,7 @@
         "rank": 39,
         "player": "Wissam Ben Yedder",
         "primary_team": "Monaco",
+        "league": "Ligue-1",
         "minutes": 16242,
         "goals_involved": 216,
         "pos": "FW",
@@ -461,6 +500,7 @@
         "rank": 40,
         "player": "Manu Vallejo",
         "primary_team": "Valencia",
+        "league": "La-Liga",
         "minutes": 2042,
         "goals_involved": 16,
         "pos": "FW",
@@ -472,6 +512,7 @@
         "rank": 41,
         "player": "Youssoufa Moukoko",
         "primary_team": "Dortmund",
+        "league": "Bundesliga",
         "minutes": 2411,
         "goals_involved": 28,
         "pos": "FW",
@@ -483,6 +524,7 @@
         "rank": 42,
         "player": "Souleymane Camara",
         "primary_team": "Montpellier",
+        "league": "Ligue-1",
         "minutes": 1234,
         "goals_involved": 9,
         "pos": "FW",
@@ -494,6 +536,7 @@
         "rank": 43,
         "player": "Lamine Yamal",
         "primary_team": "Barcelona",
+        "league": "La-Liga",
         "minutes": 2209,
         "goals_involved": 23,
         "pos": "FW",
@@ -505,6 +548,7 @@
         "rank": 44,
         "player": "Riyad Mahrez",
         "primary_team": "Manchester City",
+        "league": "Premier-League",
         "minutes": 11604,
         "goals_involved": 164,
         "pos": "FW",
@@ -516,6 +560,7 @@
         "rank": 45,
         "player": "Ángel Di María",
         "primary_team": "Paris S-G",
+        "league": "Ligue-1",
         "minutes": 11296,
         "goals_involved": 143,
         "pos": "FW",
@@ -527,6 +572,7 @@
         "rank": 46,
         "player": "Kevin De Bruyne",
         "primary_team": "Manchester City",
+        "league": "Premier-League",
         "minutes": 14674,
         "goals_involved": 206,
         "pos": "MF",
@@ -538,6 +584,7 @@
         "rank": 47,
         "player": "Alexis Sánchez",
         "primary_team": "Inter",
+        "league": "Serie-A",
         "minutes": 9818,
         "goals_involved": 122,
         "pos": "FW",
@@ -549,6 +596,7 @@
         "rank": 48,
         "player": "Jermain Defoe",
         "primary_team": "Bournemouth",
+        "league": "Premier-League",
         "minutes": 1113,
         "goals_involved": 8,
         "pos": "FW",
@@ -560,6 +608,7 @@
         "rank": 49,
         "player": "Christopher Nkunku",
         "primary_team": "RB Leipzig",
+        "league": "Bundesliga",
         "minutes": 10667,
         "goals_involved": 149,
         "pos": "FW",
@@ -571,6 +620,7 @@
         "rank": 50,
         "player": "Sargis Adamyan",
         "primary_team": "Hoffenheim",
+        "league": "Bundesliga",
         "minutes": 3001,
         "goals_involved": 28,
         "pos": "FW",
@@ -594,6 +644,7 @@
         "rank": 1,
         "player": "Lionel Messi",
         "primary_team": "Barcelona",
+        "league": "La-Liga",
         "minutes": 16516,
         "goals_involved": 356,
         "pos": "FW",
@@ -608,6 +659,7 @@
         "rank": 2,
         "player": "Kylian Mbappé",
         "primary_team": "Paris S-G",
+        "league": "Ligue-1",
         "minutes": 16403,
         "goals_involved": 334,
         "pos": "FW",
@@ -622,6 +674,7 @@
         "rank": 3,
         "player": "Cole Palmer",
         "primary_team": "Chelsea",
+        "league": "Premier-League",
         "minutes": 3111,
         "goals_involved": 50,
         "pos": "FW",
@@ -636,6 +689,7 @@
         "rank": 4,
         "player": "Victor Boniface",
         "primary_team": "Leverkusen",
+        "league": "Bundesliga",
         "minutes": 1546,
         "goals_involved": 29,
         "pos": "FW",
@@ -650,6 +704,7 @@
         "rank": 5,
         "player": "Clinton N'Jie",
         "primary_team": "Marseille",
+        "league": "Ligue-1",
         "minutes": 1238,
         "goals_involved": 20,
         "pos": "FW",
@@ -664,6 +719,7 @@
         "rank": 6,
         "player": "Neymar",
         "primary_team": "Paris S-G",
+        "league": "Ligue-1",
         "minutes": 9354,
         "goals_involved": 205,
         "pos": "FW",
@@ -678,6 +734,7 @@
         "rank": 7,
         "player": "Cristiano Ronaldo",
         "primary_team": "Juventus",
+        "league": "Serie-A",
         "minutes": 13704,
         "goals_involved": 203,
         "pos": "FW",
@@ -692,6 +749,7 @@
         "rank": 8,
         "player": "Georges Mikautadze",
         "primary_team": "Metz",
+        "league": "Ligue-1",
         "minutes": 1756,
         "goals_involved": 21,
         "pos": "FW",
@@ -706,6 +764,7 @@
         "rank": 9,
         "player": "Josip Iličić",
         "primary_team": "Atalanta",
+        "league": "Serie-A",
         "minutes": 8176,
         "goals_involved": 139,
         "pos": "FW",
@@ -720,6 +779,7 @@
         "rank": 10,
         "player": "Erling Haaland",
         "primary_team": "Dortmund",
+        "league": "Bundesliga",
         "minutes": 10702,
         "goals_involved": 193,
         "pos": "FW",
@@ -734,6 +794,7 @@
         "rank": 11,
         "player": "Robert Lewandowski",
         "primary_team": "Bayern Munich",
+        "league": "Bundesliga",
         "minutes": 18888,
         "goals_involved": 313,
         "pos": "FW",
@@ -748,6 +809,7 @@
         "rank": 12,
         "player": "Artem Dovbyk",
         "primary_team": "Girona",
+        "league": "La-Liga",
         "minutes": 2587,
         "goals_involved": 37,
         "pos": "FW",
@@ -762,6 +824,7 @@
         "rank": 13,
         "player": "Paulo Dybala",
         "primary_team": "Juventus",
+        "league": "Serie-A",
         "minutes": 13538,
         "goals_involved": 176,
         "pos": "FW",
@@ -776,6 +839,7 @@
         "rank": 14,
         "player": "Lucas Beltrán",
         "primary_team": "Fiorentina",
+        "league": "Serie-A",
         "minutes": 1692,
         "goals_involved": 16,
         "pos": "FW",
@@ -790,6 +854,7 @@
         "rank": 15,
         "player": "Mohamed Salah",
         "primary_team": "Liverpool",
+        "league": "Premier-League",
         "minutes": 20697,
         "goals_involved": 309,
         "pos": "FW",
@@ -804,6 +869,7 @@
         "rank": 16,
         "player": "Zlatan Ibrahimović",
         "primary_team": "Milan",
+        "league": "Serie-A",
         "minutes": 4123,
         "goals_involved": 55,
         "pos": "FW",
@@ -818,6 +884,7 @@
         "rank": 17,
         "player": "Felipe Caicedo",
         "primary_team": "Lazio",
+        "league": "Serie-A",
         "minutes": 4729,
         "goals_involved": 52,
         "pos": "FW",
@@ -832,6 +899,7 @@
         "rank": 18,
         "player": "Paco Alcácer",
         "primary_team": "Dortmund",
+        "league": "Bundesliga",
         "minutes": 5691,
         "goals_involved": 69,
         "pos": "FW",
@@ -846,6 +914,7 @@
         "rank": 19,
         "player": "Sasa Kalajdzic",
         "primary_team": "Stuttgart",
+        "league": "Bundesliga",
         "minutes": 4126,
         "goals_involved": 41,
         "pos": "FW",
@@ -860,6 +929,7 @@
         "rank": 20,
         "player": "Harry Kane",
         "primary_team": "Tottenham",
+        "league": "Premier-League",
         "minutes": 20645,
         "goals_involved": 283,
         "pos": "FW",
@@ -874,6 +944,7 @@
         "rank": 21,
         "player": "Isaac Bernal",
         "primary_team": "Sevilla",
+        "league": "La-Liga",
         "minutes": 1039,
         "goals_involved": 12,
         "pos": "FW",
@@ -888,6 +959,7 @@
         "rank": 22,
         "player": "Ablie Jallow",
         "primary_team": "Metz",
+        "league": "Ligue-1",
         "minutes": 1047,
         "goals_involved": 10,
         "pos": "FW",
@@ -902,6 +974,7 @@
         "rank": 23,
         "player": "Adem Ljajić",
         "primary_team": "Torino",
+        "league": "Serie-A",
         "minutes": 2185,
         "goals_involved": 26,
         "pos": "MF",
@@ -916,6 +989,7 @@
         "rank": 24,
         "player": "Karim Benzema",
         "primary_team": "Real Madrid",
+        "league": "La-Liga",
         "minutes": 15769,
         "goals_involved": 216,
         "pos": "FW",
@@ -930,6 +1004,7 @@
         "rank": 25,
         "player": "Luis Suárez",
         "primary_team": "Barcelona",
+        "league": "La-Liga",
         "minutes": 12067,
         "goals_involved": 168,
         "pos": "FW",
@@ -944,6 +1019,7 @@
         "rank": 26,
         "player": "Ciro Immobile",
         "primary_team": "Lazio",
+        "league": "Serie-A",
         "minutes": 18144,
         "goals_involved": 248,
         "pos": "FW",
@@ -958,6 +1034,7 @@
         "rank": 27,
         "player": "Luis Muriel",
         "primary_team": "Atalanta",
+        "league": "Serie-A",
         "minutes": 8889,
         "goals_involved": 131,
         "pos": "FW",
@@ -972,6 +1049,7 @@
         "rank": 28,
         "player": "Memphis",
         "primary_team": "Lyon",
+        "league": "Ligue-1",
         "minutes": 12361,
         "goals_involved": 156,
         "pos": "FW",
@@ -986,6 +1064,7 @@
         "rank": 29,
         "player": "Wissam Ben Yedder",
         "primary_team": "Monaco",
+        "league": "Ligue-1",
         "minutes": 16242,
         "goals_involved": 216,
         "pos": "FW",
@@ -1000,6 +1079,7 @@
         "rank": 30,
         "player": "Mauro Icardi",
         "primary_team": "Inter",
+        "league": "Serie-A",
         "minutes": 8599,
         "goals_involved": 100,
         "pos": "FW",
@@ -1014,6 +1094,7 @@
         "rank": 31,
         "player": "Dries Mertens",
         "primary_team": "Napoli",
+        "league": "Serie-A",
         "minutes": 9786,
         "goals_involved": 131,
         "pos": "FW",
@@ -1028,6 +1109,7 @@
         "rank": 32,
         "player": "Loïs Openda",
         "primary_team": "RB Leipzig",
+        "league": "Bundesliga",
         "minutes": 5214,
         "goals_involved": 70,
         "pos": "FW",
@@ -1042,6 +1124,7 @@
         "rank": 33,
         "player": "Youssoufa Moukoko",
         "primary_team": "Dortmund",
+        "league": "Bundesliga",
         "minutes": 2411,
         "goals_involved": 28,
         "pos": "FW",
@@ -1056,6 +1139,7 @@
         "rank": 34,
         "player": "Jamal Musiala",
         "primary_team": "Bayern Munich",
+        "league": "Bundesliga",
         "minutes": 6302,
         "goals_involved": 95,
         "pos": "MF",
@@ -1070,6 +1154,7 @@
         "rank": 35,
         "player": "Jamie Bynoe-Gittens",
         "primary_team": "Dortmund",
+        "league": "Bundesliga",
         "minutes": 1725,
         "goals_involved": 23,
         "pos": "FW",
@@ -1084,6 +1169,7 @@
         "rank": 36,
         "player": "Deniz Undav",
         "primary_team": "Stuttgart",
+        "league": "Bundesliga",
         "minutes": 2717,
         "goals_involved": 44,
         "pos": "FW",
@@ -1098,6 +1184,7 @@
         "rank": 37,
         "player": "Kostas Mitroglou",
         "primary_team": "Marseille",
+        "league": "Ligue-1",
         "minutes": 1456,
         "goals_involved": 18,
         "pos": "FW",
@@ -1112,6 +1199,7 @@
         "rank": 38,
         "player": "Jadon Sancho",
         "primary_team": "Dortmund",
+        "league": "Bundesliga",
         "minutes": 12110,
         "goals_involved": 163,
         "pos": "FW",
@@ -1126,6 +1214,7 @@
         "rank": 39,
         "player": "Cristhian Stuani",
         "primary_team": "Girona",
+        "league": "La-Liga",
         "minutes": 7333,
         "goals_involved": 76,
         "pos": "FW",
@@ -1140,6 +1229,7 @@
         "rank": 40,
         "player": "Eden Hazard",
         "primary_team": "Chelsea",
+        "league": "Premier-League",
         "minutes": 7867,
         "goals_involved": 100,
         "pos": "FW",
@@ -1154,6 +1244,7 @@
         "rank": 41,
         "player": "Alexandre Lacazette",
         "primary_team": "Arsenal",
+        "league": "Premier-League",
         "minutes": 15505,
         "goals_involved": 174,
         "pos": "FW",
@@ -1168,6 +1259,7 @@
         "rank": 42,
         "player": "Victor Osimhen",
         "primary_team": "Napoli",
+        "league": "Serie-A",
         "minutes": 10677,
         "goals_involved": 115,
         "pos": "FW",
@@ -1182,6 +1274,7 @@
         "rank": 43,
         "player": "Carlos Vinícius",
         "primary_team": "Fulham",
+        "league": "Premier-League",
         "minutes": 2255,
         "goals_involved": 20,
         "pos": "FW",
@@ -1196,6 +1289,7 @@
         "rank": 44,
         "player": "Stevan Jovetić",
         "primary_team": "Monaco",
+        "league": "Ligue-1",
         "minutes": 4336,
         "goals_involved": 52,
         "pos": "FW",
@@ -1210,6 +1304,7 @@
         "rank": 45,
         "player": "Souleymane Camara",
         "primary_team": "Montpellier",
+        "league": "Ligue-1",
         "minutes": 1234,
         "goals_involved": 9,
         "pos": "FW",
@@ -1224,6 +1319,7 @@
         "rank": 46,
         "player": "Dimitri Payet",
         "primary_team": "Marseille",
+        "league": "Ligue-1",
         "minutes": 12025,
         "goals_involved": 132,
         "pos": "FW",
@@ -1238,6 +1334,7 @@
         "rank": 47,
         "player": "Edinson Cavani",
         "primary_team": "Paris S-G",
+        "league": "Ligue-1",
         "minutes": 8447,
         "goals_involved": 105,
         "pos": "FW",
@@ -1252,6 +1349,7 @@
         "rank": 48,
         "player": "Domenico Berardi",
         "primary_team": "Sassuolo",
+        "league": "Serie-A",
         "minutes": 16254,
         "goals_involved": 177,
         "pos": "FW",
@@ -1266,6 +1364,7 @@
         "rank": 49,
         "player": "Andrej Kramarić",
         "primary_team": "Hoffenheim",
+        "league": "Bundesliga",
         "minutes": 15717,
         "goals_involved": 183,
         "pos": "MF",
@@ -1280,6 +1379,7 @@
         "rank": 50,
         "player": "Hugo Ekitike",
         "primary_team": "Reims",
+        "league": "Ligue-1",
         "minutes": 3241,
         "goals_involved": 37,
         "pos": "FW",
@@ -1529,7 +1629,11 @@
             "ep_per_90": 0.92,
             "goals_involved": 23
           },
-          "actual": null
+          "actual": {
+            "winner": "Toni Kroos",
+            "award": "German Footballer of the Year 2018 (proxy; nationality award)",
+            "source": "https://en.wikipedia.org/wiki/German_Footballer_of_the_Year"
+          }
         },
         "2018-2019": {
           "model_pick": {
@@ -1540,7 +1644,11 @@
             "ep_per_90": 1.42,
             "goals_involved": 25
           },
-          "actual": null
+          "actual": {
+            "winner": "Marco Reus",
+            "award": "German Footballer of the Year 2019 (proxy; nationality award)",
+            "source": "https://en.wikipedia.org/wiki/German_Footballer_of_the_Year"
+          }
         },
         "2019-2020": {
           "model_pick": {
@@ -1551,7 +1659,11 @@
             "ep_per_90": 0.983,
             "goals_involved": 49
           },
-          "actual": null
+          "actual": {
+            "winner": "Robert Lewandowski",
+            "award": "German Footballer of the Year 2020 (proxy; nationality award)",
+            "source": "https://en.wikipedia.org/wiki/German_Footballer_of_the_Year"
+          }
         },
         "2020-2021": {
           "model_pick": {
@@ -1562,7 +1674,11 @@
             "ep_per_90": 1.078,
             "goals_involved": 58
           },
-          "actual": null
+          "actual": {
+            "winner": "Robert Lewandowski",
+            "award": "German Footballer of the Year 2021 (proxy; nationality award)",
+            "source": "https://en.wikipedia.org/wiki/German_Footballer_of_the_Year"
+          }
         },
         "2021-2022": {
           "model_pick": {
@@ -1573,7 +1689,11 @@
             "ep_per_90": 1.066,
             "goals_involved": 38
           },
-          "actual": null
+          "actual": {
+            "winner": "Christopher Nkunku",
+            "award": "German Footballer of the Year 2022 (proxy; nationality award)",
+            "source": "https://en.wikipedia.org/wiki/German_Footballer_of_the_Year"
+          }
         },
         "2022-2023": {
           "model_pick": {
@@ -1584,7 +1704,11 @@
             "ep_per_90": 1.03,
             "goals_involved": 30
           },
-          "actual": null
+          "actual": {
+            "winner": "İlkay Gündoğan",
+            "award": "German Footballer of the Year 2023 (proxy; nationality award)",
+            "source": "https://en.wikipedia.org/wiki/German_Footballer_of_the_Year"
+          }
         },
         "2023-2024": {
           "model_pick": {
@@ -1595,7 +1719,11 @@
             "ep_per_90": 1.303,
             "goals_involved": 41
           },
-          "actual": null
+          "actual": {
+            "winner": "Toni Kroos",
+            "award": "German Footballer of the Year 2024 (proxy; nationality award)",
+            "source": "https://en.wikipedia.org/wiki/German_Footballer_of_the_Year"
+          }
         }
       },
       "La-Liga": {
@@ -1608,7 +1736,11 @@
             "ep_per_90": 1.277,
             "goals_involved": 77
           },
-          "actual": null
+          "actual": {
+            "winner": "Lionel Messi",
+            "award": "La Liga Best Player",
+            "source": "https://en.wikipedia.org/wiki/La_Liga_Awards"
+          }
         },
         "2018-2019": {
           "model_pick": {
@@ -1619,7 +1751,11 @@
             "ep_per_90": 1.446,
             "goals_involved": 72
           },
-          "actual": null
+          "actual": {
+            "winner": "Lionel Messi",
+            "award": "La Liga Best Player",
+            "source": "https://en.wikipedia.org/wiki/La_Liga_Awards"
+          }
         },
         "2019-2020": {
           "model_pick": {
@@ -1630,7 +1766,11 @@
             "ep_per_90": 1.206,
             "goals_involved": 62
           },
-          "actual": null
+          "actual": {
+            "winner": "Karim Benzema",
+            "award": "La Liga Best Player",
+            "source": "https://en.wikipedia.org/wiki/La_Liga_Awards"
+          }
         },
         "2020-2021": {
           "model_pick": {
@@ -1641,7 +1781,11 @@
             "ep_per_90": 1.289,
             "goals_involved": 18
           },
-          "actual": null
+          "actual": {
+            "winner": "Jan Oblak",
+            "award": "La Liga Best Player",
+            "source": "https://en.wikipedia.org/wiki/La_Liga_Awards"
+          }
         },
         "2021-2022": {
           "model_pick": {
@@ -1652,7 +1796,11 @@
             "ep_per_90": 1.032,
             "goals_involved": 49
           },
-          "actual": null
+          "actual": {
+            "winner": "Karim Benzema",
+            "award": "La Liga Best Player",
+            "source": "https://en.wikipedia.org/wiki/La_Liga_Awards"
+          }
         },
         "2022-2023": {
           "model_pick": {
@@ -1663,7 +1811,11 @@
             "ep_per_90": 1.211,
             "goals_involved": 26
           },
-          "actual": null
+          "actual": {
+            "winner": "Marc-André ter Stegen",
+            "award": "La Liga Best Player",
+            "source": "https://en.wikipedia.org/wiki/La_Liga_Awards"
+          }
         },
         "2023-2024": {
           "model_pick": {
@@ -1674,7 +1826,11 @@
             "ep_per_90": 1.027,
             "goals_involved": 26
           },
-          "actual": null
+          "actual": {
+            "winner": "Jude Bellingham",
+            "award": "La Liga Best Player",
+            "source": "https://en.wikipedia.org/wiki/La_Liga_Awards"
+          }
         }
       },
       "Ligue-1": {
@@ -1687,7 +1843,11 @@
             "ep_per_90": 1.322,
             "goals_involved": 44
           },
-          "actual": null
+          "actual": {
+            "winner": "Neymar",
+            "award": "UNFP Ligue 1 Player of the Year",
+            "source": "https://en.wikipedia.org/wiki/Ligue_1_Player_of_the_Year"
+          }
         },
         "2018-2019": {
           "model_pick": {
@@ -1698,7 +1858,11 @@
             "ep_per_90": 1.189,
             "goals_involved": 55
           },
-          "actual": null
+          "actual": {
+            "winner": "Kylian Mbappé",
+            "award": "UNFP Ligue 1 Player of the Year",
+            "source": "https://en.wikipedia.org/wiki/Ligue_1_Player_of_the_Year"
+          }
         },
         "2019-2020": {
           "model_pick": {
@@ -1709,7 +1873,12 @@
             "ep_per_90": 1.235,
             "goals_involved": 31
           },
-          "actual": null
+          "actual": {
+            "winner": null,
+            "award": "UNFP Ligue 1 Player of the Year",
+            "note": "Ceremony cancelled — 2019-20 Ligue 1 curtailed by COVID-19",
+            "source": "https://en.wikipedia.org/wiki/Ligue_1_Player_of_the_Year"
+          }
         },
         "2020-2021": {
           "model_pick": {
@@ -1720,7 +1889,11 @@
             "ep_per_90": 1.285,
             "goals_involved": 54
           },
-          "actual": null
+          "actual": {
+            "winner": "Kylian Mbappé",
+            "award": "UNFP Ligue 1 Player of the Year",
+            "source": "https://en.wikipedia.org/wiki/Ligue_1_Player_of_the_Year"
+          }
         },
         "2021-2022": {
           "model_pick": {
@@ -1731,7 +1904,11 @@
             "ep_per_90": 1.205,
             "goals_involved": 68
           },
-          "actual": null
+          "actual": {
+            "winner": "Kylian Mbappé",
+            "award": "UNFP Ligue 1 Player of the Year",
+            "source": "https://en.wikipedia.org/wiki/Ligue_1_Player_of_the_Year"
+          }
         },
         "2022-2023": {
           "model_pick": {
@@ -1742,7 +1919,11 @@
             "ep_per_90": 1.014,
             "goals_involved": 51
           },
-          "actual": null
+          "actual": {
+            "winner": "Kylian Mbappé",
+            "award": "UNFP Ligue 1 Player of the Year",
+            "source": "https://en.wikipedia.org/wiki/Ligue_1_Player_of_the_Year"
+          }
         },
         "2023-2024": {
           "model_pick": {
@@ -1753,7 +1934,11 @@
             "ep_per_90": 1.091,
             "goals_involved": 46
           },
-          "actual": null
+          "actual": {
+            "winner": "Kylian Mbappé",
+            "award": "UNFP Ligue 1 Player of the Year",
+            "source": "https://en.wikipedia.org/wiki/Ligue_1_Player_of_the_Year"
+          }
         }
       },
       "Premier-League": {
@@ -1766,7 +1951,11 @@
             "ep_per_90": 1.171,
             "goals_involved": 65
           },
-          "actual": null
+          "actual": {
+            "winner": "Mohamed Salah",
+            "award": "PFA Players' Player of the Year",
+            "source": "https://www.bbc.co.uk/sport/football/43860354"
+          }
         },
         "2018-2019": {
           "model_pick": {
@@ -1777,7 +1966,11 @@
             "ep_per_90": 1.008,
             "goals_involved": 49
           },
-          "actual": null
+          "actual": {
+            "winner": "Virgil van Dijk",
+            "award": "PFA Players' Player of the Year",
+            "source": "https://www.bbc.co.uk/sport/football/48065752"
+          }
         },
         "2019-2020": {
           "model_pick": {
@@ -1788,7 +1981,11 @@
             "ep_per_90": 0.953,
             "goals_involved": 20
           },
-          "actual": null
+          "actual": {
+            "winner": "Kevin De Bruyne",
+            "award": "PFA Players' Player of the Year",
+            "source": "https://www.bbc.co.uk/sport/football/54044861"
+          }
         },
         "2020-2021": {
           "model_pick": {
@@ -1799,7 +1996,11 @@
             "ep_per_90": 0.976,
             "goals_involved": 49
           },
-          "actual": null
+          "actual": {
+            "winner": "Kevin De Bruyne",
+            "award": "PFA Players' Player of the Year",
+            "source": "https://www.bbc.co.uk/sport/football/57376601"
+          }
         },
         "2021-2022": {
           "model_pick": {
@@ -1810,7 +2011,11 @@
             "ep_per_90": 1.032,
             "goals_involved": 48
           },
-          "actual": null
+          "actual": {
+            "winner": "Mohamed Salah",
+            "award": "PFA Players' Player of the Year",
+            "source": "https://www.bbc.co.uk/sport/football/61736732"
+          }
         },
         "2022-2023": {
           "model_pick": {
@@ -1821,7 +2026,11 @@
             "ep_per_90": 1.043,
             "goals_involved": 28
           },
-          "actual": null
+          "actual": {
+            "winner": "Erling Haaland",
+            "award": "PFA Players' Player of the Year",
+            "source": "https://www.bbc.co.uk/sport/football/66650723"
+          }
         },
         "2023-2024": {
           "model_pick": {
@@ -1832,7 +2041,11 @@
             "ep_per_90": 1.189,
             "goals_involved": 24
           },
-          "actual": null
+          "actual": {
+            "winner": "Phil Foden",
+            "award": "PFA Players' Player of the Year",
+            "source": "https://www.thepfa.com/news/2024/8/20/pfa-awards-players-player-phil-foden"
+          }
         }
       },
       "Serie-A": {
@@ -1845,7 +2058,11 @@
             "ep_per_90": 0.977,
             "goals_involved": 40
           },
-          "actual": null
+          "actual": {
+            "winner": "Mauro Icardi",
+            "award": "Serie A Footballer of the Year 2018 (Gran Galà del Calcio)",
+            "source": "https://en.wikipedia.org/wiki/Serie_A_Footballer_of_the_Year"
+          }
         },
         "2018-2019": {
           "model_pick": {
@@ -1856,7 +2073,11 @@
             "ep_per_90": 0.913,
             "goals_involved": 40
           },
-          "actual": null
+          "actual": {
+            "winner": "Cristiano Ronaldo",
+            "award": "Serie A MVP",
+            "source": "https://en.wikipedia.org/wiki/Serie_A_Awards"
+          }
         },
         "2019-2020": {
           "model_pick": {
@@ -1867,7 +2088,11 @@
             "ep_per_90": 1.2,
             "goals_involved": 51
           },
-          "actual": null
+          "actual": {
+            "winner": "Paulo Dybala",
+            "award": "Serie A MVP",
+            "source": "https://en.wikipedia.org/wiki/Serie_A_Awards"
+          }
         },
         "2020-2021": {
           "model_pick": {
@@ -1878,7 +2103,11 @@
             "ep_per_90": 1.605,
             "goals_involved": 43
           },
-          "actual": null
+          "actual": {
+            "winner": "Romelu Lukaku",
+            "award": "Serie A MVP",
+            "source": "https://en.wikipedia.org/wiki/Serie_A_Awards"
+          }
         },
         "2021-2022": {
           "model_pick": {
@@ -1889,7 +2118,11 @@
             "ep_per_90": 0.905,
             "goals_involved": 37
           },
-          "actual": null
+          "actual": {
+            "winner": "Rafael Leão",
+            "award": "Serie A MVP",
+            "source": "https://en.wikipedia.org/wiki/Serie_A_Awards"
+          }
         },
         "2022-2023": {
           "model_pick": {
@@ -1900,7 +2133,11 @@
             "ep_per_90": 1.068,
             "goals_involved": 29
           },
-          "actual": null
+          "actual": {
+            "winner": "Khvicha Kvaratskhelia",
+            "award": "Serie A MVP",
+            "source": "https://en.wikipedia.org/wiki/Serie_A_Awards"
+          }
         },
         "2023-2024": {
           "model_pick": {
@@ -1911,7 +2148,11 @@
             "ep_per_90": 1.103,
             "goals_involved": 32
           },
-          "actual": null
+          "actual": {
+            "winner": "Lautaro Martínez",
+            "award": "Serie A MVP",
+            "source": "https://en.wikipedia.org/wiki/Serie_A_Awards"
+          }
         }
       }
     },
@@ -1925,7 +2166,11 @@
           "ep_per_90": 1.322,
           "goals_involved": 44
         },
-        "actual_ballon_dor": null
+        "actual_ballon_dor": {
+          "winner": "Luka Modrić",
+          "award": "Ballon d'Or 2018",
+          "source": "https://en.wikipedia.org/wiki/2018_Ballon_d%27Or"
+        }
       },
       "2018-2019": {
         "model_pick": {
@@ -1936,7 +2181,11 @@
           "ep_per_90": 1.446,
           "goals_involved": 72
         },
-        "actual_ballon_dor": null
+        "actual_ballon_dor": {
+          "winner": "Lionel Messi",
+          "award": "Ballon d'Or 2019",
+          "source": "https://en.wikipedia.org/wiki/2019_Ballon_d%27Or"
+        }
       },
       "2019-2020": {
         "model_pick": {
@@ -1947,7 +2196,12 @@
           "ep_per_90": 1.235,
           "goals_involved": 31
         },
-        "actual_ballon_dor": null
+        "actual_ballon_dor": {
+          "winner": null,
+          "award": "Ballon d'Or 2020",
+          "note": "Cancelled due to COVID-19",
+          "source": "https://en.wikipedia.org/wiki/Ballon_d%27Or"
+        }
       },
       "2020-2021": {
         "model_pick": {
@@ -1958,7 +2212,11 @@
           "ep_per_90": 1.605,
           "goals_involved": 43
         },
-        "actual_ballon_dor": null
+        "actual_ballon_dor": {
+          "winner": "Lionel Messi",
+          "award": "Ballon d'Or 2021",
+          "source": "https://en.wikipedia.org/wiki/2021_Ballon_d%27Or"
+        }
       },
       "2021-2022": {
         "model_pick": {
@@ -1969,7 +2227,11 @@
           "ep_per_90": 1.205,
           "goals_involved": 68
         },
-        "actual_ballon_dor": null
+        "actual_ballon_dor": {
+          "winner": "Karim Benzema",
+          "award": "Ballon d'Or 2022",
+          "source": "https://en.wikipedia.org/wiki/2022_Ballon_d%27Or"
+        }
       },
       "2022-2023": {
         "model_pick": {
@@ -1980,7 +2242,11 @@
           "ep_per_90": 1.211,
           "goals_involved": 26
         },
-        "actual_ballon_dor": null
+        "actual_ballon_dor": {
+          "winner": "Lionel Messi",
+          "award": "Ballon d'Or 2023",
+          "source": "https://en.wikipedia.org/wiki/2023_Ballon_d%27Or"
+        }
       },
       "2023-2024": {
         "model_pick": {
@@ -1991,7 +2257,11 @@
           "ep_per_90": 1.303,
           "goals_involved": 41
         },
-        "actual_ballon_dor": null
+        "actual_ballon_dor": {
+          "winner": "Rodri",
+          "award": "Ballon d'Or 2024",
+          "source": "https://en.wikipedia.org/wiki/2024_Ballon_d%27Or"
+        }
       }
     }
   },
@@ -3070,6 +3340,7 @@
             "rank": 1,
             "player": "Samuel Iling-Junior",
             "primary_team": "Juventus",
+            "league": "Serie-A",
             "minutes": 1128,
             "goals_involved": 11,
             "pos": "DF",
@@ -3081,6 +3352,7 @@
             "rank": 2,
             "player": "Álex Grimaldo",
             "primary_team": "Leverkusen",
+            "league": "Bundesliga",
             "minutes": 2784,
             "goals_involved": 31,
             "pos": "DF",
@@ -3092,6 +3364,7 @@
             "rank": 3,
             "player": "Maximilian Wittek",
             "primary_team": "Bochum",
+            "league": "Bundesliga",
             "minutes": 1070,
             "goals_involved": 10,
             "pos": "DF",
@@ -3103,6 +3376,7 @@
             "rank": 4,
             "player": "Raphaël Guerreiro",
             "primary_team": "Dortmund",
+            "league": "Bundesliga",
             "minutes": 11903,
             "goals_involved": 97,
             "pos": "DF",
@@ -3114,6 +3388,7 @@
             "rank": 5,
             "player": "Guela Doué",
             "primary_team": "Rennes",
+            "league": "Ligue-1",
             "minutes": 1246,
             "goals_involved": 8,
             "pos": "DF",
@@ -3129,6 +3404,7 @@
             "rank": 1,
             "player": "Adem Ljajić",
             "primary_team": "Torino",
+            "league": "Serie-A",
             "minutes": 2185,
             "goals_involved": 26,
             "pos": "MF",
@@ -3140,6 +3416,7 @@
             "rank": 2,
             "player": "Jamal Musiala",
             "primary_team": "Bayern Munich",
+            "league": "Bundesliga",
             "minutes": 6302,
             "goals_involved": 95,
             "pos": "MF",
@@ -3151,6 +3428,7 @@
             "rank": 3,
             "player": "Kevin De Bruyne",
             "primary_team": "Manchester City",
+            "league": "Premier-League",
             "minutes": 14674,
             "goals_involved": 206,
             "pos": "MF",
@@ -3162,6 +3440,7 @@
             "rank": 4,
             "player": "Andrej Kramarić",
             "primary_team": "Hoffenheim",
+            "league": "Bundesliga",
             "minutes": 15717,
             "goals_involved": 183,
             "pos": "MF",
@@ -3173,6 +3452,7 @@
             "rank": 5,
             "player": "Kamory Doumbia",
             "primary_team": "Brest",
+            "league": "Ligue-1",
             "minutes": 2386,
             "goals_involved": 22,
             "pos": "MF",
@@ -3188,6 +3468,7 @@
             "rank": 1,
             "player": "Lionel Messi",
             "primary_team": "Barcelona",
+            "league": "La-Liga",
             "minutes": 16516,
             "goals_involved": 356,
             "pos": "FW",
@@ -3199,6 +3480,7 @@
             "rank": 2,
             "player": "Kylian Mbappé",
             "primary_team": "Paris S-G",
+            "league": "Ligue-1",
             "minutes": 16403,
             "goals_involved": 334,
             "pos": "FW",
@@ -3210,6 +3492,7 @@
             "rank": 3,
             "player": "Neymar",
             "primary_team": "Paris S-G",
+            "league": "Ligue-1",
             "minutes": 9354,
             "goals_involved": 205,
             "pos": "FW",
@@ -3221,6 +3504,7 @@
             "rank": 4,
             "player": "Cole Palmer",
             "primary_team": "Chelsea",
+            "league": "Premier-League",
             "minutes": 3111,
             "goals_involved": 50,
             "pos": "FW",
@@ -3232,6 +3516,7 @@
             "rank": 5,
             "player": "Josip Iličić",
             "primary_team": "Atalanta",
+            "league": "Serie-A",
             "minutes": 8176,
             "goals_involved": 139,
             "pos": "FW",
@@ -3667,6 +3952,7 @@
         "rank": 1,
         "player": "Malick Fofana",
         "primary_team": "Lyon",
+        "league": "Ligue-1",
         "minutes": 559,
         "goals_involved": 6,
         "pos": "FW",
@@ -3678,6 +3964,7 @@
         "rank": 2,
         "player": "Jhon Durán",
         "primary_team": "Aston Villa",
+        "league": "Premier-League",
         "minutes": 611,
         "goals_involved": 9,
         "pos": "FW",
@@ -3689,6 +3976,7 @@
         "rank": 3,
         "player": "Cole Palmer",
         "primary_team": "Chelsea",
+        "league": "Premier-League",
         "minutes": 3111,
         "goals_involved": 50,
         "pos": "FW",
@@ -3700,6 +3988,7 @@
         "rank": 4,
         "player": "Jamie Bynoe-Gittens",
         "primary_team": "Dortmund",
+        "league": "Bundesliga",
         "minutes": 1725,
         "goals_involved": 23,
         "pos": "FW",
@@ -3711,6 +4000,7 @@
         "rank": 5,
         "player": "Jamal Musiala",
         "primary_team": "Bayern Munich",
+        "league": "Bundesliga",
         "minutes": 6302,
         "goals_involved": 95,
         "pos": "MF",
@@ -3722,6 +4012,7 @@
         "rank": 6,
         "player": "Samuel Iling-Junior",
         "primary_team": "Juventus",
+        "league": "Serie-A",
         "minutes": 1128,
         "goals_involved": 11,
         "pos": "DF",
@@ -3733,6 +4024,7 @@
         "rank": 7,
         "player": "Siriné Doucouré",
         "primary_team": "Lorient",
+        "league": "Ligue-1",
         "minutes": 559,
         "goals_involved": 7,
         "pos": "FW",
@@ -3744,6 +4036,7 @@
         "rank": 8,
         "player": "Morgan Rogers",
         "primary_team": "Aston Villa",
+        "league": "Premier-League",
         "minutes": 638,
         "goals_involved": 7,
         "pos": "MF",
@@ -3755,6 +4048,7 @@
         "rank": 9,
         "player": "Youssoufa Moukoko",
         "primary_team": "Dortmund",
+        "league": "Bundesliga",
         "minutes": 2411,
         "goals_involved": 28,
         "pos": "FW",
@@ -3766,6 +4060,7 @@
         "rank": 10,
         "player": "Lamine Yamal",
         "primary_team": "Barcelona",
+        "league": "La-Liga",
         "minutes": 2209,
         "goals_involved": 23,
         "pos": "FW",

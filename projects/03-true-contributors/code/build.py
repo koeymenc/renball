@@ -291,6 +291,19 @@ def main() -> None:
     three_layer_all_top5 = ctx["three_layer_top5_totals"][2]
     actual_mvps = _load_actual_mvps()
 
+    # Team -> league lookup so per-90 row records can carry a `league` field
+    # (used by the Q1a editorial table). A team maps to one league in this
+    # dataset; take the modal league if a name ever appears under two.
+    ge = ctx["goal_events_all"]
+    if {"scoring_team", "league"}.issubset(ge.columns):
+        enrich.TEAM_TO_LEAGUE = (
+            ge.dropna(subset=["scoring_team", "league"])
+              .groupby("scoring_team")["league"]
+              .agg(lambda s: s.value_counts().index[0])
+              .to_dict()
+        )
+        print(f"  team->league map: {len(enrich.TEAM_TO_LEAGUE)} teams")
+
     q1a = enrich.build_q1a_full_credit(three_layer_all_top5, player_meta)
     q1b = enrich.build_q1b_weighted_credit(weighted["weighted_top5_pooled"],
                                               player_meta)

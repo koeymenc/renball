@@ -155,6 +155,21 @@
     font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.1em;
     color: var(--accent);
   }
+  table.mvp-grid td.match {
+    background: var(--accent-glow);
+    box-shadow: inset 0 0 0 1px var(--accent-dim);
+  }
+  table.mvp-grid td .actual-line {
+    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.04em;
+    margin-top: 0.45rem; padding-top: 0.4rem; border-top: 1px solid var(--border);
+    line-height: 1.4;
+  }
+  table.mvp-grid td .actual-line.match { color: var(--accent); font-weight: 500; }
+  table.mvp-grid td .actual-line.diff { color: var(--text-secondary); }
+  table.mvp-grid td .actual-line.diff .dnote {
+    display: block; color: var(--text-muted); font-size: 0.92em; opacity: 0.8; margin-top: 0.1rem;
+  }
+  table.mvp-grid td .actual-line.none { color: var(--text-muted); font-style: italic; }
 
   /* ── Position panels (Q5) ── */
   .pos-grid {
@@ -350,6 +365,36 @@
     display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0;
   }
 
+  /* ── Sortable data table (Q1a) ── */
+  .data-table-wrap { overflow-x: auto; margin: 0.5rem 0 1.5rem; }
+  table.data-table {
+    width: 100%; border-collapse: collapse;
+    font-family: var(--sans); font-size: 0.82rem;
+  }
+  table.data-table thead th {
+    background: var(--bg-elevated); color: var(--text-secondary);
+    font-family: var(--mono); font-weight: 500; font-size: 0.62rem;
+    letter-spacing: 0.07em; text-transform: uppercase;
+    padding: 0.6rem 0.7rem; text-align: right; cursor: pointer;
+    border-bottom: 1px solid var(--accent-dim); white-space: nowrap;
+    user-select: none; transition: color 0.15s;
+  }
+  table.data-table thead th:first-child,
+  table.data-table thead th.left { text-align: left; }
+  table.data-table thead th:hover { color: var(--accent); }
+  table.data-table thead th .arrow { color: var(--accent); font-size: 0.7em; margin-left: 0.25em; }
+  table.data-table tbody td {
+    padding: 0.5rem 0.7rem; text-align: right; border-bottom: 1px solid var(--border);
+    font-variant-numeric: tabular-nums; color: var(--text-secondary);
+  }
+  table.data-table tbody td.left { text-align: left; }
+  table.data-table tbody td.player { color: var(--text); font-weight: 500; }
+  table.data-table tbody td.ep90 { color: var(--accent); font-family: var(--mono); }
+  table.data-table tbody tr:hover { background: var(--bg-card-hover); }
+  table.data-table tbody tr.half-season td { font-style: italic; color: var(--text-muted); }
+  table.data-table tbody tr.half-season td.player { color: var(--text-secondary); }
+  table.data-table tbody tr.half-season td.ep90 { color: var(--accent-dim); }
+
   @media (max-width: 900px) {
     .pos-grid { grid-template-columns: 1fr; }
     .ratio-grid { grid-template-columns: 1fr; }
@@ -377,12 +422,16 @@
   </div>
   <h1>The True <em>Contributors</em>.</h1>
   <p class="lede">
-    The standard scoreboard is generous to the prolific and unkind to the subtle. Goals and assists get
-    name-checked; pre-assists, late equalisers and high-leverage build-up play disappear into the squad page.
-    This project applies the <strong>expected-points value model from <a href="../02-points-by-gamestate/analysis.html" style="color: var(--accent);">project 02</a></strong>
-    to seven seasons of Europe's six biggest leagues — and credits <strong>three</strong> touchpoints
-    per goal (scorer, assist-creator, pre-assist-creator) — to find the players the box score systematically
-    undervalues.
+    <strong>Not all goals are created equal.</strong> A 90th-minute equaliser is worth far more to a team's
+    season than a fifth-minute opener in a 4–0 win — yet the scoreboard counts them the same. So how do you
+    price every goal correctly? We calculated the <strong>expected league points</strong> each goal produced —
+    based on the game state and the minute it was scored — then summed every player's contribution across the
+    three players who build a goal: the scorer, the assist-creator and the pre-assist-creator. The result is a
+    per-90 rate that captures <strong>value created, not just events counted</strong>, and surfaces the players
+    the box score systematically undervalues.
+    <span style="display:block; margin-top:1.1rem; font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.04em;">
+      <a href="../02-points-by-gamestate/analysis.html" style="color: var(--accent);">Full methodology and value model documented in Project 02 →</a>
+    </span>
   </p>
 </header>
 
@@ -428,11 +477,14 @@
 <section class="proj">
   <h2>1 · The framework</h2>
   <p>
-    For every goal in the dataset, project 02 computes <strong>expected points (EP) collected</strong> — the
-    swing in win/draw/loss probability before and after the goal, conditioned on the scoreline and the minute
-    bin. A late equaliser is worth almost a full league point; a 4–0 consolation, almost nothing. This project
-    extends that credit to <strong>three</strong> roles per goal — the scorer, the assist-creator (SCA1) and
-    the pre-assist-creator (SCA2) — then asks who the model elevates that the box score does not.
+    Here is the mechanism in one paragraph. For every goal, we compute <strong>expected points (EP)
+    collected</strong> — how much that goal lifted its team's expected final league points, given the
+    scoreline and the 15-minute window it arrived in. A late equaliser is worth almost a full league point; a
+    4–0 consolation, almost nothing. We then credit that EP to <strong>three</strong> roles per goal — the
+    scorer, the assist-creator (SCA1) and the pre-assist-creator (SCA2) — sum it per player, and divide by
+    minutes played to get a per-90 rate. Then we ask who the model elevates that the box score does not. The
+    value function itself is built and validated in
+    <a href="../02-points-by-gamestate/analysis.html" style="color: var(--accent);">project 02</a>.
   </p>
 </section>
 
@@ -456,6 +508,14 @@
       Top 15 by EP per 90, three-layer credit (scorer + SCA1 + SCA2 each = 1). ≥ 1,000 minutes played.
       <span class="scope">Top 5 leagues only — Eredivisie excluded for minutes-data unavailability.</span>
     </div>
+  </div>
+
+  <div class="chart-caption" style="margin-top: 1.5rem;">
+    Top 15 by EP per 90 (≥ 1,000 minutes, top-5 leagues). Half-season picks (italic) shown for transparency.
+    Click any column header to re-sort.
+  </div>
+  <div class="data-table-wrap">
+    <table id="q1a-table" class="data-table"></table>
   </div>
 
   <h2 style="margin-top: 3rem;">Does weighting the credits change the answer?</h2>
@@ -482,23 +542,27 @@
 
 <!-- ── 3 · Q2 MVP grid ── -->
 <section class="proj">
-  <h2>3 · The model's MVPs, season by season</h2>
+  <h2>3 · The model's MVPs vs the actual winners</h2>
   <p>
-    For every (league × season) cell, the top EP per 90 player who cleared 1,000 minutes. The
-    highlighted cell is the one we want to draw attention to: <strong>Nicolas Jackson at Villarreal in
-    2022-23</strong>. The model named him Europe's most-valuable per-90 player a year before Chelsea
-    paid £30m+ for him. There are five more cells like that on the grid where the model's pick is unusual —
-    Bayern's Lewandowski only takes the Bundesliga title once, Liverpool's Salah twice, and the 5-league
-    Ballon d'Or model pick in 2020-21 is Luis Muriel at Atalanta. Not what the trophy actually said.
+    For every (league × season) cell, the model's top EP-per-90 player who cleared 1,000 minutes — shown
+    against the <strong>real end-of-season award winner</strong> for that league. The model rewards
+    high-leverage value per minute, not reputation, so the two rarely line up: where they do, the cell turns
+    green with a <strong>✓ MATCH</strong>. The cell to dwell on is <strong>Nicolas Jackson at Villarreal in
+    2022-23</strong> — the model named him La Liga's most-valuable per-90 player a year before Chelsea paid
+    £30m+ for him, while the actual award went elsewhere. The 5-league column compares the model's combined
+    pick against the <strong>Ballon d'Or</strong>.
   </p>
+  <div id="mvp-summary" class="sub-finding">Calculating model-vs-actual agreement…</div>
   <div class="grid-wrap">
     <table class="mvp-grid" id="mvp-grid"></table>
   </div>
   <div class="chart-caption">
-    Each cell: model's top EP-per-90 pick that season. ≥ 1,000 minutes played in that league-season.
-    <span class="scope">Top 5 leagues only.</span>
-    Where <code style="color: var(--accent);">data/static/actual_mvps.json</code> has the real award winner,
-    the cell carries a "Model = Actual" tick. Otherwise no annotation. Highlighted cell = featured pick.
+    Each cell: the model's top EP-per-90 pick (≥ 1,000 minutes in that league-season) above the real award
+    winner. <span class="scope">Top 5 leagues only.</span>
+    Awards (sources in <code style="color: var(--accent);">data/static/actual_mvps.json</code>): PFA Players'
+    Player of the Year (PL), La Liga Best Player, Serie A MVP, UNFP (Ligue 1), German Footballer of the Year
+    (Bundesliga proxy), Ballon d'Or (5-league column). Hover a cell for the exact award + source. Bordered
+    cell = featured pick (Jackson).
   </div>
 </section>
 
@@ -526,9 +590,22 @@
 <section class="proj">
   <h2>5 · Efficiency ratios</h2>
   <p>
-    Two ways a player can be "efficient" in this framework: their <strong>EP per credit</strong> (do they
-    score high-leverage goals?) and their <strong>time-aware multiplier</strong> (how much does the model
-    upgrade them vs the time-blind baseline?). Both filtered to ≥ 20 credits to keep the noise out.
+    Two ways a player can be "efficient" in this framework — both filtered to ≥ 20 credits to keep the noise
+    out.
+  </p>
+  <p style="margin-bottom: 0.5rem;">
+    <strong style="color: var(--accent); font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.08em;">Q4A · EP PER CREDIT</strong><br>
+    How much value did each contribution create on average? Imagine two players with 20 goal contributions
+    each — Player A scored mostly in 4–0 blowouts and 0–4 hammerings (low EP per credit), Player B scored
+    consistently in tight matches where every goal mattered (high EP per credit). This ratio identifies the
+    players whose contributions consistently land in high-stakes moments.
+  </p>
+  <p>
+    <strong style="color: var(--accent); font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.08em;">Q4B · TIME-AWARE MULTIPLIER</strong><br>
+    The model values the same goal differently depending on when it happens — a 90th-minute equaliser is worth
+    more than a 5th-minute opener. This ratio compares each player's time-aware EP to a time-blind version. A
+    player with a 1.40 multiplier scored 40% more valuably than they would have if all goals were treated
+    equally. These are the late-moment specialists.
   </p>
   <div class="ratio-grid">
     <div class="chart-wrap" style="margin: 0;">
@@ -578,10 +655,18 @@
 <section class="proj marquee">
   <h2>7 · The Hidden <em>Architects</em></h2>
   <p>
-    Here is the discovery. <strong>SCA2</strong> — the pre-assist-creator, the player whose pass set up the
-    pass that set up the goal — is the layer of contribution football's mainstream stats rarely credit. The
-    model does. Stack the top 10 SCA2 EP collectors and segment each bar by where their EP came from
-    (scorer / SCA1 / SCA2 in three colours), and one player is structurally different from everyone else.
+    In football data, every goal has three credited contributors: the <strong>goalscorer</strong> (the player
+    who shot), the <strong>assist provider (SCA1)</strong> — the player whose action directly created the shot
+    — and the <strong>pre-assist (SCA2)</strong> — the player two actions before the shot. Traditional stats
+    stop at goals + assists. SCA2 captures the deep-lying creators, the playmakers-before-the-playmakers —
+    players whose passes lead to passes that lead to goals.
+  </p>
+  <p>
+    Most elite forwards score and assist — <strong>Mbappé collects 80% of his EP from these two roles</strong>.
+    But a different kind of contributor lives almost entirely in the SCA2 layer: the hidden architects whose
+    value traditional metrics ignore. Stack the top 10 SCA2 EP collectors, segment each bar by where their EP
+    came from (scorer / SCA1 / SCA2 in three colours), and one player is structurally different from everyone
+    else.
   </p>
   <div class="chart-wrap" style="margin: 2rem 0;">
     <canvas id="chart-q6-stack"></canvas>
@@ -730,8 +815,28 @@
   (function renderQ1a() {
     const rows = data.q1a_full_credit.rows.slice(0, 15);
     const bg = muteByMinutes(rows, 'minutes', C.primary);
+    // Inline plugin: draw the EP/90 value at the end of each bar.
+    const barValueLabels = {
+      id: 'q1aBarValueLabels',
+      afterDatasetsDraw(chart) {
+        const ctx = chart.ctx;
+        const meta = chart.getDatasetMeta(0);
+        ctx.save();
+        ctx.font = '600 11px ' + tok.mono;
+        ctx.fillStyle = tok.textSecondary;
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'left';
+        meta.data.forEach((bar, i) => {
+          const v = chart.data.datasets[0].data[i];
+          if (v == null) return;
+          ctx.fillText(Number(v).toFixed(3), bar.x + 6, bar.y);
+        });
+        ctx.restore();
+      },
+    };
     new Chart(document.getElementById('chart-q1a'), {
       type: 'bar',
+      plugins: [barValueLabels],
       data: {
         labels: rows.map(shortLabel),
         datasets: [{
@@ -744,7 +849,7 @@
       options: {
         indexAxis: 'y',
         aspectRatio: 1.15,
-        layout: { padding: { bottom: 12, left: 12 } },
+        layout: { padding: { bottom: 12, left: 12, right: 52 } },
         plugins: {
           title: { display: true, text: 'EP per 90 · full credit · top 15' },
           legend: { display: false },
@@ -772,6 +877,83 @@
         },
       },
     });
+  })();
+
+  // ──────────────────────────────────────────────────────
+  // Section 2 · Q1a sortable data table (mirrors the bar chart top 15)
+  // ──────────────────────────────────────────────────────
+  (function renderQ1aTable() {
+    const HALF = 3600;
+    const rows = data.q1a_full_credit.rows.slice(0, 15).map(r => ({
+      rank: r.rank,
+      player: r.player,
+      team: r.primary_team,
+      league: (r.league || '').replace(/-/g, ' ') || '—',
+      pos: r.pos || '—',
+      age: r.age != null ? r.age : null,
+      minutes: r.minutes,
+      credits: r.goals_involved,
+      ep: r.ep_timed,
+      ep90: r.ep_per_90,
+    }));
+    const cols = [
+      { key: 'rank',    label: '#',       align: 'left', int: true },
+      { key: 'player',  label: 'Player',  align: 'left', cls: 'player' },
+      { key: 'team',    label: 'Team',    align: 'left' },
+      { key: 'league',  label: 'League',  align: 'left' },
+      { key: 'pos',     label: 'Pos',     align: 'left' },
+      { key: 'age',     label: 'Age',     dp: 1 },
+      { key: 'minutes', label: 'Minutes', int: true },
+      { key: 'credits', label: 'Credits', int: true },
+      { key: 'ep',      label: 'Total EP', dp: 2 },
+      { key: 'ep90',    label: 'EP/90',   dp: 3, cls: 'ep90' },
+    ];
+    const table = document.getElementById('q1a-table');
+    if (!table) return;
+    const textKeys = new Set(['player', 'team', 'league', 'pos']);
+    let sortKey = 'ep90', sortDir = -1;
+
+    function fmt(c, v) {
+      if (v == null || v === '') return '—';
+      if (c.int) return Number(v).toLocaleString();
+      if (c.dp != null) return Number(v).toFixed(c.dp);
+      return v;
+    }
+    function render() {
+      const sorted = [...rows].sort((a, b) => {
+        const av = a[sortKey], bv = b[sortKey];
+        if (av == null) return 1;
+        if (bv == null) return -1;
+        if (typeof av === 'number' && typeof bv === 'number') return (av - bv) * sortDir;
+        return String(av).localeCompare(String(bv)) * sortDir;
+      });
+      let html = '<thead><tr>';
+      for (const c of cols) {
+        const arrow = c.key === sortKey ? `<span class="arrow">${sortDir < 0 ? '▾' : '▴'}</span>` : '';
+        html += `<th data-key="${c.key}" class="${c.align === 'left' ? 'left' : ''}">${c.label}${arrow}</th>`;
+      }
+      html += '</tr></thead><tbody>';
+      for (const r of sorted) {
+        const half = r.minutes != null && r.minutes < HALF;
+        html += `<tr class="${half ? 'half-season' : ''}">`;
+        for (const c of cols) {
+          const cls = [c.align === 'left' ? 'left' : '', c.cls || ''].filter(Boolean).join(' ');
+          html += `<td class="${cls}">${fmt(c, r[c.key])}</td>`;
+        }
+        html += '</tr>';
+      }
+      html += '</tbody>';
+      table.innerHTML = html;
+      table.querySelectorAll('th').forEach(th => {
+        th.addEventListener('click', () => {
+          const k = th.getAttribute('data-key');
+          if (k === sortKey) sortDir *= -1;
+          else { sortKey = k; sortDir = textKeys.has(k) ? 1 : -1; }
+          render();
+        });
+      });
+    }
+    render();
   })();
 
   // ──────────────────────────────────────────────────────
@@ -854,60 +1036,75 @@
     const seasons = data.q2_mvp_grid.seasons;
     const combined = data.q2_mvp_grid.combined_5l;
 
-    // Highlight: Jackson, 2022-2023, La-Liga
-    function isSpotlight(league, season, pick) {
+    function isJackson(season, pick) {
       return pick && pick.player === 'Nicolas Jackson' && season === '2022-2023';
+    }
+    const esc = (s) => String(s).replace(/"/g, '&quot;');
+
+    let matches = 0, comparable = 0;
+
+    // Build one cell from a model pick + an actual-winner record.
+    function cell(pick, actual, jackson) {
+      if (!pick) return '<td class="empty">no qualifier</td>';
+      const winner = actual && actual.winner;
+      const isMatch = !!(winner && winner === pick.player);
+      if (winner) { comparable++; if (isMatch) matches++; }
+
+      const award = actual && actual.award ? actual.award : '';
+      const src = actual && actual.source ? actual.source : '';
+      const titleAttr = winner
+        ? ` title="Actual: ${esc(winner)} — ${esc(award)}${src ? ' (' + esc(src) + ')' : ''}"`
+        : (actual && actual.note ? ` title="${esc(actual.note)}"` : '');
+
+      let actualLine;
+      if (!actual) {
+        actualLine = '<div class="actual-line none">no award data</div>';
+      } else if (!winner) {
+        actualLine = `<div class="actual-line none">no award${actual.note ? ' (' + (actual.note.includes('ancel') ? 'cancelled' : 'n/a') + ')' : ''}</div>`;
+      } else if (isMatch) {
+        actualLine = `<div class="actual-line match">✓ MATCH · ${winner}</div>`;
+      } else {
+        actualLine = `<div class="actual-line diff">Actual: ${winner}<span class="dnote">model differed</span></div>`;
+      }
+
+      const cls = [jackson ? 'spotlight' : '', isMatch ? 'match' : ''].filter(Boolean).join(' ');
+      return `<td class="${cls}"${titleAttr}>
+        <span class="player">${pick.player}</span>
+        <div class="team-line">${pick.primary_team} · ${pick.minutes.toLocaleString()} min</div>
+        <div class="ep-val">${pick.ep_per_90.toFixed(3)} EP/90</div>
+        ${actualLine}
+      </td>`;
     }
 
     const t = document.getElementById('mvp-grid');
     let html = '<thead><tr><th class="season-col">Season</th>';
     for (const lg of leagues) html += `<th>${lg.replace('-', ' ')}</th>`;
-    html += `<th style="background: var(--accent-glow); color: var(--accent);">5L COMBINED</th></tr></thead><tbody>`;
+    html += `<th style="background: var(--accent-glow); color: var(--accent);">5L · Ballon d'Or</th></tr></thead><tbody>`;
 
     for (const s of seasons) {
       html += `<tr><th>${s}</th>`;
       for (const lg of leagues) {
-        const cell = (grid[lg] || {})[s];
-        const pick = cell && cell.model_pick;
-        const actual = cell && cell.actual;
-        if (!pick) { html += '<td class="empty">no qualifier</td>'; continue; }
-        const spotClass = isSpotlight(lg, s, pick) ? 'spotlight' : '';
-        const actualMatch = actual && actual.name && actual.name === pick.player;
-        const actualHTML = actualMatch
-          ? `<div style="color: var(--accent); font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.08em; margin-top: 0.3rem;">✓ MATCHES ${actual.source || 'AWARD'}</div>`
-          : (actual && actual.name
-              ? `<div style="color: var(--text-muted); font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.06em; margin-top: 0.3rem;">actual: ${actual.name}</div>`
-              : '');
-        html += `<td class="${spotClass}">
-          <span class="player">${pick.player}</span>
-          <div class="team-line">${pick.primary_team} · ${pick.minutes.toLocaleString()} min</div>
-          <div class="ep-val">${pick.ep_per_90.toFixed(3)} EP/90</div>
-          ${actualHTML}
-        </td>`;
+        const c = (grid[lg] || {})[s];
+        const pick = c && c.model_pick;
+        html += cell(pick, c && c.actual, isJackson(s, pick));
       }
-      // Combined column
-      const ccell = combined[s];
-      const cpick = ccell && ccell.model_pick;
-      const cactual = ccell && ccell.actual_ballon_dor;
-      if (!cpick) { html += '<td class="empty">—</td>'; }
-      else {
-        const cMatch = cactual && cactual.name && cactual.name === cpick.player;
-        const cActualHTML = cMatch
-          ? `<div style="color: var(--accent); font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.08em; margin-top: 0.3rem;">✓ BALLON D'OR MATCH</div>`
-          : (cactual && cactual.name
-              ? `<div style="color: var(--text-muted); font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.06em; margin-top: 0.3rem;">actual: ${cactual.name}</div>`
-              : '');
-        html += `<td style="background: var(--accent-glow);">
-          <span class="player">${cpick.player}</span>
-          <div class="team-line">${cpick.primary_team} · ${cpick.minutes.toLocaleString()} min</div>
-          <div class="ep-val">${cpick.ep_per_90.toFixed(3)} EP/90</div>
-          ${cActualHTML}
-        </td>`;
-      }
+      const cc = combined[s];
+      html += cell(cc && cc.model_pick, cc && cc.actual_ballon_dor, false);
       html += '</tr>';
     }
     html += '</tbody>';
     t.innerHTML = html;
+
+    // Dynamic agreement summary (counts every cell where an award was given)
+    const pct = comparable ? Math.round((matches / comparable) * 100) : 0;
+    const sum = document.getElementById('mvp-summary');
+    if (sum) {
+      sum.innerHTML =
+        `The model's per-90 MVP pick matched the real award winner in ` +
+        `<strong>${matches} of ${comparable}</strong> cells where an award was given ` +
+        `(<strong>${pct}%</strong>). The model prices high-leverage value per minute, not reputation — ` +
+        `so divergence is the expected result, and the whole point of the exercise.`;
+    }
   })();
 
   // ──────────────────────────────────────────────────────

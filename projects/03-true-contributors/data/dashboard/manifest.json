@@ -1,6 +1,6 @@
 {
   "meta": {
-    "created_at": "2026-05-23 05:52:26",
+    "created_at": "2026-06-07 22:44:16",
     "leagues": [
       "Bundesliga",
       "Eredivisie",
@@ -23,11 +23,11 @@
   "views": {
     "Q1a Full-Credit Leaderboard": {
       "file": "q1a_full_credit.json",
-      "size_kb": 8.0
+      "size_kb": 9.0
     },
     "Q1b Weighted-Credit Leaderboard": {
       "file": "q1b_weighted_credit.json",
-      "size_kb": 11.6
+      "size_kb": 12.6
     },
     "Q1 Rank Shift (A vs B)": {
       "file": "q1_rank_shift.json",
@@ -35,7 +35,7 @@
     },
     "Q2 MVP Grid": {
       "file": "q2_mvp_grid.json",
-      "size_kb": 7.3
+      "size_kb": 12.6
     },
     "Q3 Late-Game Specialists": {
       "file": "q3_late_game.json",
@@ -47,7 +47,7 @@
     },
     "Q5 Position-Adjusted": {
       "file": "q5_position.json",
-      "size_kb": 3.1
+      "size_kb": 3.4
     },
     "Q6 Hidden Architects (SCA2)": {
       "file": "q6_architects.json",
@@ -55,7 +55,7 @@
     },
     "Q7 Young Players": {
       "file": "q7_young.json",
-      "size_kb": 1.8
+      "size_kb": 2.0
     }
   }
 }

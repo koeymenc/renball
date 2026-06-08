@@ -190,9 +190,34 @@ def slide_q1b_robustness(prs, d):
         caption="Full rank-shift table on the dashboard · Q1 Rank Shift (A vs B)")
 
 
+def _q2_agreement(d):
+    """Count cells where the model's pick == the real award winner."""
+    grid = d["q2_mvp_grid"]["grid"]
+    comb = d["q2_mvp_grid"]["combined_5l"]
+    matches = comparable = 0
+    for seasons in grid.values():
+        for cell in seasons.values():
+            mp = cell.get("model_pick")
+            w = (cell.get("actual") or {}).get("winner")
+            if mp and w:
+                comparable += 1
+                if mp["player"] == w:
+                    matches += 1
+    for cell in comb.values():
+        mp = cell.get("model_pick")
+        w = (cell.get("actual_ballon_dor") or {}).get("winner")
+        if mp and w:
+            comparable += 1
+            if mp["player"] == w:
+                matches += 1
+    pct = round(matches / comparable * 100) if comparable else 0
+    return matches, comparable, pct
+
+
 def slide_q2_mvps(prs, d):
     jackson = d["q2_mvp_grid"]["grid"]["La-Liga"]["2022-2023"]["model_pick"]
     muriel = d["q2_mvp_grid"]["combined_5l"]["2020-2021"]["model_pick"]
+    m, n, pct = _q2_agreement(d)
     R.add_two_column_slide(
         prs,
         "The model's MVPs, *season by season*",
@@ -214,7 +239,8 @@ def slide_q2_mvps(prs, d):
                     f"cabinet recorded.",
         },
         eyebrow="Q2 · PER-SEASON MVPs",
-        caption="Top EP/90 pick per (league × season), ≥ 1,000 minutes in that league-season. Top-5 only.")
+        caption=f"Model's top EP/90 pick per (league × season) vs the real award winner — matched in "
+                f"{m} of {n} cells ({pct}%). The model prices leverage, not reputation. Top-5 only.")
 
 
 def slide_q3_late(prs, d):
