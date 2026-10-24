@@ -2,7 +2,7 @@
 build_slides.py — Renball Project 01 slide builder
 ===================================================
 
-Generates a 12-slide 16:9 deck for the penalty conversion project. All
+Generates a 13-slide 16:9 deck for the penalty conversion project. All
 numbers are pulled from ../data/data.json so the deck stays in sync
 with the build.
 
@@ -38,7 +38,7 @@ OUTPUT_PPTX = PROJECT_DIR / "slides.pptx"
 # Slide content
 # ════════════════════════════════════════════════════════════════════════
 def slide_title(prs, d):
-    date_str = (d.get("generated_at") or "")[:7] or "May 2026"
+    date_str = "May 2026"
     R.add_title_slide(
         prs,
         title="Should the Fouled Player Take the Penalty *Himself*?",
@@ -64,8 +64,8 @@ def slide_tldr(prs, d):
          f"One-tailed two-proportion z-test. Treatment n = {t['attempts']} "
          f"({t['rate']}%). Control n = {c['attempts']:,} ({c['rate']}%)."),
         ("THE RESULT",
-         f"Δ = {tst['rate_diff_pp']:+.2f} pp (predicted direction) but "
-         f"p = {tst['p_value']:.3f}, one-tailed — fail to reject H₀ at the available power."),
+         f"Δ = {tst['rate_diff_pp']:+.2f} pp (95% CI {tst['diff_ci_lo']:+.1f} to {tst['diff_ci_hi']:+.1f}) — "
+         f"predicted direction, but p = {tst['p_value']:.3f}, one-tailed: fail to reject H₀."),
     ]
     y = R.BODY_TOP
     for label, body in rows:
@@ -105,7 +105,7 @@ def slide_data(prs, d):
 
     stats = [
         (f"{d['overall']['attempts']:,}",            "PENALTIES (LOOSE FILTER)"),
-        (f"{d['metadata']['n_matches_strict']:,}",   "SINGLE-PENALTY MATCHES"),
+        (f"{d['metadata']['n_linked']:,}",           "LINKED PENALTIES"),
         (f"{t_n:,}",                                  "TREATMENT-CELL N"),
         (str(len(d["metadata"]["leagues"])),         "LEAGUES"),
     ]
@@ -130,8 +130,8 @@ def slide_data(prs, d):
                "Source: FBref player-match data, consolidated locally as FULL_DICT_ROWS.pkl.",
                font=R.SANS, size=13, color=R.TEXT_SECONDARY)
     R.add_text(s, R.BODY_LEFT, R.CAPTION_TOP, R.BODY_MAX_W, 0.3,
-               "Strict filter = matches with at most one penalty event "
-               "(unambiguous GK-caused / taker-was-fouled attribution).",
+               "Linked = the team took exactly one penalty in the match, so taker, "
+               "fouled player and conceder are unambiguous.",
                font=R.MONO, size=10, color=R.TEXT_MUTED)
 
 
@@ -142,15 +142,15 @@ def slide_method(prs, d):
         left={
             "label": "TREATMENT",
             "title": "GK fouled the taker",
-            "body": "Matches where the goalkeeper conceded the foul AND the fouled "
-                    "player is the same player who took the penalty.",
+            "body": "Penalties where the goalkeeper conceded the foul AND the fouled "
+                    "player took the penalty himself.",
             "accent": True,
         },
         right={
             "label": "CONTROL",
             "title": "All other penalties",
-            "body": "Every other strict-filter match — GK fouled but a different player took, "
-                    "or outfielder caused the foul (any taker).",
+            "body": "Every other linked penalty — GK conceded but someone else took it, "
+                    "outfielder conceded (any taker), or no foul recorded (e.g. handball).",
         },
         eyebrow="METHOD",
         caption="H₀: conversion_treatment = conversion_control   ·   "
@@ -286,8 +286,8 @@ def slide_primary(prs, d):
                font=R.MONO, size=11, color=R.ACCENT)
 
     R.add_text(s, R.BODY_LEFT, R.CAPTION_TOP, R.BODY_MAX_W, 0.3,
-               "Whiskers: 95% Wilson confidence intervals. "
-               "Treatment CI is wide — n is the binding constraint.",
+               f"Whiskers: 95% Wilson CIs. Difference 95% CI {tst['diff_ci_lo']:+.1f} to "
+               f"{tst['diff_ci_hi']:+.1f} pp; smallest detectable drop ≈ {tst['mde_pp']:.1f} pp (80% power).",
                font=R.MONO, size=10, color=R.TEXT_MUTED)
 
 
@@ -409,9 +409,10 @@ def slide_per_league(prs, d):
                    align=PP_ALIGN.RIGHT)
         y += 0.5
 
+    md = d["metadata"]
     R.add_text(s, R.BODY_LEFT, R.CAPTION_TOP, R.BODY_MAX_W, 0.3,
-               "Per-league treatment cells of 13–25 leave each test severely underpowered — "
-               "pooled is the only inference to take seriously.",
+               f"Treatment cells of {md['treatment_n_by_league_min']}–{md['treatment_n_by_league_max']} per league: "
+               "five uncorrected, underpowered tests — the pooled test is the inference.",
                font=R.MONO, size=10, color=R.TEXT_MUTED)
 
 
@@ -437,7 +438,8 @@ def slide_conclusion(prs, d):
                f"Conversion is {diff_abs:.2f} pp {direction} when the fouled player takes the kick himself "
                f"({t['rate']:.2f}% vs {c['rate']:.2f}% for everyone else). The point estimate moves in the "
                "predicted direction, but the treatment cell is too small to rule chance out "
-               f"(p = {tst['p_value']:.3f}, one-tailed).",
+               f"(p = {tst['p_value']:.3f}, one-tailed). With {t['attempts']} such penalties the design only "
+               f"reliably detects a drop of about {tst['mde_pp']:.1f} pp or more.",
                font=R.SANS, size=15, color=R.TEXT_SECONDARY)
 
     R.add_text(s, R.BODY_LEFT, R.BODY_TOP + 3.4, R.BODY_MAX_W, 1.2,

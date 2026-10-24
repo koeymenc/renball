@@ -3,18 +3,23 @@ build.py — Penalty conversion after a goalkeeper foul
 ─────────────────────────────────────────────────────
 
 Loads FULL_DICT_ROWS from the local READY_DATA folder, combines the
-SPECIALS + SUMMARY DataFrames per competition, restricts to clean
-single-penalty matches, and writes every number needed by the dashboard
-to ../data/data.json.
+SPECIALS + SUMMARY DataFrames per competition, links every penalty to its
+own taker, fouled player and conceder, and writes every number needed by
+the dashboard to ../data/data.json.
+
+Unit of analysis: one penalty. A team's penalty is linked when that team
+took exactly one penalty in the match — the taker (PKatt) and the fouled
+player (PKwon) are then on that team, the conceder (PKcon) on the other.
 
 Primary test (one-tailed):
-    Treatment = matches where the GK committed the foul AND the player
-                who was fouled then took the penalty (the "hurt taker").
-    Control   = every other penalty in the strict-filter universe.
+    Treatment = linked penalties where the GK conceded the foul AND the
+                fouled player took the penalty himself (the "hurt taker").
+    Control   = every other linked penalty.
     H0: conversion_treatment = conversion_control
     H1: conversion_treatment < conversion_control       (one-tailed)
     Test: statsmodels.proportions_ztest(alternative='smaller')
-          + Wilson 95% CIs on each proportion
+          + Wilson 95% CIs on each proportion, Newcombe 95% CI on the
+          difference, minimum detectable effect at 80% power
 
 Secondary outputs: per-league breakdown of the same test, the 2x2
 matrix of (GK foul x taker-was-fouled-player) for visual context, and
@@ -33,8 +38,12 @@ import os
 from datetime import datetime, timezone
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
-from statsmodels.stats.proportion import proportion_confint, proportions_ztest
+from statsmodels.stats.power import NormalIndPower
+from statsmodels.stats.proportion import (
+    confint_proportions_2indep, proportion_confint, proportion_effectsize, proportions_ztest,
+)
 
 # ── Config ─────────────────────────────────────────────────
 DEFAULT_DATA_PATH = r"C:\Users\Can Luca Köymen\OneDrive\Desktop\MONEYBALLYTICS\READY_DATA"
@@ -81,12 +90,21 @@ PEN_COLS = ["Performance_PK", "Performance_PKatt", "Performance_PKwon", "Perform
 
 MATRIX_LABELS = {
     "gk_won":    "GK fouled the player who then took the penalty",  # treatment cell
-    "gk_other":  "GK fouled, but a different player took the penalty",
+    "gk_other":  "GK conceded, the taker was not the fouled player",
     "ngk_won":   "Outfielder fouled, fouled player took the penalty",
-    "ngk_other": "Outfielder fouled, a different player took the penalty",
+    "ngk_other": "Outfielder conceded, the taker was not the fouled player",
 }
 
 CONTROL_KEYS = ["gk_other", "ngk_won", "ngk_other"]
+
+# Why an attempt can't be tied to one taker / fouled player / conceder
+EXCLUDE_REASONS = {
+    "multi":       "team took 2+ penalties in the match",
+    "no_con":      "no conceder recorded",
+    "multi_con":   "opponent recorded 2+ conceded penalties",
+    "multi_won":   "2+ players credited with winning it",
+    "no_opponent": "opponent rows missing",
+}
 
 
 # ── Data prep ──────────────────────────────────────────────
@@ -127,13 +145,6 @@ def loose_pen_match_ids(df: pd.DataFrame):
     return df.loc[(df[PEN_COLS] != 0).any(axis=1), "match_id"].unique()
 
 
-def strict_pen_match_ids(df: pd.DataFrame):
-    max_per_match = df.groupby("match_id")[PEN_COLS].max()
-    return max_per_match[
-        (max_per_match <= 1).all(axis=1) & (max_per_match > 0).any(axis=1)
-    ].index
-
-
 def rate_pct(conv: int, att: int) -> float:
     return (conv / att * 100.0) if att else 0.0
 
@@ -147,26 +158,68 @@ def empty_cells() -> dict:
     return {k: {"label": v, "attempts": 0, "conversions": 0} for k, v in MATRIX_LABELS.items()}
 
 
-def accumulate_cells_from_df(df: pd.DataFrame, cells: dict) -> None:
-    """Walk one league's strict-filtered DataFrame and add to the 4 matrix cells."""
-    for _mid, grp in df.groupby("match_id"):
-        caused_by_gk = grp[(grp["Performance_PKcon"] == 1) & (grp["Pos"] == "GK")]
-        not_caused_by_gk = grp[(grp["Performance_PKcon"] == 1) & (grp["Pos"] != "GK")]
-        taker_won = grp[(grp["Performance_PKatt"] == 1) & (grp["Performance_PKwon"] == 1)]
-        taker_not_won = grp[(grp["Performance_PKatt"] == 1) & (grp["Performance_PKwon"] == 0)]
+def link_penalties(df: pd.DataFrame, league: str) -> tuple[pd.DataFrame, dict]:
+    """One row per penalty tied to its own taker, fouled player and conceder.
 
-        if not caused_by_gk.empty and not taker_won.empty:
-            cells["gk_won"]["attempts"] += len(taker_won)
-            cells["gk_won"]["conversions"] += int(taker_won["Performance_PK"].sum())
-        if not caused_by_gk.empty and not taker_not_won.empty:
-            cells["gk_other"]["attempts"] += len(taker_not_won)
-            cells["gk_other"]["conversions"] += int(taker_not_won["Performance_PK"].sum())
-        if not not_caused_by_gk.empty and not taker_won.empty:
-            cells["ngk_won"]["attempts"] += len(taker_won)
-            cells["ngk_won"]["conversions"] += int(taker_won["Performance_PK"].sum())
-        if not not_caused_by_gk.empty and not taker_not_won.empty:
-            cells["ngk_other"]["attempts"] += len(taker_not_won)
-            cells["ngk_other"]["conversions"] += int(taker_not_won["Performance_PK"].sum())
+    Works per (match, team): when a team took exactly one penalty in a match,
+    its taker and fouled player are on that team and the conceder is the one
+    opponent row with PKcon = 1. Returns the linked penalties and the number
+    of attempts left unlinked, by EXCLUDE_REASONS key.
+    """
+    d = df[df["match_id"].isin(loose_pen_match_ids(df))].copy()
+    d[PEN_COLS] = d[PEN_COLS].fillna(0).astype(int)
+    teams = d.groupby("match_id")["team_id"].unique()
+    rows_by_team = {k: g for k, g in d.groupby(["match_id", "team_id"])}
+
+    linked, excluded = [], {k: 0 for k in EXCLUDE_REASONS}
+    for (mid, tid), grp in rows_by_team.items():
+        att = int(grp["Performance_PKatt"].sum())
+        if att == 0:
+            continue
+        others = [t for t in teams[mid] if t != tid]
+        if len(others) != 1:
+            excluded["no_opponent"] += att
+            continue
+        if att >= 2:
+            excluded["multi"] += att
+            continue
+        opp = rows_by_team[(mid, others[0])]
+        conceders = opp[opp["Performance_PKcon"] > 0]
+        n_con = int(conceders["Performance_PKcon"].sum())
+        if n_con == 0:
+            excluded["no_con"] += 1
+            continue
+        if n_con >= 2:
+            excluded["multi_con"] += 1
+            continue
+        winners = grp[grp["Performance_PKwon"] > 0]
+        if int(winners["Performance_PKwon"].sum()) >= 2:
+            excluded["multi_won"] += 1
+            continue
+        taker = grp[grp["Performance_PKatt"] == 1].iloc[0]
+        won_by = "none" if winners.empty else ("taker" if winners.iloc[0]["Player"] == taker["Player"] else "other")
+        linked.append({
+            "match_id": mid, "team_id": tid, "league": league, "season": str(taker["Season"]),
+            "taker": taker["Player"], "scored": int(taker["Performance_PK"]),
+            "conceder_gk": bool(conceders.iloc[0]["Pos"] == "GK"), "won_by": won_by,
+        })
+    return pd.DataFrame(linked), excluded
+
+
+def cells_from_linked(L: pd.DataFrame) -> dict:
+    """The 2x2 of (GK conceded) x (taker was the fouled player), one entry per penalty."""
+    cells = empty_cells()
+    taker_won = L["won_by"] == "taker"
+    masks = {
+        "gk_won":    L["conceder_gk"] & taker_won,
+        "gk_other":  L["conceder_gk"] & ~taker_won,
+        "ngk_won":   ~L["conceder_gk"] & taker_won,
+        "ngk_other": ~L["conceder_gk"] & ~taker_won,
+    }
+    for key, mask in masks.items():
+        cells[key]["attempts"] = int(mask.sum())
+        cells[key]["conversions"] = int(L.loc[mask, "scored"].sum())
+    return finalize_cells(cells)
 
 
 def finalize_cells(cells: dict) -> dict:
@@ -182,10 +235,20 @@ def proportion_block(att: int, conv: int) -> dict:
     return {
         "attempts": att,
         "conversions": conv,
+        "misses": att - conv,
         "rate": round(rate_pct(conv, att), 2),
         "ci_lo": round(float(lo) * 100, 2),
         "ci_hi": round(float(hi) * 100, 2),
     }
+
+
+def mde_pp(p_control: float, n_t: int, n_c: int, power: float = 0.80, alpha: float = 0.05) -> float | None:
+    """Smallest one-tailed drop (pp) below the control rate detectable at the given power."""
+    for drop in np.arange(0.005, 0.5, 0.0005):
+        es = proportion_effectsize(p_control, p_control - drop)
+        if NormalIndPower().power(es, nobs1=n_t, alpha=alpha, ratio=n_c / n_t, alternative="larger") >= power:
+            return round(float(drop) * 100, 2)
+    return None
 
 
 def primary_from_cells(cells: dict, label: str, code: str | None = None) -> dict:
@@ -206,11 +269,14 @@ def primary_from_cells(cells: dict, label: str, code: str | None = None) -> dict
         }
     else:
         z, p = proportions_ztest([t_conv, c_conv], [t_att, c_att], alternative="smaller")
+        d_lo, d_hi = confint_proportions_2indep(t_conv, t_att, c_conv, c_att, method="newcomb")
         test = {
             "z_stat": round(float(z), 4),
             "p_value": round(float(p), 6),
             "significant_at_05": bool(p < 0.05),
             "rate_diff_pp": round(treatment["rate"] - control["rate"], 4),
+            "diff_ci_lo": round(float(d_lo) * 100, 2),   # Newcombe 95% CI, treatment − control, pp
+            "diff_ci_hi": round(float(d_hi) * 100, 2),
             "alternative": "smaller (one-tailed)",
         }
 
@@ -236,9 +302,6 @@ def main() -> None:
 
     loose_ids = {c: list(loose_pen_match_ids(df)) for c, df in combined.items()}
     loose_dfs = {c: df[df["match_id"].isin(loose_ids[c])] for c, df in combined.items()}
-
-    strict_ids = {c: list(strict_pen_match_ids(df)) for c, df in combined.items()}
-    strict_dfs = {c: df[df["match_id"].isin(strict_ids[c])] for c, df in combined.items()}
 
     # ── Descriptive (loose filter) ────────────────────────
     overall_att, overall_conv = 0, 0
@@ -271,21 +334,25 @@ def main() -> None:
         for row in season_summary.itertuples()
     ]
 
-    # ── 2×2 matrix (strict filter) ────────────────────────
-    pooled_cells = empty_cells()
-    per_league_cells: dict[str, dict] = {}
+    # ── Penalty-level linkage ─────────────────────────────
+    linked_parts, excluded = [], {k: 0 for k in EXCLUDE_REASONS}
     for league in leagues:
-        league_cells = empty_cells()
-        accumulate_cells_from_df(strict_dfs[league], league_cells)
-        finalize_cells(league_cells)
-        per_league_cells[league] = league_cells
-        accumulate_cells_from_df(strict_dfs[league], pooled_cells)
-    finalize_cells(pooled_cells)
+        part, why = link_penalties(combined[league], league)
+        linked_parts.append(part)
+        for k, v in why.items():
+            excluded[k] += v
+    L = pd.concat(linked_parts, ignore_index=True)
+    n_linked = len(L)
+    print(f"[OK] Linked {n_linked} of {overall_att} penalties; unlinked: {excluded}")
+
+    # ── 2×2 matrix (linked penalties) ─────────────────────
+    pooled_cells = cells_from_linked(L)
+    per_league_cells = {league: cells_from_linked(L[L["league"] == league]) for league in leagues}
 
     matrix_block = {
         "rows": [
             {"key": "won",   "label": "Taker = the player who was fouled"},
-            {"key": "other", "label": "Taker = a different player"},
+            {"key": "other", "label": "Taker = not the fouled player (incl. handballs)"},
         ],
         "cols": [
             {"key": "gk",  "label": "Goalkeeper caused the foul"},
@@ -309,12 +376,16 @@ def main() -> None:
     primary["h1_alt"] = "Treatment conversion rate is LOWER than control (one-tailed)."
     primary["treatment"]["label"] = "GK fouled the taker (hurt-taker cell)"
     primary["control"]["label"] = "All other penalties (3 cells pooled)"
+    primary["pooled"] = proportion_block(n_linked, int(L["scored"].sum()))
+    t_blk, c_blk = primary["treatment"], primary["control"]
+    primary["test"]["mde_pp"] = mde_pp(c_blk["conversions"] / c_blk["attempts"], t_blk["attempts"], c_blk["attempts"])
 
     primary_by_league = []
     for league in leagues:
         block = primary_from_cells(per_league_cells[league], LEAGUE_LABELS.get(league, league), code=league)
         primary_by_league.append(block)
     primary["by_league"] = primary_by_league
+    t_by_league = [b["treatment"]["attempts"] for b in primary_by_league]
 
     # ── Payload ───────────────────────────────────────────
     payload = {
@@ -323,12 +394,19 @@ def main() -> None:
             "leagues": [{"code": c, "label": LEAGUE_LABELS.get(c, c)} for c in leagues],
             "seasons": [s["season"] for s in by_season],
             "n_matches_loose": sum(len(v) for v in loose_ids.values()),
-            "n_matches_strict": sum(len(v) for v in strict_ids.values()),
+            "n_penalties_total": overall_att,
+            "n_linked": n_linked,
+            "n_matches_linked": int(L["match_id"].nunique()),
+            "linked_share_pct": round(n_linked / overall_att * 100, 1),
+            "n_unlinked": overall_att - n_linked,
+            "unlinked": {k: {"label": EXCLUDE_REASONS[k], "attempts": v} for k, v in excluded.items()},
+            "treatment_n_by_league_min": min(t_by_league),
+            "treatment_n_by_league_max": max(t_by_league),
             "filter_note": (
                 "Descriptive stats (overall, by_league, by_season) use the loose filter — "
                 "any match with a non-zero penalty event. The primary test and 2x2 matrix "
-                "use the strict filter — matches where every penalty column has max <= 1, "
-                "i.e. single-penalty matches with unambiguous attribution."
+                "use linked penalties — one row per penalty whose taker, fouled player and "
+                "conceder are unambiguous (the team took exactly one penalty in that match)."
             ),
         },
         "overall": {
@@ -356,10 +434,9 @@ def main() -> None:
           f"95% CI [{t['ci_lo']}%, {t['ci_hi']}%]")
     print(f"  Control   (all other penalties):  {c['conversions']}/{c['attempts']} = {c['rate']}%  "
           f"95% CI [{c['ci_lo']}%, {c['ci_hi']}%]")
-    print(f"  diff = {test['rate_diff_pp']:+.2f} pp   z = {test['z_stat']:+.4f}   "
-          f"p (one-tailed) = {test['p_value']:.6f}   "
+    print(f"  diff = {test['rate_diff_pp']:+.2f} pp  95% CI [{test['diff_ci_lo']:+.2f}, {test['diff_ci_hi']:+.2f}]   "
+          f"z = {test['z_stat']:+.4f}   p (one-tailed) = {test['p_value']:.6f}   MDE(80%) = {test['mde_pp']} pp   "
           f"verdict: {'REJECT H0' if test['significant_at_05'] else 'fail to reject H0'}")
-
     print("\n-- Per-league primary test --")
     print(f"  {'league':<18} {'t_rate':>7} {'t_n':>5}   {'c_rate':>7} {'c_n':>5}   {'z':>8} {'p':>10}")
     for blk in primary_by_league:
@@ -369,7 +446,7 @@ def main() -> None:
         print(f"  {blk['label']:<18} {tt['rate']:>7.2f} {tt['attempts']:>5}   "
               f"{cc['rate']:>7.2f} {cc['attempts']:>5}   {z} {p}")
 
-    print("\n-- 2x2 matrix (strict universe) --")
+    print("\n-- 2x2 matrix (linked penalties) --")
     for cell in matrix_block["cells"]:
         marker = "  <-- TREATMENT" if cell["is_treatment"] else ""
         print(f"  {cell['row']:>5} x {cell['col']:>4}:  "

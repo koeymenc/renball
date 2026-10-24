@@ -439,6 +439,7 @@
 <div class="downloads">
   <a href="dashboard.html" class="download-btn primary">FULL DASHBOARD →</a>
   <a href="methodology.html" class="download-btn" target="_blank">METHODOLOGY</a>
+  <a href="methodology.pdf" class="download-btn" target="_blank">METHODOLOGY · PDF</a>
   <a href="slides.pdf" class="download-btn" target="_blank">SLIDES · PDF</a>
   <a href="code/build.py" class="download-btn" target="_blank">SOURCE · PYTHON</a>
 </div>
@@ -483,7 +484,7 @@
     4–0 consolation, almost nothing. We then credit that EP to <strong>three</strong> roles per goal — the
     scorer, the assist-creator (SCA1) and the pre-assist-creator (SCA2) — sum it per player, and divide by
     minutes played to get a per-90 rate. Then we ask who the model elevates that the box score does not. The
-    value function itself is built and validated in
+    value function itself is built in
     <a href="../02-points-by-gamestate/analysis.html" style="color: var(--accent);">project 02</a>.
   </p>
 </section>
@@ -548,8 +549,8 @@
     against the <strong>real end-of-season award winner</strong> for that league. The model rewards
     high-leverage value per minute, not reputation, so the two rarely line up: where they do, the cell turns
     green with a <strong>✓ MATCH</strong>. The cell to dwell on is <strong>Nicolas Jackson at Villarreal in
-    2022-23</strong> — the model named him La Liga's most-valuable per-90 player a year before Chelsea paid
-    £30m+ for him, while the actual award went elsewhere. The 5-league column compares the model's combined
+    2022-23</strong> — the model named him La Liga's most-valuable per-90 player the season before he joined
+    Chelsea, while the actual award went elsewhere. The 5-league column compares the model's combined
     pick against the <strong>Ballon d'Or</strong>.
   </p>
   <div id="mvp-summary" class="sub-finding">Calculating model-vs-actual agreement…</div>
@@ -765,7 +766,7 @@
   const data = await fetch('data/data.json').then(r => r.json());
   const C = window.RENBALL_COLORS;
   const tok = C.tokens;
-  const fmt = (n, d=0) => (n == null ? '—' : Number(n).toLocaleString(undefined, { maximumFractionDigits: d, minimumFractionDigits: d }));
+  const fmt = (n, d=0) => (n == null ? '—' : Number(n).toLocaleString('en-GB', { maximumFractionDigits: d, minimumFractionDigits: d }));
 
   // ──────────────────────────────────────────────────────
   // Hero meta + stat callouts
@@ -805,7 +806,7 @@
 
   function shortLabel(r) {
     const m = r.minutes != null ? r.minutes : null;
-    const mintag = m != null ? `  ·  ${m.toLocaleString()} min` : '';
+    const mintag = m != null ? `  ·  ${m.toLocaleString('en-GB')} min` : '';
     return `${r.player} · ${r.primary_team}${mintag}`;
   }
 
@@ -915,7 +916,7 @@
 
     function fmt(c, v) {
       if (v == null || v === '') return '—';
-      if (c.int) return Number(v).toLocaleString();
+      if (c.int) return Number(v).toLocaleString('en-GB');
       if (c.dp != null) return Number(v).toFixed(c.dp);
       return v;
     }
@@ -1070,7 +1071,7 @@
       const cls = [jackson ? 'spotlight' : '', isMatch ? 'match' : ''].filter(Boolean).join(' ');
       return `<td class="${cls}"${titleAttr}>
         <span class="player">${pick.player}</span>
-        <div class="team-line">${pick.primary_team} · ${pick.minutes.toLocaleString()} min</div>
+        <div class="team-line">${pick.primary_team} · ${pick.minutes.toLocaleString('en-GB')} min</div>
         <div class="ep-val">${pick.ep_per_90.toFixed(3)} EP/90</div>
         ${actualLine}
       </td>`;
@@ -1251,7 +1252,7 @@
       html += `<div class="pos-panel"><h3>${labels[pos]}</h3><table class="pos-table">`;
       for (const r of entry.rows) {
         const minsClass = (r.minutes != null && r.minutes < 2000) ? 'small' : '';
-        const minsLabel = r.minutes != null ? `${r.minutes.toLocaleString()} min` : '— min';
+        const minsLabel = r.minutes != null ? `${r.minutes.toLocaleString('en-GB')} min` : '— min';
         html += `<tr>
           <td>${r.rank}.</td>
           <td><span class="player">${r.player}</span><span class="team">${r.primary_team} · age ${r.age != null ? r.age.toFixed(1) : '—'}</span></td>
@@ -1440,7 +1441,7 @@
         team: `Bayern Munich · MF · age ${musiala.age != null ? musiala.age.toFixed(1) : '?'}`,
         number: `${musiala.ep_per_90.toFixed(3)} EP/90`,
         numberLabel: `Q5 MF #${musiala.rank}`,
-        copy: `<strong>${musiala.minutes.toLocaleString()} minutes</strong> across the dataset, <strong>${musiala.goals_involved} credits</strong>. The rare young player whose per-90 number isn't a small-sample mirage. Sits in the top 5 of both the position-adjusted board and the under-23 board.`,
+        copy: `<strong>${musiala.minutes.toLocaleString('en-GB')} minutes</strong> across the dataset, <strong>${musiala.goals_involved} credits</strong>. The rare young player whose per-90 number isn't a small-sample mirage. Sits in the top 5 of both the position-adjusted board and the under-23 board.`,
       } : null,
       kdb ? {
         rank: '03 · THE EYE TEST',
@@ -1448,7 +1449,7 @@
         team: 'Manchester City · MF',
         number: `${kdb.ep_per_90.toFixed(3)} EP/90`,
         numberLabel: 'over 14,674 minutes',
-        copy: `By far the most-sampled top-3 pick on the page — <strong>${kdb.minutes.toLocaleString()} minutes and ${kdb.goals_involved} credits</strong> of evidence behind the EP/90. Doesn't qualify as a "discovery" by any reasonable definition, which is the point: when the model agrees with conventional wisdom about elite midfielders, the model is doing its job.`,
+        copy: `By far the most-sampled top-3 pick on the page — <strong>${kdb.minutes.toLocaleString('en-GB')} minutes and ${kdb.goals_involved} credits</strong> of evidence behind the EP/90. Doesn't qualify as a "discovery" by any reasonable definition, which is the point: when the model agrees with conventional wisdom about elite midfielders, the model is doing its job.`,
       } : null,
       tello ? {
         rank: '04 · LATE-GAME',
@@ -1463,8 +1464,8 @@
         name: 'Lamine Yamal',
         team: `Barcelona · age ${yamal.age != null ? yamal.age.toFixed(1) : '?'}`,
         number: `${yamal.ep_per_90.toFixed(3)} EP/90`,
-        numberLabel: `${yamal.minutes.toLocaleString()} mins · age ${yamal.age != null ? yamal.age.toFixed(1) : '?'}`,
-        copy: `The youngest player in the dataset to clear 500 minutes. At <strong>${yamal.minutes.toLocaleString()} minutes</strong> his per-90 isn't a four-game flash — it's almost a full season's evidence. <strong>${yamal.goals_involved} credits at age ${yamal.age != null ? yamal.age.toFixed(1) : '?'}</strong>. The Q7 cell that requires the loudest second-look.`,
+        numberLabel: `${yamal.minutes.toLocaleString('en-GB')} mins · age ${yamal.age != null ? yamal.age.toFixed(1) : '?'}`,
+        copy: `The youngest player in the dataset to clear 500 minutes. At <strong>${yamal.minutes.toLocaleString('en-GB')} minutes</strong> his per-90 isn't a four-game flash — it's almost a full season's evidence. <strong>${yamal.goals_involved} credits at age ${yamal.age != null ? yamal.age.toFixed(1) : '?'}</strong>. The Q7 cell that requires the loudest second-look.`,
       } : null,
     ].filter(Boolean);
 

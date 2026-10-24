@@ -131,7 +131,7 @@ def slide_data_method(prs, d):
     R.add_rect(s, R.BODY_LEFT, R.BODY_TOP + 1.85, R.BODY_MAX_W, 1.0, R.BG_CARD,
                border=R.ACCENT, border_pt=1.2)
     R.add_text(s, R.BODY_LEFT + 0.3, R.BODY_TOP + 2.05, R.BODY_MAX_W - 0.6, 0.55,
-               "three_layer credit  =  scorer ⊕ SCA1 ⊕ SCA2     (each role = 1 credit · EP summed)",
+               "three_layer credit  =  scorer + SCA1 + SCA2     (each role = 1 credit · EP summed)",
                font=R.MONO, size=16, color=R.ACCENT)
 
     y = R.BODY_TOP + 3.05
@@ -226,8 +226,7 @@ def slide_q2_mvps(prs, d):
             "title": jackson["player"],
             "body": f"{jackson['primary_team']} · {jackson['ep_per_90']:.3f} EP/90 over "
                     f"{jackson['minutes']:,} minutes ({jackson['goals_involved']} credits).\n\n"
-                    f"Named Europe's most-valuable per-90 player a year before Chelsea paid "
-                    f"£30m+ for him.",
+                    f"La Liga's top per-90 pick the season before he joined Chelsea.",
             "accent": True,
         },
         right={
@@ -362,8 +361,8 @@ def slide_brandt_spotlight(prs, d):
         R.add_text(s, right_x, y, 3.0, 0.4, name, font=R.SANS, size=13,
                    color=R.ACCENT if hot else R.TEXT_SECONDARY, bold=hot)
         # mini bar
-        bar_full = right_w - 1.4
-        R.add_rect(s, right_x + 3.0, y + 0.08, bar_full * (share / 45.0), 0.18,
+        bar_full = right_w - 3.0 - 1.15          # between the name column and the % label
+        R.add_rect(s, right_x + 3.0, y + 0.11, bar_full * share / max(c[1] for c in compare), 0.18,
                    R.ACCENT if hot else R.BORDER_LIGHT)
         R.add_text(s, right_x + right_w - 1.0, y, 1.0, 0.4, f"{share:.1f}%",
                    font=R.MONO, size=12, color=R.ACCENT if hot else R.TEXT_SECONDARY,
@@ -423,7 +422,7 @@ def slide_limitations(prs, d):
         prs,
         "What this *isn't*",
         bullets=[
-            "Not xG-weighted, and penalties / own goals are not separated (inherited from project 02).",
+            "Not xG-weighted; penalties not separated; own goals missing from the shot data (inherited from project 02).",
             "Credit caps at SCA2 — build-up beyond the pre-assist isn't captured.",
             "Per-90 boards exclude Eredivisie: the minutes source covers the top five leagues only.",
             "No opinion on goalkeepers — the three credited touchpoints are ones GKs rarely occupy.",

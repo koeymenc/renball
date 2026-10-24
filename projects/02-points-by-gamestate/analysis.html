@@ -222,6 +222,7 @@
   <a href="dashboard.html" class="download-btn primary">FULL INTERACTIVE DASHBOARD →</a>
   <a href="slides.pdf" class="download-btn" target="_blank">SLIDES · PDF</a>
   <a href="methodology.html" class="download-btn" target="_blank">METHODOLOGY</a>
+  <a href="methodology.pdf" class="download-btn" target="_blank">METHODOLOGY · PDF</a>
   <a href="code/build.py" class="download-btn" target="_blank">SOURCE · PYTHON</a>
 </div>
 
@@ -245,7 +246,7 @@
   </div>
   <div class="stat-box">
     <div class="stat-value" id="stat-gap">—</div>
-    <div class="stat-label">EP Value Gap</div>
+    <div class="stat-label">Most Valuable Goal</div>
     <div class="stat-sub" id="stat-gap-sub"></div>
   </div>
   <div class="stat-box">
@@ -268,10 +269,11 @@
   <p>
     To price them properly we model two things at once: the <strong>goal-difference transition</strong>
     (going from <code>0</code> to <code>+1</code> is a different lever than from <code>−1</code> to <code>0</code>) and the
-    <strong>minute</strong> in which it happened, binned into six 15-minute windows. For every
-    <code>(gd, minute_bin)</code> pre-goal state we measure the empirical expected points the team that just experienced
-    it ultimately collected — <code>E[points | state]</code>. A goal's EP value is then the difference between
-    the post-goal state's expected points and the pre-goal state's. Late equalisers swing this number a lot.
+    <strong>minute</strong> in which it happened, binned into six 15-minute windows. For every transition in every
+    window we measure the points the teams that made it went on to collect. A goal's EP value is the gap between its
+    transition and the one a goal below it in the same window: a late go-ahead goal (<code>0</code> → <code>+1</code>)
+    is priced as what teams that went ahead late finished with, minus what teams that equalised late finished with.
+    Late equalisers swing this number a lot.
     Early openers swing it a little. Goals at 4–0 do almost nothing.
   </p>
 </section>
@@ -282,7 +284,7 @@
   <p><strong>Sources:</strong> Per-match shot tables across the top five European leagues plus the Eredivisie (FBref-derived; <code>match_data_final_*.pkl</code>).</p>
   <p><strong>Sample:</strong> <span id="sample-text">[loading]</span></p>
   <p><strong>State space:</strong> Goal differences <code>[−7, +7]</code> × six 15-minute bins (<code>0–15</code>, <code>15–30</code>, <code>30–45</code>, <code>45–60</code>, <code>60–75</code>, <code>75–90</code>; stoppage-time goals fold into the surrounding bins).</p>
-  <p><strong>Value function:</strong> For each <code>(gd, minute_bin)</code> pre-goal state, expected final points are computed empirically as <code>3·pW + 1·pD</code>. A goal's EP credit is the gap between the after-state and the before-state for the team that scored. Conceding teams get the symmetric credit on the negative side.</p>
+  <p><strong>Value function:</strong> For each <code>(gd, minute_bin)</code> pre-goal state, expected final points are computed empirically as <code>3·pW + 1·pD</code>. That is the state value table below. A goal's EP credit compares transitions within the same minute bin: the mean final points of the teams that made this transition (e.g. <code>0→1</code>) minus the mean for the transition one step below it (<code>−1→0</code>); the lowest observed transition in each bin is set to 0. Conceding teams get the symmetric credit on the negative side.</p>
   <p><strong>Attribution:</strong> Goals are credited to the goalscorer; assists to the SCA1 (first shot-creating action). A <em>Goals+Assists</em> view pools both. Players are pooled across leagues and seasons for the leaderboards below; the <a href="dashboard.html" style="color: var(--accent);">full dashboard</a> exposes every per-league/per-season slice.</p>
 </section>
 
@@ -306,10 +308,11 @@
 <section class="proj">
   <h2>2 · The value of a goal, by minute</h2>
   <p>
-    The state value table is the input. The output is here: <strong>how many EP does a goal collect</strong>,
+    The state value table shows what each scoreline is worth at each stage. The value map prices the goals
+    themselves: <strong>how many EP does a goal collect</strong>,
     broken out by the transition it produced and the minute it happened. Bright cells are gold. Dim cells are
-    cosmetic. The single brightest cell on the board is the equaliser in the final fifteen — a thing every
-    coach already knows, but now with a number on it.
+    cosmetic. The single brightest cell on the board is the go-ahead goal from level (0→1) in the final fifteen —
+    a thing every coach already knows, but now with a number on it.
   </p>
   <div class="chart-wrap">
     <div class="chart-title">EP collected per goal · transition × minute</div>
@@ -389,10 +392,11 @@
       <div class="big-number" id="spot-delta">—</div>
       <div class="big-label">Δ EP from going time-aware</div>
       <p>
-        The model's biggest single re-rating. A defender who scored a handful of goals — but did so almost
-        entirely in the kind of late, score-tied moments the time-blind model misprices. Per the time-aware
-        framework, his thirty-odd career goals in scope were worth roughly an extra <strong id="spot-delta-inline">—</strong>
-        expected points on top of what the time-blind rating would have credited him. A walking late-equaliser.
+        The model's biggest single re-rating. A left-back whose goal involvements are mostly
+        assist-type credits (FBref's first shot-creating action) rather than goals, and which land unusually often
+        late in the game — the minutes the time-blind model misprices. Per the time-aware framework, those
+        involvements were worth roughly an extra <strong id="spot-delta-inline">—</strong> expected points on top of
+        what the time-blind rating would have credited him.
       </p>
     </div>
   </div>
@@ -456,7 +460,7 @@
   const data = await fetch('data/data.json').then(r => r.json());
   const C = window.RENBALL_COLORS;
   const tok = C.tokens;
-  const fmt = (n, d=0) => (n == null ? '—' : Number(n).toLocaleString(undefined, { maximumFractionDigits: d, minimumFractionDigits: d }));
+  const fmt = (n, d=0) => (n == null ? '—' : Number(n).toLocaleString('en-GB', { maximumFractionDigits: d, minimumFractionDigits: d }));
 
   // ──────────────────────────────────────────────────────
   // Meta / hero plumbing
@@ -481,9 +485,9 @@
   document.getElementById('stat-states-sub').textContent =
     `(gd × time_bin) cells with data · of ${meta.gd_range.length * meta.time_bins.length} theoretical`;
 
-  document.getElementById('stat-gap').textContent = `+${co.ep_value_gap.gap.toFixed(2)} EP`;
+  document.getElementById('stat-gap').textContent = `${co.ep_value_gap.best.toFixed(2)} EP`;
   document.getElementById('stat-gap-sub').textContent =
-    `${co.ep_value_gap.best_label} (best) vs ${co.ep_value_gap.worst_label} (worst)`;
+    `${co.ep_value_gap.best_label} · EP collected per goal`;
 
   const up = co.biggest_upgrade;
   document.getElementById('stat-upgrade').textContent = `+${up.delta_ep.toFixed(2)} EP`;
@@ -508,9 +512,9 @@
   document.getElementById('concl-goals').textContent = fmt(co.total_goals);
   document.getElementById('concl-box').innerHTML =
     `<strong style="color: var(--accent); display: block; margin-bottom: 0.3rem; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em;">TAKEAWAY</strong>` +
-    `Across 39k+ goals the EP gap between the most and least valuable transition is ` +
-    `${co.ep_value_gap.gap.toFixed(2)} expected points — bigger than the entire scoring contribution ` +
-    `of most squad players. The framework agrees with intuition (late equalisers matter) and disagrees with the scoreboard.`;
+    `Across ${fmt(co.total_goals)} goals, when a goal is scored changes what it is worth: the same 0–0 to 1–0 ` +
+    `goal is worth far more in the final fifteen minutes than in the first. The framework agrees with intuition ` +
+    `(late goals in tight games matter most) and disagrees with the scoreboard.`;
 
   // ──────────────────────────────────────────────────────
   // 1. STATE VALUE TABLE — HTML grid
@@ -555,9 +559,9 @@
           html += '<td class="empty">·</td>';
         } else {
           const bg = epToColor(c.exp_points);
-          html += `<td class="cell" style="background:${bg};" title="GD ${label} @ ${bins[j]}: ${c.exp_points.toFixed(3)} EP, n=${c.n.toLocaleString()}">` +
+          html += `<td class="cell" style="background:${bg};" title="GD ${label} @ ${bins[j]}: ${c.exp_points.toFixed(3)} EP, n=${c.n.toLocaleString('en-GB')}">` +
                   `<div class="ep">${c.exp_points.toFixed(2)}</div>` +
-                  `<div class="n">n=${c.n.toLocaleString()}</div></td>`;
+                  `<div class="n">n=${c.n.toLocaleString('en-GB')}</div></td>`;
         }
       }
       html += '</tr>';
@@ -656,7 +660,7 @@
               tooltipEl.innerHTML =
                 `<strong>${tr.label} @ ${bin}</strong><br>` +
                 `<span class="lbl">EP collected:</span> ${cell.ep_collected.toFixed(3)}<br>` +
-                `<span class="lbl">events:</span> ${cell.n.toLocaleString()}`;
+                `<span class="lbl">events:</span> ${cell.n.toLocaleString('en-GB')}`;
             })
             .on('mouseleave', () => { tooltipEl.style.opacity = '0'; });
         }
@@ -760,7 +764,7 @@
               afterLabel: (ctx) => {
                 const top = perBin[ctx.dataIndex].top;
                 return ['Top contributing transitions:'].concat(
-                  top.map(t => `  ${t.label}: ${t.ep.toFixed(0)} EP  (n=${t.n.toLocaleString()})`)
+                  top.map(t => `  ${t.label}: ${t.ep.toFixed(0)} EP  (n=${t.n.toLocaleString('en-GB')})`)
                 );
               },
             },
@@ -771,7 +775,7 @@
             beginAtZero: true,
             title: { display: true, text: 'Total EP collected', padding: { bottom: 12 } },
             ticks: {
-              callback: (v) => v.toLocaleString(),
+              callback: (v) => v.toLocaleString('en-GB'),
             },
           },
           x: { title: { display: true, text: 'Minute bin', padding: { top: 10 } } },
@@ -907,7 +911,7 @@
               const r = rows[ctx.dataIndex];
               return [
                 `Goals + Assists: ${r.goals_involved}`,
-                `Minutes played:  ${r.minutes_played.toLocaleString()}`,
+                `Minutes played:  ${r.minutes_played.toLocaleString('en-GB')}`,
                 `Total EP:        ${r.ep_timed.toFixed(2)}`,
               ];
             }

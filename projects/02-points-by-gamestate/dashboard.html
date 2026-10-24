@@ -655,7 +655,7 @@
     const dense = fillSparse(rows.map(r => ({ ...r })));  // shallow clone, fill 0s
 
     $('table-title').firstChild.textContent = title + '  ';
-    $('rowcount').textContent = `(${dense.length.toLocaleString()} rows)`;
+    $('rowcount').textContent = `(${dense.length.toLocaleString('en-GB')} rows)`;
 
     if (table) table.destroy();
     table = new Tabulator('#table', {

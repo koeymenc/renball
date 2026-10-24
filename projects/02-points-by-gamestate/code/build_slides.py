@@ -59,7 +59,7 @@ def slide_tldr(prs, d):
         f"observed {co['unique_states']} of 90 theoretical (gd × minute_bin) states.",
         f"The model's biggest gainer over the time-blind baseline is "
         f"{up['player']} (+{up['delta_ep']:.2f} ΔEP on {up['goals_involved']} G+A) — "
-        f"a late-equaliser specialist the scoreboard underrates.",
+        f"mostly assist-type credits that land in high-value minutes.",
     ]
     R.add_bullet_slide(prs, "TL;DR — three sentences",
                        bullets, eyebrow="TL;DR")
@@ -153,13 +153,17 @@ def slide_value_function(prs, d):
                font=R.MONO, size=11, color=R.TEXT_MUTED)
 
     R.add_text(s, R.BODY_LEFT, R.BODY_TOP + 2.0, R.BODY_MAX_W, 0.5,
-               "A goal's value is the difference between the two states it connects:",
+               "A goal's value compares transitions in the same minute bin:",
                font=R.SANS, size=14, color=R.TEXT_SECONDARY)
-    R.add_rect(s, R.BODY_LEFT, R.BODY_TOP + 2.55, R.BODY_MAX_W, 1.0, R.BG_CARD,
+    R.add_rect(s, R.BODY_LEFT, R.BODY_TOP + 2.55, R.BODY_MAX_W, 1.25, R.BG_CARD,
                border=R.BORDER, border_pt=0.75)
-    R.add_text(s, R.BODY_LEFT + 0.3, R.BODY_TOP + 2.78, R.BODY_MAX_W - 0.6, 0.55,
-               "ep_collected  =  EP(gd_after, bin)  −  EP(gd_before, bin)",
+    R.add_text(s, R.BODY_LEFT + 0.3, R.BODY_TOP + 2.75, R.BODY_MAX_W - 0.6, 0.55,
+               "ep_collected  =  EP_T(g → g+1, bin)  −  EP_T(g−1 → g, bin)",
                font=R.MONO, size=16, color=R.TEXT)
+    R.add_text(s, R.BODY_LEFT + 0.3, R.BODY_TOP + 3.35, R.BODY_MAX_W - 0.6, 0.4,
+               "EP_T = mean final points of the teams that made that transition in that bin. "
+               "The lowest observed transition in each bin is set to 0.",
+               font=R.MONO, size=11, color=R.TEXT_MUTED)
 
 
 def slide_state_value_table(prs, d):
@@ -388,7 +392,7 @@ def slide_mario_spotlight(prs, d):
         y += 0.55
 
     R.add_text(s, R.BODY_LEFT, R.CAPTION_TOP, R.BODY_MAX_W, 0.3,
-               "A walking late-equaliser: ~30 career goals in scope, almost entirely in score-tied late minutes.",
+               "Mostly assist-type credits (SCA1), not goals — landing unusually often late in the game.",
                font=R.MONO, size=10, color=R.TEXT_MUTED)
 
 
@@ -404,7 +408,7 @@ def slide_implications(prs, d):
             "Squad-management: knowing which minute bins your forwards harvest from informs "
             "substitution timing and game-state-conditional roles.",
             "Coaching: late-minute defending decisions get a clean valuation — the equaliser you concede "
-            "in the 88th minute is worth ~1.7× the one in the 18th.",
+            "in the 88th minute costs far more than the one in the 18th.",
         ],
         eyebrow="IMPLICATIONS",
     )
@@ -416,7 +420,7 @@ def slide_limitations(prs, d):
         "What this isn't",
         bullets=[
             "Not xG-weighted. A tap-in and a 30-yard volley count the same.",
-            "Penalties and own goals are not separated from open play (next iteration).",
+            "Penalties are not separated from open play, and own goals are missing from the shot data.",
             "Assist credit caps at SCA1 — build-up beyond the first shot-creating action isn't captured.",
             "Observational, not causal: it values the gap between states, not the goal's incremental effect "
             "on the final outcome.",

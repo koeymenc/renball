@@ -8,7 +8,7 @@
 
 ## Abstract
 
-The standard scoreboard treats every goal as one unit of contribution, indifferent to the gamestate it altered or the minute it landed. A consolation goal at 4–0 down is filed under the same column as a 90th-minute equaliser. This project builds a time-aware expected-points (EP) framework that prices every goal by both dimensions: the `(gd_before, minute_bin)` pre-goal state it transitioned out of and the `(gd_after, minute_bin)` post-goal state it transitioned into. Across **39,381 goals** in six top-flight European leagues over seven seasons, the time-aware model produces a substantively different player ranking from the time-blind baseline. The most valuable single transition observed is the **0→1 in the 75–90 minute bin (1.68 expected points collected, 2.14× the same transition in 0–15 minutes)**. Mário Rui (Napoli, 28 G+A) is the model's biggest gainer at **+3.43 ΔEP** between the timed and untimed rankings — a late-equaliser specialist the time-blind model materially underrates.
+The standard scoreboard treats every goal as one unit of contribution, indifferent to the gamestate it altered or the minute it landed. A consolation goal at 4–0 down is filed under the same column as a 90th-minute equaliser. This project builds a time-aware expected-points (EP) framework that prices every goal by both dimensions: the `(gd_before, minute_bin)` pre-goal state it transitioned out of and the `(gd_after, minute_bin)` post-goal state it transitioned into. Across **39,381 goals** in six top-flight European leagues over seven seasons, the time-aware model produces a substantively different player ranking from the time-blind baseline. The most valuable single transition observed is the **0→1 in the 75–90 minute bin (1.68 expected points collected, 2.14× the same transition in 0–15 minutes)**. Mário Rui (Napoli, 28 G+A) is the model's biggest gainer at **+3.43 ΔEP** between the timed and untimed rankings — a left-back whose involvements, mostly assist-type credits rather than goals, land unusually often in high-value minutes the time-blind model underrates.
 
 ---
 
@@ -52,7 +52,7 @@ Both are addressed in §4.
 3. Drop goal events where the scoring team cannot be matched to the inferred home/away team pair (rare; ~0.1% of events)
 4. **Parse minute strings:** `"45+1"` → 46, `"90+3"` → 93. **Stoppage-time rules:** any `"45+X"` falls in the `30-45` bin; any `"90+X"` (or `minute > 90`) falls in the `75-90` bin
 5. Goal events with unparseable minutes are assigned to an `unknown` bin and excluded from all timed analyses
-6. The editorial leaderboards drop `"Unknown"` contributors — FBref shot rows where the goalscorer/SCA1 string couldn't be parsed (mostly own goals and fragmented entries). They aggregate to a fake "player" who would otherwise top the time-aware leaderboard with ~2,250 events. The Tabulator dashboard retains them for transparency.
+6. The editorial leaderboards drop `"Unknown"` contributors — almost all of them goals with no recorded SCA1 (unassisted goals; own goals are not in the shot table at all). They aggregate to a fake "player" who would otherwise top the time-aware leaderboard with ~2,250 events. The Tabulator dashboard retains them for transparency.
 
 ---
 
@@ -83,10 +83,12 @@ The state-value table on the editorial page shows `EP(gd, minute_bin)` for `gd �
 
 ### 3.4 Goal value (EP credit per event)
 
-For a goal event producing transition `gd_before → gd_after` in minute bin `b` (scoring team's perspective):
+A goal is priced from the transitions themselves, not from the state table. For each one-step transition `g → g+1` in minute bin `b` (scoring team's perspective), let `EP_T(g → g+1, b)` be the mean final points of the scoring teams over every goal that made that transition in that bin.
 
-- **Timed credit:** `EP(gd_after, b) − EP(gd_before, b)`
-- **Untimed credit:** `EP_untimed(gd_after) − EP_untimed(gd_before)`
+- **Timed credit:** `EP_T(g → g+1, b) − EP_T(g−1 → g, b)` — the transition minus the previous observed transition in the same bin (in the populated rows, the one directly below it). It is the gap in final points between teams that reached `g+1` with a goal in that window and teams that reached `g`. The lowest observed transition in each bin has nothing to compare against and is set to 0.
+- **Untimed credit:** the same difference with the minute bins pooled.
+
+Implementation: `analysis.py`, `prep_transitions_timed` / `prep_transitions` — transitions sorted by goal difference within each bin, then `exp_points.diff()`, with the first row of each bin filled with 0.
 
 The conceding team gets the negation of the same number. Only one-step transitions in the `[−7, +7]` GD range are retained; multi-step transitions (impossible in football without intervening events) and out-of-range states are dropped.
 
@@ -148,7 +150,7 @@ The editorial page (`analysis.html`) uses pooled value functions — a single `E
 | Total goal events | 39,381 |
 | Modelled `(gd, minute_bin)` states | 82 of 90 |
 | Best transition (most EP collected per event) | **0→1 @ 75–90: 1.68 EP** |
-| Worst observed transition | −2→−1 @ 0–15: 0.00 EP (n=1) |
+| Lowest-valued transition | −2→−1 @ 0–15: 0.00 EP (n=17) — the lowest observed transition in its bin, set to 0 by construction (§3.4) |
 | Early-vs-late opener ratio | **2.14×** (1.68 / 0.79) |
 
 ### 4.2 0→1 by minute bin (the cleanest single-transition story)
@@ -192,20 +194,21 @@ The editorial page (`analysis.html`) uses pooled value functions — a single `E
 | 9 | Leo Dubois | Lyon | 26 | +2.27 |
 | 10 | Lee Kang-in | Mallorca | 31 | +2.20 |
 
-The upgrade leaderboard reads as a domain expert would predict: a cluster of defenders and super-subs whose goal records are dominated by late, score-tied moments the time-blind model materially underrates.
+The upgrade leaderboard is led by defenders and attackers whose goal involvements fall disproportionately in high-value minutes. The list carries no uncertainty intervals, so small gaps between neighbours should not be read as a ranking.
 
 ---
 
 ## 5. Limitations
 
 1. **No expected-goal weighting.** Every goal is treated as 1.0 — a 2-yard tap-in and a 30-yard volley contribute identically. An xG-weighted version would price by chance creation rather than chance conversion.
-2. **Penalties and own goals are not separated.** Penalty goals trigger the same transition value as any other; own goals are credited to the scoring team and (when present) the SCA1, even when the actual scorer was an opposition defender. Both effects would be cleaned in a v4.
+2. **Penalties are not separated, and own goals are missing.** Penalty goals trigger the same transition value as any other. Own goals do not appear in the shot tables at all, so final scores rebuilt from them are too low in some matches, and every goal after a missing own goal carries the wrong game state.
 3. **Assist credit caps at SCA1.** FBref's SCA2 is recorded but unused. Build-up sequences distribute credit further upstream than the framework captures.
 4. **Observational, not causal.** The state-value function is computed empirically against final results. It is a value table, not a causal model — it does not isolate the goal's effect from concurrent factors (red cards, substitutions, fatigue) that also influence the final outcome. The "value of a goal" is "the EP gap between the two states the goal connects" — readers should not interpret it as "the EP this goal added," which would require a counterfactual the data does not provide.
 5. **Pooled value function across leagues and seasons.** The editorial-page rankings use the pooled values. Differences between, say, Eredivisie defensive trends and Premier League ones would mean a "0→1 at minute 80" goal carries slightly different empirical EP in each league. The dashboard surfaces league-specific tables for users who want to inspect this.
 6. **Stoppage-time goals fold into the 75–90 bin.** A 95th-minute goal and a 78th-minute goal contribute to the same cell. A finer split would separate them but at the cost of sample size at the extremes.
 7. **Player attribution does not track transfers within a season.** A player who scored 10 goals at one club and 5 at another in the same season appears as one row per `(team, player)` in the raw tables. The editorial leaderboards pool further to one row per player by picking the primary team; this loses the transfer signal that the dashboard retains.
 8. **The model rewards proximity to the threshold, not the goal itself.** A late equaliser is worth nearly a full point because the team it credits was about to win zero. A goal valuation framework grounded in counterfactual reasoning (e.g. permutation tests against alternative goal-minute distributions for the same player) would distinguish the player's contribution from the situation's leverage. Future work.
+9. **The state table is sampled at goal moments.** Each of its rows comes from a goal event, so `EP(gd, b)` describes teams in that state at the moment a goal is scored — by either side — not teams in that state at a random minute. The goal values (§3.4) are computed from the transitions, not from this table.
 
 ---
 

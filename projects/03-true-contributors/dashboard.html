@@ -449,7 +449,7 @@
     const v = cell.getValue();
     if (v == null || v === '') return '';
     const n = parseFloat(v); if (Number.isNaN(n)) return String(v);
-    return n.toLocaleString();
+    return n.toLocaleString('en-GB');
   }
   function fmtPct(cell) {
     const v = cell.getValue();
@@ -477,7 +477,7 @@
     const v = cell.getValue();
     if (v == null || v === '') return '';
     const n = parseInt(v, 10); if (Number.isNaN(n)) return String(v);
-    const formatted = n.toLocaleString();
+    const formatted = n.toLocaleString('en-GB');
     if (n < 1800) {
       // sub-half-season — flag in muted italic
       return `<span style="color: var(--text-muted); font-style: italic;" title="half-season sample">${formatted}</span>`;
@@ -576,7 +576,7 @@
         'Q1a · Full credit': {
           file: 'q1a_full_credit.json',
           extract: d => d.rows,
-          scope: d => `${SCOPE_PER_90} · ≥ ${d.min_minutes.toLocaleString()} min · ${d.credit_model}`,
+          scope: d => `${SCOPE_PER_90} · ≥ ${d.min_minutes.toLocaleString('en-GB')} min · ${d.credit_model}`,
           title: d => `<em>Q1a</em> · Top ${d.rows.length} by EP per 90, full credit (1/1/1)`,
           columns: () => [
             COL.rank(), COL.player(), COL.team(), COL.pos(), COL.age(),
@@ -589,7 +589,7 @@
         'Q1b · Weighted credit': {
           file: 'q1b_weighted_credit.json',
           extract: d => d.rows,
-          scope: d => `${SCOPE_PER_90} · ≥ ${d.min_minutes.toLocaleString()} min · weights ${d.weights.scorer}/${d.weights.sca1}/${d.weights.sca2}`,
+          scope: d => `${SCOPE_PER_90} · ≥ ${d.min_minutes.toLocaleString('en-GB')} min · weights ${d.weights.scorer}/${d.weights.sca1}/${d.weights.sca2}`,
           title: d => `<em>Q1b</em> · Top ${d.rows.length} by weighted EP per 90 (0.40 / 0.35 / 0.25)`,
           columns: () => [
             COL.rank(), COL.player(), COL.team(), COL.pos(), COL.age(),
@@ -655,7 +655,7 @@
             }
             return rows;
           },
-          scope: d => `${SCOPE_PER_90} · ≥ ${d.min_minutes.toLocaleString()} min in that league-season · ${d.leagues.length} leagues × ${d.seasons.length} seasons`,
+          scope: d => `${SCOPE_PER_90} · ≥ ${d.min_minutes.toLocaleString('en-GB')} min in that league-season · ${d.leagues.length} leagues × ${d.seasons.length} seasons`,
           title: () => `<em>Q2</em> · Model's top EP/90 pick per (league, season)`,
           columns: () => [
             C('season', 'Season', { width: 110,
@@ -695,7 +695,7 @@
             }
             return rows;
           },
-          scope: d => `${SCOPE_PER_90} · ≥ ${d.min_minutes.toLocaleString()} min in season (summed across top-5 leagues)`,
+          scope: d => `${SCOPE_PER_90} · ≥ ${d.min_minutes.toLocaleString('en-GB')} min in season (summed across top-5 leagues)`,
           title: () => `<em>Q2</em> · Top-5-leagues combined MVP per season`,
           columns: () => [
             C('season', 'Season', { width: 110, tooltip: 'Football season.' }),
@@ -809,7 +809,7 @@
             }
             return out;
           },
-          scope: d => `${SCOPE_PER_90} · ≥ ${d.min_minutes.toLocaleString()} min · top ${d.top_n} per position. GK panel omitted — see methodology for the framework's structural blind spot on goalkeepers.`,
+          scope: d => `${SCOPE_PER_90} · ≥ ${d.min_minutes.toLocaleString('en-GB')} min · top ${d.top_n} per position. GK panel omitted — see methodology for the framework's structural blind spot on goalkeepers.`,
           title: d => `<em>Q5</em> · Position-adjusted EP/90 (top ${d.top_n} per outfield panel)`,
           columns: () => [
             COL.rank(), COL.pos(), COL.player(), COL.team(), COL.age(),
@@ -842,8 +842,8 @@
         'Per-90 SCA2 EP (top 10)': {
           file: 'q6_architects.json',
           extract: d => d.per_90_top.rows,
-          scope: d => `${d.per_90_top.scope} · ≥ ${d.per_90_top.min_minutes.toLocaleString()} min`,
-          title: d => `<em>Q6b</em> · Top 10 SCA2 EP per 90 (≥ ${d.per_90_top.min_minutes.toLocaleString()} min)`,
+          scope: d => `${d.per_90_top.scope} · ≥ ${d.per_90_top.min_minutes.toLocaleString('en-GB')} min`,
+          title: d => `<em>Q6b</em> · Top 10 SCA2 EP per 90 (≥ ${d.per_90_top.min_minutes.toLocaleString('en-GB')} min)`,
           columns: () => [
             COL.rank(), COL.player(), COL.team(), COL.pos(),
             COL.minutes(),
@@ -884,8 +884,8 @@
         'Top 10 (age ≤ 23)': {
           file: 'q7_young.json',
           extract: d => d.rows,
-          scope: d => `${SCOPE_PER_90} · age ≤ ${d.max_age} · ≥ ${d.min_minutes.toLocaleString()} min`,
-          title: d => `<em>Q7</em> · Top 10 EP/90 · age ≤ ${d.max_age}, ≥ ${d.min_minutes.toLocaleString()} min`,
+          scope: d => `${SCOPE_PER_90} · age ≤ ${d.max_age} · ≥ ${d.min_minutes.toLocaleString('en-GB')} min`,
+          title: d => `<em>Q7</em> · Top 10 EP/90 · age ≤ ${d.max_age}, ≥ ${d.min_minutes.toLocaleString('en-GB')} min`,
           columns: () => [
             COL.rank(), COL.player(), COL.team(), COL.pos(), COL.age(),
             COL.minutes(), COL.credits(),
@@ -1011,7 +1011,7 @@
     const rows = vw.extract(raw) || [];
 
     $('title-text').innerHTML = vw.title(raw);
-    $('rowcount').textContent = `(${rows.length.toLocaleString()} rows)`;
+    $('rowcount').textContent = `(${rows.length.toLocaleString('en-GB')} rows)`;
     $('scopeNote').textContent = vw.scope(raw);
 
     if (table) table.destroy();

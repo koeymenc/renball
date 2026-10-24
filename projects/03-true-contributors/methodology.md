@@ -49,14 +49,14 @@ This is a value-attribution study, not a hypothesis test. It rests on three eval
 
 ### 3.1 The inherited value function
 
-Project 02 prices each goal by the swing in expected league points it produces, conditioned on game-state and minute. For a goal that moves the goal difference `gd_before → gd_after` in minute bin `b` (scoring team's perspective):
+Project 02 prices each goal by the expected league points it collects, conditioned on game state and minute. For a goal that moves the scoring team's goal difference from `g` to `g+1` in minute bin `b`:
 
 ```
-ep_collected_timed   = EP(gd_after, b) − EP(gd_before, b)
-ep_collected_untimed = EP_untimed(gd_after) − EP_untimed(gd_before)
+ep_collected_timed   = EP_T(g → g+1, b) − EP_T(g−1 → g, b)
+ep_collected_untimed = EP_T(g → g+1)    − EP_T(g−1 → g)        (bins pooled)
 ```
 
-where `EP(gd, b) = 3·P(win | state) + 1·P(draw | state)` is the empirical expected final-match points over every team that entered that `(gd, minute_bin)` state. A late equaliser is worth nearly a full point; a 4–0 consolation, almost nothing. Only one-step transitions in the `[−7, +7]` GD range are kept. This project does **not** rebuild the value function — it reuses project 02's `val_map_timed` / `val_map_untimed` verbatim.
+where `EP_T(transition, b)` is the mean final-match points of the scoring teams over every goal that made that transition in that bin — so a goal is worth the gap in final points between teams that reached `g+1` with a goal and teams that reached `g`. The lowest observed transition in each bin is set to 0 (project 02's methodology, §3.4). A late equaliser is worth nearly a full point; a 4–0 consolation, almost nothing. Only one-step transitions in the `[−7, +7]` GD range are kept. This project does **not** rebuild the value function — it reuses project 02's `val_map_timed` / `val_map_untimed` verbatim.
 
 ### 3.2 The third credit layer (SCA2)
 
@@ -70,7 +70,7 @@ The headline credit model gives **each of the three roles one credit per goal in
 three_layer = (scorer ⊕ sca1) ⊕ sca2
 ```
 
-where `⊕` is project 02's outer-merge-and-sum on `(scoring_team, contributor)`. A player who scored a goal *and* pre-assisted a different goal receives two credits and the sum of both EP swings. `goals_involved` is the raw count of credit events; EP columns stack additively.
+where `⊕` is project 02's outer-merge-and-sum on `(scoring_team, contributor)`. A player who scored a goal *and* pre-assisted a different goal receives two credits and the sum of both EP swings; a player who fills two roles on the same goal (scorer and SCA1, say) is credited once per role. `goals_involved` is the raw count of credit events; EP columns stack additively.
 
 ### 3.4 Weighted credit (Q1b — the robustness check)
 
@@ -152,7 +152,7 @@ Re-running with `0.40 / 0.35 / 0.25` weights leaves **the top eight essentially 
 
 ### 4.3 Q2 — season-by-season MVPs
 
-The model's top per-90 pick for La Liga 2022-2023 is **Nicolas Jackson at Villarreal (1.211 EP/90, 1,598 minutes, 26 credits)** — a year before Chelsea paid £30m+ for him. The 5-league combined pick for 2020-2021 is **Luis Muriel at Atalanta (1.605 EP/90, 43 credits)** — not what the trophy cabinet recorded.
+The model's top per-90 pick for La Liga 2022-2023 is **Nicolas Jackson at Villarreal (1.211 EP/90, 1,598 minutes, 26 credits)** — the season before he joined Chelsea. The 5-league combined pick for 2020-2021 is **Luis Muriel at Atalanta (1.605 EP/90, 43 credits)** — not what the trophy cabinet recorded.
 
 ### 4.4 Q3 — late-game substantives (≥ 30 credits)
 
@@ -206,7 +206,7 @@ The board mixes credible established names (Musiala, Palmer) with very-low-sampl
 This project inherits every limitation of project 02's value function and adds its own:
 
 1. **No expected-goal weighting** (inherited). Every goal counts 1.0 — a tap-in and a 30-yard volley value identically.
-2. **Penalties and own goals are not separated** (inherited). They trigger the same transition value as open-play goals.
+2. **Penalties are not separated, and own goals are missing** (inherited). Penalties trigger the same transition value as open-play goals; own goals are not in the shot data, so some final scores and game states are wrong.
 3. **Observational, not causal** (inherited). EP is the gap between the two states a goal connects, not the goal's counterfactual effect on the final result.
 4. **Credit caps at SCA2.** Project 02 stopped at SCA1; this project adds SCA2 but goes no further. Build-up sequences distribute value further upstream than three layers capture.
 5. **Per-90 boards exclude Eredivisie.** The minutes source (`FULL_DICT_ROWS.pkl`) covers the top five leagues only. Absolute boards (Q3, Q4, the Q6 absolute board) include all six; per-90 boards (Q1, Q2, Q5, Q6 per-90, Q7) do not. Eredivisie-only players are absent from every per-90 ranking.
@@ -236,4 +236,4 @@ The framework is a value-attribution lens, not a recruitment oracle. It says not
 
 ---
 
-*Methodology document generated alongside [analysis.html](analysis.html) and [slides.pdf](slides.pdf). Per the current Renball toolchain, methodology.html is the canonical artifact — there is no methodology PDF (use the browser's print-to-PDF if you need one).*
+*Methodology document generated alongside [analysis.html](analysis.html) and [slides.pdf](slides.pdf). A print version is in [methodology.pdf](methodology.pdf).*

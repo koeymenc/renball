@@ -2,10 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Methodology — Renball Project 03</title>
-<style>
-@page { size: A4; margin: 2.2cm 2.5cm; background: #080c08; }
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Methodology — The True Contributors: A Three-Layer Expected-Points Attribution of Player Value — Renball</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
+<style>
 * { box-sizing: border-box; }
 
 body {
@@ -15,6 +18,9 @@ body {
   font-size: 10.5pt;
   line-height: 1.65;
 }
+@media screen {
+  body { max-width: 860px; margin: 0 auto; padding: 3rem 1.75rem 5rem; font-size: 11pt; }
+}
 
 h1, h2, h3, h4, h5 {
   font-family: 'Instrument Serif', Georgia, serif;
@@ -23,6 +29,8 @@ h1, h2, h3, h4, h5 {
   margin-top: 1.6em;
   margin-bottom: 0.5em;
   font-weight: normal;
+  font-synthesis: none;
+  line-height: 1.2;
 }
 h1 { font-size: 26pt; margin-top: 0; }
 h2 { font-size: 18pt; border-bottom: 1px solid #1e2e1e; padding-bottom: 0.25em; }
@@ -62,6 +70,10 @@ blockquote {
   font-size: 1.05em;
   font-style: italic;
 }
+blockquote p { color: inherit; }
+/* Instrument Serif has one weight: emphasis inside a serif quote is colour, never faux bold */
+blockquote { font-synthesis: none; }
+blockquote strong, blockquote b { font-weight: 400; color: #e8efe8; }
 
 hr {
   border: none;
@@ -94,7 +106,10 @@ table th {
 }
 table td:first-child { color: #e8efe8; }
 
-/* Renball "ren·ball" header bar at top of doc */
+.footnote { font-size: 0.88em; color: #8fa68f; }
+.footnote hr { margin: 2.5em 0 1em; }
+
+/* Renball "ren·ball" mark at top of doc */
 .renball-mark {
   font-family: 'Instrument Serif', Georgia, serif;
   font-size: 16pt;
@@ -103,9 +118,97 @@ table td:first-child { color: #e8efe8; }
 }
 .renball-mark .ball { color: #c1ff72; }
 .renball-mark .sep { color: #5a735a; font-family: 'JetBrains Mono', monospace; font-size: 9pt; margin-left: 0.6em; letter-spacing: 0.16em; }
+
+.back-link {
+  display: inline-block; margin-bottom: 2rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: #5a735a;
+}
+.back-link:hover { color: #c1ff72; }
+
+/* ── Print / PDF ─────────────────────────────────────────────────────── */
+@page {
+  size: A4;
+  margin: 20mm 19mm 22mm;
+  @bottom-left {
+    content: "renball.com  \00B7  Project 03  \00B7  Methodology";
+    font-family: 'JetBrains Mono', monospace; font-size: 7pt; letter-spacing: 0.12em;
+    text-transform: uppercase; color: #5a735a;
+  }
+  @bottom-right {
+    content: counter(page) " / " counter(pages);
+    font-family: 'JetBrains Mono', monospace; font-size: 7pt; color: #5a735a;
+  }
+}
+
+@media print {
+  .back-link { display: none; }
+  h1, h2, h3, h4 { break-after: avoid; }
+  table, pre, blockquote, figure { break-inside: avoid; }
+  tr { break-inside: avoid; }
+  p, li { orphans: 3; widows: 3; }
+
+  /* Masthead stays dark in both themes — the one place lime reads on paper */
+  .renball-mark {
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    background: #080c08; color: #e8efe8;
+    padding: 14px 18px; margin: 0 0 1.6em;
+  }
+  .renball-mark .sep { color: #8fa68f; }
+}
+
+/* Light document (default PDF theme) */
+@media print {
+  html:not([data-print-theme="dark"]) body {
+    background: #fff; color: #080c08; font-size: 9.8pt; line-height: 1.6;
+  }
+  html:not([data-print-theme="dark"]) h1,
+  html:not([data-print-theme="dark"]) h2,
+  html:not([data-print-theme="dark"]) h3,
+  html:not([data-print-theme="dark"]) h4 { color: #080c08; }
+  html:not([data-print-theme="dark"]) h1 { font-size: 24pt; }
+  html:not([data-print-theme="dark"]) h2 { font-size: 16pt; border-bottom: 1.5px solid #8fbf45; }
+  html:not([data-print-theme="dark"]) h3 { font-size: 12.5pt; }
+  html:not([data-print-theme="dark"]) p,
+  html:not([data-print-theme="dark"]) ul,
+  html:not([data-print-theme="dark"]) ol { color: #1a261a; }
+  html:not([data-print-theme="dark"]) strong { color: #080c08; }
+  html:not([data-print-theme="dark"]) em { color: inherit; }
+  html:not([data-print-theme="dark"]) a {
+    color: #080c08; text-decoration: underline; text-decoration-color: #8fbf45;
+  }
+  html:not([data-print-theme="dark"]) code {
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    color: #1a261a; background: #e8efe8;
+  }
+  html:not([data-print-theme="dark"]) pre code { border-left: 2px solid #8fbf45; }
+  html:not([data-print-theme="dark"]) blockquote {
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    background: rgba(193, 255, 114, 0.28); border-left: 3px solid #8fbf45; color: #080c08;
+  }
+  html:not([data-print-theme="dark"]) blockquote strong {
+    text-decoration: underline; text-decoration-color: #8fbf45; text-underline-offset: 2px;
+  }
+  html:not([data-print-theme="dark"]) hr { border-top-color: #8fa68f; }
+  html:not([data-print-theme="dark"]) table th,
+  html:not([data-print-theme="dark"]) table td { border-bottom: 0.75px solid #8fa68f; }
+  html:not([data-print-theme="dark"]) table th { color: #5a735a; border-bottom: 1px solid #5a735a; }
+  html:not([data-print-theme="dark"]) table td { color: #1a261a; }
+  html:not([data-print-theme="dark"]) table td:first-child { color: #080c08; }
+  html:not([data-print-theme="dark"]) .footnote { color: #5a735a; }
+}
+
+/* Dark document (--theme dark): keep the screen palette on paper */
+@media print {
+  html[data-print-theme="dark"] {
+    -webkit-print-color-adjust: exact; print-color-adjust: exact; background: #080c08;
+  }
+  html[data-print-theme="dark"] body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
 </style>
 </head>
 <body>
+<a class="back-link" href="analysis.html">&larr; Back to the analysis</a>
 <div class="renball-mark"><span>ren</span><span class="ball">ball</span><span class="sep">METHODOLOGY · PROJECT 03</span></div>
 <h1>The True Contributors: A Three-Layer Expected-Points Attribution of Player Value</h1>
 <p><strong>Author:</strong> Can Luca Köymen
@@ -144,18 +247,18 @@ table td:first-child { color: #e8efe8; }
 <hr />
 <h2>3. Methodology</h2>
 <h3>3.1 The inherited value function</h3>
-<p>Project 02 prices each goal by the swing in expected league points it produces, conditioned on game-state and minute. For a goal that moves the goal difference <code>gd_before → gd_after</code> in minute bin <code>b</code> (scoring team's perspective):</p>
-<pre><code>ep_collected_timed   = EP(gd_after, b) − EP(gd_before, b)
-ep_collected_untimed = EP_untimed(gd_after) − EP_untimed(gd_before)
+<p>Project 02 prices each goal by the expected league points it collects, conditioned on game state and minute. For a goal that moves the scoring team's goal difference from <code>g</code> to <code>g+1</code> in minute bin <code>b</code>:</p>
+<pre><code>ep_collected_timed   = EP_T(g → g+1, b) − EP_T(g−1 → g, b)
+ep_collected_untimed = EP_T(g → g+1)    − EP_T(g−1 → g)        (bins pooled)
 </code></pre>
-<p>where <code>EP(gd, b) = 3·P(win | state) + 1·P(draw | state)</code> is the empirical expected final-match points over every team that entered that <code>(gd, minute_bin)</code> state. A late equaliser is worth nearly a full point; a 4–0 consolation, almost nothing. Only one-step transitions in the <code>[−7, +7]</code> GD range are kept. This project does <strong>not</strong> rebuild the value function — it reuses project 02's <code>val_map_timed</code> / <code>val_map_untimed</code> verbatim.</p>
+<p>where <code>EP_T(transition, b)</code> is the mean final-match points of the scoring teams over every goal that made that transition in that bin — so a goal is worth the gap in final points between teams that reached <code>g+1</code> with a goal and teams that reached <code>g</code>. The lowest observed transition in each bin is set to 0 (project 02's methodology, §3.4). A late equaliser is worth nearly a full point; a 4–0 consolation, almost nothing. Only one-step transitions in the <code>[−7, +7]</code> GD range are kept. This project does <strong>not</strong> rebuild the value function — it reuses project 02's <code>val_map_timed</code> / <code>val_map_untimed</code> verbatim.</p>
 <h3>3.2 The third credit layer (SCA2)</h3>
 <p>Project 02 builds contributor tables for two roles, <code>goalscorer</code> and <code>sca1_creator</code>. Project 03 adds a third by re-running the <em>identical</em> aggregation machinery on the <code>sca2_creator</code> column — the pre-assist, FBref's shot-creating action immediately preceding the assist. The result is a parallel SCA2 contributor table carrying the same EP, per-bin (<code>ep_bin_X</code>) and per-transition (<code>cnt_*</code>) breakdowns as the scorer and assist tables. No project-02 code is modified; the SCA2 build composes its public functions.</p>
 <h3>3.3 Three-layer credit (Q1a — the default model)</h3>
 <p>The headline credit model gives <strong>each of the three roles one credit per goal involved in</strong>, and sums the EP each role collected:</p>
 <pre><code>three_layer = (scorer ⊕ sca1) ⊕ sca2
 </code></pre>
-<p>where <code>⊕</code> is project 02's outer-merge-and-sum on <code>(scoring_team, contributor)</code>. A player who scored a goal <em>and</em> pre-assisted a different goal receives two credits and the sum of both EP swings. <code>goals_involved</code> is the raw count of credit events; EP columns stack additively.</p>
+<p>where <code>⊕</code> is project 02's outer-merge-and-sum on <code>(scoring_team, contributor)</code>. A player who scored a goal <em>and</em> pre-assisted a different goal receives two credits and the sum of both EP swings; a player who fills two roles on the same goal (scorer and SCA1, say) is credited once per role. <code>goals_involved</code> is the raw count of credit events; EP columns stack additively.</p>
 <h3>3.4 Weighted credit (Q1b — the robustness check)</h3>
 <p>To test whether the equal split drives the ranking, the build re-walks every goal event and emits up to three weighted credit rows with weights applied to <strong>EP only</strong> (the <code>goals_involved</code> count stays a raw 1 per credit):</p>
 <table>
@@ -353,7 +456,7 @@ ep_collected_untimed = EP_untimed(gd_after) − EP_untimed(gd_before)
 <h3>4.2 Q1b — weighting barely moves the answer</h3>
 <p>Re-running with <code>0.40 / 0.35 / 0.25</code> weights leaves <strong>the top eight essentially identical</strong>. The biggest movers are pure scorers gaining a few places under the heavier scoring weight (Lewandowski +6, Dovbyk +7) and creator-heavy names slipping (Jallow −9, Ljajić −9). That the carefully-tuned weights reproduce the simple <code>1/1/1</code> board <em>is</em> the robustness result: the ranking is not an artefact of the credit split.</p>
 <h3>4.3 Q2 — season-by-season MVPs</h3>
-<p>The model's top per-90 pick for La Liga 2022-2023 is <strong>Nicolas Jackson at Villarreal (1.211 EP/90, 1,598 minutes, 26 credits)</strong> — a year before Chelsea paid £30m+ for him. The 5-league combined pick for 2020-2021 is <strong>Luis Muriel at Atalanta (1.605 EP/90, 43 credits)</strong> — not what the trophy cabinet recorded.</p>
+<p>The model's top per-90 pick for La Liga 2022-2023 is <strong>Nicolas Jackson at Villarreal (1.211 EP/90, 1,598 minutes, 26 credits)</strong> — the season before he joined Chelsea. The 5-league combined pick for 2020-2021 is <strong>Luis Muriel at Atalanta (1.605 EP/90, 43 credits)</strong> — not what the trophy cabinet recorded.</p>
 <h3>4.4 Q3 — late-game substantives (≥ 30 credits)</h3>
 <table>
 <thead>
@@ -494,7 +597,7 @@ ep_collected_untimed = EP_untimed(gd_after) − EP_untimed(gd_before)
 <p>This project inherits every limitation of project 02's value function and adds its own:</p>
 <ol>
 <li><strong>No expected-goal weighting</strong> (inherited). Every goal counts 1.0 — a tap-in and a 30-yard volley value identically.</li>
-<li><strong>Penalties and own goals are not separated</strong> (inherited). They trigger the same transition value as open-play goals.</li>
+<li><strong>Penalties are not separated, and own goals are missing</strong> (inherited). Penalties trigger the same transition value as open-play goals; own goals are not in the shot data, so some final scores and game states are wrong.</li>
 <li><strong>Observational, not causal</strong> (inherited). EP is the gap between the two states a goal connects, not the goal's counterfactual effect on the final result.</li>
 <li><strong>Credit caps at SCA2.</strong> Project 02 stopped at SCA1; this project adds SCA2 but goes no further. Build-up sequences distribute value further upstream than three layers capture.</li>
 <li><strong>Per-90 boards exclude Eredivisie.</strong> The minutes source (<code>FULL_DICT_ROWS.pkl</code>) covers the top five leagues only. Absolute boards (Q3, Q4, the Q6 absolute board) include all six; per-90 boards (Q1, Q2, Q5, Q6 per-90, Q7) do not. Eredivisie-only players are absent from every per-90 ranking.</li>
@@ -518,6 +621,6 @@ ep_collected_untimed = EP_untimed(gd_after) − EP_untimed(gd_before)
 <li><strong>Source code:</strong> <code>code/</code> — <code>build.py</code> (orchestrator), <code>enrich.py</code> (SCA2 merge, three-layer credit, Q1–Q7), <code>report.py</code>.</li>
 </ul>
 <hr />
-<p><em>Methodology document generated alongside <a href="analysis.html">analysis.html</a> and <a href="slides.pdf">slides.pdf</a>. Per the current Renball toolchain, methodology.html is the canonical artifact — there is no methodology PDF (use the browser's print-to-PDF if you need one).</em></p>
+<p><em>Methodology document generated alongside <a href="analysis.html">analysis.html</a> and <a href="slides.pdf">slides.pdf</a>. A print version is in <a href="methodology.pdf">methodology.pdf</a>.</em></p>
 </body>
 </html>

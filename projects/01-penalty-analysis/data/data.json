@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-14T13:59:26.889305+00:00",
+  "generated_at": "2026-10-24T12:17:09.391566+00:00",
   "metadata": {
     "leagues": [
       {
@@ -33,8 +33,36 @@
       "2023-2024"
     ],
     "n_matches_loose": 3492,
-    "n_matches_strict": 3322,
-    "filter_note": "Descriptive stats (overall, by_league, by_season) use the loose filter \u2014 any match with a non-zero penalty event. The primary test and 2x2 matrix use the strict filter \u2014 matches where every penalty column has max <= 1, i.e. single-penalty matches with unambiguous attribution."
+    "n_penalties_total": 4110,
+    "n_linked": 3535,
+    "n_matches_linked": 3249,
+    "linked_share_pct": 86.0,
+    "n_unlinked": 575,
+    "unlinked": {
+      "multi": {
+        "label": "team took 2+ penalties in the match",
+        "attempts": 573
+      },
+      "no_con": {
+        "label": "no conceder recorded",
+        "attempts": 1
+      },
+      "multi_con": {
+        "label": "opponent recorded 2+ conceded penalties",
+        "attempts": 1
+      },
+      "multi_won": {
+        "label": "2+ players credited with winning it",
+        "attempts": 0
+      },
+      "no_opponent": {
+        "label": "opponent rows missing",
+        "attempts": 0
+      }
+    },
+    "treatment_n_by_league_min": 10,
+    "treatment_n_by_league_max": 23,
+    "filter_note": "Descriptive stats (overall, by_league, by_season) use the loose filter \u2014 any match with a non-zero penalty event. The primary test and 2x2 matrix use linked penalties \u2014 one row per penalty whose taker, fouled player and conceder are unambiguous (the team took exactly one penalty in that match)."
   },
   "overall": {
     "attempts": 4110,
@@ -125,53 +153,70 @@
   "primary": {
     "label": "Top 5 (pooled)",
     "treatment": {
-      "attempts": 100,
-      "conversions": 75,
-      "rate": 75.0,
-      "ci_lo": 65.7,
-      "ci_hi": 82.45,
+      "attempts": 79,
+      "conversions": 60,
+      "misses": 19,
+      "rate": 75.95,
+      "ci_lo": 65.46,
+      "ci_hi": 84.03,
       "label": "GK fouled the taker (hurt-taker cell)"
     },
     "control": {
-      "attempts": 3757,
-      "conversions": 2940,
-      "rate": 78.25,
-      "ci_lo": 76.91,
-      "ci_hi": 79.54,
+      "attempts": 3456,
+      "conversions": 2729,
+      "misses": 727,
+      "rate": 78.96,
+      "ci_lo": 77.57,
+      "ci_hi": 80.29,
       "label": "All other penalties (3 cells pooled)"
     },
     "test": {
-      "z_stat": -0.7774,
-      "p_value": 0.218457,
+      "z_stat": -0.6493,
+      "p_value": 0.258068,
       "significant_at_05": false,
-      "rate_diff_pp": -3.25,
-      "alternative": "smaller (one-tailed)"
+      "rate_diff_pp": -3.01,
+      "diff_ci_lo": -13.58,
+      "diff_ci_hi": 5.18,
+      "alternative": "smaller (one-tailed)",
+      "mde_pp": 12.55
     },
     "question": "When the goalkeeper fouls the player who then takes the penalty, is the conversion rate lower than otherwise?",
     "h0": "Treatment and control have the same conversion rate.",
     "h1_alt": "Treatment conversion rate is LOWER than control (one-tailed).",
+    "pooled": {
+      "attempts": 3535,
+      "conversions": 2789,
+      "misses": 746,
+      "rate": 78.9,
+      "ci_lo": 77.52,
+      "ci_hi": 80.21
+    },
     "by_league": [
       {
         "label": "Serie A",
         "treatment": {
-          "attempts": 21,
-          "conversions": 17,
-          "rate": 80.95,
-          "ci_lo": 60.0,
-          "ci_hi": 92.33
+          "attempts": 15,
+          "conversions": 12,
+          "misses": 3,
+          "rate": 80.0,
+          "ci_lo": 54.81,
+          "ci_hi": 92.95
         },
         "control": {
-          "attempts": 888,
-          "conversions": 690,
-          "rate": 77.7,
-          "ci_lo": 74.85,
-          "ci_hi": 80.32
+          "attempts": 812,
+          "conversions": 638,
+          "misses": 174,
+          "rate": 78.57,
+          "ci_lo": 75.62,
+          "ci_hi": 81.26
         },
         "test": {
-          "z_stat": 0.354,
-          "p_value": 0.638346,
+          "z_stat": 0.1337,
+          "p_value": 0.553168,
           "significant_at_05": false,
-          "rate_diff_pp": 3.25,
+          "rate_diff_pp": 1.43,
+          "diff_ci_lo": -23.9,
+          "diff_ci_hi": 14.71,
           "alternative": "smaller (one-tailed)"
         },
         "code": "SERIEA"
@@ -179,24 +224,28 @@
       {
         "label": "La Liga",
         "treatment": {
-          "attempts": 19,
-          "conversions": 11,
-          "rate": 57.89,
-          "ci_lo": 36.28,
-          "ci_hi": 76.86
+          "attempts": 18,
+          "conversions": 10,
+          "misses": 8,
+          "rate": 55.56,
+          "ci_lo": 33.72,
+          "ci_hi": 75.44
         },
         "control": {
-          "attempts": 803,
-          "conversions": 622,
-          "rate": 77.46,
-          "ci_lo": 74.44,
-          "ci_hi": 80.21
+          "attempts": 716,
+          "conversions": 554,
+          "misses": 162,
+          "rate": 77.37,
+          "ci_lo": 74.17,
+          "ci_hi": 80.29
         },
         "test": {
-          "z_stat": -2.0031,
-          "p_value": 0.022581,
+          "z_stat": -2.1672,
+          "p_value": 0.015108,
           "significant_at_05": true,
-          "rate_diff_pp": -19.57,
+          "rate_diff_pp": -21.81,
+          "diff_ci_lo": -43.85,
+          "diff_ci_hi": -1.68,
           "alternative": "smaller (one-tailed)"
         },
         "code": "LALIGA"
@@ -204,24 +253,28 @@
       {
         "label": "Premier League",
         "treatment": {
-          "attempts": 25,
-          "conversions": 22,
-          "rate": 88.0,
-          "ci_lo": 70.04,
-          "ci_hi": 95.83
+          "attempts": 23,
+          "conversions": 21,
+          "misses": 2,
+          "rate": 91.3,
+          "ci_lo": 73.2,
+          "ci_hi": 97.58
         },
         "control": {
-          "attempts": 626,
-          "conversions": 492,
-          "rate": 78.59,
-          "ci_lo": 75.21,
-          "ci_hi": 81.63
+          "attempts": 599,
+          "conversions": 477,
+          "misses": 122,
+          "rate": 79.63,
+          "ci_lo": 76.22,
+          "ci_hi": 82.66
         },
         "test": {
-          "z_stat": 1.1314,
-          "p_value": 0.871047,
+          "z_stat": 1.3749,
+          "p_value": 0.915422,
           "significant_at_05": false,
-          "rate_diff_pp": 9.41,
+          "rate_diff_pp": 11.67,
+          "diff_ci_lo": -6.68,
+          "diff_ci_hi": 18.82,
           "alternative": "smaller (one-tailed)"
         },
         "code": "PL"
@@ -229,24 +282,28 @@
       {
         "label": "Bundesliga",
         "treatment": {
-          "attempts": 13,
-          "conversions": 8,
-          "rate": 61.54,
-          "ci_lo": 35.52,
-          "ci_hi": 82.29
+          "attempts": 10,
+          "conversions": 6,
+          "misses": 4,
+          "rate": 60.0,
+          "ci_lo": 31.27,
+          "ci_hi": 83.18
         },
         "control": {
-          "attempts": 614,
-          "conversions": 480,
-          "rate": 78.18,
-          "ci_lo": 74.74,
-          "ci_hi": 81.26
+          "attempts": 575,
+          "conversions": 459,
+          "misses": 116,
+          "rate": 79.83,
+          "ci_lo": 76.35,
+          "ci_hi": 82.9
         },
         "test": {
-          "z_stat": -1.4291,
-          "p_value": 0.07649,
+          "z_stat": -1.5393,
+          "p_value": 0.061862,
           "significant_at_05": false,
-          "rate_diff_pp": -16.64,
+          "rate_diff_pp": -19.83,
+          "diff_ci_lo": -48.72,
+          "diff_ci_hi": 3.61,
           "alternative": "smaller (one-tailed)"
         },
         "code": "BUNDESLIGA"
@@ -254,24 +311,28 @@
       {
         "label": "Ligue 1",
         "treatment": {
-          "attempts": 22,
-          "conversions": 17,
-          "rate": 77.27,
-          "ci_lo": 56.56,
-          "ci_hi": 89.88
+          "attempts": 13,
+          "conversions": 11,
+          "misses": 2,
+          "rate": 84.62,
+          "ci_lo": 57.77,
+          "ci_hi": 95.67
         },
         "control": {
-          "attempts": 826,
-          "conversions": 656,
-          "rate": 79.42,
-          "ci_lo": 76.53,
-          "ci_hi": 82.04
+          "attempts": 754,
+          "conversions": 601,
+          "misses": 153,
+          "rate": 79.71,
+          "ci_lo": 76.69,
+          "ci_hi": 82.42
         },
         "test": {
-          "z_stat": -0.2455,
-          "p_value": 0.403038,
+          "z_stat": 0.4369,
+          "p_value": 0.668894,
           "significant_at_05": false,
-          "rate_diff_pp": -2.15,
+          "rate_diff_pp": 4.91,
+          "diff_ci_lo": -22.08,
+          "diff_ci_hi": 16.37,
           "alternative": "smaller (one-tailed)"
         },
         "code": "LIGUE1"
@@ -286,7 +347,7 @@
       },
       {
         "key": "other",
-        "label": "Taker = a different player"
+        "label": "Taker = not the fouled player (incl. handballs)"
       }
     ],
     "cols": [
@@ -305,36 +366,36 @@
         "col": "gk",
         "is_treatment": true,
         "label": "GK fouled the player who then took the penalty",
-        "attempts": 100,
-        "conversions": 75,
-        "rate": 75.0
+        "attempts": 79,
+        "conversions": 60,
+        "rate": 75.95
       },
       {
         "row": "other",
         "col": "gk",
         "is_treatment": false,
-        "label": "GK fouled, but a different player took the penalty",
-        "attempts": 265,
-        "conversions": 207,
-        "rate": 78.11
+        "label": "GK conceded, the taker was not the fouled player",
+        "attempts": 203,
+        "conversions": 159,
+        "rate": 78.33
       },
       {
         "row": "won",
         "col": "ngk",
         "is_treatment": false,
         "label": "Outfielder fouled, fouled player took the penalty",
-        "attempts": 549,
-        "conversions": 433,
-        "rate": 78.87
+        "attempts": 491,
+        "conversions": 388,
+        "rate": 79.02
       },
       {
         "row": "other",
         "col": "ngk",
         "is_treatment": false,
-        "label": "Outfielder fouled, a different player took the penalty",
-        "attempts": 2943,
-        "conversions": 2300,
-        "rate": 78.15
+        "label": "Outfielder conceded, the taker was not the fouled player",
+        "attempts": 2762,
+        "conversions": 2182,
+        "rate": 79.0
       }
     ]
   }

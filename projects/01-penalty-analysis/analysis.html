@@ -194,6 +194,7 @@
 <div class="downloads">
   <a href="slides.pdf" class="download-btn" target="_blank">SLIDES · PDF</a>
   <a href="methodology.html" class="download-btn" target="_blank">METHODOLOGY</a>
+  <a href="methodology.pdf" class="download-btn" target="_blank">METHODOLOGY · PDF</a>
   <a href="code/build.py" class="download-btn" target="_blank">SOURCE · PYTHON</a>
 </div>
 
@@ -246,9 +247,10 @@
   <p><strong>Sources:</strong> Per-match player-level statistics for the top 5 European leagues (FBref-derived; consolidated into <code style="color:var(--accent)">FULL_DICT_ROWS</code>).</p>
   <p><strong>Competitions:</strong> Premier League, La Liga, Serie A, Bundesliga, Ligue 1.</p>
   <p><strong>Sample:</strong> <span id="sample-text">[loading]</span></p>
-  <p><strong>Treatment:</strong> single-penalty matches in which the goalkeeper recorded <code style="color:var(--accent)">PKcon=1</code> <em>and</em> the player taking the penalty (<code style="color:var(--accent)">PKatt=1</code>) was also the player who won the foul (<code style="color:var(--accent)">PKwon=1</code>).</p>
-  <p><strong>Control:</strong> every other single-penalty match (GK caused but a different player took it; or outfielder caused, regardless of who took it).</p>
-  <p><strong>Test:</strong> one-tailed two-proportion z-test (<code style="color:var(--accent)">statsmodels.proportions_ztest(alternative='smaller')</code>) with α = 0.05, plus Wilson 95% CIs on each proportion.</p>
+  <p><strong>Unit of analysis:</strong> one penalty. <span id="linkage-text">[loading]</span></p>
+  <p><strong>Treatment:</strong> linked penalties where the goalkeeper conceded the foul (<code style="color:var(--accent)">PKcon=1</code>) <em>and</em> the player taking the penalty (<code style="color:var(--accent)">PKatt=1</code>) was also the player who won it (<code style="color:var(--accent)">PKwon=1</code>).</p>
+  <p><strong>Control:</strong> every other linked penalty — the GK conceded but someone else took it, an outfielder conceded (any taker), or no foul was recorded (e.g. handball).</p>
+  <p><strong>Test:</strong> one-tailed two-proportion z-test (<code style="color:var(--accent)">statsmodels.proportions_ztest(alternative='smaller')</code>) with α = 0.05, plus Wilson 95% CIs on each proportion and a Newcombe 95% CI on the difference.</p>
 </section>
 
 <section class="proj">
@@ -279,12 +281,12 @@
   </div>
   <div class="chart-wrap">
     <canvas id="chart-primary" height="320"></canvas>
-    <div class="chart-caption" id="caption-primary">Bars: conversion rate (%). Error bars / shaded ranges: 95% Wilson CIs. Treatment cell n is small (~100); CI on treatment is correspondingly wide.</div>
+    <div class="chart-caption" id="caption-primary">Bars: conversion rate (%). Whiskers: 95% Wilson CIs.</div>
   </div>
   <div class="test-result" id="primary-result">
     <div><div class="label">Treatment rate</div><div class="value accent" id="p-rate-t">—</div><div class="stat-sub" id="p-ci-t"></div></div>
     <div><div class="label">Control rate</div><div class="value accent" id="p-rate-c">—</div><div class="stat-sub" id="p-ci-c"></div></div>
-    <div><div class="label">Δ (pp)</div><div class="value" id="p-diff">—</div></div>
+    <div><div class="label">Δ (pp)</div><div class="value" id="p-diff">—</div><div class="stat-sub" id="p-diff-ci"></div></div>
     <div><div class="label">Z-statistic</div><div class="value" id="p-z">—</div></div>
     <div><div class="label">P-value (one-tailed)</div><div class="value" id="p-p">—</div></div>
     <div><div class="label">Verdict (α=0.05)</div><div class="value muted" id="p-verdict">—</div></div>
@@ -294,11 +296,7 @@
 <section class="proj">
   <span class="hypothesis-pill">Per-League</span>
   <h2>The same test, league by league</h2>
-  <p>
-    With only ~100 treatment penalties across all five leagues, splitting further into per-league treatment cells
-    of 13–25 leaves each test severely underpowered. The pooled test above is the headline number; the table below
-    is for transparency and exploratory reading only.
-  </p>
+  <p id="per-league-intro">[loading]</p>
   <table class="proj" id="per-league-table">
     <thead>
       <tr>
@@ -320,8 +318,8 @@
   <span class="hypothesis-pill">2×2 Context</span>
   <h2>Where the treatment sits</h2>
   <p>
-    The four cells below cover every single-penalty match in scope. The accent-bordered cell is the treatment
-    — GK caused the foul <em>and</em> the player taking the penalty is the same player who was fouled. The other three
+    The four cells below cover every linked penalty. The accent-bordered cell is the treatment
+    — the GK conceded the foul <em>and</em> the player taking the penalty is the same player who was fouled. The other three
     cells together make up the control group.
   </p>
   <div class="matrix-wrap">
@@ -339,22 +337,23 @@
 (async function () {
   const data = await fetch('data/data.json').then(r => r.json());
   const C = window.RENBALL_COLORS;
-  const fmt = (n, d=0) => (n == null ? '—' : Number(n).toLocaleString(undefined, { maximumFractionDigits: d, minimumFractionDigits: d }));
+  const fmt = (n, d=0) => (n == null ? '—' : Number(n).toLocaleString('en-GB', { maximumFractionDigits: d, minimumFractionDigits: d }));
   const pct = (n) => (n == null ? '—' : Number(n).toFixed(2) + '%');
   const pp  = (n) => (n == null ? '—' : (n >= 0 ? '+' : '') + Number(n).toFixed(2) + ' pp');
+  const sgn1 = (n) => (n < 0 ? '−' : '+') + Math.abs(n).toFixed(1);
 
   const primary = data.primary;
   const t = primary.treatment;
   const c = primary.control;
   const tst = primary.test;
-  const totalAnalyzed = t.attempts + c.attempts;
-  const overallStrict = ((t.conversions + c.conversions) / totalAnalyzed * 100);
+  const md = data.metadata;
+  const pooled = primary.pooled;
 
   // ─── Stat callouts ───
-  document.getElementById('stat-total').textContent = fmt(totalAnalyzed);
-  document.getElementById('stat-total-sub').textContent = 'strict filter · single-penalty matches';
-  document.getElementById('stat-overall').textContent = pct(overallStrict);
-  document.getElementById('stat-overall-sub').textContent = `${fmt(t.conversions + c.conversions)} converted`;
+  document.getElementById('stat-total').textContent = fmt(md.n_linked);
+  document.getElementById('stat-total-sub').textContent = `linked to taker, fouled player and conceder · of ${fmt(md.n_penalties_total)}`;
+  document.getElementById('stat-overall').textContent = pct(pooled.rate);
+  document.getElementById('stat-overall-sub').textContent = `${fmt(pooled.conversions)} converted · linked penalties`;
   document.getElementById('stat-treatment').textContent = pct(t.rate);
   document.getElementById('stat-treatment-sub').textContent = `${fmt(t.conversions)} / ${fmt(t.attempts)}`;
   document.getElementById('stat-control').textContent = pct(c.rate);
@@ -369,27 +368,40 @@
   document.getElementById('finding-text').innerHTML =
     `Conversion is <strong>${absDiff.toFixed(2)} pp ${dir}</strong> when the fouled player takes it himself ` +
     `(${pct(t.rate)} vs ${pct(c.rate)} for everyone else) — the predicted direction — ` +
-    `but with only ${fmt(t.attempts)} such penalties in scope the gap isn't statistically detectable ` +
-    `(z = ${tst.z_stat.toFixed(2)}, p = ${tst.p_value.toFixed(3)}, one-tailed).`;
+    `but with only ${fmt(t.attempts)} such penalties the gap isn't statistically detectable: the true difference ` +
+    `could be anywhere from ${sgn1(tst.diff_ci_lo)} to ${sgn1(tst.diff_ci_hi)} pp ` +
+    `(95% CI; z = ${tst.z_stat.toFixed(2)}, p = ${tst.p_value.toFixed(2)}, one-tailed).`;
 
   document.getElementById('conclusion-text').innerHTML =
-    `On the data so far, the bench answer is "can't yet tell." Across ${fmt(totalAnalyzed)} single-penalty matches ` +
+    `On the data so far, the bench answer is "can't yet tell." Across ${fmt(md.n_linked)} linked penalties ` +
     `in the top 5 leagues, conversion when the fouled player takes the kick himself is ${pct(t.rate)} ` +
     `(95% CI [${t.ci_lo}%, ${t.ci_hi}%]) against ${pct(c.rate)} (95% CI [${c.ci_lo}%, ${c.ci_hi}%]) for every ` +
     `other penalty — a ${absDiff.toFixed(2)} pp gap ${dir} in the predicted direction, but well inside what ` +
-    `chance can produce at a treatment cell of ~${fmt(t.attempts)}. ${sigText} ` +
-    `The binding constraint is sample size, not the test design — replicating with more seasons would change the ` +
-    `verdict only by changing n. For now there's no statistical warrant either to insist the fouled player take it, ` +
+    `chance can produce at a treatment cell of ${fmt(t.attempts)}. ${sigText} ` +
+    `The binding constraint is sample size: with ${fmt(t.attempts)} treatment penalties this design only reliably ` +
+    `detects a drop of about ${tst.mde_pp.toFixed(1)} pp or more (80% power), so a smaller real effect would usually ` +
+    `go unseen. For now there's no statistical warrant either to insist the fouled player take it, ` +
     `or to take it off him.`;
 
-  // ─── Sample text ───
-  const seasons = data.metadata.seasons;
+  // ─── Sample + linkage text ───
+  const seasons = md.seasons;
   document.getElementById('sample-text').textContent =
-    `${fmt(totalAnalyzed)} single-penalty matches used for the test ` +
-    `(of ${fmt(data.metadata.n_matches_loose)} matches with any penalty event). ` +
+    `${fmt(md.n_linked)} penalties linked to their taker, fouled player and conceder ` +
+    `(${md.linked_share_pct}% of ${fmt(md.n_penalties_total)} penalties in ${fmt(md.n_matches_loose)} matches with any penalty event). ` +
     `Seasons: ${seasons[0]} → ${seasons[seasons.length-1]}.`;
-
-  document.getElementById('meta-date').textContent = (data.generated_at || '').slice(0,7) || 'May 2026';
+  document.getElementById('linkage-text').textContent =
+    `A team's penalty is linked when that team took exactly one penalty in the match — the taker and the fouled ` +
+    `player are then on that team and the conceder on the other, even if the opponent also had a penalty. ` +
+    `${fmt(md.unlinked.multi.attempts)} attempts from matches where one team took two or more are left out, ` +
+    `plus ${fmt(md.n_unlinked - md.unlinked.multi.attempts)} with an incomplete record.`;
+  document.getElementById('caption-primary').textContent =
+    `Bars: conversion rate (%). Whiskers: 95% Wilson CIs. Treatment cell n is small (${fmt(t.attempts)}); ` +
+    `its CI is correspondingly wide.`;
+  document.getElementById('per-league-intro').textContent =
+    `With only ${fmt(t.attempts)} treatment penalties across all five leagues, splitting further into per-league ` +
+    `treatment cells of ${md.treatment_n_by_league_min}–${md.treatment_n_by_league_max} leaves each test severely ` +
+    `underpowered. The pooled test above is the headline number; the table below is for transparency and exploratory ` +
+    `reading only — five separate tests, so a single "significant" league is not good evidence on its own.`;
 
   // ─── Chart: by league (descriptive) ───
   new Chart(document.getElementById('chart-by-league'), {
@@ -526,6 +538,7 @@
   document.getElementById('p-rate-c').textContent = pct(c.rate);
   document.getElementById('p-ci-c').textContent  = `n = ${fmt(c.attempts)} · 95% CI [${c.ci_lo}%, ${c.ci_hi}%]`;
   document.getElementById('p-diff').textContent  = pp(tst.rate_diff_pp);
+  document.getElementById('p-diff-ci').textContent = `95% CI [${sgn1(tst.diff_ci_lo)}, ${sgn1(tst.diff_ci_hi)}]`;
   document.getElementById('p-z').textContent     = tst.z_stat == null ? '—' : tst.z_stat.toFixed(3);
   document.getElementById('p-p').textContent     = tst.p_value == null ? '—' : tst.p_value.toFixed(4);
   document.getElementById('p-verdict').textContent = tst.significant_at_05 == null ? '—'
