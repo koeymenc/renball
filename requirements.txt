@@ -20,9 +20,11 @@ pillow==12.2.0
 pycparser==3.0
 pydyf==0.12.1
 pyparsing==3.3.2
+pypdfium2==5.14.0
 pyphen==0.17.2
 python-dateutil==2.9.0.post0
 python-pptx==1.0.2
+pywin32==312; sys_platform == "win32"
 RapidFuzz==3.14.5
 scikit-learn==1.8.0
 scipy==1.17.1

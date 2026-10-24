@@ -94,6 +94,7 @@
   section.proj h2 {
     font-family: var(--serif);
     font-size: 1.8rem;
+    font-weight: 400;          /* Instrument Serif ships one weight — never fake-bold it */
     margin-bottom: 1.25rem;
     letter-spacing: -0.01em;
   }
@@ -226,9 +227,12 @@
 
 <!-- ── DOWNLOADS ── -->
 <div class="downloads">
-  <a href="slides.pdf" class="download-btn" target="_blank">📊 Slides PDF</a>
-  <a href="methodology.html" class="download-btn" target="_blank">📄 Methodology</a>
-  <a href="code/build.py" class="download-btn" target="_blank">🐍 Source Code</a>
+  <a href="#deck" class="download-btn">SLIDES</a>
+  <a href="slides.pdf" class="download-btn" target="_blank">SLIDES · PDF</a>
+  <a href="methodology.html" class="download-btn" target="_blank">METHODOLOGY</a>
+  <a href="methodology.pdf" class="download-btn" target="_blank">METHODOLOGY · PDF</a>
+  <a href="code/build.py" class="download-btn" target="_blank">SOURCE · PYTHON</a>
+  <!-- <a href="dashboard.html" class="download-btn">DASHBOARD</a>  when has_dashboard -->
 </div>
 
 <!-- ── KEY FINDING ── -->
@@ -288,6 +292,15 @@
   </div>
 </section>
 
+<!-- ── WHO SHOULD CARE (rendered from data.takeaways by renball-components.js) ── -->
+<section class="proj" id="takeaways"></section>
+
+<!-- ── LIMITATIONS ── -->
+<section class="proj">
+  <h2>Limitations</h2>
+  <p>[What this can't tell you: sample size, confounders not controlled, data coverage. Plain language; the full list lives in the methodology.]</p>
+</section>
+
 <!-- ── CONCLUSION ── -->
 <section class="proj">
   <h2>Conclusion</h2>
@@ -297,12 +310,26 @@
   </div>
 </section>
 
+<!-- ── THE DECK (slides.pdf rendered by PDF.js; lazy-loads on scroll) ── -->
+<section class="proj" id="deck">
+  <h2>The deck</h2>
+  <div class="slide-viewer" data-renball="slide-viewer" data-src="slides.pdf"></div>
+</section>
+
 <!-- ── CHART RENDERING ── -->
 <script src="../../assets/js/chart-defaults.js"></script>
+<script src="../../assets/js/renball-components.js"></script>
 <script>
 (async function () {
   // Load pre-built data from data/data.json
   const data = await fetch('data/data.json').then(r => r.json());
+
+  // Pin the locale: toLocaleString(undefined) prints 3,857 as "3.857" for
+  // German/Swiss visitors. Every number on the page goes through fmt().
+  const fmt = (n, d = 0) => (n == null ? '—' : Number(n).toLocaleString('en-GB',
+    { minimumFractionDigits: d, maximumFractionDigits: d }));
+
+  RENBALL.renderTakeaways(document.getElementById('takeaways'), data.takeaways);
 
   // Update stat callouts (replace keys with your actual data.json fields)
   document.getElementById('stat-1').textContent = data.stat1 ?? '—';

@@ -56,6 +56,11 @@ body {
   overflow-x: hidden;
 }
 
+/* Instrument Serif ships a single weight: headings never get faux bold or
+   faux italic. :where() keeps specificity at zero, so a page rule that sets
+   a weight explicitly still wins. */
+:where(h1, h2, h3, h4, h5, h6) { font-weight: 400; font-synthesis: none; }
+
 /* Grain overlay - applies to all pages */
 body::after {
   content: '';
@@ -105,6 +110,33 @@ body::after {
   line-height: 1.6;
 }
 
+/* Dated notice on a live project: a correction (published claim changed) or
+   "under review" (figures will change). Used once the site has an audience — CLAUDE.md §4.8. */
+.notice {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-left: 3px solid var(--accent-dim);
+  padding: 1.1rem 1.4rem;
+  margin: 0 0 2rem;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+.notice.review { border-left-style: dashed; border-left-color: var(--text-muted); }
+.notice-label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.45rem;
+}
+.notice.review .notice-label { color: var(--text-secondary); }
+.notice p { margin: 0 0 0.6rem; }
+.notice p:last-child { margin-bottom: 0; }
+.notice strong { color: var(--text); font-weight: 500; }
+
 /* Back-to-home link, used on every project page */
 .back-link {
   font-family: var(--mono);
@@ -120,3 +152,112 @@ body::after {
   transition: color 0.2s;
 }
 .back-link:hover { color: var(--accent); }
+
+/* ─────────────────────────────────────────────────
+   RESEARCH-STANDARD COMPONENTS
+   Rendered by assets/js/renball-components.js
+   ───────────────────────────────────────────────── */
+
+/* ── Who should care: four-audience takeaways grid ── */
+.takeaways-intro { color: var(--text-secondary); margin-bottom: 1.25rem; max-width: 760px; }
+
+.evidence-legend {
+  display: flex; flex-wrap: wrap; gap: 0.6rem 1.5rem; align-items: center;
+  margin: 0 0 1.5rem; font-family: var(--mono); font-size: 0.65rem;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted);
+}
+.evidence-legend details { flex-basis: 100%; text-transform: none; letter-spacing: 0; }
+.evidence-legend summary { cursor: pointer; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.evidence-legend summary:hover { color: var(--accent); }
+.evidence-legend dl {
+  display: grid; grid-template-columns: max-content 1fr; gap: 0.5rem 1rem;
+  margin-top: 0.75rem; font-family: var(--sans); font-size: 0.85rem; color: var(--text-secondary);
+}
+.evidence-legend dt { padding-top: 0.1rem; }
+
+.takeaways-grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px; background: var(--border); border: 1px solid var(--border);
+}
+.takeaway-card { background: var(--bg-card); padding: 2rem; }
+.takeaway-card header {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+  margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border);
+}
+.takeaway-audience { font-family: var(--serif); font-size: 1.5rem; color: var(--text); line-height: 1.1; }
+.takeaway-focus {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--text-muted); text-align: right;
+}
+.takeaway-list { list-style: none; display: grid; gap: 1.25rem; }
+.takeaway-text { color: var(--text-secondary); line-height: 1.6; margin-bottom: 0.5rem; }
+.takeaway-text strong { color: var(--text); font-weight: 500; }
+.takeaway-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.75rem; }
+.takeaway-basis {
+  font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.04em; color: var(--text-muted);
+}
+.takeaway-empty { color: var(--text-muted); font-style: italic; }
+
+/* Evidence pill: fill strength + a 3-step meter, so the label never relies on colour alone */
+.evidence-pill {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 0.3rem 0.6rem; border: 1px solid var(--border-light); color: var(--text-muted);
+  white-space: nowrap;
+}
+.evidence-meter { display: inline-flex; gap: 2px; }
+.evidence-meter i { width: 5px; height: 9px; background: var(--border-light); display: block; }
+.evidence-pill.strong { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.evidence-pill.strong .evidence-meter i { background: var(--bg); }
+.evidence-pill.moderate { background: var(--accent-glow); border-color: var(--accent-dim); color: var(--accent); }
+.evidence-pill.moderate .evidence-meter i:nth-child(-n+2) { background: var(--accent); }
+.evidence-pill.exploratory { border-style: dashed; }
+.evidence-pill.exploratory .evidence-meter i:first-child { background: var(--text-muted); }
+
+/* ── Slide viewer (PDF.js) ── */
+.slide-viewer {
+  background: var(--bg-card); border: 1px solid var(--border);
+  outline: none; position: relative;
+}
+.slide-viewer:focus-visible { border-color: var(--accent-dim); }
+.slide-stage {
+  aspect-ratio: 16 / 9; width: 100%; background: var(--bg);
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+  touch-action: pan-y;
+}
+.slide-stage canvas { display: block; max-width: 100%; max-height: 100%; }
+.slide-status {
+  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--text-muted); text-align: center; padding: 1rem;
+}
+.slide-status a { color: var(--accent); }
+.slide-progress { height: 2px; background: var(--border); }
+.slide-progress span { display: block; height: 100%; width: 0; background: var(--accent); transition: width 0.2s; }
+.slide-controls {
+  display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem;
+  border-top: 1px solid var(--border); flex-wrap: wrap;
+}
+.slide-controls button, .slide-controls a {
+  font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+  background: transparent; border: 1px solid var(--border); color: var(--text-secondary);
+  padding: 0.45rem 0.8rem; cursor: pointer; text-decoration: none; transition: all 0.2s;
+}
+.slide-controls button:hover:not(:disabled), .slide-controls a:hover {
+  color: var(--accent); border-color: var(--accent-dim); background: var(--accent-glow);
+}
+.slide-controls button:disabled { opacity: 0.35; cursor: default; }
+.slide-counter {
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em;
+  color: var(--text); min-width: 5.5rem; text-align: center;
+}
+.slide-controls .spacer { flex: 1; }
+.slide-viewer:fullscreen { display: flex; flex-direction: column; background: var(--bg); border: none; }
+.slide-viewer:fullscreen .slide-stage { flex: 1; aspect-ratio: auto; }
+
+@media (max-width: 768px) {
+  .takeaways-grid { grid-template-columns: 1fr; }
+  .takeaway-card { padding: 1.5rem; }
+  .evidence-legend dl { grid-template-columns: 1fr; }
+  .slide-controls { padding: 0.6rem; gap: 0.35rem; }
+  .slide-controls .hide-sm { display: none; }
+}

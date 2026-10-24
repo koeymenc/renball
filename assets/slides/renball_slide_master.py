@@ -54,8 +54,16 @@ High-level slide builders:
     add_table_slide(prs, title, headers, rows, *, caption=None, eyebrow=None,
                     highlight_first_row=False, col_widths=None)
     add_quote_slide(prs, quote, *, attribution=None)
+    add_takeaways_slide(prs, takeaways, *, title="Who should *care*",
+                        eyebrow="TAKEAWAYS", show_basis=False)
+                                    # four-audience grid with evidence labels;
+                                    # same data.takeaways the page renders
     add_closing_slide(prs, *, headline="Thanks.", url="renball.com",
                       project_path=None, lines=None)
+
+Research-standard constants:
+    AUDIENCES, EVIDENCE   (mirror assets/js/renball-components.js)
+    add_evidence_pill(slide, x, y, key) -> width   # pill + 3-step meter
 
 Low-level primitives (for bespoke layouts):
     add_blank_slide(prs) -> slide                # bg + logo, no page number
@@ -75,7 +83,10 @@ All x/y/w/h arguments are in inches.
 from __future__ import annotations
 
 import io
+import math
 import re
+import sys
+from pathlib import Path
 from typing import Optional, Sequence
 
 import matplotlib
@@ -83,9 +94,14 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from pptx import Presentation
 from pptx.dml.color import RGBColor
+from pptx.enum.dml import MSO_LINE
 from pptx.enum.shapes import MSO_SHAPE
 from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
 from pptx.util import Inches, Pt
+
+# Brand fonts for matplotlib charts come from the shared chart style
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "social"))
+import renball_chart_style as _chart_style  # noqa: E402
 
 
 # ════════════════════════════════════════════════════════════════════════
@@ -117,6 +133,22 @@ MPL_TEXT_SEC     = "#8fa68f"
 MPL_TEXT_MUTED   = "#5a735a"
 MPL_ACCENT       = "#c1ff72"
 MPL_SECONDARY    = "#72c1ff"
+
+# ════════════════════════════════════════════════════════════════════════
+# Research standard — audiences + evidence labels
+# (mirror assets/js/renball-components.js; definitions live in CLAUDE.md)
+# ════════════════════════════════════════════════════════════════════════
+AUDIENCES = [
+    ("coaches",  "Coaches",  "Training & tactics"),
+    ("managers", "Managers", "Match-day decisions"),
+    ("clubs",    "Clubs",    "Recruitment & contracts"),
+    ("agents",   "Agents",   "Positioning a player"),
+]
+EVIDENCE = {
+    "strong":      ("Strong", 3),
+    "moderate":    ("Moderate", 2),
+    "exploratory": ("Exploratory", 1),
+}
 
 # ════════════════════════════════════════════════════════════════════════
 # Slide geometry (16:9) — strict zones
@@ -355,10 +387,13 @@ def add_section_header(slide, eyebrow: Optional[str], title: str, *,
 # ════════════════════════════════════════════════════════════════════════
 def new_chart(width: float = 11.0, height: float = 4.2):
     """
-    Pre-styled (fig, ax) — Renball palette, no top/right spines.
+    Pre-styled (fig, ax) — Renball palette, no top/right spines, brand
+    fonts (DM Sans text, JetBrains Mono ticks) via renball_chart_style.
     Defaults sized so 12" wide → ≤ 4.6" tall in PPTX, fitting comfortably
     inside the body zone (BODY_TOP→CAPTION_TOP) with room for a caption.
     """
+    plt.rcParams["font.family"] = _chart_style.SANS
+    plt.rcParams["axes.labelcolor"] = MPL_TEXT_SEC
     fig, ax = plt.subplots(figsize=(width, height), facecolor=MPL_BG)
     ax.set_facecolor(MPL_BG)
     for side in ("top", "right"):
@@ -372,6 +407,9 @@ def new_chart(width: float = 11.0, height: float = 4.2):
 
 
 def chart_to_bytes(fig) -> io.BytesIO:
+    for ax in fig.axes:   # tick labels are recreated by plotting calls — set mono last
+        for lbl in ax.get_xticklabels() + ax.get_yticklabels():
+            lbl.set_family(_chart_style.MONO)
     buf = io.BytesIO()
     fig.savefig(buf, format="png", dpi=200,
                 facecolor=MPL_BG, bbox_inches="tight", pad_inches=0.2)
@@ -641,6 +679,121 @@ def add_quote_slide(prs: Presentation, quote: str, *,
         add_mono_label(s, 1.5, 6.0, 10.5, 0.4, f"— {attribution}",
                        color=TEXT_MUTED, size=11)
     add_hline(s, 1.5, 6.55, 1.5, color=ACCENT, pt=2)
+    return s
+
+
+PILL_W = 1.3     # fixed width so pills form a clean column
+PILL_H = 0.24
+
+
+def add_evidence_pill(slide, x: float, y: float, key: str, *,
+                      width: float = PILL_W) -> float:
+    """
+    Evidence label as a pill + 3-step meter (never colour alone):
+        strong      accent fill, dark text, ■■■
+        moderate    accent-dim outline, accent text, ■■□
+        exploratory dashed muted outline, muted text, ■□□
+    Returns the pill width (inches).
+    """
+    if key not in EVIDENCE:
+        raise ValueError(f"evidence must be one of {sorted(EVIDENCE)}, got {key!r}")
+    label, level = EVIDENCE[key]
+    if key == "strong":
+        fill, border, fg, on, off = ACCENT, ACCENT, BG, BG, ACCENT_DIM
+    elif key == "moderate":
+        fill, border, fg, on, off = BG_CARD, ACCENT_DIM, ACCENT, ACCENT, BORDER_LIGHT
+    else:
+        fill, border, fg, on, off = BG_CARD, BORDER_LIGHT, TEXT_MUTED, TEXT_MUTED, BORDER_LIGHT
+    shp = add_rect(slide, x, y, width, PILL_H, fill, border=border, border_pt=0.75)
+    if key == "exploratory":
+        shp.line.dash_style = MSO_LINE.DASH
+    mx = x + 0.1
+    for i in range(3):
+        add_rect(slide, mx + i * 0.075, y + 0.065, 0.05, 0.11, on if i < level else off)
+    add_text(slide, mx + 0.3, y, width - 0.4, PILL_H, label.upper(),
+             font=MONO, size=8, color=fg, anchor=MSO_ANCHOR.MIDDLE)
+    return width
+
+
+def _lines(text: str, size_pt: float, width_in: float, *, em: float = 0.52) -> int:
+    """Rough DM Sans line count: average glyph ≈ 0.52 em."""
+    chars_per_line = max(1, int(width_in / (size_pt * em / 72)))
+    return max(1, math.ceil(len(text) / chars_per_line))
+
+
+def add_takeaways_slide(prs: Presentation, takeaways: dict, *,
+                        title: str = "Who should *care*",
+                        eyebrow: str = "TAKEAWAYS",
+                        show_basis: bool = False):
+    """
+    Four-audience grid (Coaches / Managers / Clubs / Agents), each takeaway
+    tagged Strong / Moderate / Exploratory. Takes the same `takeaways`
+    object analysis.html renders (data.json["takeaways"]).
+
+    Fits ≤ 2 takeaways of ≤ ~140 characters per audience; font steps down
+    12 → 10.5pt to fit and prints a warning if a card still overflows.
+    The evidence legend sits in the caption row.
+    """
+    s = add_blank_slide(prs)
+    add_section_header(s, eyebrow, title)
+
+    gap = 0.2
+    card_w = (BODY_MAX_W - gap) / 2
+    card_h = (CAPTION_TOP - CAPTION_GAP - BODY_TOP - gap) / 2
+    pad = 0.25
+    text_w = card_w - 2 * pad - PILL_W - 0.15
+
+    for i, (key, label, focus) in enumerate(AUDIENCES):
+        cx = BODY_LEFT + (i % 2) * (card_w + gap)
+        cy = BODY_TOP + (i // 2) * (card_h + gap)
+        add_rect(s, cx, cy, card_w, card_h, BG_CARD, border=BORDER, border_pt=0.75)
+        add_text(s, cx + pad, cy + 0.12, card_w / 2, 0.4, label,
+                 font=SERIF, size=19, color=TEXT)
+        add_mono_label(s, cx + card_w / 2, cy + 0.2, card_w / 2 - pad, 0.3, focus,
+                       color=TEXT_MUTED, size=8, align=PP_ALIGN.RIGHT)
+        add_hline(s, cx + pad, cy + 0.55, card_w - 2 * pad, color=BORDER, pt=0.75)
+
+        items = takeaways.get(key) or []
+        top, avail = cy + 0.7, card_h - 0.7 - 0.12
+        if not items:
+            add_text(s, cx + pad, top, card_w - 2 * pad, 0.4,
+                     "No defensible claim for this audience from this study.",
+                     font=SANS, size=12, color=TEXT_MUTED, italic=True)
+            continue
+
+        size = 10.5
+        for candidate in (12, 11, 10.5):
+            need = sum(_lines(t["text"], candidate, text_w) * candidate * 1.25 / 72
+                       + (0.2 if show_basis and t.get("basis") else 0) for t in items)
+            need += 0.14 * (len(items) - 1)
+            if need <= avail:
+                size = candidate
+                break
+        else:
+            print(f"  [WARN] takeaways slide: '{key}' text overflows its card -- shorten it")
+
+        y = top
+        for t in items:
+            add_evidence_pill(s, cx + pad, y + 0.01, t["evidence"])
+            h = _lines(t["text"], size, text_w) * size * 1.25 / 72
+            add_text(s, cx + pad + PILL_W + 0.15, y, text_w, h, t["text"].replace("**", ""),
+                     font=SANS, size=size, color=TEXT_SECONDARY)
+            y += h
+            if show_basis and t.get("basis"):
+                add_text(s, cx + pad + PILL_W + 0.15, y, text_w, 0.2, t["basis"],
+                         font=MONO, size=8, color=TEXT_MUTED)
+                y += 0.2
+            y += 0.14
+
+    # Legend in the caption row
+    add_mono_label(s, BODY_LEFT, CAPTION_TOP + 0.03, 1.2, 0.25, "EVIDENCE",
+                   color=TEXT_MUTED, size=9)
+    x = BODY_LEFT + 1.2
+    for key in EVIDENCE:
+        x += add_evidence_pill(s, x, CAPTION_TOP, key) + 0.2
+    add_text(s, x + 0.1, CAPTION_TOP + 0.03, BODY_MAX_W - (x - BODY_LEFT), 0.25,
+             "Definitions: methodology § Evidence labels",
+             font=MONO, size=9, color=TEXT_MUTED)
     return s
 
 

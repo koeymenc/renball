@@ -80,6 +80,22 @@ def main() -> None:
         "chart2": {"labels": [], "seriesA": [], "seriesB": []},
     }
 
+    # Who should care — rendered on the page (renball-components.js), on a
+    # slide (add_takeaways_slide) and quoted in the X thread. Compose the text
+    # here from computed values (f-strings) so every number traces to this
+    # file; code/verify.py fails on any hand-typed figure. Evidence labels:
+    # strong | moderate | exploratory (definitions: CLAUDE.md §4.3). Keep each
+    # text <= 140 chars, <= 2 per audience; [] means "no defensible claim".
+    payload["takeaways"] = {
+        "intro": "[One line: who this helps and how confident we are.]",
+        "coaches":  [{"text": "[Training / tactics takeaway]", "evidence": "moderate",
+                      "basis": "[n = … · 95% CI …]"}],
+        "managers": [{"text": "[Match-day decision takeaway]", "evidence": "exploratory",
+                      "basis": "[…]"}],
+        "clubs":    [],
+        "agents":   [],
+    }
+
     write_data(payload)
 
 

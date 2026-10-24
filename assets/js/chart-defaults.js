@@ -87,6 +87,9 @@
   Chart.defaults.borderColor = C.border;
   Chart.defaults.font.family = C.sans;
   Chart.defaults.font.size = 13;
+  // Axis ticks and tooltips format numbers with this locale; pinned so a
+  // German/Swiss browser doesn't print 3,857 as "3.857" (CLAUDE.md §4.4).
+  Chart.defaults.locale = 'en-GB';
 
   // Wider-and-shorter charts so the full plot fits on a laptop viewport.
   // aspectRatio = width / height. At a ~980px chart-wrap width, 3.0 → ~325px height.

@@ -43,3 +43,12 @@ desktop.ini
 # Scratch verification screenshots (local-only diagnostics)
 _verify_*.png
 _diag*
+
+# X drafts stay private (the _template/social/ skeleton is tracked)
+projects/*/social/
+
+# Transient print file written by renball_pdf --theme dark
+_methodology_print.html
+
+# Internal audits (findings on live projects stay private)
+_audit/

@@ -64,6 +64,7 @@
 | [Group B] | [n] | [%] | [CI] |
 
 **Test result:** Z = [value], p = [value]
+**Effect size:** [difference with 95% CI]. **Power / MDE:** [smallest effect this sample could detect at 80% power]. **Equivalence (if claiming "no difference"):** [TOST margin and result].
 **Interpretation:** [Plain English.]
 
 ### 4.2 [Sub-result 2]
@@ -72,7 +73,24 @@
 
 ---
 
-## 5. Limitations
+## 5. Practical takeaways
+
+| Audience | Takeaway | Evidence |
+|---|---|---|
+| Coaches — training & tactics | [From data.json takeaways] | [Strong / Moderate / Exploratory] |
+| Managers — match-day decisions | [ … ] | [ … ] |
+| Clubs — recruitment & contracts | [ … or "No defensible claim"] | — |
+| Agents — positioning a player | [ … ] | [ … ] |
+
+### Evidence labels
+
+- **Strong** — large sample; the 95% interval excludes zero (or, for a "no effect" claim, sits inside a pre-stated equivalence margin); survives the main controls; holds across leagues or seasons.
+- **Moderate** — consistent direction and plausible size, with one gap: the interval touches zero, a single method or sample, or only partial replication.
+- **Exploratory** — small samples, an interval that comfortably includes zero, untested confounders, or a pattern found by looking rather than tested. A question worth asking, not advice.
+
+---
+
+## 6. Limitations
 
 - [Limitation 1 — e.g. excluded knockout/extra-time penalties]
 - [Limitation 2 — e.g. no shootout data]
@@ -80,7 +98,7 @@
 
 ---
 
-## 6. Conclusion
+## 7. Conclusion
 
 [2–3 paragraph wrap-up. What the result means, what it doesn't mean, what's next.]
 
