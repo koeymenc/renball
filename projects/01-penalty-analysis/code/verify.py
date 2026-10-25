@@ -37,10 +37,17 @@ ALLOW = [
 ANCHORS = [
     # The equivalence margins are shown as whole numbers of pp (±5 pp, "bigger than 5 pp").
     # The secondary margin comes first: the first rule whose span holds a number wins.
-    (r"(?:looser|and(?: at)?|so does) ±\s?\d+\s?pp", "$.robustness.tost_secondary.margin_pp"),
+    (r"(?:looser|and(?: at)?|so does|even|and not within) ±?\s?\d+\s?pp", "$.robustness.tost_secondary.margin_pp"),
     (r"(?:margin fails too|so does ±\s?\d+\s?pp) \(p = \d\.\d+", "$.robustness.tost_secondary.p_tost"),
     (r"±\s?\d+(?:\.\d+)?\s?pp", "$.robustness.tost.margin_pp"),
-    (r"(?:bigger than|exceeds(?: the)?|a drop of) \d+ pp", "$.robustness.tost.margin_pp"),
+    (r"(?:bigger than|exceeds(?: the)?|a drop of|Why|within) \d+ pp", "$.robustness.tost.margin_pp"),
+    (r"[Gg]ap after all (?:of )?that: (?:about )?−?\d+(?:\.\d+)? pp", "$.robustness.adjusted.gap_pp"),
+    (r"\d\.\d pp edge", "$.robustness.established.vs_other.diff_pp"),
+    (r"as large as \d+(?:\.\d+)? pp", "$.robustness.tost.smallest_margin_pp"),
+    (r"[Cc]hance he converts less:? \(?\d+(?:\.\d+)?%", "$.robustness.bayes.p_lower_pct"),
+    (r"\d+(?:\.\d+)?% of the curve", "$.robustness.bayes.p_drop_beyond_margin_pct"),
+    (r"(?<=over other takers, range )\d\.\d", "$.robustness.established.vs_other.ci_lo"),
+    (r"(?<=over other takers, range \d\.\d lower to )\d\.\d", "$.robustness.established.vs_other.ci_hi"),
     (r"\d+\.\d% (?:chance )?that the drop", "$.robustness.bayes.p_drop_beyond_margin_pct"),
     (r"p = \*{0,2}\d\.\d+\*{0,2} \(one-tailed\)", "$.primary.test.p_value"),
     (r"[Mm]inimum detectable effect.{0,40}?\d+\.\d", "$.primary.test.mde_pp"),

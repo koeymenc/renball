@@ -45,6 +45,22 @@ def num(x: float, d: int = 2) -> str:
     return f"{'−' if x < 0 else ''}{abs(x):.{d}f}"
 
 
+def dot_interval(ax, labels, vals, los, his, ns, *, colors=None, label_fmt="{:.1f}%"):
+    """A dot at each rate with a line for its 95% interval on a nice_range axis (no truncated bars)."""
+    xs = range(len(vals))
+    colors = colors or [R.MPL_ACCENT] * len(vals)
+    for x, v, lo, hi, col in zip(xs, vals, los, his, colors):
+        ax.plot([x, x], [lo, hi], color=col, linewidth=3, solid_capstyle="butt", alpha=0.85)
+        ax.plot([x], [v], "o", color=R.MPL_TEXT, markersize=8, zorder=3)
+        ax.text(x + 0.08, v, label_fmt.format(v), va="center", color=R.MPL_TEXT, fontsize=10)
+    lo, hi = CS.nice_range(list(los) + list(his), padding=2)
+    ax.set_ylim(lo, hi)
+    ax.set_xticks(list(xs))
+    ax.set_xticklabels([f"{lab}\nn = {n:,}" for lab, n in zip(labels, ns)], fontsize=9)
+    ax.set_xlim(-0.6, len(vals) - 0.4)
+    ax.set_ylabel("Conversion rate (%)", color=R.MPL_TEXT_SEC, fontsize=11)
+
+
 # ════════════════════════════════════════════════════════════════════════
 # Slide content
 # ════════════════════════════════════════════════════════════════════════
@@ -75,7 +91,7 @@ def slide_tldr(prs, d):
          f"One-tailed two-proportion z-test. Treatment n = {t['attempts']} "
          f"({t['rate']}%). Control n = {c['attempts']:,} ({c['rate']}%)."),
         ("THE RESULT",
-         f"Δ = {sgn(tst['rate_diff_pp'], 2)} pp (95% CI {sgn(tst['diff_ci_lo'])} to {sgn(tst['diff_ci_hi'])}) — "
+         f"Δ = {sgn(tst['rate_diff_pp'], 2)} pp (95% CI {sgn(tst['diff_ci_lo'])} to {sgn(tst['diff_ci_hi'])}): the "
          f"predicted direction, but p = {tst['p_value']:.3f}: not detectable. Every check agrees "
          f"({sgn(d['robustness']['adjusted']['gap_pp'], 2)} pp after controls)."),
     ]
@@ -95,8 +111,8 @@ def slide_theory(prs, d):
                "The just-fouled player walks straight to the spot.",
                font=R.SERIF, size=24, color=R.TEXT, italic=True)
     R.add_text(s, R.BODY_LEFT, R.BODY_TOP + 1.0, 6.0, 3.4,
-               "Theory of the taker: physically jarred — body contact, hit the ground, "
-               "adrenaline. Emotionally agitated, narrowed focus.",
+               "Theory of the taker: physically jarred (body contact, hit the ground, "
+               "adrenaline). Emotionally agitated, narrowed focus.",
                font=R.SANS, size=15, color=R.TEXT_SECONDARY)
     R.add_text(s, R.BODY_LEFT + 6.3, R.BODY_TOP + 1.0, 5.7, 3.4,
                "Theory of the keeper: locked in. The foul that gave the penalty was his fault. "
@@ -112,7 +128,7 @@ def slide_data(prs, d):
     R.add_section_header(s, "DATA", "What we built the test on")
 
     seasons = d["metadata"]["seasons"]
-    seasons_label = f"{seasons[0]} → {seasons[-1]}" if seasons else "—"
+    seasons_label = f"{seasons[0]} → {seasons[-1]}" if seasons else "n/a"
     t_n = d["primary"]["treatment"]["attempts"]
 
     stats = [
@@ -161,7 +177,7 @@ def slide_method(prs, d):
         right={
             "label": "CONTROL",
             "title": "All other penalties",
-            "body": "Every other linked penalty — GK conceded but someone else took it, "
+            "body": "Every other linked penalty: GK conceded but someone else took it, "
                     "outfielder conceded (any taker), or no foul recorded (e.g. handball).",
         },
         eyebrow="METHOD",
@@ -178,26 +194,13 @@ def slide_by_league(prs, d):
     n_vals = [l["attempts"] for l in leagues]
 
     fig, ax = R.new_chart(width=11, height=4.3)
-    bars = ax.bar(labels, rates, color=R.MPL_ACCENT,
-                  width=0.55, edgecolor="none")
-    lo, hi = CS.nice_range(rates)
-    ax.set_ylim(lo, hi)
-    ax.set_yticks(range(int(lo), int(hi) + 1, 5))
-    ax.set_ylabel("Conversion rate (%)",
-                  color=R.MPL_TEXT_SEC, fontsize=11)
-    for bar, val, n in zip(bars, rates, n_vals):
-        ax.text(bar.get_x() + bar.get_width() / 2, val + 0.3,
-                f"{val:.1f}%",
-                ha="center", color=R.MPL_TEXT, fontsize=10)
-        ax.text(bar.get_x() + bar.get_width() / 2, lo + 0.6,
-                f"n = {n:,}",
-                ha="center", color=R.MPL_BG, fontsize=8)
+    dot_interval(ax, labels, rates, [l["ci_lo"] for l in leagues], [l["ci_hi"] for l in leagues], n_vals)
 
     R.add_chart_slide(prs,
                       "Conversion rate by league",
                       fig,
-                      caption="Across the top 5 leagues conversion clusters tightly in the high 70s — "
-                              "league of origin is not a major source of variation.",
+                      caption="Across the top 5 leagues conversion clusters tightly in the high 70s: league of "
+                              "origin is not a major source of variation. Dots: rate; lines: 95% Wilson intervals.",
                       eyebrow="CONTEXT")
 
 
@@ -208,18 +211,7 @@ def slide_by_season(prs, d):
     n_vals = [s["attempts"] for s in seasons]
 
     fig, ax = R.new_chart(width=11, height=4.3)
-    ax.bar(labels, rates, color=R.MPL_ACCENT,
-           width=0.55, edgecolor="none")
-    lo, hi = CS.nice_range(rates)
-    ax.set_ylim(lo, hi)
-    ax.set_yticks(range(int(lo), int(hi) + 1, 5))
-    ax.set_ylabel("Conversion rate (%)",
-                  color=R.MPL_TEXT_SEC, fontsize=11)
-    for i, (val, n) in enumerate(zip(rates, n_vals)):
-        ax.text(i, val + 0.3, f"{val:.1f}%",
-                ha="center", color=R.MPL_TEXT, fontsize=9)
-        ax.text(i, lo + 0.6, f"n = {n:,}",
-                ha="center", color=R.MPL_BG, fontsize=8)
+    dot_interval(ax, labels, rates, [s["ci_lo"] for s in seasons], [s["ci_hi"] for s in seasons], n_vals)
 
     md = d["metadata"]
     s_lo, s_hi = md["season_rate_min"], md["season_rate_max"]
@@ -244,27 +236,13 @@ def slide_primary(prs, d):
     body_top = R.BODY_TOP
     card_h = R.CAPTION_TOP - R.CAPTION_GAP - body_top   # 4.75"
 
-    # Left chart — explicit (w, h) so we control placement precisely
+    # Left chart: explicit (w, h) so we control placement precisely
     chart_w = 7.4
     chart_h = card_h
     fig, ax = R.new_chart(width=chart_w, height=chart_h)
-    labels = ["Treatment\n(GK fouled the taker)", "Control\n(all other penalties)"]
-    rates = [t["rate"], c["rate"]]
-    bars = ax.bar(labels, rates, color=[R.MPL_ACCENT, R.MPL_SECONDARY],
-                  width=0.5, edgecolor="none")
-    cis = [(t["ci_lo"], t["ci_hi"]), (c["ci_lo"], c["ci_hi"])]
-    for i, (lo, hi) in enumerate(cis):
-        x = bars[i].get_x() + bars[i].get_width() / 2
-        ax.plot([x, x], [lo, hi], color=R.MPL_TEXT, linewidth=1.4)
-        ax.plot([x - 0.07, x + 0.07], [lo, lo], color=R.MPL_TEXT, linewidth=1.4)
-        ax.plot([x - 0.07, x + 0.07], [hi, hi], color=R.MPL_TEXT, linewidth=1.4)
-    for bar, val in zip(bars, rates):
-        ax.text(bar.get_x() + bar.get_width() / 2, val - 6,
-                f"{val:.2f}%",
-                ha="center", color=R.MPL_BG, fontsize=14, fontweight="bold")
-    ax.set_ylim(50, 95)
-    ax.set_ylabel("Conversion rate (%)",
-                  color=R.MPL_TEXT_SEC, fontsize=11)
+    dot_interval(ax, ["Treatment\n(GK fouled the taker)", "Control\n(all other penalties)"],
+                 [t["rate"], c["rate"]], [t["ci_lo"], c["ci_lo"]], [t["ci_hi"], c["ci_hi"]],
+                 [t["attempts"], c["attempts"]], colors=[R.MPL_ACCENT, R.MPL_SECONDARY], label_fmt="{:.2f}%")
     R.add_chart_picture(s, fig, R.BODY_LEFT, body_top, chart_w, chart_h)
 
     # Right card
@@ -303,7 +281,7 @@ def slide_primary(prs, d):
                font=R.MONO, size=11, color=R.ACCENT)
 
     R.add_text(s, R.BODY_LEFT, R.CAPTION_TOP, R.BODY_MAX_W, 0.3,
-               f"Whiskers: 95% Wilson CIs. Difference 95% CI {tst['diff_ci_lo']:+.1f} to "
+               f"Lines: 95% Wilson intervals. Difference 95% CI {tst['diff_ci_lo']:+.1f} to "
                f"{tst['diff_ci_hi']:+.1f} pp; smallest detectable drop ≈ {tst['mde_pp']:.1f} pp (80% power).",
                font=R.MONO, size=10, color=R.TEXT_MUTED)
 
@@ -399,10 +377,10 @@ def slide_taker(prs, d):
             "title": f"{num(rep['spearman_brown'])} reliability",
             "body": (f"Split-half, {rep['n_takers']} takers with {rep['min_attempts']}+ kicks (95% CI "
                      f"{num(rep['sb_lo'])} to {num(rep['sb_hi'])}). A taker's hit rate on alternate kicks says "
-                     "nothing useful about the rest — penalty records behave like noise at these sample sizes."),
+                     "nothing useful about the rest: penalty records behave like noise at these sample sizes."),
         },
         eyebrow="THE TAKER",
-        caption=(f"Define the taker from the whole season instead and the edge jumps to {sgn(sd['diff_pp'], 2)} pp — "
+        caption=(f"Define the taker from the whole season instead and the edge jumps to {sgn(sd['diff_pp'], 2)} pp, "
                  "largely the outcome leaking in: takers who miss lose the job."),
     )
 
@@ -418,10 +396,10 @@ def slide_limitations(prs, d):
         prs,
         "What this *can't* tell you",
         bullets=[
-            f"Small treatment group: {t['attempts']} penalties — a real drop below ~{tst['mde_pp']:.1f} pp would usually go unseen.",
+            f"Small treatment group: {t['attempts']} penalties: a real drop below ~{tst['mde_pp']:.1f} pp would usually go unseen.",
             "Taking it is a choice: status, record and experience are controlled; nerve and knocks on the day are not.",
             "\"Fouled\" is not \"hurt\": the data record who won the penalty, not whether he was injured.",
-            "No minute, scoreline or goalkeeper in the model — the player-match table has neither.",
+            "No minute, scoreline or goalkeeper in the model: the player-match table has neither.",
             f"{md['n_unlinked']} of {md['n_penalties_total']:,} penalties can't be linked (mostly a team taking 2+ in a match).",
         ],
         eyebrow="LIMITATIONS",
@@ -514,8 +492,8 @@ def slide_per_league(prs, d):
     for blk in blocks:
         tt = blk["treatment"]; cc = blk["control"]; tst = blk["test"]
         low_n = tt["attempts"] < 30
-        z_str = f"{tst['z_stat']:+.3f}" if tst["z_stat"] is not None else "—"
-        p_str = f"{tst['p_value']:.4f}" if tst["p_value"] is not None else "—"
+        z_str = f"{tst['z_stat']:+.3f}" if tst["z_stat"] is not None else "n/a"
+        p_str = f"{tst['p_value']:.4f}" if tst["p_value"] is not None else "n/a"
         sig = tst["p_holm"] < 0.05
         sig_str = "Yes" if sig else "No"
         sig_color = R.ACCENT if sig else R.TEXT_MUTED
@@ -600,7 +578,7 @@ def slide_sources(prs, d):
         lines=[
             "→ methodology      formal H₀ / H₁, test assumptions, limitations",
             "→ analysis.html    interactive dashboard, live numbers from data.json",
-            "→ code/build.py    Python pipeline — raw pickles → aggregated JSON",
+            "→ code/build.py    Python pipeline: raw pickles → aggregated JSON",
         ],
     )
 

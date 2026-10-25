@@ -45,6 +45,7 @@ Override raw-data location with the env var RENBALL_DATA_PATH.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 from datetime import datetime, timezone
@@ -120,6 +121,7 @@ N_BOOT = 1000              # cluster-bootstrap resamples (takers) for the adjust
 N_DRAWS = 400_000          # posterior draws for the Bayesian check
 SEED = 2026
 REPEAT_MIN_ATT = 10        # takers with at least this many attempts enter the split-half check
+CACHE_DIR = PROJECT_DIR / "data" / ".cache"   # bootstrap results, keyed on a hash of their inputs (gitignored)
 
 # Why an attempt can't be tied to one taker / fouled player / conceder
 EXCLUDE_REASONS = {
@@ -511,6 +513,23 @@ def repeatability_block(A: pd.DataFrame) -> dict:
     }
 
 
+def cached(name: str, frame: pd.DataFrame, params: tuple, fn):
+    """Return fn()'s JSON-able result, cached under data/.cache/ by a hash of the input rows and
+    parameters. A rebuild on unchanged data skips the bootstrap; any change in data or settings
+    (seed, resamples, formula) gives a new key. Delete the folder to force a recompute."""
+    h = hashlib.sha256(pd.util.hash_pandas_object(frame, index=False).values.tobytes())
+    h.update(repr(params).encode())
+    path = CACHE_DIR / f"{name}_{h.hexdigest()[:20]}.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    out = fn()
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    for old in CACHE_DIR.glob(f"{name}_*.json"):
+        old.unlink()
+    path.write_text(json.dumps(out), encoding="utf-8")
+    return out
+
+
 # ── Takeaways ──────────────────────────────────────────────
 def fmt_pp(x: float, d: int = 1) -> str:
     return f"{'−' if x < 0 else '+'}{abs(x):.{d}f}"
@@ -546,11 +565,11 @@ def takeaways_from(payload: dict) -> dict:
                       f"{fmt_pp(adj['gap_pp'], 2)} pp after controls"),
         }],
         "clubs": [{
-            "text": (f"Don't pay for a penalty record: a taker's hit rate on alternate kicks didn't predict the "
-                     f"rest (reliability **{fmt_num(rep['spearman_brown'])}**)."),
+            "text": ("Don't pay for a penalty record: how a taker did on **half his kicks** didn't predict the "
+                     "other half."),
             "evidence": "moderate",
-            "basis": (f"{rep['n_takers']} takers with {rep['min_attempts']}+ kicks · split-half · 95% CI "
-                      f"{fmt_num(rep['sb_lo'])} to {fmt_num(rep['sb_hi'])}"),
+            "basis": (f"{rep['n_takers']} takers with {rep['min_attempts']}+ kicks · split-half reliability "
+                      f"{fmt_num(rep['spearman_brown'])} · 95% CI {fmt_num(rep['sb_lo'])} to {fmt_num(rep['sb_hi'])}"),
         }],
         "agents": [],
     }
@@ -578,9 +597,7 @@ def main() -> None:
         by_league.append({
             "code": league,
             "label": LEAGUE_LABELS.get(league, league),
-            "attempts": att,
-            "conversions": conv,
-            "rate": round(rate_pct(conv, att), 2),
+            **proportion_block(att, conv),
         })
 
     all_loose = pd.concat(loose_dfs.values(), ignore_index=True)
@@ -590,12 +607,7 @@ def main() -> None:
         .sort_values("Season")
     )
     by_season = [
-        {
-            "season": str(row.Season),
-            "attempts": int(row.attempts),
-            "conversions": int(row.conversions),
-            "rate": round(rate_pct(int(row.conversions), int(row.attempts)), 2),
-        }
+        {"season": str(row.Season), **proportion_block(int(row.attempts), int(row.conversions))}
         for row in season_summary.itertuples()
     ]
 
@@ -709,7 +721,7 @@ def main() -> None:
         "by_league": [{"code": lg, "label": LEAGUE_LABELS.get(lg, lg),
                        **gap(s[est & (E["league"] == lg)], s[oth & (E["league"] == lg)])} for lg in leagues],
         "season_definition": {
-            "note": "defined from the whole season (including later kicks) — leaks the outcome",
+            "note": "defined from the whole season (including later kicks): leaks the outcome",
             **gap(s[season_des], s[~season_des]),
         },
     }
@@ -720,11 +732,15 @@ def main() -> None:
         "tost": tost_block(t_k, t_n, c_k, c_n, EQUIV_MARGIN_PP),
         "tost_secondary": tost_block(t_k, t_n, c_k, c_n, EQUIV_MARGIN2_PP),
         "bayes": bayes_block(t_k, t_n, c_k, c_n, EQUIV_MARGIN_PP, EQUIV_MARGIN2_PP),
-        "adjusted": adjusted_block(E),
+        "adjusted": cached("adjusted", E[["scored", "treat", "established", "record", "experience", "home",
+                                          "league", "season", "taker"]],
+                           (ADJ_FORMULA, N_BOOT, SEED, SHRINK_K), lambda: adjusted_block(E)),
         "controls": controls,
         "samples": samples,
         "established": established,
-        "repeatability": repeatability_block(A),
+        "repeatability": cached("repeatability", A[["Player", "date", "match_id", "Performance_PK",
+                                                    "Performance_PKatt"]],
+                                (REPEAT_MIN_ATT, N_BOOT, SEED), lambda: repeatability_block(A)),
         "holm_min_p": round(float(min(holm)), 3),
         "n_tests_per_league": len(holm),
     }
@@ -747,9 +763,9 @@ def main() -> None:
             "season_rate_min": min(by_season, key=lambda r: r["rate"]),
             "season_rate_max": max(by_season, key=lambda r: r["rate"]),
             "filter_note": (
-                "Descriptive stats (overall, by_league, by_season) use the loose filter — "
+                "Descriptive stats (overall, by_league, by_season) use the loose filter: "
                 "any match with a non-zero penalty event. The primary test and 2x2 matrix "
-                "use linked penalties — one row per penalty whose taker, fouled player and "
+                "use linked penalties, one row per penalty whose taker, fouled player and "
                 "conceder are unambiguous (the team took exactly one penalty in that match)."
             ),
         },

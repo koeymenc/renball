@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-25T07:58:11.150699+00:00",
+  "generated_at": "2026-10-25T15:38:28.991830+00:00",
   "metadata": {
     "leagues": [
       {
@@ -66,15 +66,21 @@
       "season": "2017-2018",
       "attempts": 540,
       "conversions": 392,
-      "rate": 72.59
+      "misses": 148,
+      "rate": 72.59,
+      "ci_lo": 68.68,
+      "ci_hi": 76.19
     },
     "season_rate_max": {
       "season": "2021-2022",
       "attempts": 583,
       "conversions": 471,
-      "rate": 80.79
+      "misses": 112,
+      "rate": 80.79,
+      "ci_lo": 77.39,
+      "ci_hi": 83.78
     },
-    "filter_note": "Descriptive stats (overall, by_league, by_season) use the loose filter \u2014 any match with a non-zero penalty event. The primary test and 2x2 matrix use linked penalties \u2014 one row per penalty whose taker, fouled player and conceder are unambiguous (the team took exactly one penalty in that match)."
+    "filter_note": "Descriptive stats (overall, by_league, by_season) use the loose filter: any match with a non-zero penalty event. The primary test and 2x2 matrix use linked penalties, one row per penalty whose taker, fouled player and conceder are unambiguous (the team took exactly one penalty in that match)."
   },
   "overall": {
     "attempts": 4110,
@@ -87,35 +93,50 @@
       "label": "Serie A",
       "attempts": 966,
       "conversions": 762,
-      "rate": 78.88
+      "misses": 204,
+      "rate": 78.88,
+      "ci_lo": 76.2,
+      "ci_hi": 81.34
     },
     {
       "code": "LALIGA",
       "label": "La Liga",
       "attempts": 886,
       "conversions": 677,
-      "rate": 76.41
+      "misses": 209,
+      "rate": 76.41,
+      "ci_lo": 73.5,
+      "ci_hi": 79.09
     },
     {
       "code": "PL",
       "label": "Premier League",
       "attempts": 708,
       "conversions": 567,
-      "rate": 80.08
+      "misses": 141,
+      "rate": 80.08,
+      "ci_lo": 76.98,
+      "ci_hi": 82.86
     },
     {
       "code": "BUNDESLIGA",
       "label": "Bundesliga",
       "attempts": 662,
       "conversions": 520,
-      "rate": 78.55
+      "misses": 142,
+      "rate": 78.55,
+      "ci_lo": 75.26,
+      "ci_hi": 81.51
     },
     {
       "code": "LIGUE1",
       "label": "Ligue 1",
       "attempts": 888,
       "conversions": 706,
-      "rate": 79.5
+      "misses": 182,
+      "rate": 79.5,
+      "ci_lo": 76.73,
+      "ci_hi": 82.03
     }
   ],
   "by_season": [
@@ -123,43 +144,64 @@
       "season": "2017-2018",
       "attempts": 540,
       "conversions": 392,
-      "rate": 72.59
+      "misses": 148,
+      "rate": 72.59,
+      "ci_lo": 68.68,
+      "ci_hi": 76.19
     },
     {
       "season": "2018-2019",
       "attempts": 585,
       "conversions": 463,
-      "rate": 79.15
+      "misses": 122,
+      "rate": 79.15,
+      "ci_lo": 75.67,
+      "ci_hi": 82.24
     },
     {
       "season": "2019-2020",
       "attempts": 589,
       "conversions": 471,
-      "rate": 79.97
+      "misses": 118,
+      "rate": 79.97,
+      "ci_lo": 76.54,
+      "ci_hi": 83.0
     },
     {
       "season": "2020-2021",
       "attempts": 688,
       "conversions": 553,
-      "rate": 80.38
+      "misses": 135,
+      "rate": 80.38,
+      "ci_lo": 77.25,
+      "ci_hi": 83.17
     },
     {
       "season": "2021-2022",
       "attempts": 583,
       "conversions": 471,
-      "rate": 80.79
+      "misses": 112,
+      "rate": 80.79,
+      "ci_lo": 77.39,
+      "ci_hi": 83.78
     },
     {
       "season": "2022-2023",
       "attempts": 574,
       "conversions": 441,
-      "rate": 76.83
+      "misses": 133,
+      "rate": 76.83,
+      "ci_lo": 73.21,
+      "ci_hi": 80.1
     },
     {
       "season": "2023-2024",
       "attempts": 551,
       "conversions": 441,
-      "rate": 80.04
+      "misses": 110,
+      "rate": 80.04,
+      "ci_lo": 76.5,
+      "ci_hi": 83.16
     }
   ],
   "primary": {
@@ -836,7 +878,7 @@
         }
       ],
       "season_definition": {
-        "note": "defined from the whole season (including later kicks) \u2014 leaks the outcome",
+        "note": "defined from the whole season (including later kicks): leaks the outcome",
         "a": {
           "attempts": 2259,
           "conversions": 1875,
@@ -889,9 +931,9 @@
     ],
     "clubs": [
       {
-        "text": "Don't pay for a penalty record: a taker's hit rate on alternate kicks didn't predict the rest (reliability **\u22120.08**).",
+        "text": "Don't pay for a penalty record: how a taker did on **half his kicks** didn't predict the other half.",
         "evidence": "moderate",
-        "basis": "126 takers with 10+ kicks \u00b7 split-half \u00b7 95% CI \u22120.47 to 0.18"
+        "basis": "126 takers with 10+ kicks \u00b7 split-half reliability \u22120.08 \u00b7 95% CI \u22120.47 to 0.18"
       }
     ],
     "agents": []

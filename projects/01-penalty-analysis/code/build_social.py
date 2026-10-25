@@ -38,34 +38,47 @@ EYEBROW = f"Renball research · {NUM}"
 P = DATA["primary"]
 T, C, TST = P["treatment"], P["control"], P["test"]
 RB = DATA["robustness"]
-SOURCE = f"FBref · top 5 leagues · {DATA['metadata']['seasons'][0]} to {DATA['metadata']['seasons'][-1]}"
+SEASONS = DATA["metadata"]["seasons"]
+SOURCE = f"FBref · top 5 leagues · {SEASONS[0][:4]}-{SEASONS[0][-2:]} to {SEASONS[-1][:4]}-{SEASONS[-1][-2:]}"
 
 
 def sgn(x: float, d: int = 1) -> str:
     return f"{'−' if x < 0 else '+'}{abs(x):.{d}f}"
 
 
+def dots(ax, f, rows, *, label_fmt="{:.0f}%", horizontal=True) -> None:
+    """Dot-and-interval: a dot at each rate, a line for its plausible range (no truncated bars)."""
+    for i, (label, v, lo, hi, color) in enumerate(rows):
+        if horizontal:
+            ax.plot([lo, hi], [i, i], color=color, lw=6, solid_capstyle="butt", alpha=0.85)
+            ax.plot([v], [i], "o", color=S.TEXT, ms=13, zorder=3)
+            ax.text(v, i + 0.28, label_fmt.format(v), ha="center", va="bottom", color=S.TEXT,
+                    fontsize=f["size"]["annot"] * 1.15, family=S.MONO)
+        else:
+            ax.plot([i, i], [lo, hi], color=color, lw=6, solid_capstyle="butt", alpha=0.85)
+            ax.plot([i], [v], "o", color=S.TEXT, ms=11, zorder=3)
+
+
 def hook_chart() -> None:
-    """Post 1: the comparison itself, with its intervals."""
+    """Post 1: the comparison itself, with its plausible ranges."""
+    rows = [(f"Every other penalty\n{C['attempts']:,} penalties", C["rate"], C["ci_lo"], C["ci_hi"], S.SECONDARY),
+            (f"Fouled by the keeper,\ntook it himself\n{T['attempts']} penalties", T["rate"], T["ci_lo"], T["ci_hi"],
+             S.ACCENT)]
+
     def draw(ax, f):
-        xs = [0, 1]
-        rates = [T["rate"], C["rate"]]
-        bars = ax.bar(xs, rates, width=0.55, color=[S.ACCENT, S.SECONDARY])
-        lo, hi = S.nice_range([T["ci_lo"], T["ci_hi"] + 4, C["ci_lo"], C["ci_hi"]], padding=3)
-        ax.set_ylim(lo, hi)
-        S.ci_whiskers(ax, xs, [T["ci_lo"], C["ci_lo"]], [T["ci_hi"], C["ci_hi"]])
-        for x, r, top in zip(xs, rates, [T["ci_hi"], C["ci_hi"]]):
-            ax.text(x, top + (hi - lo) * 0.03, f"{r:.2f}%", ha="center", va="bottom",
-                    color=S.TEXT, fontsize=f["size"]["annot"] * 1.3, family=S.MONO)
-        ax.set_xticks(xs)
-        ax.set_xticklabels([f"Fouled by the GK,\ntook it himself\nn = {T['attempts']}",
-                            f"Every other\npenalty\nn = {C['attempts']:,}"])
-        ax.set_ylabel("Conversion (%)")
+        dots(ax, f, rows)
+        ax.set_yticks([0, 1])
+        ax.set_yticklabels([r[0] for r in rows])
+        ax.set_ylim(-0.6, 1.75)
+        ax.set_xlim(*S.nice_range([r[2] for r in rows] + [r[3] for r in rows], padding=3))
+        ax.grid(False)
+        ax.grid(axis="x", color=S.BORDER, lw=0.9)
+        ax.set_xlabel("Penalties scored (%)")
 
     S.export(draw, IMAGES, "01_hook", eyebrow=EYEBROW,
              title="Fouled by the keeper, taking it *himself*",
-             subtitle=f"Gap {sgn(TST['rate_diff_pp'], 2)} pp · 95% CI {sgn(TST['diff_ci_lo'])} to "
-                      f"{sgn(TST['diff_ci_hi'])} pp · whiskers: 95% CIs",
+             subtitle=f"{T['rate']:.0f}% vs {C['rate']:.0f}%: about {abs(TST['rate_diff_pp']):.0f} points lower\n"
+                      f"lines: plausible range (95%), the small group's is wide",
              source=SOURCE)
 
 
@@ -99,7 +112,7 @@ def robustness_chart() -> None:
 
     S.export(draw, IMAGES, "02_robustness", eyebrow=EYEBROW,
              title="Every check *straddles zero*",
-             subtitle=f"Gap with 95% interval · shaded: ±{margin:.0f} pp = no practical difference",
+             subtitle=f"Gap with its plausible range (95%) · shaded: within {margin:.0f} points either way",
              source=SOURCE)
 
 
@@ -121,14 +134,14 @@ def posterior_chart() -> None:
         ax.axvline(-margin, color=S.ACCENT, ls=(0, (2, 3)), lw=1)
         ax.set_yticks([])
         ax.set_xlim(-30, 20)
-        ax.set_xlabel("Gap: fouled taker minus everyone else (pp)")
-        S.callout(ax, f"{bay['p_lower_pct']:.1f}% below zero", xy=(-6, hist.max() * 0.55),
+        ax.set_xlabel("Gap: fouled taker minus everyone else (points)")
+        S.callout(ax, f"{bay['p_lower_pct']:.0f}% below zero", xy=(-6, hist.max() * 0.55),
                   xytext=(-27, hist.max() * 0.85), f=f)
 
     S.export(draw, IMAGES, "03_posterior", eyebrow=EYEBROW,
              title="Leaning one way, *not settled*",
-             subtitle=f"Bayesian posterior, flat priors · {bay['p_drop_beyond_margin_pct']:.1f}% chance the drop\n"
-                      f"exceeds {margin:.0f} pp (left of the dotted line)",
+             subtitle=f"How likely each size of gap is · a {bay['p_drop_beyond_margin_pct']:.0f}% chance the drop\n"
+                      f"is bigger than {margin:.0f} points (left of the dotted line)",
              source=SOURCE)
 
 
@@ -145,55 +158,60 @@ def taker_chart() -> None:
         ax.set_ylim(-4, 18)
         ax.set_xticks(xs)
         ax.set_xticklabels([r[0] for r in rows])
-        ax.set_ylabel("Established taker's edge (pp)")
+        ax.set_ylabel("Regular taker's edge (points)")
         for b, v in zip(bars, vals):
-            ax.text(b.get_x() + b.get_width() + 0.04, v, f"{sgn(v, 2)} pp", va="center",
+            ax.text(b.get_x() + b.get_width() + 0.04, v, f"{sgn(v, 1)}", va="center",
                     color=S.TEXT, fontsize=f["size"]["annot"], family=S.MONO)
 
     S.export(draw, IMAGES, "04_taker", eyebrow=EYEBROW,
              title="The specialist's edge *mostly vanishes*",
-             subtitle="Define the taker from the whole season and the outcome leaks in:\n"
-                      "takers who miss lose the job · whiskers: 95% CIs",
+             subtitle="Define the taker from the whole season and the result leaks in:\n"
+                      "takers who miss lose the job · lines: plausible ranges (95%)",
              source=SOURCE)
 
 
 def repeat_card() -> None:
     rep = RB["repeatability"]
     for fmt in ("landscape", "portrait"):
-        fig, _ = S.stat_card(f"{rep['spearman_brown']:.2f}", "split-half reliability of conversion", fmt,
+        fig, _ = S.stat_card(f"{rep['spearman_brown']:.2f}".replace("-", "−"), "half a record vs the other half", fmt,
                              eyebrow=EYEBROW, title="A penalty record *barely repeats*",
-                             sub=f"{rep['n_takers']} takers with {rep['min_attempts']}+ kicks · 95% CI "
-                                 f"{rep['sb_lo']:.2f} to {rep['sb_hi']:.2f}",
+                             sub=f"{rep['n_takers']} takers with {rep['min_attempts']}+ kicks · 0 = no link, 1 = a "
+                                 f"reliable skill · range {rep['sb_lo']:.2f} to {rep['sb_hi']:.2f}".replace("-", "−"),
                              source=SOURCE)
         S.save(fig, IMAGES / f"05_repeat_{fmt}.png")
 
 
 def league_chart() -> None:
     blocks = P["by_league"]
+    short = {"Premier League": "PL", "La Liga": "LaLiga", "Serie A": "Serie A", "Bundesliga": "BuLi", "Ligue 1": "Ligue 1"}
 
     def draw(ax, f):
-        xs = np.arange(len(blocks))
-        w = 0.36
-        t_rates = [b["treatment"]["rate"] for b in blocks]
-        c_rates = [b["control"]["rate"] for b in blocks]
-        ax.bar(xs - w / 2, t_rates, w, color=S.ACCENT, label="GK fouled the taker")
-        ax.bar(xs + w / 2, c_rates, w, color=S.SECONDARY, label="Every other penalty")
-        S.ci_whiskers(ax, xs - w / 2, [b["treatment"]["ci_lo"] for b in blocks],
-                      [b["treatment"]["ci_hi"] for b in blocks], cap=0.05)
+        w = 0.17
+        for i, b in enumerate(blocks):
+            for off, grp, color in ((-w, b["treatment"], S.ACCENT), (w, b["control"], S.SECONDARY)):
+                ax.plot([i + off, i + off], [grp["ci_lo"], grp["ci_hi"]], color=color, lw=6, solid_capstyle="butt",
+                        alpha=0.85)
+                ax.plot([i + off], [grp["rate"]], "o", color=S.TEXT, ms=10, zorder=3)
         ax.set_ylim(*S.nice_range([b["treatment"]["ci_lo"] for b in blocks] +
-                                  [b["treatment"]["ci_hi"] for b in blocks], padding=2))
-        ax.set_xticks(xs)
-        short = {"Premier League": "PL", "La Liga": "LaLiga", "Serie A": "Serie A",
-                 "Bundesliga": "BuLi", "Ligue 1": "Ligue 1"}
-        ax.set_xticklabels([f"{short.get(b['label'], b['label'])}\nn = {b['treatment']['attempts']}" for b in blocks])
-        ax.set_ylabel("Conversion (%)")
+                                  [b["treatment"]["ci_hi"] for b in blocks], padding=3))
+        ax.set_xticks(range(len(blocks)))
+        ax.set_xticklabels([f"{short.get(b['label'], b['label'])}\n{b['treatment']['attempts']} kicks" for b in blocks])
+        ax.set_ylabel("Penalties scored (%)")
 
+    md = DATA["metadata"]
     S.export(draw, IMAGES, "06_league", eyebrow=EYEBROW,
              title="League by league it *looks* dramatic",
-             subtitle=f"Green: GK fouled the taker (n = {DATA['metadata']['treatment_n_by_league_min']}–"
-                      f"{DATA['metadata']['treatment_n_by_league_max']}) · blue: every other penalty\n"
-                      f"After a Holm correction none is significant · whiskers: 95% CIs",
+             subtitle=f"Green: keeper fouled the taker ({md['treatment_n_by_league_min']} to "
+                      f"{md['treatment_n_by_league_max']} kicks) · blue: the rest\n"
+                      f"allowing for five tests, none stands out · lines: plausible ranges",
              source=SOURCE)
+
+
+def takeaways_card() -> None:
+    for fmt in ("landscape", "portrait"):
+        fig, _ = S.takeaways_card(DATA["takeaways"], fmt, eyebrow=EYEBROW, title="Who should *care*?",
+                                  source=SOURCE)
+        S.save(fig, IMAGES / f"07_takeaways_{fmt}.png")
 
 
 def main() -> int:
@@ -204,6 +222,7 @@ def main() -> int:
     taker_chart()
     repeat_card()
     league_chart()
+    takeaways_card()
     return 1 if X.build(PROJECT_DIR) else 0
 
 

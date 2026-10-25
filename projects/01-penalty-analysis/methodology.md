@@ -1,4 +1,4 @@
-# Should the Fouled Player Take the Penalty Himself? — Conversion After a Goalkeeper Foul on the Taker
+# Should the Fouled Player Take the Penalty Himself?: Conversion After a Goalkeeper Foul on the Taker
 
 **Author:** Can Luca Köymen
 **Site:** [renball.com](https://renball.com)
@@ -8,7 +8,7 @@
 
 ## Abstract
 
-When a goalkeeper fouls a player in the box, the fouled player frequently takes the resulting penalty himself. The practical question for the bench is whether he should — the just-fouled player is theoretically jarred and agitated, the goalkeeper across from him locked in. This study isolates that exact decision point across the top 5 European leagues, linking every penalty to its own taker, fouled player and conceder (treatment n = 79 penalties), and compares its conversion rate against every other linked penalty (control n = 3,456) using a one-tailed two-proportion z-test. The point estimate moves in the predicted direction (75.95% vs 78.96%, a 3.01 percentage-point drop) but the difference is not statistically detectable at α = 0.05 (z = −0.65, p = 0.258 one-tailed); the 95% interval for the difference runs from −13.6 to +5.2 pp. The result survives every check: three alternative control groups, two sensitivity samples and a logistic regression that accounts for the taker's status, record and experience, home/away, league and season (−3.25 pp, 95% CI −12.60 to +5.63). The design only reliably detects a drop of about 12.6 pp, an equivalence test cannot establish "no difference" within ±5 pp or within a looser ±10 pp, and a Bayesian version puts a 76.8% probability on the fouled taker converting less. Two side findings: defined from kicks before the match, a team's established taker converts only 1.74 pp more than other takers, and takers' conversion rates show no split-half repeatability (−0.08).
+When a goalkeeper fouls a player in the box, the fouled player frequently takes the resulting penalty himself. The practical question for the bench is whether he should: the just-fouled player is theoretically jarred and agitated, the goalkeeper across from him locked in. This study isolates that exact decision point across the top 5 European leagues, linking every penalty to its own taker, fouled player and conceder (treatment n = 79 penalties), and compares its conversion rate against every other linked penalty (control n = 3,456) using a one-tailed two-proportion z-test. The point estimate moves in the predicted direction (75.95% vs 78.96%, a 3.01 percentage-point drop) but the difference is not statistically detectable at α = 0.05 (z = −0.65, p = 0.258 one-tailed); the 95% interval for the difference runs from −13.6 to +5.2 pp. The result survives every check: three alternative control groups, two sensitivity samples and a logistic regression that accounts for the taker's status, record and experience, home/away, league and season (−3.25 pp, 95% CI −12.60 to +5.63). The design only reliably detects a drop of about 12.6 pp, an equivalence test cannot establish "no difference" within ±5 pp or within a looser ±10 pp, and a Bayesian version puts a 76.8% probability on the fouled taker converting less. Two side findings: defined from kicks before the match, a team's established taker converts only 1.74 pp more than other takers, and takers' conversion rates show no split-half repeatability (−0.08).
 
 ---
 
@@ -23,7 +23,7 @@ When a goalkeeper fouls a player in the box, the fouled player frequently takes 
 
 ### Why one-tailed
 
-The theory underpinning the test is directional. The taker has just been fouled — typically a body collision that left them on the ground — and is presumed physically jarred and emotionally agitated. The goalkeeper, having committed the foul that elevated their save into a high-leverage situation, is presumed maximally focused. Both mechanisms point the same way: conversion *down*. A two-tailed test would split α between an upward effect (which the theory does not predict) and the downward effect (which it does), reducing power against the prediction of interest. A one-tailed test directs the entire α=0.05 region to the predicted side. The two-tailed p-value is reported alongside (§4.1).
+The theory underpinning the test is directional. The taker has just been fouled (typically a body collision that left them on the ground) and is presumed physically jarred and emotionally agitated. The goalkeeper, having committed the foul that elevated their save into a high-leverage situation, is presumed maximally focused. Both mechanisms point the same way: conversion *down*. A two-tailed test would split α between an upward effect (which the theory does not predict) and the downward effect (which it does), reducing power against the prediction of interest. A one-tailed test directs the entire α=0.05 region to the predicted side. The two-tailed p-value is reported alongside (§4.1).
 
 ---
 
@@ -38,16 +38,16 @@ The theory underpinning the test is directional. The taker has just been fouled 
 
 **Unit of analysis:** one penalty.
 
-**Sample size (used for the test):** 3,535 linked penalties in 3,249 matches — 86.0% of the 4,110 penalties in the 3,492 matches with any penalty event. 79 are in treatment, 3,456 in control. Shoot-outs are not included.
+**Sample size (used for the test):** 3,535 linked penalties in 3,249 matches: 86.0% of the 4,110 penalties in the 3,492 matches with any penalty event. 79 are in treatment, 3,456 in control. Shoot-outs are not included.
 
 **Variables used:**
-- `Performance_PKatt` — penalty attempted by this player in this match
-- `Performance_PK` — penalty scored by this player in this match
-- `Performance_PKwon` — penalty foul won by this player in this match (i.e. the fouled player)
-- `Performance_PKcon` — penalty foul conceded by this player in this match
-- `Pos` — playing position (GK / DF / MF / FW)
-- `match_id`, `team_id` — used to tie the taker, the fouled player and the conceder to the same penalty
-- `date`, `site` — the match date (for the taker's history before each kick) and home/away
+- `Performance_PKatt`: penalty attempted by this player in this match
+- `Performance_PK`: penalty scored by this player in this match
+- `Performance_PKwon`: penalty foul won by this player in this match (i.e. the fouled player)
+- `Performance_PKcon`: penalty foul conceded by this player in this match
+- `Pos`: playing position (GK / DF / MF / FW)
+- `match_id`, `team_id`: used to tie the taker, the fouled player and the conceder to the same penalty
+- `date`, `site`: the match date (for the taker's history before each kick) and home/away
 
 **Cleaning & filtering decisions:**
 
@@ -55,7 +55,7 @@ The theory underpinning the test is directional. The taker has just been fouled 
 
 2. **Loose penalty filter (descriptive only).** Matches are retained if any row has a non-zero value in any of `{PK, PKatt, PKwon, PKcon}`. This pool drives the page's *by league* and *by season* charts.
 
-3. **Penalty-level linkage (used for the test).** The penalty columns are per player per match, so a penalty has to be reassembled from three rows: the taker (`PKatt`) and the fouled player (`PKwon`) on one team, the conceder (`PKcon`) on the other. Whenever a team took **exactly one penalty in a match**, those three are unambiguous — even if the opponent also had a penalty — and the penalty is linked. Attempts that cannot be linked are excluded:
+3. **Penalty-level linkage (used for the test).** The penalty columns are per player per match, so a penalty has to be reassembled from three rows: the taker (`PKatt`) and the fouled player (`PKwon`) on one team, the conceder (`PKcon`) on the other. Whenever a team took **exactly one penalty in a match**, those three are unambiguous (even if the opponent also had a penalty) and the penalty is linked. Attempts that cannot be linked are excluded:
     - 573 attempts where one team took two or more penalties in the match (which taker belongs to which foul is not recorded);
     - 1 attempt with no conceder recorded, and 1 where the opponent recorded two conceded penalties against one taken.
 
@@ -63,9 +63,9 @@ The theory underpinning the test is directional. The taker has just been fouled 
     - its conceder has `Pos = GK` (the goalkeeper conceded the foul); and
     - its taker is also the player credited with `PKwon = 1` (the fouled player took it himself).
 
-5. **Control construction.** Every other linked penalty — the GK conceded but someone else took it, an outfielder conceded (any taker), or no `PKwon` was recorded on the attacking team (handballs and unrecorded fouls). This pools three of the four cells in the GK × taker 2×2 matrix (§4.7).
+5. **Control construction.** Every other linked penalty: the GK conceded but someone else took it, an outfielder conceded (any taker), or no `PKwon` was recorded on the attacking team (handballs and unrecorded fouls). This pools three of the four cells in the GK × taker 2×2 matrix (§4.7).
 
-6. **The taker before the kick.** For every attempt in the data (linked or not), sorted by date: the taker's earlier attempts and conversions (any club), and the team's *established taker* — the player who had taken the most penalties for that team before this match. 1,085 linked penalties were taken by the established taker and 1,908 by someone else; in 404 the team's history was tied and in 138 the team had no earlier penalty in the data.
+6. **The taker before the kick.** For every attempt in the data (linked or not), sorted by date: the taker's earlier attempts and conversions (any club), and the team's *established taker*, the player who had taken the most penalties for that team before this match. 1,085 linked penalties were taken by the established taker and 1,908 by someone else; in 404 the team's history was tied and in 138 the team had no earlier penalty in the data.
 
 ---
 
@@ -83,7 +83,7 @@ P-value: P(Z ≤ z_obs). Reject H₀ if p < 0.05. Implementation: `statsmodels.s
 
 ### 3.2 Intervals and power
 
-95% Wilson intervals on each proportion (`proportion_confint(..., method='wilson')`) — chosen over the normal approximation because the treatment cell is small and Wilson is well-behaved at moderate n. The difference treatment − control gets a 95% Newcombe (hybrid Wilson) interval (`confint_proportions_2indep(..., method='newcomb')`).
+95% Wilson intervals on each proportion (`proportion_confint(..., method='wilson')`), chosen over the normal approximation because the treatment cell is small and Wilson is well-behaved at moderate n. The difference treatment − control gets a 95% Newcombe (hybrid Wilson) interval (`confint_proportions_2indep(..., method='newcomb')`).
 
 **Minimum detectable effect.** The smallest drop below the control rate that the one-tailed test at α = 0.05 detects with 80% power, given the observed cell sizes (Cohen's *h* via `proportion_effectsize`, `NormalIndPower`).
 
@@ -105,9 +105,9 @@ Who takes the kick is chosen, not random. A logistic regression accounts for wha
 scored ~ treat + established + record + experience + home + C(league) + C(season)
 ```
 
-- `established` — he had taken the most penalties for this team before this match (§2, step 6). Defining the role from the whole season instead would leak the outcome: a taker who misses can lose the job, so his misses get filed under "someone else" (§4.5).
-- `record` — his earlier conversion rate, shrunk toward the overall rate with 20 pseudo-attempts (empirical-Bayes style, so three kicks don't count as a track record), on the logit scale. Only kicks before this match count; a leave-one-out career rate would correlate negatively with the outcome by construction.
-- `experience` — log(1 + earlier attempts).
+- `established`: he had taken the most penalties for this team before this match (§2, step 6). Defining the role from the whole season instead would leak the outcome: a taker who misses can lose the job, so his misses get filed under "someone else" (§4.5).
+- `record`: his earlier conversion rate, shrunk toward the overall rate with 20 pseudo-attempts (empirical-Bayes style, so three kicks don't count as a track record), on the logit scale. Only kicks before this match count; a leave-one-out career rate would correlate negatively with the outcome by construction.
+- `experience`: log(1 + earlier attempts).
 - `home`, league and season fixed effects.
 
 Standard errors are clustered by taker (822 takers). The gap is reported in percentage points as the average marginal effect of `treat` (predicted conversion with the flag set to 1 minus with it set to 0, averaged over all 3,535 penalties), with a 95% interval from 1,000 cluster-bootstrap resamples of takers.
@@ -116,11 +116,11 @@ Standard errors are clustered by taker (822 takers). The gap is reported in perc
 
 The pooled control mixes three different situations. Each is also tested on its own, and the sample is cut two ways:
 
-- **Same goalkeeper foul, someone else took it** — isolates *who takes it*: the foul is the same.
-- **Fouled player took it, but an outfielder fouled him** — isolates *the goalkeeper*: the taker was fouled in both groups.
-- **Excluding penalties with no fouled player recorded** — drops handballs and unrecorded fouls from the control.
-- **Without 2017-2018** — the season with the lowest conversion in the descriptive data (§4.8).
-- **Established takers only / other takers only** — both groups restricted to the same taker status.
+- **Same goalkeeper foul, someone else took it**: isolates *who takes it*: the foul is the same.
+- **Fouled player took it, but an outfielder fouled him**: isolates *the goalkeeper*: the taker was fouled in both groups.
+- **Excluding penalties with no fouled player recorded**: drops handballs and unrecorded fouls from the control.
+- **Without 2017-2018**: the season with the lowest conversion in the descriptive data (§4.8).
+- **Established takers only / other takers only**: both groups restricted to the same taker status.
 
 ### 3.7 Per-league tests and multiple comparisons
 
@@ -132,16 +132,16 @@ If penalty conversion were a stable skill, a taker's record would be a confounde
 
 ### 3.9 Assumptions and how they are met
 
-- *Independence within and between groups.* Each linked penalty is a distinct (match, team) pair — a team contributes at most one penalty per match, and treatment and control are disjoint by construction. The same taker can appear in many matches; the adjusted model clusters by taker.
-- *Approximate normality of the sampling distribution.* The rule of thumb (n·p̂ ≥ 10 and n·(1−p̂) ≥ 10) holds for the treatment cell (60 conversions, 19 misses) — the test is well-conditioned, but the small n caps achievable power.
+- *Independence within and between groups.* Each linked penalty is a distinct (match, team) pair: a team contributes at most one penalty per match, and treatment and control are disjoint by construction. The same taker can appear in many matches; the adjusted model clusters by taker.
+- *Approximate normality of the sampling distribution.* The rule of thumb (n·p̂ ≥ 10 and n·(1−p̂) ≥ 10) holds for the treatment cell (60 conversions, 19 misses): the test is well-conditioned, but the small n caps achievable power.
 - *Same underlying population.* All penalties are in-game (non-shootout) top-5-league penalties, from a single consolidated FBref-derived dataset.
 
 ### 3.10 Software
 
 - Python 3.12 (project venv at repo root)
-- `pandas`, `numpy` — data wrangling, penalty linkage, taker histories
-- `statsmodels` — `proportions_ztest`, `proportion_confint`, `confint_proportions_2indep`, `NormalIndPower`, `glm` (Binomial), `multipletests`
-- `scipy` — normal tail probabilities for the equivalence test
+- `pandas`, `numpy`: data wrangling, penalty linkage, taker histories
+- `statsmodels`: `proportions_ztest`, `proportion_confint`, `confint_proportions_2indep`, `NormalIndPower`, `glm` (Binomial), `multipletests`
+- `scipy`: normal tail probabilities for the equivalence test
 - Output: JSON to `data/data.json`; Chart.js page at `analysis.html`
 
 ---
@@ -154,8 +154,8 @@ If penalty conversion were a stable skill, a taker's record would be a confounde
 
 | Group | n (penalties) | Conversions | Rate | 95% CI (Wilson) |
 |---|---:|---:|---:|---|
-| Treatment — GK fouled the taker | 79 | 60 | 75.95% | [65.46%, 84.03%] |
-| Control — all other penalties   | 3,456 | 2,729 | 78.96% | [77.57%, 80.29%] |
+| Treatment: GK fouled the taker | 79 | 60 | 75.95% | [65.46%, 84.03%] |
+| Control: all other penalties   | 3,456 | 2,729 | 78.96% | [77.57%, 80.29%] |
 
 - Difference: **−3.01 pp** (treatment − control), 95% CI **[−13.6, +5.2] pp** (Newcombe)
 - z = **−0.649**
@@ -168,7 +168,7 @@ The point estimate moves in the predicted direction, but the interval for the di
 ### 4.2 Bounding the null
 
 - **Equivalence, primary margin (±5 pp):** 90% CI for the gap [−11.77, +4.05] pp; TOST p = 0.341. Equivalence is **not** established.
-- **Equivalence, looser ±10 pp margin:** TOST p = 0.075; not established either. The smallest margin for which equivalence would hold is 11.8 pp — the data rule out a drop larger than that, and little else.
+- **Equivalence, looser ±10 pp margin:** TOST p = 0.075; not established either. The smallest margin for which equivalence would hold is 11.8 pp. The data rule out a drop larger than that, and little else.
 - **Bayesian (Beta(1, 1) priors):** probability that the fouled taker converts less = 76.8%; probability that the drop exceeds 5 pp = 37.4%, and that it exceeds the looser ±10 pp = 9.8%; probability that the gap lies within ±5 pp = 59.8%. Posterior median −3.42 pp, 95% credible interval [−13.65, +5.16] pp.
 
 Both views agree: the data lean towards a drop, cannot rule out a large one, and cannot rule out none.
@@ -185,7 +185,7 @@ Average marginal effect of the treatment: **−3.25 pp, 95% CI [−12.60, +5.63]
 | Prior penalties taken (log) | 1.10 | [0.99, 1.22] | 0.086 |
 | Home side | 1.07 | [0.91, 1.26] | 0.418 |
 
-Accounting for the taker and the context moves the gap by a quarter of a point. None of the taker covariates is clearly predictive — consistent with §4.5.
+Accounting for the taker and the context moves the gap by a quarter of a point. None of the taker covariates is clearly predictive, consistent with §4.5.
 
 ### 4.4 Alternative controls and sensitivity samples
 
@@ -203,7 +203,7 @@ Every control choice gives a gap of −2.4 to −3.2 pp. Dropping 2017-2018 halv
 
 ### 4.5 The taker
 
-**Who takes it.** 35.4% of treatment penalties (28 of 79) were taken by the team's established taker, against 30.6% of control penalties — the fouled self-taker is not disproportionately a non-specialist.
+**Who takes it.** 35.4% of treatment penalties (28 of 79) were taken by the team's established taker, against 30.6% of control penalties: the fouled self-taker is not disproportionately a non-specialist.
 
 **The established taker's edge** (defined from kicks before the match):
 
@@ -216,7 +216,7 @@ Every control choice gives a gap of −2.4 to −3.2 pp. Dropping 2017-2018 halv
 | Bundesliga | 84.81% (158) | 78.33% (323) | +6.48 | [−1.16, +13.25] |
 | Ligue 1 | 79.21% (178) | 80.27% (446) | −1.06 | [−8.45, +5.56] |
 
-**The leak.** Defining the established taker from the whole season — the player with the most attempts for the team that season, later kicks included — gives 83.00% (2,259) vs 71.63% (1,276), a gap of +11.37 pp [+8.48, +14.31]. Much of that is likely the outcome leaking into the label (a taker who misses can lose the job); only the before-the-kick definition is used in the model.
+**The leak.** Defining the established taker from the whole season (the player with the most attempts for the team that season, later kicks included) gives 83.00% (2,259) vs 71.63% (1,276), a gap of +11.37 pp [+8.48, +14.31]. Much of that is likely the outcome leaking into the label (a taker who misses can lose the job); only the before-the-kick definition is used in the model.
 
 **Repeatability.** Across 126 takers with at least 10 kicks (2,091 kicks), the split-half correlation is −0.04; the Spearman-Brown reliability is **−0.08, 95% CI [−0.47, 0.18]**. Over samples of this size, a taker's conversion record carries no detectable information about his other kicks.
 
@@ -255,28 +255,28 @@ Across all 4,110 penalties (loose filter), conversion by season ranges from 72.5
 
 ### Evidence labels
 
-- **Strong** — large sample; the 95% interval excludes zero (or, for a "no effect" claim, sits inside a pre-stated equivalence margin); survives the main controls; holds across leagues or seasons.
-- **Moderate** — consistent direction and plausible size, with one gap: the interval touches zero, a single method or sample, or only partial replication.
-- **Exploratory** — small samples, an interval that comfortably includes zero, untested confounders, or a pattern found by looking rather than tested. A question worth asking, not advice.
+- **Strong**: large sample; the 95% interval excludes zero (or, for a "no effect" claim, sits inside a pre-stated equivalence margin); survives the main controls; holds across leagues or seasons.
+- **Moderate**: consistent direction and plausible size, with one gap: the interval touches zero, a single method or sample, or only partial replication.
+- **Exploratory**: small samples, an interval that comfortably includes zero, untested confounders, or a pattern found by looking rather than tested. A question worth asking, not advice.
 
 ### Who should care
 
-- **Managers (match-day decisions) — Exploratory.** No case yet for taking the ball off a fouled player: −3.0 pp, plausibly anywhere from −13.6 to +5.2. The interval comfortably includes zero and the equivalence test fails, so the data support neither a rule to hand the ball over nor a rule that he keeps it.
-- **Coaches (training & tactics) — Exploratory.** Being the team's established taker adds little: +1.7 pp over other takers (−1.3 to +4.7), higher in 4 of 5 leagues. The interval includes zero.
-- **Clubs (recruitment) — Moderate.** Don't pay for a penalty record: split-half reliability of −0.08 (95% CI −0.47 to 0.18) across 126 takers. The upper bound rules out a strongly repeatable conversion rate over samples of this size; it rests on one method and one dataset, hence Moderate.
-- **Agents — no defensible claim** from this study.
+- **Managers (match-day decisions): Exploratory.** No case yet for taking the ball off a fouled player: −3.0 pp, plausibly anywhere from −13.6 to +5.2. The interval comfortably includes zero and the equivalence test fails, so the data support neither a rule to hand the ball over nor a rule that he keeps it.
+- **Coaches (training & tactics): Exploratory.** Being the team's established taker adds little: +1.7 pp over other takers (−1.3 to +4.7), higher in 4 of 5 leagues. The interval includes zero.
+- **Clubs (recruitment): Moderate.** Don't pay for a penalty record: split-half reliability of −0.08 (95% CI −0.47 to 0.18) across 126 takers. The upper bound rules out a strongly repeatable conversion rate over samples of this size; it rests on one method and one dataset, hence Moderate.
+- **Agents: no defensible claim** from this study.
 
 ---
 
 ## 6. Limitations
 
-- **Power is the binding constraint.** At a treatment-cell n of 79 and a control rate around 79%, the minimum detectable effect at α=0.05 one-tailed and 80% power is about 12.6 percentage points. A real 3–5 pp effect would usually fail to reject under this design. A null result here is not evidence *against* the theory — it is consistent with both no effect and a moderate effect the data cannot resolve.
+- **Power is the binding constraint.** At a treatment-cell n of 79 and a control rate around 79%, the minimum detectable effect at α=0.05 one-tailed and 80% power is about 12.6 percentage points. A real 3–5 pp effect would usually fail to reject under this design. A null result here is not evidence *against* the theory: it is consistent with both no effect and a moderate effect the data cannot resolve.
 - **Equivalence margins chosen after the analysis.** The ±5 pp and ±10 pp margins (§3.3) were set once the results were known, so the equivalence tests are yardsticks rather than pre-registered tests. Neither margin is passed, so the choice does not flatter the result.
-- **Taker selection is only partly controlled.** The model accounts for the taker's status, record and experience before the kick, but not for what the bench sees on the day — confidence, a knock, who asked for the ball.
+- **Taker selection is only partly controlled.** The model accounts for the taker's status, record and experience before the kick, but not for what the bench sees on the day: confidence, a knock, who asked for the ball.
 - **No score-state / time controls.** Conversion rates might vary by minute or scoreline; the player-match table carries neither.
 - **No goalkeeper effect.** Some goalkeepers save more penalties than others; the facing goalkeeper is not modelled.
 - **Heterogeneous control.** The primary control pools penalties with no recorded fouled player (handballs, unrecorded fouls), which are not the same bench decision; §4.4 shows the result does not depend on it.
-- **Unlinked penalties.** 575 of the 4,110 penalties cannot be tied to one taker, fouled player and conceder — almost all because one team took two or more in the match. If those penalties differ systematically, the linked sample is not fully representative.
+- **Unlinked penalties.** 575 of the 4,110 penalties cannot be tied to one taker, fouled player and conceder, almost all because one team took two or more in the match. If those penalties differ systematically, the linked sample is not fully representative.
 - **No injury observation.** "Hurt taker" is the theoretical mechanism, but the dataset does not record whether the fouled player was actually injured or merely fouled. The treatment cell is therefore an *intent-to-treat* approximation of the mechanism.
 - **FBref attribution edge cases.** Some `PKcon` allocations in goal-mouth scrambles depend on FBref's labelling and could carry small measurement error.
 
@@ -284,7 +284,7 @@ Across all 4,110 penalties (loose filter), conversion by season ranges from 72.5
 
 ## 7. Conclusion
 
-The bench-decision question — *should the fouled player take the penalty himself?* — does not get a clean answer from the available data. The point estimate moves the way the theory predicts (−3.01 pp), every alternative control group and the adjusted model land in the same place, and the binding constraint is the size of the treatment cell, not the test design. A follow-up that pools additional seasons (or extends to other leagues with comparable data) would change the conclusion only by changing n — the analytical framing is in place.
+The bench-decision question (*should the fouled player take the penalty himself?*) does not get a clean answer from the available data. The point estimate moves the way the theory predicts (−3.01 pp), every alternative control group and the adjusted model land in the same place, and the binding constraint is the size of the treatment cell, not the test design. A follow-up that pools additional seasons (or extends to other leagues with comparable data) would change the conclusion only by changing n; the analytical framing is in place.
 
 For now, the practical takeaway is conservative: there is no clear data warrant either to override the fouled player who wants to take it himself, or to insist that he does. The verdict is "not yet detectable", not "false".
 
@@ -292,8 +292,8 @@ For now, the practical takeaway is conservative: there is no clear data warrant 
 
 ## References
 
-1. FBref — *Player-match penalty statistics by league and season.* https://fbref.com
-2. statsmodels — *proportions_ztest*, *confint_proportions_2indep*, *GLM*, *multipletests* documentation. https://www.statsmodels.org/
+1. FBref: *Player-match penalty statistics by league and season.* https://fbref.com
+2. statsmodels: *proportions_ztest*, *confint_proportions_2indep*, *GLM*, *multipletests* documentation. https://www.statsmodels.org/
 3. Wilson, E. B. (1927). *Probable Inference, the Law of Succession, and Statistical Inference.* JASA.
 4. Newcombe, R. G. (1998). *Interval estimation for the difference between independent proportions: comparison of eleven methods.* Statistics in Medicine.
 5. Schuirmann, D. J. (1987). *A comparison of the two one-sided tests procedure and the power approach for assessing the equivalence of average bioavailability.* Journal of Pharmacokinetics and Biopharmaceutics.
