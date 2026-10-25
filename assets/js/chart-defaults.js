@@ -93,9 +93,10 @@
 
   // Wider-and-shorter charts so the full plot fits on a laptop viewport.
   // aspectRatio = width / height. At a ~980px chart-wrap width, 3.0 → ~325px height.
+  // On a phone (~340px chart width) 3.0 would leave ~110px, so narrow screens get 1.1.
   Chart.defaults.responsive = true;
   Chart.defaults.maintainAspectRatio = true;
-  Chart.defaults.aspectRatio = 3;
+  Chart.defaults.aspectRatio = window.matchMedia('(max-width: 600px)').matches ? 1.1 : 3;
 
   // Layout breathing room
   Chart.defaults.layout = Chart.defaults.layout || {};

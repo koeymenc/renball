@@ -11,9 +11,14 @@ Add an ALLOW rule only for numbers that are not data claims (an illustrative
 minute, a hypothetical effect size) and always say why. If a number IS a
 data claim, put it in data.json via build.py instead.
 
+Every matched number must also be anchored — unique in data.json, or next to
+its sibling figures. A number that fails as WEAK (several different values
+show as it) gets an ANCHORS rule: a regex around the number and the
+data.json path it comes from; the verifier then checks it against that path.
+
 Run:
     python code/verify.py              # numbers + standard
-    python code/verify.py --report     # also list each matched number's data.json path
+    python code/verify.py --report     # also list each matched number, its path + anchor
     python code/verify.py --static     # skip the headless render of analysis.html
 """
 
@@ -29,5 +34,9 @@ ALLOW = [
     # (r"\b85th minute", "illustrative minute in the hook, not a data claim"),
 ]
 
+ANCHORS = [
+    # (r"late go-ahead goal\D{0,60}\d\.\d+×", "$.early_vs_late.ratio"),
+]
+
 if __name__ == "__main__":
-    sys.exit(V.main(PROJECT_DIR, allow=ALLOW, argv=sys.argv[1:]))
+    sys.exit(V.main(PROJECT_DIR, allow=ALLOW, anchors=ANCHORS, argv=sys.argv[1:]))

@@ -23,6 +23,24 @@ Two checks, one command. Both run per project via a thin code/verify.py.
    data.json by build.py — the page may not compute a number the verifier
    can't trace. Bare integers below 13 and years are ignored (counts of
    leagues, seasons, slides); decimals, percentages and pp never are.
+   An explicit sign (− or +) must agree with the sign in data.json; a bare
+   whole number (a count) only matches whole numbers, never a rounded rate.
+
+   ANCHORING. Equal to *some* value is not enough: in a large data.json
+   almost any 2-decimal number matches something. Every match must also be
+   anchored to its source, else it fails as WEAK:
+     unique      only one data.json value shows as this number (the same
+                 figure stored in several fields counts once)
+     co-located  a candidate shares its parent or grandparent object with a
+                 precisely identified number in the same unit of copy —
+                 "60/79 = 75.95%" all sit under primary.treatment
+     bound       an ANCHORS rule in code/verify.py pins the number to a
+                 data.json path: (r"late go-ahead goal.*?\\d\\.\\d+×",
+                 "$.early_vs_late_0to1.ratio"); its value is checked there.
+                 On a page, data-verify-path="$.path" on the element does
+                 the same for every number inside it (stat boxes).
+   Units of copy: a paragraph / list item / table row (HTML), a line
+   (Markdown), a slide, an X post, a config field.
 
 2. STANDARD (errors fail, warnings print)
    Deliverables present, fresh (PDF newer than its source), consistent
@@ -35,11 +53,14 @@ Per-project wrapper (code/verify.py):
     ALLOW = [
         (r"\\b85th minute", "illustrative minute in the hook, not a data claim"),
     ]
-    sys.exit(V.main(PROJECT_DIR, allow=ALLOW))
+    ANCHORS = [
+        (r"MDE\\D{0,20}\\d+\\.\\d", "$.primary.test.mde_pp"),
+    ]
+    sys.exit(V.main(PROJECT_DIR, allow=ALLOW, anchors=ANCHORS))
 
 CLI:
     python code/verify.py              # both checks
-    python code/verify.py --report     # also list every matched number + path
+    python code/verify.py --report     # also list every matched number, its path + anchor
     python code/verify.py --static     # skip headless render (raw HTML text)
 """
 
@@ -98,6 +119,9 @@ DEFAULT_ALLOW: list[tuple[str, str]] = [
     (r"\bPython\s*\d+(?:\.\d+)*", "software version"),
     (r"\b\d+\s*/\s*280\b|\b280\s*(?:characters|chars)\b", "X character limit"),
     (r"\b90\s*(?:minutes|mins?)\b|\b90\+", "match length"),
+    (r"(?:\bper[- ]?|/\s?)90\b", "per-90 unit"),
+    (r"(?<![\d.,])(?:0|15|30|45|60|75)\s?[-–]\s?(?:15|30|45|60|75|90)\b(?!\s?%)", "15-minute bin label"),
+    (r"§\s?\d+(?:\.\d+)*", "section reference"),
     (r"\b(?:top|Top|TOP)[ -]?5\b", "league scope"),
 ]
 
@@ -105,21 +129,61 @@ DEFAULT_ALLOW: list[tuple[str, str]] = [
 # ════════════════════════════════════════════════════════════════════════
 # Truth set
 # ════════════════════════════════════════════════════════════════════════
+_PATH_PARTS = re.compile(r"\.[^.\[\]]+|\[\d+\]")
+
+
 class Truth:
     """Numeric leaves of data.json, searchable at any display precision."""
 
     def __init__(self, data):
+        self.data = data
         self.paths: list[str] = []
-        vals: list[tuple[float, int]] = []
+        self.values: list[float] = []
         for path, v in self._leaves(data, "$"):
-            i = len(self.paths)
             self.paths.append(path)
-            vals.append((abs(v), i))
-            vals.append((abs(v) * 100, i))       # proportion shown as a percent
-            vals.append((abs(v) / 100, i))       # percent shown as a proportion
-        vals.sort()
-        self._v = [v for v, _ in vals]
-        self._i = [i for _, i in vals]
+            self.values.append(v)
+        order = sorted(range(len(self.values)), key=lambda i: abs(self.values[i]))
+        self._abs = [abs(self.values[i]) for i in order]
+        self._idx = order
+
+    def _range(self, x: float, tol: float) -> list[int]:
+        lo = bisect.bisect_left(self._abs, x - tol)
+        hi = bisect.bisect_right(self._abs, x + tol)
+        return self._idx[lo:hi]
+
+    def find_all(self, x: float, tol: float, *, pct: bool = False, sign: str = "",
+                 whole: bool = False) -> list[int]:
+        """Leaves that show as x at this precision. A % / pp token also matches a
+        proportion (|v| <= 1) times 100; an explicit − / + must agree in sign.
+        A bare whole number (a count) only matches whole numbers; a decimal or a
+        percentage matches a count only when no measured (float) value fits."""
+        hits = set(self._range(x, tol))
+        if pct:
+            hits |= {i for i in self._range(x / 100, tol / 100) if abs(self.values[i]) <= 1}
+        hits = [i for i in sorted(hits) if _sign_ok(self.values[i], sign)]
+        if whole:
+            return [i for i in hits if float(self.values[i]).is_integer()]
+        floats = [i for i in hits if isinstance(self.values[i], float)]
+        return floats or hits
+
+    def resolve(self, path: str):
+        node = self.data
+        for part in _PATH_PARTS.findall(path[1:] if path.startswith("$") else path):
+            node = node[int(part[1:-1])] if part.startswith("[") else node[part[1:]]
+        return node
+
+    @staticmethod
+    def scopes_of(path: str) -> set[str]:
+        """Parent and grandparent objects of a leaf (never the root)."""
+        parts = _PATH_PARTS.findall(path[1:])
+        return {"$" + "".join(parts[:len(parts) - cut]) for cut in (1, 2) if len(parts) - cut >= 1}
+
+    def scopes(self, i: int) -> set[str]:
+        return self.scopes_of(self.paths[i])
+
+    def identities(self, idx: Iterable[int]) -> set[float]:
+        """Distinct values — one figure stored in several fields counts once."""
+        return {round(float(self.values[i]), 9) for i in idx}
 
     @staticmethod
     def _leaves(node, path):
@@ -127,7 +191,7 @@ class Truth:
             return
         if isinstance(node, (int, float)):
             if math.isfinite(node):
-                yield path, float(node)
+                yield path, node
         elif isinstance(node, dict):
             for k, v in node.items():
                 yield from Truth._leaves(v, f"{path}.{k}")
@@ -138,53 +202,86 @@ class Truth:
     def __len__(self) -> int:
         return len(self.paths)
 
-    def find(self, x: float, tol: float) -> Optional[str]:
-        lo = bisect.bisect_left(self._v, x - tol)
-        if lo < len(self._v) and self._v[lo] <= x + tol:
-            return self.paths[self._i[lo]]
-        return None
-
     def nearest(self, x: float) -> tuple[float, str]:
-        i = bisect.bisect_left(self._v, x)
-        cands = [j for j in (i - 1, i) if 0 <= j < len(self._v)]
-        j = min(cands, key=lambda k: abs(self._v[k] - x))
-        return self._v[j], self.paths[self._i[j]]
+        i = bisect.bisect_left(self._abs, x)
+        cands = [j for j in (i - 1, i) if 0 <= j < len(self._abs)]
+        j = min(cands, key=lambda k: abs(self._abs[k] - x))
+        return self.values[self._idx[j]], self.paths[self._idx[j]]
+
+
+def _sign_ok(v: float, sign: str) -> bool:
+    return not sign or v == 0 or (v < 0) == (sign == "−")
 
 
 # ════════════════════════════════════════════════════════════════════════
 # Copy extraction
 # ════════════════════════════════════════════════════════════════════════
 class _TextParser(html.parser.HTMLParser):
+    """Text per block (paragraph, list item, table row, heading, div) — the
+    unit for anchoring. Inline tags (strong, span, a …) don't split a block."""
     SKIP = {"script", "style", "noscript", "svg", "template", "code"}
+    VOID = {"br", "img", "meta", "link", "input", "hr", "wbr", "source"}
+    BLOCK = {"p", "div", "li", "ul", "ol", "tr", "table", "thead", "tbody", "h1", "h2", "h3", "h4", "h5",
+             "h6", "section", "header", "footer", "article", "aside", "nav", "main", "blockquote", "figure",
+             "figcaption", "dl", "dt", "dd", "pre", "body", "canvas", "details", "summary", "label", "button"}
+    CELL = {"td", "th"}
 
     def __init__(self):
         super().__init__(convert_charrefs=True)
         self.depth_skip = 0
-        self.stack: list[tuple[str, bool]] = []
-        self.chunks: list[str] = []
+        self.stack: list[tuple[str, bool, Optional[str]]] = []
+        self.chunks: list[tuple[str, Optional[str]]] = []
+        self.buf: list[str] = []
+
+    def bound(self) -> Optional[str]:
+        return next((b for _, _, b in reversed(self.stack) if b), None)
+
+    def flush(self):
+        text = " ".join("".join(self.buf).split()).strip(" |")
+        if text:
+            self.chunks.append((text, self.bound()))
+        self.buf = []
 
     def handle_starttag(self, tag, attrs):
-        skip = tag in self.SKIP or dict(attrs).get("data-verify") == "skip"
-        if tag in ("br", "img", "meta", "link", "input", "hr", "wbr", "source"):
+        if tag in self.VOID:
+            if tag == "br":
+                self.buf.append(" ")
             return
-        self.stack.append((tag, skip))
+        a = dict(attrs)
+        bind = a.get("data-verify-path")
+        if tag in self.BLOCK or bind:
+            self.flush()
+        elif tag in self.CELL:
+            self.buf.append(" | ")
+        skip = tag in self.SKIP or a.get("data-verify") == "skip"
+        self.stack.append((tag, skip, bind))
         self.depth_skip += skip
 
     def handle_endtag(self, tag):
         while self.stack:
-            t, skip = self.stack.pop()
+            t, skip, bind = self.stack[-1]
+            if bind or (t == tag and tag in self.BLOCK):
+                self.flush()                     # before the pop, so a bound unit keeps its path
+            self.stack.pop()
             self.depth_skip -= skip
             if t == tag:
                 break
 
     def handle_data(self, data):
         if not self.depth_skip and data.strip():
-            self.chunks.append(" ".join(data.split()))
+            self.buf.append(data)
+
+    def close(self):
+        super().close()
+        self.flush()
 
 
-def html_text(markup: str) -> list[str]:
+def html_text(markup: str) -> list[tuple[str, Optional[str]]]:
+    """(text, bound path) per block. An element with data-verify-path="$.path"
+    is its own unit and every number in it is checked against that path."""
     p = _TextParser()
     p.feed(markup)
+    p.close()
     return p.chunks
 
 
@@ -227,8 +324,10 @@ _MD_STRIP = [
 
 
 def md_text(raw: str) -> str:
+    """Copy text of a Markdown file. Stripped spans keep their line breaks, so
+    line N of the result is line N of the file."""
     for rx, rep in _MD_STRIP:
-        raw = rx.sub(rep, raw)
+        raw = rx.sub(lambda m: rep + "\n" * m.group(0).count("\n"), raw)
     return raw
 
 
@@ -249,9 +348,9 @@ def pptx_text(path: Path) -> list[tuple[str, str]]:
 
     out = []
     for n, slide in enumerate(Presentation(str(path)).slides, start=1):
-        for t in walk(slide.shapes):
-            if t.strip():
-                out.append((f"slide {n}", t))
+        texts = [t for t in walk(slide.shapes) if t.strip()]
+        if texts:
+            out.append((f"slide {n}", "\n".join(texts)))      # one slide = one unit
     return out
 
 
@@ -268,17 +367,21 @@ def _sentences(node, path="$") -> Iterable[tuple[str, str]]:
 
 
 def collect_copy(project_dir: Path, data: dict, *, render: bool = True) -> list[tuple[str, str, str]]:
-    """(source, location, text) for every piece of copy in the project."""
+    """(source, location, text) for every piece of copy in the project. HTML
+    units inside a data-verify-path element get the location "... @ $.path"."""
     pd = project_dir
     out: list[tuple[str, str, str]] = []
+
+    def html_units(source: str, loc: str, markup: str) -> list[tuple[str, str, str]]:
+        return [(source, f"{loc} @ {bind}" if bind else loc, t) for t, bind in html_text(markup)]
 
     page = pd / "analysis.html"
     if page.exists():
         markup = rendered_html(page) if render else page.read_text(encoding="utf-8")
-        out += [("analysis.html", "rendered" if render else "static", t) for t in html_text(markup)]
+        out += html_units("analysis.html", "rendered" if render else "static", markup)
     dash = pd / "dashboard.html"
     if dash.exists():
-        out += [("dashboard.html", "static", t) for t in html_text(dash.read_text(encoding="utf-8"))]
+        out += html_units("dashboard.html", "static", dash.read_text(encoding="utf-8"))
     meth = pd / "methodology.md"
     if meth.exists():
         for i, line in enumerate(md_text(meth.read_text(encoding="utf-8")).splitlines(), start=1):
@@ -293,7 +396,9 @@ def collect_copy(project_dir: Path, data: dict, *, render: bool = True) -> list[
         out += [("social", loc, t) for loc, t in pkg.all_text()]
         guide = pd / "social" / "posting_guide.md"
         if guide.exists():
-            out += [("social", "posting_guide.md", md_text(guide.read_text(encoding="utf-8")))]
+            for i, line in enumerate(md_text(guide.read_text(encoding="utf-8")).splitlines(), start=1):
+                if line.strip():
+                    out.append(("social", f"posting_guide.md line {i}", line))
     out += [("data.json", path, t) for path, t in _sentences(data)]
     cfg = pd / "config.json"
     if cfg.exists():
@@ -311,9 +416,17 @@ class Hit:
     loc: str
     token: str
     value: float
-    status: str             # matched | allowed | unmatched
+    status: str             # bound | co-located | unique | allowed | weak | unmatched
     detail: str
     context: str
+    cands: tuple = ()
+    sign: str = ""
+
+
+_ANY = re.compile(r"(?s).+")
+ANCHORED = ("bound", "co-located", "unique")
+STATUSES = (*ANCHORED, "allowed", "weak", "unmatched")
+NARROW = 2          # a number with at most this many distinct candidates can anchor its neighbours
 
 
 def _blank(text: str) -> str:
@@ -322,10 +435,19 @@ def _blank(text: str) -> str:
     return text
 
 
-def scan(text: str, truth: Truth, allow: list[tuple[re.Pattern, str]]) -> list[tuple]:
+def _shows_as(v, x: float, tol: float, pct: bool, sign: str) -> bool:
+    if isinstance(v, bool) or not isinstance(v, (int, float)) or not _sign_ok(v, sign):
+        return False
+    return abs(abs(v) - x) <= tol or (pct and abs(v) <= 1 and abs(abs(v) * 100 - x) <= tol)
+
+
+def scan(text: str, truth: Truth, allow: list[tuple[re.Pattern, str]],
+         anchors: list[tuple[re.Pattern, str]] = (), *, source: str = "", loc: str = "") -> list[Hit]:
+    """Every number in one unit of copy, matched to data.json and anchored."""
     t = _blank(text)
     allowed_spans = [(m.start(), m.end(), why) for rx, why in allow for m in rx.finditer(t)]
-    hits = []
+    bound_spans = [(m.start(), m.end(), path) for rx, path in anchors for m in rx.finditer(t)]
+    hits: list[Hit] = []
     for m in _NUM.finditer(t):
         intpart, frac, bare, suf = m.group("int"), m.group("frac"), m.group("bare"), (m.group("suf") or "").strip()
         digits = (intpart or "0").replace(",", "")
@@ -339,47 +461,105 @@ def scan(text: str, truth: Truth, allow: list[tuple[re.Pattern, str]]) -> list[t
         tol = 0.5 * 10 ** -dec + 1e-9
         if suf == "k":
             x, tol = x * 1000, 500 * 10 ** -dec
-        why = next((w for s, e, w in allowed_spans if s <= m.start() and m.end() <= e), None)
+        pct = suf in ("%", "pp", "p.p.")
+        sign = {"-": "−", "−": "−", "+": "+"}.get(m.group("sign") or "", "")
         ctx = text[max(0, m.start() - 45):m.end() + 35].replace("\n", " ")
-        token = m.group(0).strip()
+        h = Hit(source, loc, m.group(0).strip(), x, "", "", ctx, sign=sign)
+        why = next((w for s, e, w in allowed_spans if s <= m.start() and m.end() <= e), None)
+        bound = next((p for s, e, p in bound_spans if s <= m.start() < e), None)   # starts inside the span
         if why:
-            hits.append((token, x, "allowed", why, ctx))
-            continue
-        path = truth.find(x, tol)
-        if path:
-            hits.append((token, x, "matched", path, ctx))
+            h.status, h.detail = "allowed", why
+        elif bound:
+            try:
+                v = truth.resolve(bound)
+            except (KeyError, IndexError, TypeError):
+                v = None
+            if _shows_as(v, x, tol, pct, sign):
+                h.status, h.detail = "bound", bound
+            else:
+                h.status, h.detail = "unmatched", f"ANCHORS binds it to {bound} = {v!r}"
         else:
-            near, npath = truth.nearest(x)
-            hits.append((token, x, "unmatched", f"nearest {near:g} at {npath}", ctx))
+            whole = not frac and not bare and not suf
+            h.cands = tuple(truth.find_all(x, tol, pct=pct, sign=sign, whole=whole))
+            if h.cands:
+                h.status = "pending"
+            else:
+                near, npath = truth.nearest(x)
+                h.status, h.detail = "unmatched", f"nearest {near:g} at {npath}"
+        hits.append(h)
+
+    # Anchoring: unique, or co-located with a precisely identified neighbour.
+    def scopes(h: Hit) -> set[str]:
+        if h.status == "bound":
+            return Truth.scopes_of(h.detail)
+        if h.status == "pending" and len(truth.identities(h.cands)) <= NARROW:
+            return set().union(*(truth.scopes(i) for i in h.cands))
+        return set()
+
+    anchor_scopes = [scopes(h) for h in hits]
+    for k, h in enumerate(hits):
+        if h.status != "pending":
+            continue
+        others = set().union(*(s for j, s in enumerate(anchor_scopes) if j != k))
+        near = [i for i in h.cands if truth.scopes(i) & others]
+        n_id = len(truth.identities(h.cands))
+        if near:
+            h.status, h.detail = "co-located", truth.paths[near[0]]
+        elif n_id == 1:
+            h.status, h.detail = "unique", truth.paths[h.cands[0]]
+        else:
+            eg = ", ".join(truth.paths[i] for i in h.cands[:3])
+            h.status, h.detail = "weak", f"{n_id} different data.json values show as {h.token}, e.g. {eg}"
     return hits
 
 
 def check_numbers(project_dir: Path, *, allow: Iterable[tuple[str, str]] = (),
+                  anchors: Iterable[tuple[str, str]] = (),
                   render: bool = True, report: bool = False) -> int:
     data = json.loads((project_dir / "data" / "data.json").read_text(encoding="utf-8"))
     truth = Truth(data)
     rules = [(re.compile(p, re.I), why) for p, why in [*DEFAULT_ALLOW, *allow]]
+    binds = [(re.compile(p, re.I | re.S), path) for p, path in anchors]
+    for _, path in binds:
+        try:
+            truth.resolve(path)
+        except (KeyError, IndexError, TypeError):
+            raise SystemExit(f"ANCHORS: {path} is not in data.json")
     hits: list[Hit] = []
     for source, loc, text in collect_copy(project_dir, data, render=render):
-        for token, x, status, detail, ctx in scan(text, truth, rules):
-            hits.append(Hit(source, loc, token, x, status, detail, ctx))
+        unit_binds = binds
+        if " @ $" in loc:                                   # data-verify-path element
+            path = loc.split(" @ ", 1)[1]
+            try:
+                truth.resolve(path)
+            except (KeyError, IndexError, TypeError):
+                raise SystemExit(f"data-verify-path: {path} is not in data.json ({source})")
+            unit_binds = [(_ANY, path), *binds]
+        hits += scan(text, truth, rules, unit_binds, source=source, loc=loc)
 
-    bad = [h for h in hits if h.status == "unmatched"]
+    bad = [h for h in hits if h.status in ("weak", "unmatched")]
     print(f"== Numbers check: {project_dir.name} ==")
     print(f"  truth: {len(truth)} numeric values in data.json")
-    by_src: dict[str, list[int]] = {}
+    by_src: dict[str, dict[str, int]] = {}
     for h in hits:
-        c = by_src.setdefault(h.source, [0, 0, 0])
-        c[("matched", "allowed", "unmatched").index(h.status)] += 1
-    for src, (m, a, u) in by_src.items():
-        print(f"  [{'OK ' if not u else '!! '}] {src:<15} {m:>4} matched  {a:>3} allowed  {u:>3} unmatched")
+        c = by_src.setdefault(h.source, dict.fromkeys(STATUSES, 0))
+        c[h.status] += 1
+    for src, c in by_src.items():
+        matched = sum(c[s] for s in ANCHORED)
+        how = " · ".join(f"{c[s]} {s}" for s in ANCHORED if c[s])
+        ok = not (c["weak"] or c["unmatched"])
+        print(f"  [{'OK ' if ok else '!! '}] {src:<15} {matched:>4} matched ({how or 'none'})  "
+              f"{c['allowed']:>3} allowed  {c['weak']:>3} weak  {c['unmatched']:>3} unmatched")
     if report:
         for h in hits:
-            if h.status != "unmatched":
-                print(f"      {h.status:<8} {h.token:>12}  {h.source}:{h.loc}  <- {h.detail}")
+            if h.status not in ("weak", "unmatched"):
+                print(f"      {h.status:<10} {h.token:>12}  {h.source}:{h.loc}  <- {h.detail}")
     for h in bad:
-        print(f"  [FAIL] {h.source} {h.loc}: '{h.token}'  ({h.detail})")
+        print(f"  [{'WEAK' if h.status == 'weak' else 'FAIL'}] {h.source} {h.loc}: '{h.token}'  ({h.detail})")
         print(f"         ...{h.context}...")
+    if any(h.status == "weak" for h in bad):
+        print("  WEAK = the number exists in data.json but can't be tied to one value. Put it next to its\n"
+              "  sibling figures, or pin it with an ANCHORS rule in code/verify.py: (regex, '$.path').")
     return len(bad)
 
 
@@ -470,7 +650,7 @@ def check_standard(project_dir: Path) -> int:
 
 
 def main(project_dir: Path, *, allow: Iterable[tuple[str, str]] = (),
-         argv: Optional[list[str]] = None) -> int:
+         anchors: Iterable[tuple[str, str]] = (), argv: Optional[list[str]] = None) -> int:
     ap = argparse.ArgumentParser(description=f"Verify {Path(project_dir).name}")
     ap.add_argument("--report", action="store_true", help="list matched numbers with their data.json paths")
     ap.add_argument("--static", action="store_true", help="skip the headless render of analysis.html")
@@ -480,15 +660,65 @@ def main(project_dir: Path, *, allow: Iterable[tuple[str, str]] = (),
     project_dir = Path(project_dir).resolve()
     fails = 0
     if not a.standard_only:
-        fails += check_numbers(project_dir, allow=allow, render=not a.static, report=a.report)
+        fails += check_numbers(project_dir, allow=allow, anchors=anchors,
+                               render=not a.static, report=a.report)
     if not a.numbers_only:
         fails += check_standard(project_dir)
     print("VERIFY PASSED" if not fails else f"VERIFY FAILED ({fails} problem(s))")
     return 1 if fails else 0
 
 
+def selftest() -> int:
+    """The matching rules on a toy data.json: python renball_verify.py --selftest"""
+    data = {"primary": {"treatment": {"conversions": 60, "attempts": 79, "rate": 75.95},
+                        "test": {"diff": -3.01, "mde_pp": 12.55}},
+            "grid": [[{"v": 2.08}, {"v": 2.11}], [{"v": 2.14}, {"v": 0.7895}]],
+            "ratio": 2.14, "rate_overall": 78.96}
+    truth = Truth(data)
+    rules = [(re.compile(p, re.I), w) for p, w in DEFAULT_ALLOW]
+    binds = [(re.compile(r"late\D{0,40}\d\.\d+×", re.I), "$.ratio")]
+
+    def statuses(text, anchors=()):
+        return [h.status for h in scan(text, truth, rules, list(anchors))]
+
+    cases = [
+        ("60/79 = 75.95%", [], ["co-located", "co-located", "co-located"]),
+        ("a −3.01 pp gap", [], ["unique"]),
+        ("a +3.01 pp gap", [], ["unmatched"]),              # sign disagrees with data.json
+        ("79 penalties", [], ["unique"]),                   # count, not the 78.96% rate
+        ("about 79 percent", [], ["unique"]),
+        ("78.96%", [], ["unique"]),
+        ("78.95%", [], ["unique"]),                         # 0.7895 x 100
+        ("2.1× more", [], ["weak"]),                        # 2.08 / 2.11 / 2.14 all show as 2.1
+        ("a late winner is worth 2.1× more", binds, ["bound"]),
+        ("a late winner is worth 2.2× more", binds, ["unmatched"]),
+        ("between 60-75 and 75-90 minutes, EP per 90", [], ["allowed"] * 5),
+        ("95% CI, see §3.4", [], ["allowed", "allowed"]),
+    ]
+    fails = 0
+    for text, anchors, want in cases:
+        got = statuses(text, anchors)
+        ok = got == want
+        fails += not ok
+        print(f"  [{'OK ' if ok else 'FAIL'}] {text!r:46} {got}" + ("" if ok else f"  want {want}"))
+    units = html_text('<div data-verify-path="$.primary.test.mde_pp"><b>12.6</b> pp</div>'
+                      '<p>a <strong>60</strong>/79 = 75.95% b</p>')
+    want_units = [("12.6 pp", "$.primary.test.mde_pp"), ("a 60/79 = 75.95% b", None)]
+    fails += units != want_units
+    print(f"  [{'OK ' if units == want_units else 'FAIL'}] html units + data-verify-path {units}")
+    md = "a\n```\ncode\nblock\n```\nline 6 has 12.55\n"
+    line = md_text(md).splitlines().index("line 6 has 12.55") + 1
+    fails += line != 6
+    print(f"  [{'OK ' if line == 6 else 'FAIL'}] methodology line numbers survive code blocks (line {line})")
+    print("SELFTEST PASSED" if not fails else f"SELFTEST FAILED ({fails})")
+    return 1 if fails else 0
+
+
 if __name__ == "__main__":
+    if len(sys.argv) > 1 and sys.argv[1] == "--selftest":
+        sys.exit(selftest())
     if len(sys.argv) < 2:
-        print("usage: python assets/build/renball_verify.py projects/XX-name [--report] [--static]")
+        print("usage: python assets/build/renball_verify.py projects/XX-name [--report] [--static]\n"
+              "       python assets/build/renball_verify.py --selftest")
         sys.exit(2)
     sys.exit(main(Path(sys.argv[1]), argv=sys.argv[2:]))
