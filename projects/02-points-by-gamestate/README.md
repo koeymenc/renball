@@ -1,34 +1,38 @@
 # Not All Goals Are Equal — Points by Gamestate
 
-A time-aware expected-points (EP) framework that prices every goal by both the goal-difference transition it produced and the minute it landed. 39,381 goals · six top-flight leagues · seven seasons.
+A time-aware expected-points (EP) model that prices every goal by the scoreline it changes and the minute it lands, estimated from every team-minute of the model sample — six top-flight leagues, seven seasons. Intervals from a match bootstrap, a held-out test on the last two seasons, and player boards with intervals.
 
 ## Files
 
-- `analysis.html` — Editorial write-up: 4 stat callouts, state value table, EP heatmap, early-vs-late opener, total EP by minute bin, top-10 EP collectors, top-10 timed upgrades + Mário Rui spotlight, top-10 EP per 90, top-10 EP-by-bin distribution.
-- `dashboard.html` — Full interactive Tabulator dashboard with lazy-loaded per-(dataset, view) JSON files (six datasets × up to four views; manifest at `data/dashboard/manifest.json`).
-- `methodology.html` — Technical write-up styled in Renball tokens (generated from `methodology.md` by `code/build_pdfs.py`).
-- `slides.pptx` / `slides.pdf` — Renball-branded 13-slide deck (built by `code/build_slides.py` against `assets/slides/renball_slide_master.py`).
-- `config.json` — Card metadata (mirrored in repo-root `projects.json`).
+- `analysis.html` — editorial page: state values, goal values, the opener by window, game state (upside vs downside of the next goal), EP by window, held-out calibration, robustness, player boards (EP collected, timing premium, EP per 90) with intervals, takeaways, limitations, the deck.
+- `dashboard.html` — Tabulator dashboard reading `data/dashboard/manifest.json` + one lazy-loaded JSON per (dataset, view): Goals+Assists, Goalscorer, Assist, State values, Goal values.
+- `methodology.md` → `methodology.html` / `methodology.pdf` — full method and results.
+- `slides.pptx` / `slides.pdf` — the deck (shared slide master).
+- `data/data.json` — every number the page, deck and X package show.
+- `data/og_affected_matches.csv` — matches whose shot table is missing goals (own goals), for a later backfill.
+- `config.json` — card metadata (mirrored in repo-root `projects.json`).
 
-## Source code (`code/`)
+## Code (`code/`)
 
-- `config.py`, `extraction.py`, `analysis.py`, `dashboard.py`, `main.py` — v3 Points-by-Gamestate analysis pipeline (per-league + pooled, untimed + timed).
-- `build.py` — Renball orchestrator. Loads pickles, runs the pipeline, joins player minutes, emits `data/data.json` + `data/dashboard/` tree.
-- `build_pdfs.py` — `methodology.md` → `methodology.html`.
-- `build_slides.py` — `data/data.json` → `slides.pptx` (uses the shared `assets/slides/renball_slide_master.py`).
+- `matches.py` — one pass over the match pickles: official scores, goals, per-match player minutes and birth dates; cached per league under `data/.cache/` (gitignored).
+- `value_model.py` — team-minute counts, state and goal values, bootstrap weights, Brier scores.
+- `build.py` — everything else: data quality, bootstrap, calibration, player boards, robustness, takeaways, dashboard payload.
+- `dashboard_files.py` — writes the dashboard manifest + view files.
+- `build_slides.py`, `build_pdfs.py`, `build_social.py`, `verify.py` — deck, PDFs, X package, numbers + standard check.
+- `config.py`, `extraction.py`, `analysis.py` — shared helpers (also used by Project 03); `main.py`, `dashboard.py` — the original v3 pipeline.
 
 ## Rebuilding
 
 ```bash
-python code/build.py        # data
-python code/build_pdfs.py   # methodology.html
-python code/build_slides.py # slides.pptx
+python code/build.py          # data (first run reads the pickles, ~25 min; cached afterwards, ~3 min)
+python code/build_slides.py   # slides.pptx
+python code/build_pdfs.py     # methodology.html/.pdf + slides.pdf
+python code/build_social.py   # X package images + preview (social/ stays local)
+python code/verify.py         # must print VERIFY PASSED
 ```
 
-Requires:
-- `RENBALL_MATCH_DATA_PATH` → folder containing `match_data_final_<league>.pkl` files (defaults to CK's local path).
-- `RENBALL_DATA_PATH` → folder containing `FULL_DICT_ROWS.pkl` for player-minutes lookup (Top-5 leagues only).
+Requires `RENBALL_MATCH_DATA_PATH` → folder with `match_data_final_<league>.pkl` (defaults to CK's local path).
 
 ## Live on
 
-[renball.com/projects/02-points-by-gamestate/](https://renball.com/projects/02-points-by-gamestate/)
+[renball.com/projects/02-points-by-gamestate/analysis.html](https://renball.com/projects/02-points-by-gamestate/analysis.html)

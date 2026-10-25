@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Points by Gamestate · Dashboard — Renball</title>
-<meta name="description" content="Full interactive Tabulator dashboard for the Points by Gamestate research project — every league, every season, every player, every state.">
+<title>Points by Gamestate · Dashboard · Renball</title>
+<meta name="description" content="Full interactive Tabulator dashboard for the Points by Gamestate research project: every league, every season, every player, every state.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -221,6 +221,20 @@
   }
   .tabulator .tabulator-footer .tabulator-paginator label { color: var(--text-muted); }
 
+  /* ─── Intro + per-dataset help ─── */
+  .dash-intro {
+    max-width: 900px; margin: 0 0 1.5rem; color: var(--text-secondary);
+    font-size: 0.9rem; line-height: 1.65;
+  }
+  .dash-intro p { margin-bottom: 0.6rem; }
+  .dash-intro strong { color: var(--text); font-weight: 500; }
+  .ds-help {
+    font-family: var(--mono); font-size: 0.72rem; color: var(--text-secondary);
+    line-height: 1.6; letter-spacing: 0.02em; padding: 0.7rem 1rem; margin-bottom: 0.75rem;
+    border-left: 2px solid var(--accent-dim); background: var(--accent-glow);
+  }
+  .ds-help strong { color: var(--accent); font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
+
   /* ─── Tips footer ─── */
   .tips {
     margin-top: 1rem; font-family: var(--mono); font-size: 0.7rem;
@@ -255,10 +269,21 @@
   <div class="renball-mark"><span>ren</span><span class="ball">ball</span><span class="sep">DASHBOARD · PROJECT 02</span></div>
   <h1 class="dash-title">Points by <em>Gamestate</em>.</h1>
   <div class="dash-subtitle">
-    Time-aware expected-points framework · Top 5 leagues + Eredivisie · Six datasets · Full drill-down ·
-    <a href="analysis.html">read the editorial &nearr;</a>
+    Time-aware expected points · Top 5 leagues + Eredivisie · Five datasets · Full drill-down ·
+    <a href="analysis.html">read the editorial &nearr;</a> · <a href="methodology.html">methodology &nearr;</a>
   </div>
 </header>
+
+<div class="dash-intro">
+  <p><strong>What's here.</strong> Every goal is priced by what it changed: the expected final points of the scoring
+  team after the goal minus before it, at that scoreline and in that 15-minute window. The state values come from
+  every minute of every match in the model sample, not just the moments goals were scored. Sum a player's goals and
+  SCA1 credits at those prices and you get his expected points (EP) collected.</p>
+  <p><strong>How to use it.</strong> Pick a dataset and a view; filter any column (<code>&gt;0.5</code>, <code>&lt;=10</code>)
+  or search a name. Hover a column header for what it means. <strong>Intervals</strong> (<code>ci_lo</code> /
+  <code>ci_hi</code>) are 95% bootstrap intervals over matches; cells flagged <code>sparse</code> were seen in fewer than
+  30 matches. Player tables carry no intervals here; the editorial page shows them for the leaderboards.</p>
+</div>
 
 <!-- ── Toolbar ── -->
 <div class="toolbar">
@@ -299,6 +324,7 @@
   <span>Datasets loaded: <strong id="datasetsLoaded">0</strong></span>
 </div>
 
+<div class="ds-help" id="dsHelp"></div>
 <div id="table-title">…<span class="rowcount" id="rowcount"></span></div>
 <div id="table"></div>
 
@@ -514,8 +540,8 @@
       'scoring_team', 'contributor', 'goals_involved',
       'minutes_played', 'ep_per_90',
       'exp_points_collected_timed', 'exp_points_collected_untimed', 'delta_ep_timed_vs_untimed',
-      'gd_before', 'gd_after', 'minute_bin', 'n', 'pW', 'pD', 'pL', 'exp_points',
-      'exp_points_collected', 'delta_exp_points',
+      'gd', 'gd_before', 'gd_after', 'minute_bin', 'goals', 'team_minutes', 'matches',
+      'pW', 'pD', 'pL', 'exp_points', 'exp_points_collected', 'ci_lo', 'ci_hi', 'sparse',
       'delta_ep_minus_goals', 'ratio_ep_per_goal',
     ];
 
@@ -530,14 +556,8 @@
     if (showCnt.checked)   final = final.concat(cnt_gd).concat(cnt_bin);
     if (showEpBin.checked) final = final.concat(ep_bin);
 
-    // Transitions: drop the last 3 internal helper columns the original hides
-    if (dsName === 'Transitions' && final.length >= 3) {
-      final = final.slice(0, final.length - 3);
-    }
-
     const deltaCols = new Set([
-      'delta_ep_timed_vs_untimed', 'delta_ep_minus_goals', 'delta_exp_points',
-      'exp_points_collected',
+      'delta_ep_timed_vs_untimed', 'delta_ep_minus_goals', 'exp_points_collected',
     ]);
 
     return final.map(k => {
@@ -653,6 +673,9 @@
     if (!container) return;
     const { rows, title } = getActiveData(container);
     const dense = fillSparse(rows.map(r => ({ ...r })));  // shallow clone, fill 0s
+    const help = (MANIFEST.datasetHelp || {})[datasetSel.value];
+    $('dsHelp').innerHTML = help ? `<strong>How to read this</strong> · ${help}` : '';
+    $('dsHelp').style.display = help ? '' : 'none';
 
     $('table-title').firstChild.textContent = title + '  ';
     $('rowcount').textContent = `(${dense.length.toLocaleString('en-GB')} rows)`;
@@ -689,7 +712,7 @@
       return;
     }
 
-    $('genAt').textContent = (MANIFEST.meta && MANIFEST.meta.created_at) || '—';
+    $('genAt').textContent = (MANIFEST.meta && MANIFEST.meta.created_at) || 'n/a';
 
     const datasets = Object.keys(MANIFEST.datasets);
     setOptions(datasetSel, datasets);

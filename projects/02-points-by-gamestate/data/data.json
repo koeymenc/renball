@@ -1,13 +1,31 @@
 {
+  "generated_at": "2026-10-25T15:41:13.136076+00:00",
   "meta": {
-    "generated_at": "2026-05-19 22:36:33",
     "leagues": [
-      "Bundesliga",
-      "Eredivisie",
-      "La-Liga",
-      "Ligue-1",
-      "Premier-League",
-      "Serie-A"
+      {
+        "code": "Premier-League",
+        "label": "Premier League"
+      },
+      {
+        "code": "La-Liga",
+        "label": "La Liga"
+      },
+      {
+        "code": "Serie-A",
+        "label": "Serie A"
+      },
+      {
+        "code": "Bundesliga",
+        "label": "Bundesliga"
+      },
+      {
+        "code": "Ligue-1",
+        "label": "Ligue 1"
+      },
+      {
+        "code": "Eredivisie",
+        "label": "Eredivisie"
+      }
     ],
     "seasons": [
       "2017-2018",
@@ -42,28 +60,124 @@
       5,
       6,
       7
-    ]
-  },
-  "callouts": {
-    "total_goals": 39381,
-    "unique_states": 82,
-    "ep_value_gap": {
-      "gap": 1.6766,
-      "best": 1.6766,
-      "worst": 0.0,
-      "best_label": "0→1 @ 75-90",
-      "worst_label": "−2→−1 @ 0-15"
-    },
-    "biggest_upgrade": {
-      "player": "Mário Rui",
-      "team": "Napoli",
-      "goals_involved": 28,
-      "delta_ep": 3.428,
-      "ep_timed": 24.106,
-      "ep_untimed": 20.678
+    ],
+    "params": {
+      "boot_resamples": 1000,
+      "seed": 2026,
+      "sparse_matches": 30,
+      "min_minutes_per90": 900,
+      "min_involvements": 20,
+      "test_seasons": 2,
+      "minutes_per_match": 90,
+      "bin_minutes": 15
     }
   },
-  "state_value_table": {
+  "data_quality": {
+    "by_league": [
+      {
+        "code": "Premier-League",
+        "label": "Premier League",
+        "matches": 2660,
+        "loaded": 2658,
+        "failed": 2,
+        "failed_pct": 0.1,
+        "og_affected": 251,
+        "og_affected_pct": 9.4
+      },
+      {
+        "code": "La-Liga",
+        "label": "La Liga",
+        "matches": 2660,
+        "loaded": 2658,
+        "failed": 2,
+        "failed_pct": 0.1,
+        "og_affected": 182,
+        "og_affected_pct": 6.8
+      },
+      {
+        "code": "Serie-A",
+        "label": "Serie A",
+        "matches": 2660,
+        "loaded": 2659,
+        "failed": 1,
+        "failed_pct": 0.0,
+        "og_affected": 219,
+        "og_affected_pct": 8.2
+      },
+      {
+        "code": "Bundesliga",
+        "label": "Bundesliga",
+        "matches": 2142,
+        "loaded": 2140,
+        "failed": 2,
+        "failed_pct": 0.1,
+        "og_affected": 168,
+        "og_affected_pct": 7.9
+      },
+      {
+        "code": "Ligue-1",
+        "label": "Ligue 1",
+        "matches": 2492,
+        "loaded": 2484,
+        "failed": 8,
+        "failed_pct": 0.3,
+        "og_affected": 198,
+        "og_affected_pct": 8.0
+      },
+      {
+        "code": "Eredivisie",
+        "label": "Eredivisie",
+        "matches": 2068,
+        "loaded": 1761,
+        "failed": 307,
+        "failed_pct": 14.8,
+        "og_affected": 136,
+        "og_affected_pct": 7.7
+      }
+    ],
+    "matches_total": 14682,
+    "matches_loaded": 14360,
+    "matches_failed": 322,
+    "failed_by_status": {
+      "no shot table": 308,
+      "not loaded": 14
+    },
+    "eredivisie_failed": 307,
+    "eredivisie_failed_pct": 14.8,
+    "eredivisie_matches": 2068,
+    "og_affected": 1154,
+    "og_affected_pct": 8.0,
+    "og_missing_goals": 1202,
+    "shot_over": 0,
+    "unknown_minute_matches": 0,
+    "unmapped_goals": 0,
+    "kept": {
+      "matches": 13206,
+      "goals_per_match": 2.74,
+      "home_win_pct": 43.5,
+      "draw_pct": 25.4,
+      "away_win_pct": 31.1
+    },
+    "excluded": {
+      "matches": 1154,
+      "goals_per_match": 3.82,
+      "home_win_pct": 48.7,
+      "draw_pct": 19.3,
+      "away_win_pct": 32.0
+    },
+    "affected_file": "data/og_affected_matches.csv"
+  },
+  "sample": {
+    "matches_model": 13206,
+    "matches_usable": 14360,
+    "goals_all": 39403,
+    "goals_model": 36201,
+    "team_minutes": 2377080,
+    "cells_with_data": 76,
+    "cells_total": 90,
+    "goals_filled_untimed": 2
+  },
+  "state_values": {
     "gd_range": [
       -7,
       -6,
@@ -81,6 +195,23 @@
       6,
       7
     ],
+    "gd_labels": [
+      "−7",
+      "−6",
+      "−5",
+      "−4",
+      "−3",
+      "−2",
+      "−1",
+      "0",
+      "+1",
+      "+2",
+      "+3",
+      "+4",
+      "+5",
+      "+6",
+      "+7"
+    ],
     "time_bins": [
       "0-15",
       "15-30",
@@ -95,13 +226,841 @@
         null,
         null,
         {
-          "exp_points": 0.0,
-          "n": 1
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "minutes": 15,
+          "matches": 3,
+          "pW": 0.0,
+          "pD": 0.0,
+          "pL": 1.0,
+          "sparse": true
         },
+        {
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "minutes": 79,
+          "matches": 9,
+          "pW": 0.0,
+          "pD": 0.0,
+          "pL": 1.0,
+          "sparse": true
+        },
+        {
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "minutes": 240,
+          "matches": 23,
+          "pW": 0.0,
+          "pD": 0.0,
+          "pL": 1.0,
+          "sparse": true
+        }
+      ],
+      [
+        null,
         null,
         {
-          "exp_points": 0.0,
-          "n": 14
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "minutes": 8,
+          "matches": 1,
+          "pW": 0.0,
+          "pD": 0.0,
+          "pL": 1.0,
+          "sparse": true
+        },
+        {
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "minutes": 62,
+          "matches": 10,
+          "pW": 0.0,
+          "pD": 0.0,
+          "pL": 1.0,
+          "sparse": true
+        },
+        {
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "minutes": 230,
+          "matches": 31,
+          "pW": 0.0,
+          "pD": 0.0,
+          "pL": 1.0,
+          "sparse": false
+        },
+        {
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "minutes": 543,
+          "matches": 67,
+          "pW": 0.0,
+          "pD": 0.0,
+          "pL": 1.0,
+          "sparse": false
+        }
+      ],
+      [
+        null,
+        {
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "minutes": 27,
+          "matches": 4,
+          "pW": 0.0,
+          "pD": 0.0,
+          "pL": 1.0,
+          "sparse": true
+        },
+        {
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "minutes": 96,
+          "matches": 13,
+          "pW": 0.0,
+          "pD": 0.0,
+          "pL": 1.0,
+          "sparse": true
+        },
+        {
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "minutes": 311,
+          "matches": 47,
+          "pW": 0.0,
+          "pD": 0.0,
+          "pL": 1.0,
+          "sparse": false
+        },
+        {
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "minutes": 888,
+          "matches": 121,
+          "pW": 0.0,
+          "pD": 0.0,
+          "pL": 1.0,
+          "sparse": false
+        },
+        {
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "minutes": 2079,
+          "matches": 246,
+          "pW": 0.0,
+          "pD": 0.0,
+          "pL": 1.0,
+          "sparse": false
+        }
+      ],
+      [
+        null,
+        {
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "minutes": 68,
+          "matches": 12,
+          "pW": 0.0,
+          "pD": 0.0,
+          "pL": 1.0,
+          "sparse": true
+        },
+        {
+          "ep": 0.023,
+          "lo": 0.0,
+          "hi": 0.081,
+          "minutes": 515,
+          "matches": 73,
+          "pW": 0.0,
+          "pD": 0.023,
+          "pL": 0.977,
+          "sparse": false
+        },
+        {
+          "ep": 0.007,
+          "lo": 0.0,
+          "hi": 0.023,
+          "minutes": 1745,
+          "matches": 223,
+          "pW": 0.0,
+          "pD": 0.007,
+          "pL": 0.993,
+          "sparse": false
+        },
+        {
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "minutes": 3886,
+          "matches": 442,
+          "pW": 0.0,
+          "pD": 0.0,
+          "pL": 1.0,
+          "sparse": false
+        },
+        {
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "minutes": 6292,
+          "matches": 681,
+          "pW": 0.0,
+          "pD": 0.0,
+          "pL": 1.0,
+          "sparse": false
+        }
+      ],
+      [
+        {
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "minutes": 37,
+          "matches": 12,
+          "pW": 0.0,
+          "pD": 0.0,
+          "pL": 1.0,
+          "sparse": true
+        },
+        {
+          "ep": 0.039,
+          "lo": 0.005,
+          "hi": 0.086,
+          "minutes": 788,
+          "matches": 127,
+          "pW": 0.0,
+          "pD": 0.039,
+          "pL": 0.961,
+          "sparse": false
+        },
+        {
+          "ep": 0.029,
+          "lo": 0.011,
+          "hi": 0.051,
+          "minutes": 3454,
+          "matches": 446,
+          "pW": 0.0,
+          "pD": 0.029,
+          "pL": 0.971,
+          "sparse": false
+        },
+        {
+          "ep": 0.02,
+          "lo": 0.009,
+          "hi": 0.033,
+          "minutes": 8540,
+          "matches": 934,
+          "pW": 0.002,
+          "pD": 0.013,
+          "pL": 0.985,
+          "sparse": false
+        },
+        {
+          "ep": 0.008,
+          "lo": 0.002,
+          "hi": 0.015,
+          "minutes": 12956,
+          "matches": 1359,
+          "pW": 0.001,
+          "pD": 0.005,
+          "pL": 0.994,
+          "sparse": false
+        },
+        {
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "minutes": 16935,
+          "matches": 1734,
+          "pW": 0.0,
+          "pD": 0.0,
+          "pL": 1.0,
+          "sparse": false
+        }
+      ],
+      [
+        {
+          "ep": 0.249,
+          "lo": 0.164,
+          "hi": 0.366,
+          "minutes": 1122,
+          "matches": 264,
+          "pW": 0.047,
+          "pD": 0.107,
+          "pL": 0.846,
+          "sparse": false
+        },
+        {
+          "ep": 0.227,
+          "lo": 0.186,
+          "hi": 0.274,
+          "minutes": 9162,
+          "matches": 1142,
+          "pW": 0.043,
+          "pD": 0.099,
+          "pL": 0.858,
+          "sparse": false
+        },
+        {
+          "ep": 0.171,
+          "lo": 0.145,
+          "hi": 0.2,
+          "minutes": 19676,
+          "matches": 2123,
+          "pW": 0.031,
+          "pD": 0.078,
+          "pL": 0.891,
+          "sparse": false
+        },
+        {
+          "ep": 0.117,
+          "lo": 0.101,
+          "hi": 0.137,
+          "minutes": 28697,
+          "matches": 2938,
+          "pW": 0.019,
+          "pD": 0.062,
+          "pL": 0.92,
+          "sparse": false
+        },
+        {
+          "ep": 0.066,
+          "lo": 0.055,
+          "hi": 0.078,
+          "minutes": 35152,
+          "matches": 3494,
+          "pW": 0.008,
+          "pD": 0.041,
+          "pL": 0.951,
+          "sparse": false
+        },
+        {
+          "ep": 0.019,
+          "lo": 0.015,
+          "hi": 0.024,
+          "minutes": 38755,
+          "matches": 3714,
+          "pW": 0.001,
+          "pD": 0.015,
+          "pL": 0.984,
+          "sparse": false
+        }
+      ],
+      [
+        {
+          "ep": 0.687,
+          "lo": 0.648,
+          "hi": 0.728,
+          "minutes": 25234,
+          "matches": 3756,
+          "pW": 0.159,
+          "pD": 0.21,
+          "pL": 0.631,
+          "sparse": false
+        },
+        {
+          "ep": 0.656,
+          "lo": 0.627,
+          "hi": 0.685,
+          "minutes": 64892,
+          "matches": 6445,
+          "pW": 0.15,
+          "pD": 0.207,
+          "pL": 0.643,
+          "sparse": false
+        },
+        {
+          "ep": 0.611,
+          "lo": 0.586,
+          "hi": 0.637,
+          "minutes": 80535,
+          "matches": 7387,
+          "pW": 0.131,
+          "pD": 0.219,
+          "pL": 0.651,
+          "sparse": false
+        },
+        {
+          "ep": 0.491,
+          "lo": 0.47,
+          "hi": 0.514,
+          "minutes": 84577,
+          "matches": 7733,
+          "pW": 0.091,
+          "pD": 0.218,
+          "pL": 0.691,
+          "sparse": false
+        },
+        {
+          "ep": 0.368,
+          "lo": 0.351,
+          "hi": 0.387,
+          "minutes": 82855,
+          "matches": 7503,
+          "pW": 0.054,
+          "pD": 0.207,
+          "pL": 0.74,
+          "sparse": false
+        },
+        {
+          "ep": 0.196,
+          "lo": 0.184,
+          "hi": 0.208,
+          "minutes": 78368,
+          "matches": 7052,
+          "pW": 0.017,
+          "pD": 0.146,
+          "pL": 0.837,
+          "sparse": false
+        }
+      ],
+      [
+        {
+          "ep": 1.369,
+          "lo": 1.365,
+          "hi": 1.373,
+          "minutes": 343394,
+          "matches": 13206,
+          "pW": 0.369,
+          "pD": 0.262,
+          "pL": 0.369,
+          "sparse": false
+        },
+        {
+          "ep": 1.354,
+          "lo": 1.349,
+          "hi": 1.359,
+          "minutes": 246306,
+          "matches": 9975,
+          "pW": 0.354,
+          "pD": 0.292,
+          "pL": 0.354,
+          "sparse": false
+        },
+        {
+          "ep": 1.334,
+          "lo": 1.328,
+          "hi": 1.34,
+          "minutes": 187612,
+          "matches": 7784,
+          "pW": 0.334,
+          "pD": 0.331,
+          "pL": 0.334,
+          "sparse": false
+        },
+        {
+          "ep": 1.297,
+          "lo": 1.291,
+          "hi": 1.304,
+          "minutes": 148286,
+          "matches": 6413,
+          "pW": 0.297,
+          "pD": 0.405,
+          "pL": 0.297,
+          "sparse": false
+        },
+        {
+          "ep": 1.244,
+          "lo": 1.237,
+          "hi": 1.251,
+          "minutes": 124088,
+          "matches": 5435,
+          "pW": 0.244,
+          "pD": 0.512,
+          "pL": 0.244,
+          "sparse": false
+        },
+        {
+          "ep": 1.151,
+          "lo": 1.145,
+          "hi": 1.158,
+          "minutes": 109756,
+          "matches": 4849,
+          "pW": 0.151,
+          "pD": 0.698,
+          "pL": 0.151,
+          "sparse": false
+        }
+      ],
+      [
+        {
+          "ep": 2.103,
+          "lo": 2.059,
+          "hi": 2.144,
+          "minutes": 25234,
+          "matches": 3756,
+          "pW": 0.631,
+          "pD": 0.21,
+          "pL": 0.159,
+          "sparse": false
+        },
+        {
+          "ep": 2.137,
+          "lo": 2.105,
+          "hi": 2.169,
+          "minutes": 64892,
+          "matches": 6445,
+          "pW": 0.643,
+          "pD": 0.207,
+          "pL": 0.15,
+          "sparse": false
+        },
+        {
+          "ep": 2.171,
+          "lo": 2.141,
+          "hi": 2.199,
+          "minutes": 80535,
+          "matches": 7387,
+          "pW": 0.651,
+          "pD": 0.219,
+          "pL": 0.131,
+          "sparse": false
+        },
+        {
+          "ep": 2.291,
+          "lo": 2.264,
+          "hi": 2.317,
+          "minutes": 84577,
+          "matches": 7733,
+          "pW": 0.691,
+          "pD": 0.218,
+          "pL": 0.091,
+          "sparse": false
+        },
+        {
+          "ep": 2.425,
+          "lo": 2.401,
+          "hi": 2.45,
+          "minutes": 82855,
+          "matches": 7503,
+          "pW": 0.74,
+          "pD": 0.207,
+          "pL": 0.054,
+          "sparse": false
+        },
+        {
+          "ep": 2.658,
+          "lo": 2.639,
+          "hi": 2.677,
+          "minutes": 78368,
+          "matches": 7052,
+          "pW": 0.837,
+          "pD": 0.146,
+          "pL": 0.017,
+          "sparse": false
+        }
+      ],
+      [
+        {
+          "ep": 2.644,
+          "lo": 2.508,
+          "hi": 2.75,
+          "minutes": 1122,
+          "matches": 264,
+          "pW": 0.846,
+          "pD": 0.107,
+          "pL": 0.047,
+          "sparse": false
+        },
+        {
+          "ep": 2.673,
+          "lo": 2.613,
+          "hi": 2.728,
+          "minutes": 9162,
+          "matches": 1142,
+          "pW": 0.858,
+          "pD": 0.099,
+          "pL": 0.043,
+          "sparse": false
+        },
+        {
+          "ep": 2.751,
+          "lo": 2.716,
+          "hi": 2.784,
+          "minutes": 19676,
+          "matches": 2123,
+          "pW": 0.891,
+          "pD": 0.078,
+          "pL": 0.031,
+          "sparse": false
+        },
+        {
+          "ep": 2.821,
+          "lo": 2.794,
+          "hi": 2.844,
+          "minutes": 28697,
+          "matches": 2938,
+          "pW": 0.92,
+          "pD": 0.062,
+          "pL": 0.019,
+          "sparse": false
+        },
+        {
+          "ep": 2.894,
+          "lo": 2.877,
+          "hi": 2.908,
+          "minutes": 35152,
+          "matches": 3494,
+          "pW": 0.951,
+          "pD": 0.041,
+          "pL": 0.008,
+          "sparse": false
+        },
+        {
+          "ep": 2.966,
+          "lo": 2.958,
+          "hi": 2.974,
+          "minutes": 38755,
+          "matches": 3714,
+          "pW": 0.984,
+          "pD": 0.015,
+          "pL": 0.001,
+          "sparse": false
+        }
+      ],
+      [
+        {
+          "ep": 3.0,
+          "lo": 3.0,
+          "hi": 3.0,
+          "minutes": 37,
+          "matches": 12,
+          "pW": 1.0,
+          "pD": 0.0,
+          "pL": 0.0,
+          "sparse": true
+        },
+        {
+          "ep": 2.921,
+          "lo": 2.829,
+          "hi": 2.99,
+          "minutes": 788,
+          "matches": 127,
+          "pW": 0.961,
+          "pD": 0.039,
+          "pL": 0.0,
+          "sparse": false
+        },
+        {
+          "ep": 2.942,
+          "lo": 2.899,
+          "hi": 2.977,
+          "minutes": 3454,
+          "matches": 446,
+          "pW": 0.971,
+          "pD": 0.029,
+          "pL": 0.0,
+          "sparse": false
+        },
+        {
+          "ep": 2.968,
+          "lo": 2.948,
+          "hi": 2.985,
+          "minutes": 8540,
+          "matches": 934,
+          "pW": 0.985,
+          "pD": 0.013,
+          "pL": 0.002,
+          "sparse": false
+        },
+        {
+          "ep": 2.987,
+          "lo": 2.978,
+          "hi": 2.995,
+          "minutes": 12956,
+          "matches": 1359,
+          "pW": 0.994,
+          "pD": 0.005,
+          "pL": 0.001,
+          "sparse": false
+        },
+        {
+          "ep": 3.0,
+          "lo": 3.0,
+          "hi": 3.0,
+          "minutes": 16935,
+          "matches": 1734,
+          "pW": 1.0,
+          "pD": 0.0,
+          "pL": 0.0,
+          "sparse": false
+        }
+      ],
+      [
+        null,
+        {
+          "ep": 3.0,
+          "lo": 3.0,
+          "hi": 3.0,
+          "minutes": 68,
+          "matches": 12,
+          "pW": 1.0,
+          "pD": 0.0,
+          "pL": 0.0,
+          "sparse": true
+        },
+        {
+          "ep": 2.953,
+          "lo": 2.839,
+          "hi": 3.0,
+          "minutes": 515,
+          "matches": 73,
+          "pW": 0.977,
+          "pD": 0.023,
+          "pL": 0.0,
+          "sparse": false
+        },
+        {
+          "ep": 2.986,
+          "lo": 2.953,
+          "hi": 3.0,
+          "minutes": 1745,
+          "matches": 223,
+          "pW": 0.993,
+          "pD": 0.007,
+          "pL": 0.0,
+          "sparse": false
+        },
+        {
+          "ep": 3.0,
+          "lo": 3.0,
+          "hi": 3.0,
+          "minutes": 3886,
+          "matches": 442,
+          "pW": 1.0,
+          "pD": 0.0,
+          "pL": 0.0,
+          "sparse": false
+        },
+        {
+          "ep": 3.0,
+          "lo": 3.0,
+          "hi": 3.0,
+          "minutes": 6292,
+          "matches": 681,
+          "pW": 1.0,
+          "pD": 0.0,
+          "pL": 0.0,
+          "sparse": false
+        }
+      ],
+      [
+        null,
+        {
+          "ep": 3.0,
+          "lo": 3.0,
+          "hi": 3.0,
+          "minutes": 27,
+          "matches": 4,
+          "pW": 1.0,
+          "pD": 0.0,
+          "pL": 0.0,
+          "sparse": true
+        },
+        {
+          "ep": 3.0,
+          "lo": 3.0,
+          "hi": 3.0,
+          "minutes": 96,
+          "matches": 13,
+          "pW": 1.0,
+          "pD": 0.0,
+          "pL": 0.0,
+          "sparse": true
+        },
+        {
+          "ep": 3.0,
+          "lo": 3.0,
+          "hi": 3.0,
+          "minutes": 311,
+          "matches": 47,
+          "pW": 1.0,
+          "pD": 0.0,
+          "pL": 0.0,
+          "sparse": false
+        },
+        {
+          "ep": 3.0,
+          "lo": 3.0,
+          "hi": 3.0,
+          "minutes": 888,
+          "matches": 121,
+          "pW": 1.0,
+          "pD": 0.0,
+          "pL": 0.0,
+          "sparse": false
+        },
+        {
+          "ep": 3.0,
+          "lo": 3.0,
+          "hi": 3.0,
+          "minutes": 2079,
+          "matches": 246,
+          "pW": 1.0,
+          "pD": 0.0,
+          "pL": 0.0,
+          "sparse": false
+        }
+      ],
+      [
+        null,
+        null,
+        {
+          "ep": 3.0,
+          "lo": 3.0,
+          "hi": 3.0,
+          "minutes": 8,
+          "matches": 1,
+          "pW": 1.0,
+          "pD": 0.0,
+          "pL": 0.0,
+          "sparse": true
+        },
+        {
+          "ep": 3.0,
+          "lo": 3.0,
+          "hi": 3.0,
+          "minutes": 62,
+          "matches": 10,
+          "pW": 1.0,
+          "pD": 0.0,
+          "pL": 0.0,
+          "sparse": true
+        },
+        {
+          "ep": 3.0,
+          "lo": 3.0,
+          "hi": 3.0,
+          "minutes": 230,
+          "matches": 31,
+          "pW": 1.0,
+          "pD": 0.0,
+          "pL": 0.0,
+          "sparse": false
+        },
+        {
+          "ep": 3.0,
+          "lo": 3.0,
+          "hi": 3.0,
+          "minutes": 543,
+          "matches": 67,
+          "pW": 1.0,
+          "pD": 0.0,
+          "pL": 0.0,
+          "sparse": false
         }
       ],
       [
@@ -109,320 +1068,164 @@
         null,
         null,
         {
-          "exp_points": 0.0,
-          "n": 4
+          "ep": 3.0,
+          "lo": 3.0,
+          "hi": 3.0,
+          "minutes": 15,
+          "matches": 3,
+          "pW": 1.0,
+          "pD": 0.0,
+          "pL": 0.0,
+          "sparse": true
         },
         {
-          "exp_points": 0.0,
-          "n": 6
+          "ep": 3.0,
+          "lo": 3.0,
+          "hi": 3.0,
+          "minutes": 79,
+          "matches": 9,
+          "pW": 1.0,
+          "pD": 0.0,
+          "pL": 0.0,
+          "sparse": true
         },
         {
-          "exp_points": 0.0,
-          "n": 25
-        }
-      ],
-      [
-        null,
-        null,
-        {
-          "exp_points": 0.0,
-          "n": 2
-        },
-        {
-          "exp_points": 0.0,
-          "n": 15
-        },
-        {
-          "exp_points": 0.0,
-          "n": 41
-        },
-        {
-          "exp_points": 0.0,
-          "n": 88
-        }
-      ],
-      [
-        null,
-        {
-          "exp_points": 0.0,
-          "n": 4
-        },
-        {
-          "exp_points": 0.0,
-          "n": 18
-        },
-        {
-          "exp_points": 0.0164,
-          "n": 61
-        },
-        {
-          "exp_points": 0.0,
-          "n": 145
-        },
-        {
-          "exp_points": 0.0,
-          "n": 296
-        }
-      ],
-      [
-        {
-          "exp_points": 0.0,
-          "n": 2
-        },
-        {
-          "exp_points": 0.0,
-          "n": 18
-        },
-        {
-          "exp_points": 0.0352,
-          "n": 142
-        },
-        {
-          "exp_points": 0.0461,
-          "n": 282
-        },
-        {
-          "exp_points": 0.0317,
-          "n": 473
-        },
-        {
-          "exp_points": 0.0012,
-          "n": 805
-        }
-      ],
-      [
-        {
-          "exp_points": 0.375,
-          "n": 32
-        },
-        {
-          "exp_points": 0.3277,
-          "n": 235
-        },
-        {
-          "exp_points": 0.2385,
-          "n": 763
-        },
-        {
-          "exp_points": 0.2118,
-          "n": 1001
-        },
-        {
-          "exp_points": 0.1765,
-          "n": 1269
-        },
-        {
-          "exp_points": 0.07,
-          "n": 1842
-        }
-      ],
-      [
-        {
-          "exp_points": 0.748,
-          "n": 615
-        },
-        {
-          "exp_points": 0.753,
-          "n": 1858
-        },
-        {
-          "exp_points": 0.7368,
-          "n": 2781
-        },
-        {
-          "exp_points": 0.7045,
-          "n": 2711
-        },
-        {
-          "exp_points": 0.6384,
-          "n": 2732
-        },
-        {
-          "exp_points": 0.5566,
-          "n": 3595
-        }
-      ],
-      [
-        {
-          "exp_points": 1.3977,
-          "n": 8718
-        },
-        {
-          "exp_points": 1.4022,
-          "n": 7078
-        },
-        {
-          "exp_points": 1.3946,
-          "n": 5996
-        },
-        {
-          "exp_points": 1.3969,
-          "n": 4734
-        },
-        {
-          "exp_points": 1.4064,
-          "n": 3868
-        },
-        {
-          "exp_points": 1.4583,
-          "n": 4600
-        }
-      ],
-      [
-        {
-          "exp_points": 2.0699,
-          "n": 615
-        },
-        {
-          "exp_points": 2.0689,
-          "n": 1858
-        },
-        {
-          "exp_points": 2.0669,
-          "n": 2781
-        },
-        {
-          "exp_points": 2.0812,
-          "n": 2711
-        },
-        {
-          "exp_points": 2.101,
-          "n": 2732
-        },
-        {
-          "exp_points": 2.0662,
-          "n": 3595
-        }
-      ],
-      [
-        {
-          "exp_points": 2.5312,
-          "n": 32
-        },
-        {
-          "exp_points": 2.5617,
-          "n": 235
-        },
-        {
-          "exp_points": 2.6645,
-          "n": 763
-        },
-        {
-          "exp_points": 2.6993,
-          "n": 1001
-        },
-        {
-          "exp_points": 2.7321,
-          "n": 1269
-        },
-        {
-          "exp_points": 2.8795,
-          "n": 1842
-        }
-      ],
-      [
-        {
-          "exp_points": 3.0,
-          "n": 2
-        },
-        {
-          "exp_points": 3.0,
-          "n": 18
-        },
-        {
-          "exp_points": 2.9296,
-          "n": 142
-        },
-        {
-          "exp_points": 2.9291,
-          "n": 282
-        },
-        {
-          "exp_points": 2.9493,
-          "n": 473
-        },
-        {
-          "exp_points": 2.9975,
-          "n": 805
-        }
-      ],
-      [
-        null,
-        {
-          "exp_points": 3.0,
-          "n": 4
-        },
-        {
-          "exp_points": 3.0,
-          "n": 18
-        },
-        {
-          "exp_points": 2.9672,
-          "n": 61
-        },
-        {
-          "exp_points": 3.0,
-          "n": 145
-        },
-        {
-          "exp_points": 3.0,
-          "n": 296
-        }
-      ],
-      [
-        null,
-        null,
-        {
-          "exp_points": 3.0,
-          "n": 2
-        },
-        {
-          "exp_points": 3.0,
-          "n": 15
-        },
-        {
-          "exp_points": 3.0,
-          "n": 41
-        },
-        {
-          "exp_points": 3.0,
-          "n": 88
-        }
-      ],
-      [
-        null,
-        null,
-        null,
-        {
-          "exp_points": 3.0,
-          "n": 4
-        },
-        {
-          "exp_points": 3.0,
-          "n": 6
-        },
-        {
-          "exp_points": 3.0,
-          "n": 25
-        }
-      ],
-      [
-        null,
-        null,
-        null,
-        {
-          "exp_points": 3.0,
-          "n": 1
-        },
-        null,
-        {
-          "exp_points": 3.0,
-          "n": 14
+          "ep": 3.0,
+          "lo": 3.0,
+          "hi": 3.0,
+          "minutes": 240,
+          "matches": 23,
+          "pW": 1.0,
+          "pD": 0.0,
+          "pL": 0.0,
+          "sparse": true
         }
       ]
+    ],
+    "untimed": [
+      {
+        "gd": -7,
+        "label": "−7",
+        "ep": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "minutes": 334
+      },
+      {
+        "gd": -6,
+        "label": "−6",
+        "ep": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "minutes": 843
+      },
+      {
+        "gd": -5,
+        "label": "−5",
+        "ep": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "minutes": 3401
+      },
+      {
+        "gd": -4,
+        "label": "−4",
+        "ep": 0.002,
+        "lo": 0.0,
+        "hi": 0.006,
+        "minutes": 12506
+      },
+      {
+        "gd": -3,
+        "label": "−3",
+        "ep": 0.009,
+        "lo": 0.005,
+        "hi": 0.015,
+        "minutes": 42710
+      },
+      {
+        "gd": -2,
+        "label": "−2",
+        "ep": 0.091,
+        "lo": 0.081,
+        "hi": 0.104,
+        "minutes": 132564
+      },
+      {
+        "gd": -1,
+        "label": "−1",
+        "ep": 0.472,
+        "lo": 0.455,
+        "hi": 0.488,
+        "minutes": 416461
+      },
+      {
+        "gd": 0,
+        "label": "0",
+        "ep": 1.317,
+        "lo": 1.312,
+        "hi": 1.322,
+        "minutes": 1159442
+      },
+      {
+        "gd": 1,
+        "label": "+1",
+        "ep": 2.328,
+        "lo": 2.307,
+        "hi": 2.349,
+        "minutes": 416461
+      },
+      {
+        "gd": 2,
+        "label": "+2",
+        "ep": 2.861,
+        "lo": 2.844,
+        "hi": 2.876,
+        "minutes": 132564
+      },
+      {
+        "gd": 3,
+        "label": "+3",
+        "ep": 2.984,
+        "lo": 2.974,
+        "hi": 2.991,
+        "minutes": 42710
+      },
+      {
+        "gd": 4,
+        "label": "+4",
+        "ep": 2.996,
+        "lo": 2.988,
+        "hi": 3.0,
+        "minutes": 12506
+      },
+      {
+        "gd": 5,
+        "label": "+5",
+        "ep": 3.0,
+        "lo": 3.0,
+        "hi": 3.0,
+        "minutes": 3401
+      },
+      {
+        "gd": 6,
+        "label": "+6",
+        "ep": 3.0,
+        "lo": 3.0,
+        "hi": 3.0,
+        "minutes": 843
+      },
+      {
+        "gd": 7,
+        "label": "+7",
+        "ep": 3.0,
+        "lo": 3.0,
+        "hi": 3.0,
+        "minutes": 334
+      }
     ]
   },
-  "value_heatmap": {
+  "goal_values": {
     "time_bins": [
       "0-15",
       "15-30",
@@ -501,11 +1304,6 @@
         "gd_before": 6,
         "gd_after": 7,
         "label": "6→7"
-      },
-      {
-        "gd_before": 7,
-        "gd_after": 8,
-        "label": "7→8"
       }
     ],
     "matrix": [
@@ -513,284 +1311,577 @@
         null,
         null,
         null,
-        null,
-        null,
         {
-          "ep_collected": 0.0,
-          "n": 1
-        }
-      ],
-      [
-        null,
-        null,
-        null,
-        null,
-        null,
-        {
-          "ep_collected": 0.0,
-          "n": 7
-        }
-      ],
-      [
-        null,
-        null,
-        {
-          "ep_collected": 0.0,
-          "n": 1
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "goals": 0,
+          "matches": 3,
+          "sparse": true
         },
         {
-          "ep_collected": 0.0,
-          "n": 5
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "goals": 0,
+          "matches": 9,
+          "sparse": true
         },
         {
-          "ep_collected": 0.0,
-          "n": 14
-        },
-        {
-          "ep_collected": 0.0,
-          "n": 26
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "goals": 1,
+          "matches": 23,
+          "sparse": true
         }
       ],
       [
         null,
         null,
         {
-          "ep_collected": 0.0,
-          "n": 3
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "goals": 0,
+          "matches": 1,
+          "sparse": true
         },
         {
-          "ep_collected": 0.0435,
-          "n": 23
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "goals": 0,
+          "matches": 10,
+          "sparse": true
         },
         {
-          "ep_collected": 0.0,
-          "n": 40
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "goals": 0,
+          "matches": 31,
+          "sparse": false
         },
         {
-          "ep_collected": 0.0,
-          "n": 87
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "goals": 6,
+          "matches": 67,
+          "sparse": false
         }
       ],
       [
         null,
         {
-          "ep_collected": 0.0,
-          "n": 4
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "goals": 0,
+          "matches": 4,
+          "sparse": true
         },
         {
-          "ep_collected": 0.0714,
-          "n": 56
+          "ep": 0.023,
+          "lo": 0.0,
+          "hi": 0.081,
+          "goals": 0,
+          "matches": 13,
+          "sparse": true
         },
         {
-          "ep_collected": 0.084,
-          "n": 102
+          "ep": 0.007,
+          "lo": 0.0,
+          "hi": 0.023,
+          "goals": 5,
+          "matches": 47,
+          "sparse": false
         },
         {
-          "ep_collected": 0.0789,
-          "n": 190
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "goals": 13,
+          "matches": 121,
+          "sparse": false
         },
         {
-          "ep_collected": 0.0037,
-          "n": 272
-        }
-      ],
-      [
-        {
-          "ep_collected": 0.0,
-          "n": 17
-        },
-        {
-          "ep_collected": 0.7158,
-          "n": 95
-        },
-        {
-          "ep_collected": 0.4823,
-          "n": 307
-        },
-        {
-          "ep_collected": 0.3788,
-          "n": 403
-        },
-        {
-          "ep_collected": 0.3433,
-          "n": 521
-        },
-        {
-          "ep_collected": 0.1607,
-          "n": 785
-        }
-      ],
-      [
-        {
-          "ep_collected": 0.6112,
-          "n": 287
-        },
-        {
-          "ep_collected": 0.7057,
-          "n": 828
-        },
-        {
-          "ep_collected": 0.8292,
-          "n": 1324
-        },
-        {
-          "ep_collected": 0.8193,
-          "n": 1321
-        },
-        {
-          "ep_collected": 0.873,
-          "n": 1270
-        },
-        {
-          "ep_collected": 0.979,
-          "n": 1730
-        }
-      ],
-      [
-        {
-          "ep_collected": 0.785,
-          "n": 4359
-        },
-        {
-          "ep_collected": 0.7449,
-          "n": 3539
-        },
-        {
-          "ep_collected": 0.8392,
-          "n": 2998
-        },
-        {
-          "ep_collected": 1.0505,
-          "n": 2367
-        },
-        {
-          "ep_collected": 1.2233,
-          "n": 1934
-        },
-        {
-          "ep_collected": 1.6766,
-          "n": 2300
-        }
-      ],
-      [
-        {
-          "ep_collected": 0.5351,
-          "n": 328
-        },
-        {
-          "ep_collected": 0.5336,
-          "n": 1030
-        },
-        {
-          "ep_collected": 0.561,
-          "n": 1457
-        },
-        {
-          "ep_collected": 0.4492,
-          "n": 1390
-        },
-        {
-          "ep_collected": 0.3747,
-          "n": 1462
-        },
-        {
-          "ep_collected": 0.1586,
-          "n": 1865
-        }
-      ],
-      [
-        {
-          "ep_collected": 0.3628,
-          "n": 15
-        },
-        {
-          "ep_collected": 0.1929,
-          "n": 140
-        },
-        {
-          "ep_collected": 0.1708,
-          "n": 456
-        },
-        {
-          "ep_collected": 0.1581,
-          "n": 598
-        },
-        {
-          "ep_collected": 0.096,
-          "n": 748
-        },
-        {
-          "ep_collected": 0.0214,
-          "n": 1057
-        }
-      ],
-      [
-        {
-          "ep_collected": 0.0,
-          "n": 2
-        },
-        {
-          "ep_collected": 0.1071,
-          "n": 14
-        },
-        {
-          "ep_collected": 0.0228,
-          "n": 86
-        },
-        {
-          "ep_collected": 0.0167,
-          "n": 180
-        },
-        {
-          "ep_collected": 0.0107,
-          "n": 283
-        },
-        {
-          "ep_collected": 0.0,
-          "n": 533
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "goals": 24,
+          "matches": 246,
+          "sparse": false
         }
       ],
       [
         null,
         {
-          "ep_collected": 0.0,
-          "n": 4
+          "ep": 0.039,
+          "lo": 0.005,
+          "hi": 0.086,
+          "goals": 0,
+          "matches": 12,
+          "sparse": true
         },
         {
-          "ep_collected": 0.0233,
-          "n": 15
+          "ep": 0.006,
+          "lo": -0.051,
+          "hi": 0.044,
+          "goals": 2,
+          "matches": 73,
+          "sparse": false
         },
         {
-          "ep_collected": 0.0,
-          "n": 38
+          "ep": 0.013,
+          "lo": -0.007,
+          "hi": 0.029,
+          "goals": 23,
+          "matches": 223,
+          "sparse": false
         },
         {
-          "ep_collected": 0.0,
-          "n": 105
+          "ep": 0.008,
+          "lo": 0.002,
+          "hi": 0.015,
+          "goals": 39,
+          "matches": 442,
+          "sparse": false
         },
         {
-          "ep_collected": 0.0,
-          "n": 209
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "goals": 74,
+          "matches": 681,
+          "sparse": false
+        }
+      ],
+      [
+        {
+          "ep": 0.249,
+          "lo": 0.164,
+          "hi": 0.366,
+          "goals": 0,
+          "matches": 12,
+          "sparse": true
+        },
+        {
+          "ep": 0.188,
+          "lo": 0.127,
+          "hi": 0.242,
+          "goals": 4,
+          "matches": 127,
+          "sparse": false
+        },
+        {
+          "ep": 0.142,
+          "lo": 0.11,
+          "hi": 0.174,
+          "goals": 50,
+          "matches": 446,
+          "sparse": false
+        },
+        {
+          "ep": 0.098,
+          "lo": 0.077,
+          "hi": 0.12,
+          "goals": 93,
+          "matches": 934,
+          "sparse": false
+        },
+        {
+          "ep": 0.058,
+          "lo": 0.046,
+          "hi": 0.07,
+          "goals": 170,
+          "matches": 1359,
+          "sparse": false
+        },
+        {
+          "ep": 0.019,
+          "lo": 0.015,
+          "hi": 0.024,
+          "goals": 248,
+          "matches": 1734,
+          "sparse": false
+        }
+      ],
+      [
+        {
+          "ep": 0.438,
+          "lo": 0.321,
+          "hi": 0.526,
+          "goals": 12,
+          "matches": 264,
+          "sparse": false
+        },
+        {
+          "ep": 0.429,
+          "lo": 0.38,
+          "hi": 0.479,
+          "goals": 90,
+          "matches": 1142,
+          "sparse": false
+        },
+        {
+          "ep": 0.44,
+          "lo": 0.402,
+          "hi": 0.475,
+          "goals": 282,
+          "matches": 2123,
+          "sparse": false
+        },
+        {
+          "ep": 0.374,
+          "lo": 0.347,
+          "hi": 0.403,
+          "goals": 362,
+          "matches": 2938,
+          "sparse": false
+        },
+        {
+          "ep": 0.302,
+          "lo": 0.282,
+          "hi": 0.322,
+          "goals": 487,
+          "matches": 3494,
+          "sparse": false
+        },
+        {
+          "ep": 0.177,
+          "lo": 0.164,
+          "hi": 0.19,
+          "goals": 716,
+          "matches": 3714,
+          "sparse": false
+        }
+      ],
+      [
+        {
+          "ep": 0.682,
+          "lo": 0.64,
+          "hi": 0.722,
+          "goals": 262,
+          "matches": 3756,
+          "sparse": false
+        },
+        {
+          "ep": 0.698,
+          "lo": 0.669,
+          "hi": 0.727,
+          "goals": 753,
+          "matches": 6445,
+          "sparse": false
+        },
+        {
+          "ep": 0.724,
+          "lo": 0.697,
+          "hi": 0.749,
+          "goals": 1205,
+          "matches": 7387,
+          "sparse": false
+        },
+        {
+          "ep": 0.806,
+          "lo": 0.781,
+          "hi": 0.828,
+          "goals": 1215,
+          "matches": 6413,
+          "sparse": false
+        },
+        {
+          "ep": 0.876,
+          "lo": 0.856,
+          "hi": 0.895,
+          "goals": 1184,
+          "matches": 5435,
+          "sparse": false
+        },
+        {
+          "ep": 0.955,
+          "lo": 0.941,
+          "hi": 0.969,
+          "goals": 1603,
+          "matches": 4849,
+          "sparse": false
+        }
+      ],
+      [
+        {
+          "ep": 0.733,
+          "lo": 0.69,
+          "hi": 0.775,
+          "goals": 4005,
+          "matches": 3756,
+          "sparse": false
+        },
+        {
+          "ep": 0.783,
+          "lo": 0.751,
+          "hi": 0.816,
+          "goals": 3240,
+          "matches": 6445,
+          "sparse": false
+        },
+        {
+          "ep": 0.836,
+          "lo": 0.806,
+          "hi": 0.864,
+          "goals": 2755,
+          "matches": 7387,
+          "sparse": false
+        },
+        {
+          "ep": 0.994,
+          "lo": 0.966,
+          "hi": 1.021,
+          "goals": 2198,
+          "matches": 6413,
+          "sparse": false
+        },
+        {
+          "ep": 1.181,
+          "lo": 1.155,
+          "hi": 1.206,
+          "goals": 1760,
+          "matches": 5435,
+          "sparse": false
+        },
+        {
+          "ep": 1.507,
+          "lo": 1.487,
+          "hi": 1.527,
+          "goals": 2113,
+          "matches": 4849,
+          "sparse": false
+        }
+      ],
+      [
+        {
+          "ep": 0.542,
+          "lo": 0.399,
+          "hi": 0.658,
+          "goals": 301,
+          "matches": 264,
+          "sparse": false
+        },
+        {
+          "ep": 0.536,
+          "lo": 0.474,
+          "hi": 0.598,
+          "goals": 952,
+          "matches": 1142,
+          "sparse": false
+        },
+        {
+          "ep": 0.58,
+          "lo": 0.535,
+          "hi": 0.623,
+          "goals": 1338,
+          "matches": 2123,
+          "sparse": false
+        },
+        {
+          "ep": 0.53,
+          "lo": 0.495,
+          "hi": 0.565,
+          "goals": 1293,
+          "matches": 2938,
+          "sparse": false
+        },
+        {
+          "ep": 0.468,
+          "lo": 0.441,
+          "hi": 0.496,
+          "goals": 1344,
+          "matches": 3494,
+          "sparse": false
+        },
+        {
+          "ep": 0.308,
+          "lo": 0.288,
+          "hi": 0.328,
+          "goals": 1691,
+          "matches": 3714,
+          "sparse": false
+        }
+      ],
+      [
+        {
+          "ep": 0.356,
+          "lo": 0.25,
+          "hi": 0.492,
+          "goals": 14,
+          "matches": 12,
+          "sparse": true
+        },
+        {
+          "ep": 0.248,
+          "lo": 0.147,
+          "hi": 0.329,
+          "goals": 128,
+          "matches": 127,
+          "sparse": false
+        },
+        {
+          "ep": 0.191,
+          "lo": 0.142,
+          "hi": 0.241,
+          "goals": 417,
+          "matches": 446,
+          "sparse": false
+        },
+        {
+          "ep": 0.147,
+          "lo": 0.117,
+          "hi": 0.178,
+          "goals": 561,
+          "matches": 934,
+          "sparse": false
+        },
+        {
+          "ep": 0.094,
+          "lo": 0.076,
+          "hi": 0.112,
+          "goals": 681,
+          "matches": 1359,
+          "sparse": false
+        },
+        {
+          "ep": 0.034,
+          "lo": 0.026,
+          "hi": 0.042,
+          "goals": 990,
+          "matches": 1734,
+          "sparse": false
+        }
+      ],
+      [
+        {
+          "ep": null,
+          "goals": 2,
+          "sparse": true
+        },
+        {
+          "ep": 0.079,
+          "lo": 0.01,
+          "hi": 0.171,
+          "goals": 12,
+          "matches": 12,
+          "sparse": true
+        },
+        {
+          "ep": 0.011,
+          "lo": -0.102,
+          "hi": 0.088,
+          "goals": 79,
+          "matches": 73,
+          "sparse": false
+        },
+        {
+          "ep": 0.018,
+          "lo": -0.017,
+          "hi": 0.046,
+          "goals": 168,
+          "matches": 223,
+          "sparse": false
+        },
+        {
+          "ep": 0.013,
+          "lo": 0.005,
+          "hi": 0.022,
+          "goals": 264,
+          "matches": 442,
+          "sparse": false
+        },
+        {
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "goals": 488,
+          "matches": 681,
+          "sparse": false
+        }
+      ],
+      [
+        null,
+        {
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "goals": 4,
+          "matches": 4,
+          "sparse": true
+        },
+        {
+          "ep": 0.047,
+          "lo": 0.0,
+          "hi": 0.161,
+          "goals": 13,
+          "matches": 13,
+          "sparse": true
+        },
+        {
+          "ep": 0.014,
+          "lo": 0.0,
+          "hi": 0.047,
+          "goals": 32,
+          "matches": 47,
+          "sparse": false
+        },
+        {
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "goals": 102,
+          "matches": 121,
+          "sparse": false
+        },
+        {
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "goals": 196,
+          "matches": 246,
+          "sparse": false
         }
       ],
       [
         null,
         null,
         {
-          "ep_collected": 0.0,
-          "n": 1
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "goals": 1,
+          "matches": 1,
+          "sparse": true
         },
         {
-          "ep_collected": 0.0,
-          "n": 10
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "goals": 9,
+          "matches": 10,
+          "sparse": true
         },
         {
-          "ep_collected": 0.0,
-          "n": 27
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "goals": 26,
+          "matches": 31,
+          "sparse": false
         },
         {
-          "ep_collected": 0.0,
-          "n": 62
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "goals": 55,
+          "matches": 67,
+          "sparse": false
         }
       ],
       [
@@ -798,448 +1889,1747 @@
         null,
         null,
         {
-          "ep_collected": 0.0,
-          "n": 4
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "goals": 4,
+          "matches": 3,
+          "sparse": true
         },
         {
-          "ep_collected": 0.0,
-          "n": 6
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "goals": 6,
+          "matches": 9,
+          "sparse": true
         },
         {
-          "ep_collected": 0.0,
-          "n": 18
-        }
-      ],
-      [
-        null,
-        null,
-        null,
-        {
-          "ep_collected": 0.0,
-          "n": 1
-        },
-        null,
-        {
-          "ep_collected": 0.0,
-          "n": 13
+          "ep": 0.0,
+          "lo": 0.0,
+          "hi": 0.0,
+          "goals": 16,
+          "matches": 23,
+          "sparse": true
         }
       ]
-    ]
-  },
-  "early_vs_late_0to1": {
-    "time_bins": [
-      "0-15",
-      "15-30",
-      "30-45",
-      "45-60",
-      "60-75",
-      "75-90"
     ],
-    "ep_collected": [
-      0.785,
-      0.7449,
-      0.8392,
-      1.0505,
-      1.2233,
-      1.6766
+    "untimed": [
+      {
+        "gd_before": -7,
+        "gd_after": -6,
+        "label": "−7→−6",
+        "ep": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "goals": 1
+      },
+      {
+        "gd_before": -6,
+        "gd_after": -5,
+        "label": "−6→−5",
+        "ep": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "goals": 6
+      },
+      {
+        "gd_before": -5,
+        "gd_after": -4,
+        "label": "−5→−4",
+        "ep": 0.002,
+        "lo": 0.0,
+        "hi": 0.006,
+        "goals": 42
+      },
+      {
+        "gd_before": -4,
+        "gd_after": -3,
+        "label": "−4→−3",
+        "ep": 0.007,
+        "lo": 0.002,
+        "hi": 0.013,
+        "goals": 138
+      },
+      {
+        "gd_before": -3,
+        "gd_after": -2,
+        "label": "−3→−2",
+        "ep": 0.082,
+        "lo": 0.071,
+        "hi": 0.094,
+        "goals": 565
+      },
+      {
+        "gd_before": -2,
+        "gd_after": -1,
+        "label": "−2→−1",
+        "ep": 0.38,
+        "lo": 0.363,
+        "hi": 0.399,
+        "goals": 1949
+      },
+      {
+        "gd_before": -1,
+        "gd_after": 0,
+        "label": "−1→0",
+        "ep": 0.845,
+        "lo": 0.827,
+        "hi": 0.863,
+        "goals": 6222
+      },
+      {
+        "gd_before": 0,
+        "gd_after": 1,
+        "label": "0→1",
+        "ep": 1.011,
+        "lo": 0.991,
+        "hi": 1.03,
+        "goals": 16071
+      },
+      {
+        "gd_before": 1,
+        "gd_after": 2,
+        "label": "1→2",
+        "ep": 0.532,
+        "lo": 0.509,
+        "hi": 0.557,
+        "goals": 6919
+      },
+      {
+        "gd_before": 2,
+        "gd_after": 3,
+        "label": "2→3",
+        "ep": 0.123,
+        "lo": 0.108,
+        "hi": 0.14,
+        "goals": 2791
+      },
+      {
+        "gd_before": 3,
+        "gd_after": 4,
+        "label": "3→4",
+        "ep": 0.013,
+        "lo": 0.003,
+        "hi": 0.023,
+        "goals": 1013
+      },
+      {
+        "gd_before": 4,
+        "gd_after": 5,
+        "label": "4→5",
+        "ep": 0.004,
+        "lo": 0.0,
+        "hi": 0.012,
+        "goals": 347
+      },
+      {
+        "gd_before": 5,
+        "gd_after": 6,
+        "label": "5→6",
+        "ep": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "goals": 91
+      },
+      {
+        "gd_before": 6,
+        "gd_after": 7,
+        "label": "6→7",
+        "ep": 0.0,
+        "lo": 0.0,
+        "hi": 0.0,
+        "goals": 26
+      }
     ]
   },
-  "top10_ep_collectors": [
-    {
-      "player": "Lionel Messi",
-      "team": "Barcelona",
-      "goals_involved": 267,
-      "ep_timed": 157.751,
-      "ep_untimed": 177.374,
-      "ep_bins": {
-        "0-15": 14.068,
-        "15-30": 35.854,
-        "30-45": 30.465,
-        "45-60": 22.16,
-        "60-75": 26.142,
-        "75-90": 29.062
+  "headline": {
+    "opener_by_bin": [
+      {
+        "transition": "0→1",
+        "bin": "0-15",
+        "ep": 0.733,
+        "lo": 0.69,
+        "hi": 0.775,
+        "goals": 4005
+      },
+      {
+        "transition": "0→1",
+        "bin": "15-30",
+        "ep": 0.783,
+        "lo": 0.751,
+        "hi": 0.816,
+        "goals": 3240
+      },
+      {
+        "transition": "0→1",
+        "bin": "30-45",
+        "ep": 0.836,
+        "lo": 0.806,
+        "hi": 0.864,
+        "goals": 2755
+      },
+      {
+        "transition": "0→1",
+        "bin": "45-60",
+        "ep": 0.994,
+        "lo": 0.966,
+        "hi": 1.021,
+        "goals": 2198
+      },
+      {
+        "transition": "0→1",
+        "bin": "60-75",
+        "ep": 1.181,
+        "lo": 1.155,
+        "hi": 1.206,
+        "goals": 1760
+      },
+      {
+        "transition": "0→1",
+        "bin": "75-90",
+        "ep": 1.507,
+        "lo": 1.487,
+        "hi": 1.527,
+        "goals": 2113
+      }
+    ],
+    "opener_ratio": {
+      "value": 2.05,
+      "lo": 1.94,
+      "hi": 2.18,
+      "late": {
+        "transition": "0→1",
+        "bin": "75-90",
+        "ep": 1.507,
+        "lo": 1.487,
+        "hi": 1.527,
+        "goals": 2113
+      },
+      "early": {
+        "transition": "0→1",
+        "bin": "0-15",
+        "ep": 0.733,
+        "lo": 0.69,
+        "hi": 0.775,
+        "goals": 4005
       }
     },
-    {
-      "player": "Mohamed Salah",
-      "team": "Liverpool",
-      "goals_involved": 251,
-      "ep_timed": 154.777,
-      "ep_untimed": 166.979,
-      "ep_bins": {
-        "0-15": 19.315,
-        "15-30": 23.05,
-        "30-45": 31.898,
-        "45-60": 19.529,
-        "60-75": 26.131,
-        "75-90": 34.853
-      }
+    "late_equaliser": {
+      "transition": "−1→0",
+      "bin": "75-90",
+      "ep": 0.955,
+      "lo": 0.941,
+      "hi": 0.969,
+      "goals": 1603,
+      "ratio_vs_early_opener": 1.3,
+      "ratio_lo": 1.23,
+      "ratio_hi": 1.39
     },
-    {
-      "player": "Kylian Mbappé",
-      "team": "Paris S-G",
-      "goals_involved": 274,
-      "ep_timed": 154.529,
-      "ep_untimed": 168.708,
-      "ep_bins": {
-        "0-15": 26.441,
-        "15-30": 24.679,
-        "30-45": 23.865,
-        "45-60": 19.003,
-        "60-75": 24.765,
-        "75-90": 35.777
-      }
+    "late_cushion": {
+      "transition": "1→2",
+      "bin": "75-90",
+      "ep": 0.308,
+      "lo": 0.288,
+      "hi": 0.328,
+      "goals": 1691
     },
-    {
-      "player": "Harry Kane",
-      "team": "Tottenham",
-      "goals_involved": 240,
-      "ep_timed": 150.715,
-      "ep_untimed": 162.286,
-      "ep_bins": {
-        "0-15": 25.628,
-        "15-30": 21.926,
-        "30-45": 31.145,
-        "45-60": 26.483,
-        "60-75": 17.991,
-        "75-90": 27.54
-      }
+    "late_opener_vs_equaliser": {
+      "value": 1.58,
+      "lo": 1.56,
+      "hi": 1.6
     },
-    {
-      "player": "Robert Lewandowski",
-      "team": "Bayern Munich",
-      "goals_involved": 270,
-      "ep_timed": 149.105,
-      "ep_untimed": 161.977,
-      "ep_bins": {
-        "0-15": 22.605,
-        "15-30": 25.067,
-        "30-45": 31.796,
-        "45-60": 19.357,
-        "60-75": 17.187,
-        "75-90": 33.092
-      }
+    "best_cell": {
+      "transition": "0→1",
+      "bin": "75-90",
+      "ep": 1.507,
+      "lo": 1.487,
+      "hi": 1.527,
+      "goals": 2113
     },
-    {
-      "player": "Ciro Immobile",
-      "team": "Lazio",
-      "goals_involved": 208,
-      "ep_timed": 128.338,
-      "ep_untimed": 139.173,
-      "ep_bins": {
-        "0-15": 19.737,
-        "15-30": 22.219,
-        "30-45": 23.228,
-        "45-60": 18.014,
-        "60-75": 17.676,
-        "75-90": 27.464
+    "goal_cells_with_value": 70,
+    "ep_by_bin": [
+      {
+        "bin": "0-15",
+        "total_ep": 3289.3,
+        "goals": 4596,
+        "ep_per_goal": 0.716,
+        "top": [
+          {
+            "transition": "0→1",
+            "ep": 2937.2,
+            "goals": 4005
+          },
+          {
+            "transition": "−1→0",
+            "ep": 178.7,
+            "goals": 262
+          },
+          {
+            "transition": "1→2",
+            "ep": 163.1,
+            "goals": 301
+          }
+        ]
+      },
+      {
+        "bin": "15-30",
+        "total_ep": 3646.0,
+        "goals": 5183,
+        "ep_per_goal": 0.703,
+        "top": [
+          {
+            "transition": "0→1",
+            "ep": 2538.1,
+            "goals": 3240
+          },
+          {
+            "transition": "−1→0",
+            "ep": 525.5,
+            "goals": 753
+          },
+          {
+            "transition": "1→2",
+            "ep": 510.5,
+            "goals": 952
+          }
+        ]
+      },
+      {
+        "bin": "30-45",
+        "total_ep": 4165.0,
+        "goals": 6142,
+        "ep_per_goal": 0.678,
+        "top": [
+          {
+            "transition": "0→1",
+            "ep": 2304.0,
+            "goals": 2755
+          },
+          {
+            "transition": "−1→0",
+            "ep": 872.1,
+            "goals": 1205
+          },
+          {
+            "transition": "1→2",
+            "ep": 776.6,
+            "goals": 1338
+          }
+        ]
+      },
+      {
+        "bin": "45-60",
+        "total_ep": 4079.3,
+        "goals": 5964,
+        "ep_per_goal": 0.684,
+        "top": [
+          {
+            "transition": "0→1",
+            "ep": 2184.3,
+            "goals": 2198
+          },
+          {
+            "transition": "−1→0",
+            "ep": 979.2,
+            "goals": 1215
+          },
+          {
+            "transition": "1→2",
+            "ep": 684.9,
+            "goals": 1293
+          }
+        ]
+      },
+      {
+        "bin": "60-75",
+        "total_ep": 3970.5,
+        "goals": 6078,
+        "ep_per_goal": 0.653,
+        "top": [
+          {
+            "transition": "0→1",
+            "ep": 2078.9,
+            "goals": 1760
+          },
+          {
+            "transition": "−1→0",
+            "ep": 1037.5,
+            "goals": 1184
+          },
+          {
+            "transition": "1→2",
+            "ep": 629.6,
+            "goals": 1344
+          }
+        ]
+      },
+      {
+        "bin": "75-90",
+        "total_ep": 5400.8,
+        "goals": 8238,
+        "ep_per_goal": 0.656,
+        "top": [
+          {
+            "transition": "0→1",
+            "ep": 3183.6,
+            "goals": 2113
+          },
+          {
+            "transition": "−1→0",
+            "ep": 1530.7,
+            "goals": 1603
+          },
+          {
+            "transition": "1→2",
+            "ep": 521.4,
+            "goals": 1691
+          }
+        ]
       }
+    ],
+    "ep_last_vs_first_bin": {
+      "value": 1.64,
+      "lo": 1.54,
+      "hi": 1.76
     },
-    {
-      "player": "Iago Aspas",
-      "team": "Celta Vigo",
-      "goals_involved": 179,
-      "ep_timed": 120.563,
-      "ep_untimed": 134.443,
-      "ep_bins": {
-        "0-15": 17.382,
-        "15-30": 15.615,
-        "30-45": 28.359,
-        "45-60": 19.3,
-        "60-75": 16.859,
-        "75-90": 23.048
-      }
-    },
-    {
-      "player": "Cristiano Ronaldo",
-      "team": "Juventus",
-      "goals_involved": 174,
-      "ep_timed": 119.253,
-      "ep_untimed": 127.426,
-      "ep_bins": {
-        "0-15": 14.492,
-        "15-30": 14.658,
-        "30-45": 24.323,
-        "45-60": 22.28,
-        "60-75": 18.264,
-        "75-90": 25.237
-      }
-    },
-    {
-      "player": "Wissam Ben Yedder",
-      "team": "Monaco",
-      "goals_involved": 182,
-      "ep_timed": 116.412,
-      "ep_untimed": 129.506,
-      "ep_bins": {
-        "0-15": 15.812,
-        "15-30": 21.097,
-        "30-45": 22.146,
-        "45-60": 23.214,
-        "60-75": 12.285,
-        "75-90": 21.858
-      }
-    },
-    {
-      "player": "Karim Benzema",
-      "team": "Real Madrid",
-      "goals_involved": 174,
-      "ep_timed": 110.764,
-      "ep_untimed": 121.309,
-      "ep_bins": {
-        "0-15": 17.743,
-        "15-30": 13.784,
-        "30-45": 17.497,
-        "45-60": 18.601,
-        "60-75": 14.831,
-        "75-90": 28.308
-      }
+    "states": {
+      "lead_late": 2.658,
+      "level_late": 1.151,
+      "behind_late": 0.196,
+      "lead_early": 2.103,
+      "level_early": 1.369,
+      "behind_early": 0.687
     }
-  ],
-  "top10_timed_upgrade": [
-    {
-      "player": "Mário Rui",
-      "team": "Napoli",
-      "goals_involved": 28,
-      "ep_timed": 24.106,
-      "ep_untimed": 20.678,
-      "delta_ep": 3.428
+  },
+  "game_state": {
+    "rows": [
+      {
+        "gd": 1,
+        "label": "Leading by one",
+        "bins": [
+          {
+            "bin": "0-15",
+            "up": 0.542,
+            "down": 0.733,
+            "ratio": 0.74,
+            "lo": 0.54,
+            "hi": 0.92
+          },
+          {
+            "bin": "15-30",
+            "up": 0.536,
+            "down": 0.783,
+            "ratio": 0.68,
+            "lo": 0.6,
+            "hi": 0.79
+          },
+          {
+            "bin": "30-45",
+            "up": 0.58,
+            "down": 0.836,
+            "ratio": 0.69,
+            "lo": 0.62,
+            "hi": 0.77
+          },
+          {
+            "bin": "45-60",
+            "up": 0.53,
+            "down": 0.994,
+            "ratio": 0.53,
+            "lo": 0.49,
+            "hi": 0.58
+          },
+          {
+            "bin": "60-75",
+            "up": 0.468,
+            "down": 1.181,
+            "ratio": 0.4,
+            "lo": 0.37,
+            "hi": 0.43
+          },
+          {
+            "bin": "75-90",
+            "up": 0.308,
+            "down": 1.507,
+            "ratio": 0.2,
+            "lo": 0.19,
+            "hi": 0.22
+          }
+        ]
+      },
+      {
+        "gd": 0,
+        "label": "Level",
+        "bins": [
+          {
+            "bin": "0-15",
+            "up": 0.733,
+            "down": 0.682,
+            "ratio": 1.08,
+            "lo": 1.05,
+            "hi": 1.1
+          },
+          {
+            "bin": "15-30",
+            "up": 0.783,
+            "down": 0.698,
+            "ratio": 1.12,
+            "lo": 1.1,
+            "hi": 1.14
+          },
+          {
+            "bin": "30-45",
+            "up": 0.836,
+            "down": 0.724,
+            "ratio": 1.16,
+            "lo": 1.13,
+            "hi": 1.18
+          },
+          {
+            "bin": "45-60",
+            "up": 0.994,
+            "down": 0.806,
+            "ratio": 1.23,
+            "lo": 1.21,
+            "hi": 1.25
+          },
+          {
+            "bin": "60-75",
+            "up": 1.181,
+            "down": 0.876,
+            "ratio": 1.35,
+            "lo": 1.33,
+            "hi": 1.37
+          },
+          {
+            "bin": "75-90",
+            "up": 1.507,
+            "down": 0.955,
+            "ratio": 1.58,
+            "lo": 1.56,
+            "hi": 1.6
+          }
+        ]
+      },
+      {
+        "gd": -1,
+        "label": "Trailing by one",
+        "bins": [
+          {
+            "bin": "0-15",
+            "up": 0.682,
+            "down": 0.438,
+            "ratio": 1.56,
+            "lo": 1.26,
+            "hi": 2.2
+          },
+          {
+            "bin": "15-30",
+            "up": 0.698,
+            "down": 0.429,
+            "ratio": 1.63,
+            "lo": 1.42,
+            "hi": 1.89
+          },
+          {
+            "bin": "30-45",
+            "up": 0.724,
+            "down": 0.44,
+            "ratio": 1.65,
+            "lo": 1.48,
+            "hi": 1.84
+          },
+          {
+            "bin": "45-60",
+            "up": 0.806,
+            "down": 0.374,
+            "ratio": 2.15,
+            "lo": 1.96,
+            "hi": 2.37
+          },
+          {
+            "bin": "60-75",
+            "up": 0.876,
+            "down": 0.302,
+            "ratio": 2.9,
+            "lo": 2.66,
+            "hi": 3.16
+          },
+          {
+            "bin": "75-90",
+            "up": 0.955,
+            "down": 0.177,
+            "ratio": 5.39,
+            "lo": 4.97,
+            "hi": 5.89
+          }
+        ]
+      }
+    ],
+    "level_early_ratio": 1.08,
+    "level_late_ratio": 1.58,
+    "level_late": {
+      "bin": "75-90",
+      "up": 1.507,
+      "down": 0.955,
+      "ratio": 1.58,
+      "lo": 1.56,
+      "hi": 1.6
     },
-    {
-      "player": "Evann Guessand",
-      "team": "Nice",
-      "goals_involved": 19,
-      "ep_timed": 20.714,
-      "ep_untimed": 17.37,
-      "delta_ep": 3.344
+    "lead_late": {
+      "bin": "75-90",
+      "up": 0.308,
+      "down": 1.507,
+      "ratio": 0.2,
+      "lo": 0.19,
+      "hi": 0.22
     },
-    {
-      "player": "Cristian Tello",
-      "team": "Betis",
-      "goals_involved": 36,
-      "ep_timed": 31.205,
-      "ep_untimed": 28.387,
-      "delta_ep": 2.817
-    },
-    {
-      "player": "Adama Traoré",
-      "team": "Wolves",
-      "goals_involved": 43,
-      "ep_timed": 36.511,
-      "ep_untimed": 33.826,
-      "delta_ep": 2.686
-    },
-    {
-      "player": "Youssoufa Moukoko",
-      "team": "Dortmund",
-      "goals_involved": 22,
-      "ep_timed": 16.262,
-      "ep_untimed": 13.68,
-      "delta_ep": 2.581
-    },
-    {
-      "player": "Viktor Kovalenko",
-      "team": "Spezia",
-      "goals_involved": 7,
-      "ep_timed": 9.449,
-      "ep_untimed": 6.923,
-      "delta_ep": 2.526
-    },
-    {
-      "player": "Sasa Kalajdzic",
-      "team": "Stuttgart",
-      "goals_involved": 37,
-      "ep_timed": 32.198,
-      "ep_untimed": 29.695,
-      "delta_ep": 2.503
-    },
-    {
-      "player": "Mario Hermoso",
-      "team": "Atlético Madrid",
-      "goals_involved": 20,
-      "ep_timed": 17.791,
-      "ep_untimed": 15.457,
-      "delta_ep": 2.334
-    },
-    {
-      "player": "Leo Dubois",
-      "team": "Lyon",
-      "goals_involved": 26,
-      "ep_timed": 24.801,
-      "ep_untimed": 22.533,
-      "delta_ep": 2.268
-    },
-    {
-      "player": "Lee Kang-in",
-      "team": "Mallorca",
-      "goals_involved": 31,
-      "ep_timed": 28.151,
-      "ep_untimed": 25.948,
-      "delta_ep": 2.203
+    "trail_late": {
+      "bin": "75-90",
+      "up": 0.955,
+      "down": 0.177,
+      "ratio": 5.39,
+      "lo": 4.97,
+      "hi": 5.89
     }
-  ],
-  "top10_ep_per_90": [
-    {
-      "player": "Victor Boniface",
-      "team": "Leverkusen",
-      "goals_involved": 26,
-      "minutes_played": 1546,
-      "ep_timed": 15.235,
-      "ep_per_90": 0.887
+  },
+  "calibration": {
+    "train_seasons": [
+      "2017-2018",
+      "2018-2019",
+      "2019-2020",
+      "2020-2021",
+      "2021-2022"
+    ],
+    "test_seasons": [
+      "2022-2023",
+      "2023-2024"
+    ],
+    "test_matches": 3838,
+    "test_minutes": 690840,
+    "brier": {
+      "timed": 0.481,
+      "untimed": 0.496,
+      "base": 0.6574
     },
-    {
-      "player": "Georges Mikautadze",
-      "team": "Metz",
-      "goals_involved": 21,
-      "minutes_played": 1756,
-      "ep_timed": 17.035,
-      "ep_per_90": 0.873
+    "improvement": {
+      "value": 0.015,
+      "lo": 0.0135,
+      "hi": 0.0166
     },
-    {
-      "player": "Lionel Messi",
-      "team": "Barcelona",
-      "goals_involved": 267,
-      "minutes_played": 16516,
-      "ep_timed": 157.751,
-      "ep_per_90": 0.86
+    "skill_vs_base": {
+      "value": 26.8,
+      "lo": 25.7,
+      "hi": 28.0
     },
-    {
-      "player": "Kylian Mbappé",
-      "team": "Paris S-G",
-      "goals_involved": 274,
-      "minutes_played": 16403,
-      "ep_timed": 154.529,
-      "ep_per_90": 0.848
+    "by_bin": [
+      {
+        "bin": "0-15",
+        "timed": 0.6413,
+        "untimed": 0.6565,
+        "base": 0.6574
+      },
+      {
+        "bin": "15-30",
+        "timed": 0.5947,
+        "untimed": 0.6025,
+        "base": 0.6574
+      },
+      {
+        "bin": "30-45",
+        "timed": 0.5455,
+        "untimed": 0.5492,
+        "base": 0.6574
+      },
+      {
+        "bin": "45-60",
+        "timed": 0.4683,
+        "untimed": 0.4697,
+        "base": 0.6574
+      },
+      {
+        "bin": "60-75",
+        "timed": 0.3785,
+        "untimed": 0.3905,
+        "base": 0.6574
+      },
+      {
+        "bin": "75-90",
+        "timed": 0.2576,
+        "untimed": 0.3076,
+        "base": 0.6574
+      }
+    ],
+    "reliability": [
+      {
+        "from": 0.0,
+        "to": 0.25,
+        "predicted": 0.098,
+        "observed": 0.113,
+        "minutes": 80051
+      },
+      {
+        "from": 0.25,
+        "to": 0.5,
+        "predicted": 0.431,
+        "observed": 0.426,
+        "minutes": 47674
+      },
+      {
+        "from": 0.5,
+        "to": 0.75,
+        "predicted": 0.634,
+        "observed": 0.654,
+        "minutes": 49330
+      },
+      {
+        "from": 1.0,
+        "to": 1.25,
+        "predicted": 1.2,
+        "observed": 1.201,
+        "minutes": 67754
+      },
+      {
+        "from": 1.25,
+        "to": 1.5,
+        "predicted": 1.347,
+        "observed": 1.345,
+        "minutes": 268976
+      },
+      {
+        "from": 2.0,
+        "to": 2.25,
+        "predicted": 2.153,
+        "observed": 2.134,
+        "minutes": 49330
+      },
+      {
+        "from": 2.25,
+        "to": 2.5,
+        "predicted": 2.355,
+        "observed": 2.367,
+        "minutes": 47674
+      },
+      {
+        "from": 2.5,
+        "to": 2.75,
+        "predicted": 2.673,
+        "observed": 2.626,
+        "minutes": 25715
+      },
+      {
+        "from": 2.75,
+        "to": 3.0,
+        "predicted": 2.916,
+        "observed": 2.905,
+        "minutes": 54336
+      }
+    ],
+    "reliability_max_gap": 0.05,
+    "band_width": 0.25,
+    "band_min_minutes": 500
+  },
+  "robustness": {
+    "primary": {
+      "opener_late": 1.507,
+      "opener_early": 0.733,
+      "ratio": 2.05,
+      "equaliser_late": 0.955,
+      "level_late_ratio": 1.58
     },
-    {
-      "player": "Clinton N'Jie",
-      "team": "Marseille",
-      "goals_involved": 16,
-      "minutes_played": 1238,
-      "ep_timed": 11.441,
-      "ep_per_90": 0.832
+    "inclusive": {
+      "opener_late": 1.437,
+      "opener_early": 0.708,
+      "ratio": 2.03,
+      "equaliser_late": 0.946,
+      "level_late_ratio": 1.52,
+      "matches": 14360
     },
-    {
-      "player": "Cole Palmer",
-      "team": "Chelsea",
-      "goals_involved": 39,
-      "minutes_played": 3111,
-      "ep_timed": 27.602,
-      "ep_per_90": 0.799
+    "by_league": [
+      {
+        "code": "Premier-League",
+        "label": "Premier League",
+        "matches": 2407,
+        "opener_late": 1.515,
+        "opener_early": 0.718,
+        "ratio": 2.11,
+        "equaliser_late": 0.974,
+        "level_late_ratio": 1.56,
+        "lo": 1.82,
+        "hi": 2.47
+      },
+      {
+        "code": "La-Liga",
+        "label": "La Liga",
+        "matches": 2476,
+        "opener_late": 1.516,
+        "opener_early": 0.655,
+        "ratio": 2.31,
+        "equaliser_late": 0.969,
+        "level_late_ratio": 1.57,
+        "lo": 1.98,
+        "hi": 2.77
+      },
+      {
+        "code": "Serie-A",
+        "label": "Serie A",
+        "matches": 2440,
+        "opener_late": 1.491,
+        "opener_early": 0.786,
+        "ratio": 1.9,
+        "equaliser_late": 0.942,
+        "level_late_ratio": 1.58,
+        "lo": 1.67,
+        "hi": 2.21
+      },
+      {
+        "code": "Bundesliga",
+        "label": "Bundesliga",
+        "matches": 1972,
+        "opener_late": 1.5,
+        "opener_early": 0.811,
+        "ratio": 1.85,
+        "equaliser_late": 0.916,
+        "level_late_ratio": 1.64,
+        "lo": 1.65,
+        "hi": 2.12
+      },
+      {
+        "code": "Ligue-1",
+        "label": "Ligue 1",
+        "matches": 2286,
+        "opener_late": 1.527,
+        "opener_early": 0.723,
+        "ratio": 2.11,
+        "equaliser_late": 0.959,
+        "level_late_ratio": 1.59,
+        "lo": 1.85,
+        "hi": 2.47
+      },
+      {
+        "code": "Eredivisie",
+        "label": "Eredivisie",
+        "matches": 1625,
+        "opener_late": 1.479,
+        "opener_early": 0.7,
+        "ratio": 2.11,
+        "equaliser_late": 0.964,
+        "level_late_ratio": 1.53,
+        "lo": 1.78,
+        "hi": 2.59
+      }
+    ],
+    "leagues_ratio_above_1_5": 6,
+    "league_ratio_min": 1.85,
+    "league_ratio_max": 2.31,
+    "train": {
+      "opener_late": 1.524,
+      "opener_early": 0.748,
+      "ratio": 2.04,
+      "equaliser_late": 0.962,
+      "level_late_ratio": 1.58,
+      "seasons": [
+        "2017-2018",
+        "2018-2019",
+        "2019-2020",
+        "2020-2021",
+        "2021-2022"
+      ],
+      "matches": 9368
     },
-    {
-      "player": "Cristiano Ronaldo",
-      "team": "Juventus",
-      "goals_involved": 174,
-      "minutes_played": 13704,
-      "ep_timed": 119.253,
-      "ep_per_90": 0.783
-    },
-    {
-      "player": "Neymar",
-      "team": "Paris S-G",
-      "goals_involved": 149,
-      "minutes_played": 9354,
-      "ep_timed": 78.834,
-      "ep_per_90": 0.759
-    },
-    {
-      "player": "Erling Haaland",
-      "team": "Dortmund",
-      "goals_involved": 169,
-      "minutes_played": 10702,
-      "ep_timed": 89.203,
-      "ep_per_90": 0.75
-    },
-    {
-      "player": "Artem Dovbyk",
-      "team": "Girona",
-      "goals_involved": 34,
-      "minutes_played": 2587,
-      "ep_timed": 21.185,
-      "ep_per_90": 0.737
+    "test": {
+      "opener_late": 1.463,
+      "opener_early": 0.7,
+      "ratio": 2.09,
+      "equaliser_late": 0.937,
+      "level_late_ratio": 1.56,
+      "seasons": [
+        "2022-2023",
+        "2023-2024"
+      ],
+      "matches": 3838
     }
-  ],
-  "top10_ep_collectors_with_minutes": [
-    {
-      "player": "Lionel Messi",
-      "team": "Barcelona",
-      "goals_involved": 267,
-      "minutes_played": 16516,
-      "ep_timed": 157.751,
-      "ep_per_90": 0.86
+  },
+  "players": {
+    "top_ep": [
+      {
+        "player": "Lionel Messi",
+        "team": "Barcelona",
+        "involvements": 233,
+        "goals": 145,
+        "assists": 88,
+        "ep": 139.74,
+        "ep_lo": 115.96,
+        "ep_hi": 167.98,
+        "ep_untimed": 151.52,
+        "premium": -0.79,
+        "premium_lo": -5.42,
+        "premium_hi": 4.24,
+        "minutes": 16516,
+        "p90": 0.761,
+        "p90_lo": 0.668,
+        "p90_hi": 0.867,
+        "ep_bins": {
+          "0-15": 11.98,
+          "15-30": 29.71,
+          "30-45": 27.83,
+          "45-60": 21.0,
+          "60-75": 21.62,
+          "75-90": 27.59
+        }
+      },
+      {
+        "player": "Mohamed Salah",
+        "team": "Liverpool",
+        "involvements": 227,
+        "goals": 155,
+        "assists": 72,
+        "ep": 138.73,
+        "ep_lo": 115.68,
+        "ep_hi": 164.76,
+        "ep_untimed": 148.74,
+        "premium": 0.57,
+        "premium_lo": -4.58,
+        "premium_hi": 6.06,
+        "minutes": 20697,
+        "p90": 0.603,
+        "p90_lo": 0.519,
+        "p90_hi": 0.686,
+        "ep_bins": {
+          "0-15": 17.52,
+          "15-30": 22.02,
+          "30-45": 28.81,
+          "45-60": 16.26,
+          "60-75": 24.18,
+          "75-90": 29.95
+        }
+      },
+      {
+        "player": "Robert Lewandowski",
+        "team": "Bayern Munich",
+        "involvements": 250,
+        "goals": 203,
+        "assists": 47,
+        "ep": 138.38,
+        "ep_lo": 115.43,
+        "ep_hi": 166.2,
+        "ep_untimed": 149.6,
+        "premium": 0.32,
+        "premium_lo": -5.07,
+        "premium_hi": 5.62,
+        "minutes": 18888,
+        "p90": 0.659,
+        "p90_lo": 0.572,
+        "p90_hi": 0.755,
+        "ep_bins": {
+          "0-15": 20.92,
+          "15-30": 24.89,
+          "30-45": 28.79,
+          "45-60": 17.56,
+          "60-75": 17.43,
+          "75-90": 28.8
+        }
+      },
+      {
+        "player": "Harry Kane",
+        "team": "Tottenham",
+        "involvements": 222,
+        "goals": 171,
+        "assists": 51,
+        "ep": 138.2,
+        "ep_lo": 115.37,
+        "ep_hi": 164.61,
+        "ep_untimed": 148.29,
+        "premium": 0.63,
+        "premium_lo": -4.0,
+        "premium_hi": 5.26,
+        "minutes": 20645,
+        "p90": 0.602,
+        "p90_lo": 0.529,
+        "p90_hi": 0.684,
+        "ep_bins": {
+          "0-15": 22.41,
+          "15-30": 22.06,
+          "30-45": 28.48,
+          "45-60": 24.55,
+          "60-75": 17.13,
+          "75-90": 23.58
+        }
+      },
+      {
+        "player": "Kylian Mbappé",
+        "team": "Paris S-G",
+        "involvements": 246,
+        "goals": 175,
+        "assists": 71,
+        "ep": 137.08,
+        "ep_lo": 111.69,
+        "ep_hi": 163.79,
+        "ep_untimed": 147.69,
+        "premium": 0.39,
+        "premium_lo": -4.46,
+        "premium_hi": 5.5,
+        "minutes": 16403,
+        "p90": 0.752,
+        "p90_lo": 0.654,
+        "p90_hi": 0.85,
+        "ep_bins": {
+          "0-15": 22.54,
+          "15-30": 22.63,
+          "30-45": 22.06,
+          "45-60": 17.89,
+          "60-75": 22.32,
+          "75-90": 29.64
+        }
+      },
+      {
+        "player": "Ciro Immobile",
+        "team": "Lazio",
+        "involvements": 185,
+        "goals": 146,
+        "assists": 39,
+        "ep": 115.92,
+        "ep_lo": 94.04,
+        "ep_hi": 139.38,
+        "ep_untimed": 125.95,
+        "premium": -0.98,
+        "premium_lo": -5.42,
+        "premium_hi": 3.75,
+        "minutes": 18144,
+        "p90": 0.575,
+        "p90_lo": 0.49,
+        "p90_hi": 0.663,
+        "ep_bins": {
+          "0-15": 18.34,
+          "15-30": 21.9,
+          "30-45": 20.86,
+          "45-60": 15.89,
+          "60-75": 15.64,
+          "75-90": 23.29
+        }
+      },
+      {
+        "player": "Wissam Ben Yedder",
+        "team": "Monaco",
+        "involvements": 170,
+        "goals": 125,
+        "assists": 45,
+        "ep": 108.76,
+        "ep_lo": 87.06,
+        "ep_hi": 131.77,
+        "ep_untimed": 119.38,
+        "premium": -2.57,
+        "premium_lo": -6.09,
+        "premium_hi": 1.53,
+        "minutes": 16242,
+        "p90": 0.603,
+        "p90_lo": 0.503,
+        "p90_hi": 0.708,
+        "ep_bins": {
+          "0-15": 14.23,
+          "15-30": 19.91,
+          "30-45": 20.79,
+          "45-60": 20.97,
+          "60-75": 12.23,
+          "75-90": 20.64
+        }
+      },
+      {
+        "player": "Iago Aspas",
+        "team": "Celta Vigo",
+        "involvements": 160,
+        "goals": 109,
+        "assists": 51,
+        "ep": 108.74,
+        "ep_lo": 87.58,
+        "ep_hi": 130.85,
+        "ep_untimed": 118.56,
+        "premium": -1.87,
+        "premium_lo": -5.76,
+        "premium_hi": 2.1,
+        "minutes": 19975,
+        "p90": 0.49,
+        "p90_lo": 0.41,
+        "p90_hi": 0.569,
+        "ep_bins": {
+          "0-15": 14.97,
+          "15-30": 14.04,
+          "30-45": 23.86,
+          "45-60": 18.51,
+          "60-75": 15.43,
+          "75-90": 21.93
+        }
+      },
+      {
+        "player": "Karim Benzema",
+        "team": "Real Madrid",
+        "involvements": 166,
+        "goals": 116,
+        "assists": 50,
+        "ep": 107.5,
+        "ep_lo": 84.97,
+        "ep_hi": 130.74,
+        "ep_untimed": 115.25,
+        "premium": 0.43,
+        "premium_lo": -4.49,
+        "premium_hi": 5.31,
+        "minutes": 15769,
+        "p90": 0.614,
+        "p90_lo": 0.517,
+        "p90_hi": 0.718,
+        "ep_bins": {
+          "0-15": 16.92,
+          "15-30": 14.35,
+          "30-45": 15.74,
+          "45-60": 17.39,
+          "60-75": 14.44,
+          "75-90": 28.65
+        }
+      },
+      {
+        "player": "Cristiano Ronaldo",
+        "team": "Juventus",
+        "involvements": 157,
+        "goals": 126,
+        "assists": 31,
+        "ep": 105.3,
+        "ep_lo": 82.28,
+        "ep_hi": 129.55,
+        "ep_untimed": 112.95,
+        "premium": 0.39,
+        "premium_lo": -3.71,
+        "premium_hi": 4.49,
+        "minutes": 13704,
+        "p90": 0.692,
+        "p90_lo": 0.582,
+        "p90_hi": 0.804,
+        "ep_bins": {
+          "0-15": 13.69,
+          "15-30": 12.29,
+          "30-45": 22.19,
+          "45-60": 18.69,
+          "60-75": 16.74,
+          "75-90": 21.7
+        }
+      }
+    ],
+    "top_premium": [
+      {
+        "player": "Adama Traoré (b. 1996)",
+        "team": "Wolves",
+        "involvements": 36,
+        "goals": 12,
+        "assists": 24,
+        "ep": 31.69,
+        "ep_lo": 20.22,
+        "ep_hi": 45.51,
+        "ep_untimed": 28.79,
+        "premium": 4.7,
+        "premium_lo": 1.5,
+        "premium_hi": 8.31,
+        "minutes": 9478,
+        "p90": 0.301,
+        "p90_lo": 0.196,
+        "p90_hi": 0.413
+      },
+      {
+        "player": "Edin Džeko",
+        "team": "Roma",
+        "involvements": 106,
+        "goals": 70,
+        "assists": 36,
+        "ep": 75.12,
+        "ep_lo": 57.19,
+        "ep_hi": 92.99,
+        "ep_untimed": 75.55,
+        "premium": 4.63,
+        "premium_lo": 1.01,
+        "premium_hi": 8.77,
+        "minutes": 14476,
+        "p90": 0.467,
+        "p90_lo": 0.377,
+        "p90_hi": 0.553
+      },
+      {
+        "player": "Ángel Rodríguez",
+        "team": "Getafe",
+        "involvements": 54,
+        "goals": 41,
+        "assists": 13,
+        "ep": 41.45,
+        "ep_lo": 27.7,
+        "ep_hi": 54.82,
+        "ep_untimed": 39.61,
+        "premium": 4.54,
+        "premium_lo": 0.88,
+        "premium_hi": 8.34,
+        "minutes": 8831,
+        "p90": 0.422,
+        "p90_lo": 0.295,
+        "p90_hi": 0.543
+      },
+      {
+        "player": "Achraf Hakimi",
+        "team": "Paris S-G",
+        "involvements": 69,
+        "goals": 29,
+        "assists": 40,
+        "ep": 44.97,
+        "ep_lo": 32.23,
+        "ep_hi": 59.92,
+        "ep_untimed": 43.89,
+        "premium": 4.52,
+        "premium_lo": 0.82,
+        "premium_hi": 8.34,
+        "minutes": 14341,
+        "p90": 0.282,
+        "p90_lo": 0.205,
+        "p90_hi": 0.365
+      },
+      {
+        "player": "Cristian Tello",
+        "team": "Betis",
+        "involvements": 34,
+        "goals": 17,
+        "assists": 17,
+        "ep": 28.78,
+        "ep_lo": 18.21,
+        "ep_hi": 40.3,
+        "ep_untimed": 26.34,
+        "premium": 4.16,
+        "premium_lo": 1.11,
+        "premium_hi": 7.76,
+        "minutes": 6155,
+        "p90": 0.421,
+        "p90_lo": 0.283,
+        "p90_hi": 0.578
+      },
+      {
+        "player": "Mário Rui",
+        "team": "Napoli",
+        "involvements": 28,
+        "goals": 3,
+        "assists": 25,
+        "ep": 23.0,
+        "ep_lo": 13.95,
+        "ep_hi": 34.13,
+        "ep_untimed": 20.45,
+        "premium": 3.95,
+        "premium_lo": 1.19,
+        "premium_hi": 7.3,
+        "minutes": 13083,
+        "p90": 0.158,
+        "p90_lo": 0.099,
+        "p90_hi": 0.232
+      },
+      {
+        "player": "Mason Greenwood",
+        "team": "Manchester Utd",
+        "involvements": 44,
+        "goals": 30,
+        "assists": 14,
+        "ep": 35.64,
+        "ep_lo": 23.49,
+        "ep_hi": 49.64,
+        "ep_untimed": 34.51,
+        "premium": 3.36,
+        "premium_lo": 0.11,
+        "premium_hi": 6.93,
+        "minutes": 7192,
+        "p90": 0.446,
+        "p90_lo": 0.31,
+        "p90_hi": 0.601
+      },
+      {
+        "player": "Sasa Kalajdzic",
+        "team": "Stuttgart",
+        "involvements": 36,
+        "goals": 24,
+        "assists": 12,
+        "ep": 30.31,
+        "ep_lo": 18.41,
+        "ep_hi": 42.5,
+        "ep_untimed": 28.73,
+        "premium": 3.34,
+        "premium_lo": 0.9,
+        "premium_hi": 6.41,
+        "minutes": 4126,
+        "p90": 0.661,
+        "p90_lo": 0.457,
+        "p90_hi": 0.874
+      },
+      {
+        "player": "Jorge Molina",
+        "team": "Getafe",
+        "involvements": 64,
+        "goals": 44,
+        "assists": 20,
+        "ep": 45.71,
+        "ep_lo": 32.92,
+        "ep_hi": 58.95,
+        "ep_untimed": 45.59,
+        "premium": 3.29,
+        "premium_lo": 0.41,
+        "premium_hi": 6.56,
+        "minutes": 10901,
+        "p90": 0.377,
+        "p90_lo": 0.286,
+        "p90_hi": 0.477
+      },
+      {
+        "player": "Felipe Caicedo",
+        "team": "Lazio",
+        "involvements": 40,
+        "goals": 29,
+        "assists": 11,
+        "ep": 32.77,
+        "ep_lo": 21.36,
+        "ep_hi": 46.1,
+        "ep_untimed": 31.77,
+        "premium": 3.1,
+        "premium_lo": -0.22,
+        "premium_hi": 6.55,
+        "minutes": 4729,
+        "p90": 0.624,
+        "p90_lo": 0.424,
+        "p90_hi": 0.843
+      }
+    ],
+    "bottom_premium": [
+      {
+        "player": "Francesco Caputo",
+        "team": "Sassuolo",
+        "involvements": 95,
+        "goals": 68,
+        "assists": 27,
+        "ep": 60.11,
+        "ep_lo": 44.89,
+        "ep_hi": 75.28,
+        "ep_untimed": 69.81,
+        "premium": -4.48,
+        "premium_lo": -7.2,
+        "premium_hi": -1.97,
+        "minutes": 15064,
+        "p90": 0.359,
+        "p90_lo": 0.282,
+        "p90_hi": 0.435
+      },
+      {
+        "player": "Iñaki Williams",
+        "team": "Athletic Club",
+        "involvements": 90,
+        "goals": 62,
+        "assists": 28,
+        "ep": 63.44,
+        "ep_lo": 48.47,
+        "ep_hi": 79.61,
+        "ep_untimed": 72.61,
+        "premium": -4.3,
+        "premium_lo": -7.46,
+        "premium_hi": -1.35,
+        "minutes": 19659,
+        "p90": 0.29,
+        "p90_lo": 0.23,
+        "p90_hi": 0.353
+      },
+      {
+        "player": "Pierre-Emerick Aubameyang",
+        "team": "Arsenal",
+        "involvements": 144,
+        "goals": 110,
+        "assists": 34,
+        "ep": 86.97,
+        "ep_lo": 68.57,
+        "ep_hi": 106.8,
+        "ep_untimed": 97.76,
+        "premium": -3.95,
+        "premium_lo": -7.26,
+        "premium_hi": -0.61,
+        "minutes": 15970,
+        "p90": 0.49,
+        "p90_lo": 0.406,
+        "p90_hi": 0.582
+      },
+      {
+        "player": "Breel Embolo",
+        "team": "Gladbach",
+        "involvements": 67,
+        "goals": 42,
+        "assists": 25,
+        "ep": 39.43,
+        "ep_lo": 27.52,
+        "ep_hi": 51.3,
+        "ep_untimed": 46.73,
+        "premium": -3.76,
+        "premium_lo": -6.07,
+        "premium_hi": -1.71,
+        "minutes": 9371,
+        "p90": 0.379,
+        "p90_lo": 0.279,
+        "p90_hi": 0.475
+      },
+      {
+        "player": "Leon Bailey",
+        "team": "Leverkusen",
+        "involvements": 76,
+        "goals": 43,
+        "assists": 33,
+        "ep": 51.21,
+        "ep_lo": 38.4,
+        "ep_hi": 65.28,
+        "ep_untimed": 58.77,
+        "premium": -3.62,
+        "premium_lo": -6.28,
+        "premium_hi": -0.97,
+        "minutes": 12157,
+        "p90": 0.379,
+        "p90_lo": 0.296,
+        "p90_hi": 0.473
+      },
+      {
+        "player": "Lars Stindl",
+        "team": "Gladbach",
+        "involvements": 73,
+        "goals": 44,
+        "assists": 29,
+        "ep": 46.92,
+        "ep_lo": 33.26,
+        "ep_hi": 60.98,
+        "ep_untimed": 54.12,
+        "premium": -3.52,
+        "premium_lo": -5.81,
+        "premium_hi": -1.26,
+        "minutes": 10992,
+        "p90": 0.384,
+        "p90_lo": 0.284,
+        "p90_hi": 0.481
+      },
+      {
+        "player": "Kingsley Coman",
+        "team": "Bayern Munich",
+        "involvements": 69,
+        "goals": 35,
+        "assists": 34,
+        "ep": 39.26,
+        "ep_lo": 26.85,
+        "ep_hi": 52.41,
+        "ep_untimed": 45.65,
+        "premium": -3.39,
+        "premium_lo": -5.72,
+        "premium_hi": -1.24,
+        "minutes": 9672,
+        "p90": 0.365,
+        "p90_lo": 0.27,
+        "p90_hi": 0.463
+      },
+      {
+        "player": "Bernardo Silva",
+        "team": "Manchester City",
+        "involvements": 86,
+        "goals": 39,
+        "assists": 47,
+        "ep": 47.78,
+        "ep_lo": 35.55,
+        "ep_hi": 60.96,
+        "ep_untimed": 55.15,
+        "premium": -3.33,
+        "premium_lo": -6.1,
+        "premium_hi": -0.89,
+        "minutes": 16122,
+        "p90": 0.267,
+        "p90_lo": 0.207,
+        "p90_hi": 0.329
+      },
+      {
+        "player": "Teun Koopmeiners",
+        "team": "Atalanta",
+        "involvements": 80,
+        "goals": 60,
+        "assists": 20,
+        "ep": 52.39,
+        "ep_lo": 37.8,
+        "ep_hi": 68.01,
+        "ep_untimed": 59.69,
+        "premium": -3.2,
+        "premium_lo": -5.38,
+        "premium_hi": -0.95,
+        "minutes": 15531,
+        "p90": 0.304,
+        "p90_lo": 0.227,
+        "p90_hi": 0.384
+      },
+      {
+        "player": "Leroy Sané",
+        "team": "Bayern Munich",
+        "involvements": 110,
+        "goals": 49,
+        "assists": 61,
+        "ep": 53.26,
+        "ep_lo": 40.75,
+        "ep_hi": 67.71,
+        "ep_untimed": 61.27,
+        "premium": -3.18,
+        "premium_lo": -5.66,
+        "premium_hi": -0.83,
+        "minutes": 12226,
+        "p90": 0.392,
+        "p90_lo": 0.319,
+        "p90_hi": 0.473
+      }
+    ],
+    "top_per90": [
+      {
+        "player": "Victor Boniface",
+        "team": "Leverkusen",
+        "involvements": 24,
+        "goals": 14,
+        "assists": 10,
+        "ep": 13.81,
+        "ep_lo": 6.56,
+        "ep_hi": 22.48,
+        "ep_untimed": 15.99,
+        "premium": -1.07,
+        "premium_lo": -2.29,
+        "premium_hi": -0.17,
+        "minutes": 1546,
+        "p90": 0.804,
+        "p90_lo": 0.525,
+        "p90_hi": 1.073
+      },
+      {
+        "player": "Cole Palmer",
+        "team": "Chelsea",
+        "involvements": 36,
+        "goals": 22,
+        "assists": 14,
+        "ep": 26.46,
+        "ep_lo": 15.49,
+        "ep_hi": 39.0,
+        "ep_untimed": 27.74,
+        "premium": 0.47,
+        "premium_lo": -1.61,
+        "premium_hi": 2.88,
+        "minutes": 3111,
+        "p90": 0.765,
+        "p90_lo": 0.54,
+        "p90_hi": 0.996
+      },
+      {
+        "player": "Lionel Messi",
+        "team": "Barcelona",
+        "involvements": 233,
+        "goals": 145,
+        "assists": 88,
+        "ep": 139.74,
+        "ep_lo": 115.96,
+        "ep_hi": 167.98,
+        "ep_untimed": 151.52,
+        "premium": -0.79,
+        "premium_lo": -5.42,
+        "premium_hi": 4.24,
+        "minutes": 16516,
+        "p90": 0.761,
+        "p90_lo": 0.668,
+        "p90_hi": 0.867
+      },
+      {
+        "player": "Kylian Mbappé",
+        "team": "Paris S-G",
+        "involvements": 246,
+        "goals": 175,
+        "assists": 71,
+        "ep": 137.08,
+        "ep_lo": 111.69,
+        "ep_hi": 163.79,
+        "ep_untimed": 147.69,
+        "premium": 0.39,
+        "premium_lo": -4.46,
+        "premium_hi": 5.5,
+        "minutes": 16403,
+        "p90": 0.752,
+        "p90_lo": 0.654,
+        "p90_hi": 0.85
+      },
+      {
+        "player": "Clinton N'Jie",
+        "team": "Marseille",
+        "involvements": 14,
+        "goals": 10,
+        "assists": 4,
+        "ep": 10.32,
+        "ep_lo": 3.94,
+        "ep_hi": 17.73,
+        "ep_untimed": 9.7,
+        "premium": 1.35,
+        "premium_lo": -0.22,
+        "premium_hi": 3.33,
+        "minutes": 1238,
+        "p90": 0.75,
+        "p90_lo": 0.303,
+        "p90_hi": 1.304
+      },
+      {
+        "player": "Robin van Persie",
+        "team": "Feyenoord",
+        "involvements": 21,
+        "goals": 16,
+        "assists": 5,
+        "ep": 15.61,
+        "ep_lo": 8.24,
+        "ep_hi": 24.61,
+        "ep_untimed": 15.57,
+        "premium": 1.07,
+        "premium_lo": -0.38,
+        "premium_hi": 3.17,
+        "minutes": 1904,
+        "p90": 0.738,
+        "p90_lo": 0.49,
+        "p90_hi": 1.008
+      },
+      {
+        "player": "Artem Dovbyk",
+        "team": "Girona",
+        "involvements": 33,
+        "goals": 24,
+        "assists": 9,
+        "ep": 20.88,
+        "ep_lo": 11.37,
+        "ep_hi": 32.83,
+        "ep_untimed": 22.54,
+        "premium": -0.35,
+        "premium_lo": -1.89,
+        "premium_hi": 1.38,
+        "minutes": 2587,
+        "p90": 0.726,
+        "p90_lo": 0.442,
+        "p90_hi": 1.034
+      },
+      {
+        "player": "Erling Haaland",
+        "team": "Dortmund",
+        "involvements": 156,
+        "goals": 125,
+        "assists": 31,
+        "ep": 85.36,
+        "ep_lo": 65.53,
+        "ep_hi": 107.81,
+        "ep_untimed": 91.86,
+        "premium": 0.71,
+        "premium_lo": -3.16,
+        "premium_hi": 4.77,
+        "minutes": 10702,
+        "p90": 0.718,
+        "p90_lo": 0.595,
+        "p90_hi": 0.848
+      },
+      {
+        "player": "Cristiano Ronaldo",
+        "team": "Juventus",
+        "involvements": 157,
+        "goals": 126,
+        "assists": 31,
+        "ep": 105.3,
+        "ep_lo": 82.28,
+        "ep_hi": 129.55,
+        "ep_untimed": 112.95,
+        "premium": 0.39,
+        "premium_lo": -3.71,
+        "premium_hi": 4.49,
+        "minutes": 13704,
+        "p90": 0.692,
+        "p90_lo": 0.582,
+        "p90_hi": 0.804
+      },
+      {
+        "player": "Neymar",
+        "team": "Paris S-G",
+        "involvements": 135,
+        "goals": 82,
+        "assists": 53,
+        "ep": 71.68,
+        "ep_lo": 53.89,
+        "ep_hi": 90.08,
+        "ep_untimed": 79.19,
+        "premium": -1.68,
+        "premium_lo": -4.64,
+        "premium_hi": 1.62,
+        "minutes": 9354,
+        "p90": 0.69,
+        "p90_lo": 0.566,
+        "p90_hi": 0.801
+      }
+    ],
+    "negative_premium_first30_pct": 33.8,
+    "all_first30_pct": 27.1,
+    "premium_summary": {
+      "eligible": 1090,
+      "min_involvements": 20,
+      "ci_above_zero": 17,
+      "ci_below_zero": 88,
+      "expected_by_chance_each_side": 27,
+      "leader": "Adama Traoré (b. 1996)",
+      "leader_premium": 4.7,
+      "top10_ci_include_zero": 1
     },
-    {
-      "player": "Mohamed Salah",
-      "team": "Liverpool",
-      "goals_involved": 251,
-      "minutes_played": 20697,
-      "ep_timed": 154.777,
-      "ep_per_90": 0.673
+    "top_ep_summary": {
+      "top5_spread": 2.66,
+      "top5_overlap_leader": 5
     },
-    {
-      "player": "Kylian Mbappé",
-      "team": "Paris S-G",
-      "goals_involved": 274,
-      "minutes_played": 16403,
-      "ep_timed": 154.529,
-      "ep_per_90": 0.848
+    "per90_summary": {
+      "min_minutes": 900,
+      "eligible": 4300,
+      "short_minutes": 3000,
+      "short_in_top10": 4
     },
-    {
-      "player": "Harry Kane",
-      "team": "Tottenham",
-      "goals_involved": 240,
-      "minutes_played": 20645,
-      "ep_timed": 150.715,
-      "ep_per_90": 0.657
+    "sensitivity_model_matches_only": {
+      "top10_ep_overlap": 10,
+      "top10_premium_overlap": 8
     },
-    {
-      "player": "Robert Lewandowski",
-      "team": "Bayern Munich",
-      "goals_involved": 270,
-      "minutes_played": 18888,
-      "ep_timed": 149.105,
-      "ep_per_90": 0.71
+    "attribution": {
+      "involvements": 72496,
+      "goals": 39403,
+      "goals_with_sca1": 37152,
+      "self_sca1": 4059,
+      "self_sca1_pct": 10.3,
+      "unassisted": 2251
     },
-    {
-      "player": "Ciro Immobile",
-      "team": "Lazio",
-      "goals_involved": 208,
-      "minutes_played": 18144,
-      "ep_timed": 128.338,
-      "ep_per_90": 0.637
+    "namesakes": {
+      "names": 45,
+      "on_boards": [
+        "Adama Traoré (b. 1996)"
+      ]
     },
-    {
-      "player": "Iago Aspas",
-      "team": "Celta Vigo",
-      "goals_involved": 179,
-      "minutes_played": 19975,
-      "ep_timed": 120.563,
-      "ep_per_90": 0.543
-    },
-    {
-      "player": "Cristiano Ronaldo",
-      "team": "Juventus",
-      "goals_involved": 174,
-      "minutes_played": 13704,
-      "ep_timed": 119.253,
-      "ep_per_90": 0.783
-    },
-    {
-      "player": "Wissam Ben Yedder",
-      "team": "Monaco",
-      "goals_involved": 182,
-      "minutes_played": 16242,
-      "ep_timed": 116.412,
-      "ep_per_90": 0.645
-    },
-    {
-      "player": "Karim Benzema",
-      "team": "Real Madrid",
-      "goals_involved": 174,
-      "minutes_played": 15769,
-      "ep_timed": 110.764,
-      "ep_per_90": 0.632
-    }
-  ]
+    "players": 5028
+  },
+  "takeaways": {
+    "intro": "Goal prices from 13,206 matches and 2,377,080 team-minutes. What they say for each audience:",
+    "managers": [
+      {
+        "text": "Level after 75': a goal for is worth **1.51 EP**, a goal against costs 0.96. The upside is 1.58× the downside.",
+        "evidence": "moderate",
+        "basis": "95% CI 1.56–1.60× · all 6 leagues · prices outcomes, not tactics"
+      },
+      {
+        "text": "1–0 up after 75': conceding costs **1.51 EP**, a second goal adds only 0.31.",
+        "evidence": "moderate",
+        "basis": "ratio 95% CI 0.19–0.22 · values, not the effect of sitting deeper"
+      }
+    ],
+    "coaches": [
+      {
+        "text": "The last 15 minutes deliver **1.64×** the expected points of the first 15: more goals, higher stakes.",
+        "evidence": "exploratory",
+        "basis": "36,201 goals · 95% CI 1.54–1.76× · training implication untested"
+      }
+    ],
+    "clubs": [
+      {
+        "text": "Don't pay for 'clutch': only **17** of 1,090 players scored at clearly better-than-average times, fewer than chance (~27).",
+        "evidence": "moderate",
+        "basis": "20+ goal involvements · bootstrap intervals · repeatability not tested"
+      }
+    ],
+    "agents": []
+  }
 }

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Not All Goals Are Equal — Renball</title>
-<meta name="description" content="An expected-points model that prices every goal by the minute it was scored and the score it changed — across six top-flight leagues, 39,381 goals, seven seasons.">
+<title>Not All Goals Are Equal · Renball</title>
+<meta name="description" content="An expected-points model that prices every goal by the minute it was scored and the score it changed, estimated from every minute of every match across six top-flight leagues and seven seasons.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,7 +12,7 @@
 
 <link rel="stylesheet" href="../../assets/css/design-tokens.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
 
 <style>
   body { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem 5rem; }
@@ -26,7 +26,6 @@
   .project-hero h1 em { font-style: italic; color: var(--accent); }
   .project-hero .lede { color: var(--text-secondary); font-size: 1.1rem; max-width: 760px; line-height: 1.7; }
   .project-hero .lede strong { color: var(--text); font-weight: 500; }
-
   .meta-row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 1.5rem; }
   .meta-pill {
     font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em;
@@ -45,10 +44,8 @@
     display: inline-flex; align-items: center; gap: 0.5rem;
   }
   .download-btn:hover { color: var(--accent); border-color: var(--accent-dim); background: var(--accent-glow); }
-  .download-btn.primary {
-    background: var(--accent); color: var(--bg); border-color: var(--accent);
-  }
-  .download-btn.primary:hover { background: var(--accent-bright); }
+  .download-btn.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .download-btn.primary:hover { background: var(--accent-dim); }
 
   /* ── Sections ── */
   section.proj { margin: 3.5rem 0; }
@@ -63,8 +60,14 @@
     font-family: var(--mono); font-size: 0.85em; color: var(--accent);
     background: var(--accent-glow); padding: 0.05em 0.35em; border-radius: 2px;
   }
+  .hypothesis-pill {
+    display: inline-block; font-family: var(--mono); font-size: 0.62rem;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 0.3rem 0.7rem; margin-bottom: 0.75rem;
+    color: var(--accent); border: 1px solid var(--accent-dim); background: var(--accent-glow);
+  }
 
-  /* ── Stat callouts (4-up) ── */
+  /* ── Stat callouts ── */
   .stats-row {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 1rem; margin: 2rem 0;
@@ -83,11 +86,8 @@
     margin-top: 0.55rem; line-height: 1.5;
   }
 
-  /* ── Chart container ── */
-  .chart-wrap {
-    background: var(--bg-card); border: 1px solid var(--border);
-    padding: 1.75rem; margin: 1.5rem 0;
-  }
+  /* ── Charts ── */
+  .chart-wrap { background: var(--bg-card); border: 1px solid var(--border); padding: 1.75rem; margin: 1.5rem 0; }
   .chart-wrap canvas { max-width: 100%; }
   .chart-caption {
     font-family: var(--mono); font-size: 0.7rem; color: var(--text-muted);
@@ -97,32 +97,47 @@
     font-family: var(--serif); font-size: 1.4rem; color: var(--text);
     letter-spacing: -0.01em; margin-bottom: 1rem;
   }
+  .forest-wrap { position: relative; height: 470px; }
+  .nw { white-space: nowrap; }
+  .two-up { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  .two-up .chart-wrap { margin: 0; }
 
-  /* ── State value table (HTML grid) ── */
-  .svt-wrap { overflow-x: auto; }
+  /* ── HTML grids (state values, game state, by-bin) ── */
+  .svt-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   table.svt {
     width: 100%; border-collapse: collapse; font-family: var(--mono);
     font-size: 0.78rem; margin-top: 0.5rem;
   }
   table.svt th, table.svt td {
-    padding: 0.55rem 0.4rem; text-align: center; border: 1px solid var(--border);
-    min-width: 64px;
+    padding: 0.55rem 0.4rem; text-align: center; border: 1px solid var(--border); min-width: 64px;
   }
   table.svt thead th {
     background: var(--bg-elevated); color: var(--text-secondary);
-    font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
-    font-size: 0.65rem;
+    font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.65rem;
   }
   table.svt tbody th {
     background: var(--bg-elevated); color: var(--text-secondary);
-    font-weight: 500; letter-spacing: 0.04em;
-    text-align: right; padding-right: 0.7rem;
+    font-weight: 500; letter-spacing: 0.04em; text-align: right; padding-right: 0.7rem;
   }
-  table.svt td.cell { color: var(--text); position: relative; cursor: default; }
+  table.svt td.cell { color: var(--text); cursor: default; }
   table.svt td.cell .ep { font-size: 0.95rem; line-height: 1; }
   table.svt td.cell .n { font-size: 0.6rem; color: var(--text-muted); margin-top: 0.15rem; letter-spacing: 0.04em; }
+  table.svt td.cell.sparse { opacity: 0.45; }
   table.svt td.empty { color: var(--text-muted); background: var(--bg); }
-  table.svt td.center { font-weight: 600; }
+
+  /* ── Tables ── */
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .table-scroll table.proj { min-width: 560px; }
+  table.proj { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.88rem; }
+  table.proj th, table.proj td { padding: 0.65rem 0.9rem; text-align: left; border-bottom: 1px solid var(--border); }
+  table.proj th {
+    font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border-light);
+  }
+  table.proj td { color: var(--text-secondary); }
+  table.proj td:first-child { color: var(--text); }
+  table.proj td.numeric, table.proj th.numeric { text-align: right; font-family: var(--mono); }
+  table.proj tr.primary td { color: var(--accent); }
 
   /* ── D3 heatmap ── */
   #heatmap-svg { width: 100%; height: 480px; }
@@ -130,49 +145,10 @@
     position: absolute; pointer-events: none;
     background: var(--bg-card); border: 1px solid var(--border-light);
     padding: 0.6rem 0.85rem; font-family: var(--mono); font-size: 0.72rem;
-    color: var(--text); line-height: 1.55; opacity: 0;
-    transition: opacity 0.12s; z-index: 100;
+    color: var(--text); line-height: 1.55; opacity: 0; transition: opacity 0.12s; z-index: 100;
   }
   .hm-tooltip strong { color: var(--accent); font-weight: 500; }
   .hm-tooltip .lbl { color: var(--text-muted); }
-
-  /* ── Spotlight callout ── */
-  .spotlight-grid {
-    display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.25rem; margin: 1.5rem 0;
-    align-items: stretch;
-  }
-  .spotlight-card {
-    background: var(--bg-card); border: 1px solid var(--accent-dim);
-    padding: 1.75rem; position: relative;
-  }
-  .spotlight-card::before {
-    content: 'SPOTLIGHT';
-    position: absolute; top: -0.6rem; left: 1rem;
-    background: var(--accent); color: var(--bg);
-    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.16em;
-    padding: 0.18rem 0.6rem;
-  }
-  .spotlight-card h3 {
-    font-family: var(--serif); font-size: 1.7rem;
-    color: var(--text); letter-spacing: -0.01em;
-    margin-bottom: 0.4rem; margin-top: 0.5rem; line-height: 1.1;
-  }
-  .spotlight-card .role {
-    font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.2rem;
-  }
-  .spotlight-card .big-number {
-    font-family: var(--serif); font-size: 3rem; color: var(--accent);
-    line-height: 1; margin-bottom: 0.3rem;
-  }
-  .spotlight-card .big-label {
-    font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.2rem;
-  }
-  .spotlight-card p {
-    color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin: 0;
-  }
-  .spotlight-card p strong { color: var(--text); }
 
   /* ── CTA box ── */
   .cta-box {
@@ -183,14 +159,15 @@
   .cta-box .copy { flex: 1; min-width: 260px; }
   .cta-box h3 {
     font-family: var(--serif); font-size: 1.6rem; color: var(--text);
-    margin-bottom: 0.5rem; letter-spacing: -0.01em;
+    margin-bottom: 0.5rem; letter-spacing: -0.01em; font-weight: 400; font-synthesis: none;
   }
   .cta-box p { color: var(--text-secondary); margin: 0; line-height: 1.6; }
 
   @media (max-width: 768px) {
     body { padding: 2rem 1.25rem 3rem; }
-    .spotlight-grid { grid-template-columns: 1fr; }
     .cta-box { padding: 1.5rem; }
+    .two-up { grid-template-columns: 1fr; }
+    .forest-wrap { height: 560px; }
   }
 </style>
 </head>
@@ -202,57 +179,54 @@
 <header class="project-hero">
   <div class="meta-row">
     <span class="meta-pill accent">RESEARCH · 02</span>
-    <span class="meta-pill" id="meta-date">May 2026</span>
+    <span class="meta-pill">May 2026</span>
     <span class="meta-pill">Top 5 Leagues + Eredivisie</span>
     <span class="meta-pill">Expected Points</span>
     <span class="meta-pill">Player Rating</span>
   </div>
   <h1>Not All Goals Are <em>Equal</em>.</h1>
   <p class="lede">
-    A goal from 0–0 to 1–0 in the fifth minute and the same goal in the eighty-fifth are not the same thing.
-    One opens a match; the other closes it. <strong>Expected points (EP)</strong> prices every goal by what it actually
-    moves on the league table — the difference in win/draw/loss probability before and after the ball goes in,
-    conditioned on <strong>both the score state and the minute</strong>. Rank players by EP collected and you stop
-    rewarding consolation hat-tricks and start rewarding the players who score in the moments that matter.
+    A goal from <span class="nw">0–0</span> to <span class="nw">1–0</span> in the fifth minute and the same goal in the eighty-fifth are not the same thing.
+    One opens a match; the other nearly closes it. <strong>Expected points (EP)</strong> prices every goal by what it
+    moved: the points a team could expect at that score in that part of the match, before and after the ball went
+    in. The prices come from <strong>every minute of every match</strong>, so a <span class="nw">0–0</span> that stays <span class="nw">0–0</span> counts too.
   </p>
 </header>
 
-<!-- ── DOWNLOADS ── -->
 <div class="downloads">
   <a href="dashboard.html" class="download-btn primary">FULL INTERACTIVE DASHBOARD →</a>
+  <a href="#deck" class="download-btn">SLIDES</a>
   <a href="slides.pdf" class="download-btn" target="_blank">SLIDES · PDF</a>
   <a href="methodology.html" class="download-btn" target="_blank">METHODOLOGY</a>
   <a href="methodology.pdf" class="download-btn" target="_blank">METHODOLOGY · PDF</a>
   <a href="code/build.py" class="download-btn" target="_blank">SOURCE · PYTHON</a>
 </div>
 
-<!-- ── KEY FINDING ── -->
 <div class="finding-box">
   <strong style="color: var(--accent); display: block; margin-bottom: 0.3rem; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em;">KEY FINDING</strong>
   <span id="finding-text">[loading]</span>
 </div>
 
-<!-- ── STAT CALLOUTS ── -->
 <div class="stats-row">
   <div class="stat-box">
-    <div class="stat-value" id="stat-goals">—</div>
-    <div class="stat-label">Goals Analyzed</div>
+    <div class="stat-value" id="stat-goals" data-verify-path="$.sample.goals_all">…</div>
+    <div class="stat-label">Goals priced</div>
     <div class="stat-sub" id="stat-goals-sub"></div>
   </div>
   <div class="stat-box">
-    <div class="stat-value" id="stat-states">—</div>
-    <div class="stat-label">Modelled States</div>
-    <div class="stat-sub" id="stat-states-sub"></div>
+    <div class="stat-value" id="stat-minutes" data-verify-path="$.sample.matches_model">…</div>
+    <div class="stat-label">Matches in the model</div>
+    <div class="stat-sub" id="stat-minutes-sub"></div>
   </div>
   <div class="stat-box">
-    <div class="stat-value" id="stat-gap">—</div>
-    <div class="stat-label">Most Valuable Goal</div>
-    <div class="stat-sub" id="stat-gap-sub"></div>
+    <div class="stat-value" id="stat-best" data-verify-path="$.headline.opener_ratio.late.ep">…</div>
+    <div class="stat-label">Late goal from level</div>
+    <div class="stat-sub" id="stat-best-sub"></div>
   </div>
   <div class="stat-box">
-    <div class="stat-value" id="stat-upgrade">—</div>
-    <div class="stat-label">Biggest Player Upgrade</div>
-    <div class="stat-sub" id="stat-upgrade-sub"></div>
+    <div class="stat-value" id="stat-ratio" data-verify-path="$.game_state.level_late.ratio">…</div>
+    <div class="stat-label">Level late: upside vs downside</div>
+    <div class="stat-sub" id="stat-ratio-sub"></div>
   </div>
 </div>
 
@@ -260,713 +234,739 @@
 <section class="proj">
   <h2>The price of a goal depends on when, and from where, you scored it</h2>
   <p>
-    The standard scoreboard treats every goal as one unit. That is good arithmetic and bad football. Three
-    different goals — the 1st-minute opener that swings the match probability gently toward your side, the
-    78th-minute equaliser that pulls a lost point out of the fire, and the 90th-minute consolation when you
-    were already 3–0 down — should not be filed under the same column. The first is worth a fraction; the
-    second is worth almost a full point; the third is worth, give or take, nothing.
+    The scoreboard treats every goal as one unit. That is good arithmetic and bad football. An early opener nudges
+    the odds; a late winner from level nearly settles them; a consolation at 4–0 down changes almost nothing.
+    This study puts a number on each of those: the expected final points of the scoring team just after the goal,
+    minus just before it, at that scoreline and in that 15-minute window.
   </p>
-  <p>
-    To price them properly we model two things at once: the <strong>goal-difference transition</strong>
-    (going from <code>0</code> to <code>+1</code> is a different lever than from <code>−1</code> to <code>0</code>) and the
-    <strong>minute</strong> in which it happened, binned into six 15-minute windows. For every transition in every
-    window we measure the points the teams that made it went on to collect. A goal's EP value is the gap between its
-    transition and the one a goal below it in the same window: a late go-ahead goal (<code>0</code> → <code>+1</code>)
-    is priced as what teams that went ahead late finished with, minus what teams that equalised late finished with.
-    Late equalisers swing this number a lot.
-    Early openers swing it a little. Goals at 4–0 do almost nothing.
-  </p>
+  <p id="overview-text">[loading]</p>
 </section>
 
 <!-- ── DATA & METHOD ── -->
 <section class="proj">
   <h2>Data &amp; Method</h2>
-  <p><strong>Sources:</strong> Per-match shot tables across the top five European leagues plus the Eredivisie (FBref-derived; <code>match_data_final_*.pkl</code>).</p>
+  <p><strong>Sources:</strong> FBref match pages for the top five European leagues and the Eredivisie: shot tables (goals, minutes, scorer, shot-creating actions), official scores, and per-match player minutes and ages.</p>
   <p><strong>Sample:</strong> <span id="sample-text">[loading]</span></p>
-  <p><strong>State space:</strong> Goal differences <code>[−7, +7]</code> × six 15-minute bins (<code>0–15</code>, <code>15–30</code>, <code>30–45</code>, <code>45–60</code>, <code>60–75</code>, <code>75–90</code>; stoppage-time goals fold into the surrounding bins).</p>
-  <p><strong>Value function:</strong> For each <code>(gd, minute_bin)</code> pre-goal state, expected final points are computed empirically as <code>3·pW + 1·pD</code>. That is the state value table below. A goal's EP credit compares transitions within the same minute bin: the mean final points of the teams that made this transition (e.g. <code>0→1</code>) minus the mean for the transition one step below it (<code>−1→0</code>); the lowest observed transition in each bin is set to 0. Conceding teams get the symmetric credit on the negative side.</p>
-  <p><strong>Attribution:</strong> Goals are credited to the goalscorer; assists to the SCA1 (first shot-creating action). A <em>Goals+Assists</em> view pools both. Players are pooled across leagues and seasons for the leaderboards below; the <a href="dashboard.html" style="color: var(--accent);">full dashboard</a> exposes every per-league/per-season slice.</p>
+  <p><strong>Own goals:</strong> <span id="og-text">[loading]</span></p>
+  <p><strong>Unit of analysis:</strong> <span id="unit-text">[loading]</span></p>
+  <p><strong>Value of a state:</strong> take every minute in which a team was, say, one goal up between the 75th and the 90th, and average the points those teams finished with (3 for a win, 1 for a draw). That is what being 1–0 up late is worth. Doing it for every goal difference and every 15-minute window gives the state value table below.</p>
+  <p><strong>Value of a goal:</strong> the state it creates minus the state it ends, in the same window. A goal from 0–0 to 1–0 late is worth the value of being one up late minus the value of being level late. The time-blind version does the same with all minutes pooled.</p>
+  <p><strong>How sure:</strong> <span id="boot-text">[loading]</span></p>
+  <p><strong>Credit:</strong> <span id="credit-text">[loading]</span></p>
+  <p><strong>Checks:</strong> a held-out test on seasons the model never saw, the model rebuilt with the own-goal matches put back, and the headline re-estimated league by league, each in plain words below, in full in the <a href="methodology.html" style="color: var(--accent);">methodology</a>.</p>
 </section>
 
 <!-- ── 1. STATE VALUE TABLE ── -->
 <section class="proj">
-  <h2>1 · The state value table</h2>
-  <p>
-    The foundation. For every <code>(goal_difference, minute_bin)</code> cell we observed enough goal events to estimate
-    expected final points, displayed below. Cells brighten with EP. The story rows are the middle ones —
-    leading by one (<code>+1</code>) gets dramatically more valuable as the minutes drain; trailing by one
-    (<code>−1</code>) gets correspondingly more desperate.
-  </p>
+  <h2>1 · What each scoreline is worth, minute by minute</h2>
+  <p id="svt-text">[loading]</p>
   <div class="chart-wrap">
-    <div class="chart-title">Expected final points · pre-goal state</div>
+    <div class="chart-title">Expected final points · by goal difference and minute</div>
     <div class="svt-wrap"><table class="svt" id="state-value-table"></table></div>
-    <div class="chart-caption">Each cell shows the average final points won by the team in that state. n = count of observed pre-goal events. Empty cells = state not observed (typical for extreme GDs at extreme times).</div>
+    <div class="chart-caption" id="svt-caption">[loading]</div>
   </div>
 </section>
 
-<!-- ── 2. EP VALUE HEATMAP (D3) ── -->
+<!-- ── 2. GOAL VALUE HEATMAP ── -->
 <section class="proj">
   <h2>2 · The value of a goal, by minute</h2>
-  <p>
-    The state value table shows what each scoreline is worth at each stage. The value map prices the goals
-    themselves: <strong>how many EP does a goal collect</strong>,
-    broken out by the transition it produced and the minute it happened. Bright cells are gold. Dim cells are
-    cosmetic. The single brightest cell on the board is the go-ahead goal from level (0→1) in the final fifteen —
-    a thing every coach already knows, but now with a number on it.
-  </p>
+  <p id="heatmap-text">[loading]</p>
   <div class="chart-wrap">
-    <div class="chart-title">EP collected per goal · transition × minute</div>
+    <div class="chart-title">EP collected per goal · scoreline change × minute</div>
     <div id="heatmap-container" style="position: relative;">
       <svg id="heatmap-svg"></svg>
       <div class="hm-tooltip" id="hm-tooltip"></div>
     </div>
-    <div class="chart-caption">Rows: goal-difference transitions (gd before → gd after, for the scoring team). Columns: minute bin. Cell color: EP collected. Hover for n + exact value.</div>
+    <div class="chart-caption" id="heatmap-caption">[loading]</div>
   </div>
 </section>
 
-<!-- ── 3. EARLY vs LATE 0→1 ── -->
+<!-- ── 3. THE OPENER ── -->
 <section class="proj">
-  <h2>3 · The opener: worth more the longer it took to arrive</h2>
-  <p>
-    A 0→1 goal — the breaker of a deadlock — is the single most common transition in football. It is also the
-    most striking demonstration of the time dimension. Score one before the fifteenth minute and you pick up
-    a modest sliver of expected points; score one after the seventy-fifth and you collect over a point and a
-    half. Eighty more minutes of football between you and the result is a lot of time for things to go wrong.
-  </p>
+  <span class="hypothesis-pill">Headline</span>
+  <h2>3 · The opener: worth more the later it comes</h2>
+  <p id="opener-text">[loading]</p>
   <div class="chart-wrap">
-    <canvas id="chart-early-late"></canvas>
-    <div class="chart-caption">EP collected by the team for the 0→1 transition, by minute bin. Pooled across all leagues and seasons.</div>
+    <canvas id="chart-opener"></canvas>
+    <div class="chart-caption" id="opener-caption">[loading]</div>
   </div>
 </section>
 
-<!-- ── 4. WHERE THE EXPECTED POINTS GET CASHED IN ── -->
+<!-- ── 4. GAME STATE ── -->
 <section class="proj">
-  <h2>4 · Where the expected points get cashed in</h2>
-  <p>
-    The previous chart is the per-goal value of one specific transition over time. This one zooms out:
-    <strong>across every goal in the dataset, how much total expected-point value does each 15-minute
-    window deliver?</strong> Each bar is the product of two effects — how many goals get scored in that
-    window, and how much each one is worth on the table. The story is the asymmetry: the last fifteen
-    minutes are not the only minutes that produce goals, but they are the most consequential.
-  </p>
+  <span class="hypothesis-pill">Game management</span>
+  <h2>4 · The next goal: what it's worth for you, and what it costs against</h2>
+  <p id="gs-text">[loading]</p>
+  <div class="chart-wrap">
+    <div class="chart-title">Upside ÷ downside of the next goal</div>
+    <div class="svt-wrap"><table class="svt" id="game-state-table"></table></div>
+    <div class="chart-caption" id="gs-caption">[loading]</div>
+  </div>
+  <p id="gs-caveat">[loading]</p>
+</section>
+
+<!-- ── 5. EP BY BIN ── -->
+<section class="proj">
+  <h2>5 · Where the expected points get cashed in</h2>
+  <p id="bin-text">[loading]</p>
   <div class="chart-wrap">
     <canvas id="chart-ep-by-bin"></canvas>
-    <div class="chart-caption">Total EP collected across all goal events in each minute bin (per-event EP × event count, summed over every one-step transition). Hover for the top contributing transitions.</div>
+    <div class="chart-caption">Every goal in the model sample at its own value, summed by the 15-minute window it was scored in. Hover for the transitions that contribute most.</div>
   </div>
 </section>
 
-<!-- ── 5. TOP 10 EP COLLECTORS ── -->
+<!-- ── 6. HELD-OUT CHECK ── -->
 <section class="proj">
-  <h2>5 · Top 10 EP collectors · Goals + Assists</h2>
-  <p>
-    The leaderboard, time-aware. EP credit is summed across every goal the player either scored or set up,
-    pooled across the six leagues and seven seasons in scope. Rates of pure goals don't disappear from this
-    list — the top of the pile is still the people who score and create the most — but the order reshuffles
-    around <em>when</em> they did it.
-  </p>
-  <div class="chart-wrap">
-    <canvas id="chart-top-ep"></canvas>
-    <div class="chart-caption">Sum of time-aware EP collected per player (Goals + Assists), all leagues, all seasons. Players pooled across team transfers; the team label shows where most of their goals/assists were registered.</div>
-  </div>
-</section>
-
-<!-- ── 6. TOP 10 TIMED UPGRADES + Mário Rui spotlight ── -->
-<section class="proj">
-  <h2>6 · The biggest beneficiaries of going time-aware</h2>
-  <p>
-    The cleanest test of the framework is the gap between the two rankings: who climbs the most when we
-    switch from the time-blind model to the time-aware one? These are the players whose goals lean
-    disproportionately into the high-value minutes — late winners, late equalisers, openers when the clock
-    is already against the team. Filter is goals_involved ≥ 5 so a single dramatic strike can't fluke onto
-    the list.
-  </p>
-
-  <div class="spotlight-grid">
-    <div class="chart-wrap" style="margin: 0;">
-      <canvas id="chart-upgrade"></canvas>
-      <div class="chart-caption">ΔEP = (time-aware EP) − (time-agnostic EP). Higher = more goals/assists in high-value minutes.</div>
+  <span class="hypothesis-pill">Out of sample</span>
+  <h2>6 · Does it predict seasons it never saw?</h2>
+  <p id="calib-text">[loading]</p>
+  <div class="two-up">
+    <div class="chart-wrap">
+      <canvas id="chart-brier"></canvas>
+      <div class="chart-caption" id="brier-caption">[loading]</div>
     </div>
-    <div class="spotlight-card" id="spotlight-card">
-      <h3 id="spot-name">—</h3>
-      <div class="role" id="spot-role">— · Goals + Assists, pooled</div>
-      <div class="big-number" id="spot-delta">—</div>
-      <div class="big-label">Δ EP from going time-aware</div>
-      <p>
-        The model's biggest single re-rating. A left-back whose goal involvements are mostly
-        assist-type credits (FBref's first shot-creating action) rather than goals, and which land unusually often
-        late in the game — the minutes the time-blind model misprices. Per the time-aware framework, those
-        involvements were worth roughly an extra <strong id="spot-delta-inline">—</strong> expected points on top of
-        what the time-blind rating would have credited him.
-      </p>
+    <div class="chart-wrap">
+      <canvas id="chart-reliability"></canvas>
+      <div class="chart-caption" id="rel-caption">[loading]</div>
     </div>
   </div>
 </section>
 
-<!-- ── 7. EP PER 90 — who's actually carrying their team ── -->
+<!-- ── 7. ROBUSTNESS ── -->
 <section class="proj">
-  <h2>7 · EP per 90 — who's <em>actually</em> carrying their team</h2>
-  <p>
-    Total EP rewards volume. Per-90 rewards <em>rate</em>. Filter to players with at least
-    900 minutes played (roughly ten full matches) in the Top-5 leagues and re-rank by
-    EP collected per 90 minutes on the pitch. The names change. Total leaderboard heavyweights
-    drop out in favour of more efficient or more situational scorers — the players whose
-    contribution-per-minute is the highest.
-  </p>
+  <span class="hypothesis-pill">Robustness</span>
+  <h2>7 · Does it hold up?</h2>
+  <p id="rb-text">[loading]</p>
+  <div class="table-scroll">
+    <table class="proj" id="robustness-table">
+      <thead>
+        <tr>
+          <th>Version</th>
+          <th class="numeric">Matches</th>
+          <th class="numeric">Opener, last 15</th>
+          <th class="numeric">Opener, first 15</th>
+          <th class="numeric">Ratio</th>
+          <th class="numeric">95% CI</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <p id="og-compare-text">[loading]</p>
+</section>
+
+<!-- ── 8. TOP 10 EP ── -->
+<section class="proj">
+  <h2>8 · Top 10 EP collectors · goals + assists</h2>
+  <p id="top-text">[loading]</p>
   <div class="chart-wrap">
-    <canvas id="chart-top-ep-90"></canvas>
-    <div class="chart-caption">Per-90 normalisation across players with at least 900 minutes played (≈10 full matches). Top-5 leagues only — Eredivisie players are excluded because the minutes source (FULL_DICT_ROWS) doesn't cover them.</div>
+    <div class="forest-wrap"><canvas id="chart-top-ep"></canvas></div>
+    <div class="chart-caption" id="top-caption">[loading]</div>
   </div>
 </section>
 
-<!-- ── 8. TOP 10 EP COLLECTORS BY MINUTE BIN ── -->
+<!-- ── 9. TIMING PREMIUM ── -->
 <section class="proj">
-  <h2>8 · <em>When</em> the top 10 collect their points</h2>
-  <p>
-    Same ten names as §5, but broken out across the six 15-minute windows. The accent-coloured
-    cell on each row marks each player's most valuable bin — the minutes where they did the most
-    damage to the league table. Some are openers, some are closers, some spread evenly.
-  </p>
+  <h2>9 · Who gains from <em>when</em> their goals come?</h2>
+  <p id="premium-text">[loading]</p>
+  <div class="chart-wrap">
+    <div class="forest-wrap"><canvas id="chart-premium"></canvas></div>
+    <div class="chart-caption" id="premium-caption">[loading]</div>
+  </div>
+  <p id="premium-text-2">[loading]</p>
+</section>
+
+<!-- ── 10. EP PER 90 ── -->
+<section class="proj">
+  <h2>10 · EP per 90: rate, not volume</h2>
+  <p id="p90-text">[loading]</p>
+  <div class="chart-wrap">
+    <div class="forest-wrap"><canvas id="chart-p90"></canvas></div>
+    <div class="chart-caption" id="p90-caption">[loading]</div>
+  </div>
+</section>
+
+<!-- ── 11. TOP 10 BY BIN ── -->
+<section class="proj">
+  <h2>11 · <em>When</em> the top 10 collect their points</h2>
+  <p>Same ten names as §8, split across the six 15-minute windows. The accent cell marks each player's most valuable window.</p>
   <div class="chart-wrap">
     <div class="svt-wrap"><table class="svt" id="top10-by-bin-table"></table></div>
-    <div class="chart-caption">EP collected by each top-10 player, broken down by minute bin. Accent cell = each player's most valuable bin. "Total" is the sum and matches §5.</div>
+    <div class="chart-caption">EP collected by each top-10 player, by minute window. "Total" is the sum and matches §8.</div>
   </div>
 </section>
 
-<!-- ── CTA to dashboard ── -->
+<!-- ── WHO SHOULD CARE ── -->
+<section class="proj" id="takeaways"></section>
+
+<section class="proj">
+  <h2>Limitations</h2>
+  <ul class="limits" id="limitations-list"></ul>
+</section>
+
+<section class="proj">
+  <h2>What this changes</h2>
+  <p id="conclusion-text">[loading]</p>
+</section>
+
 <div class="cta-box">
   <div class="copy">
     <h3>Want every cell, every league, every season?</h3>
-    <p>The full Tabulator dashboard exposes per-league and per-season drilldowns, search, column filtering, and XLSX/CSV export across all six datasets.</p>
+    <p>The dashboard has every player and team by league and season, every state and goal value with its interval, search, column filters and XLSX/CSV export.</p>
   </div>
   <a href="dashboard.html" class="download-btn primary">OPEN DASHBOARD →</a>
 </div>
 
-<!-- ── CONCLUSION ── -->
-<section class="proj">
-  <h2>What this changes</h2>
-  <p>
-    Total goals is a starting point. EP-weighted goals is a better one. The time dimension is small in volume
-    — across <span id="concl-goals">—</span> events the absolute EP gap is bounded — but it is large in
-    interpretation. A 78th-minute equaliser is, on the data, almost a full league point. A 6th-minute opener
-    is a fraction of that. Anyone choosing where to spend a recruitment budget has a stronger signal once
-    those two events are filed differently.
-  </p>
-  <div class="finding-box" id="concl-box">[loading]</div>
+<!-- ── THE DECK ── -->
+<section class="proj" id="deck">
+  <h2>The deck</h2>
+  <div class="slide-viewer" data-renball="slide-viewer" data-src="slides.pdf"></div>
 </section>
 
 <script src="../../assets/js/chart-defaults.js"></script>
+<script src="../../assets/js/renball-components.js"></script>
 <script>
 (async function () {
   const data = await fetch('data/data.json').then(r => r.json());
   const C = window.RENBALL_COLORS;
   const tok = C.tokens;
-  const fmt = (n, d=0) => (n == null ? '—' : Number(n).toLocaleString('en-GB', { maximumFractionDigits: d, minimumFractionDigits: d }));
+  const fmt = (n, d = 0) => (n == null ? 'n/a' : Number(n).toLocaleString('en-GB', { maximumFractionDigits: d, minimumFractionDigits: d }));
+  const f2 = (n) => fmt(n, 2);
+  const x2 = (n) => `${fmt(n, 2)}×`;
+  const sgn2 = (n) => (n < 0 ? '−' : '+') + Math.abs(n).toFixed(2);
+  const narrow = window.matchMedia('(max-width: 600px)').matches;
+  const wrap = (s, w) => s.split(' ').reduce((lines, word) => {
+    const last = lines[lines.length - 1];
+    if (last && (last + ' ' + word).length <= w) lines[lines.length - 1] = last + ' ' + word;
+    else lines.push(word);
+    return lines;
+  }, []);
 
-  // ──────────────────────────────────────────────────────
-  // Meta / hero plumbing
-  // ──────────────────────────────────────────────────────
-  const meta = data.meta;
-  document.getElementById('meta-date').textContent =
-    (meta.generated_at || '').slice(0, 7).replace('-', '·') || 'May 2026';
-  document.getElementById('sample-text').textContent =
-    `${fmt(data.callouts.total_goals)} goals across ${meta.leagues.length} leagues ` +
-    `(${meta.leagues.join(', ')}) and ${meta.seasons.length} seasons ` +
-    `(${meta.seasons[0]} → ${meta.seasons[meta.seasons.length - 1]}).`;
+  const meta = data.meta, dq = data.data_quality, s = data.sample, h = data.headline;
+  const gs = data.game_state, cal = data.calibration, rb = data.robustness, pl = data.players;
+  const bins = meta.time_bins;
+  const op = h.opener_ratio, eq = h.late_equaliser;
+  const lv = gs.level_late, ld = gs.lead_late, tr = gs.trail_late;
 
-  // ──────────────────────────────────────────────────────
-  // Stat callouts
-  // ──────────────────────────────────────────────────────
-  const co = data.callouts;
-  document.getElementById('stat-goals').textContent = fmt(co.total_goals);
-  document.getElementById('stat-goals-sub').textContent =
-    `${meta.leagues.length} leagues · ${meta.seasons.length} seasons`;
+  RENBALL.renderTakeaways(document.getElementById('takeaways'), data.takeaways);
 
-  document.getElementById('stat-states').textContent = fmt(co.unique_states);
-  document.getElementById('stat-states-sub').textContent =
-    `(gd × time_bin) cells with data · of ${meta.gd_range.length * meta.time_bins.length} theoretical`;
-
-  document.getElementById('stat-gap').textContent = `${co.ep_value_gap.best.toFixed(2)} EP`;
-  document.getElementById('stat-gap-sub').textContent =
-    `${co.ep_value_gap.best_label} · EP collected per goal`;
-
-  const up = co.biggest_upgrade;
-  document.getElementById('stat-upgrade').textContent = `+${up.delta_ep.toFixed(2)} EP`;
-  document.getElementById('stat-upgrade-sub').textContent =
-    `${up.player} (${up.team}) · ${up.goals_involved} G+A`;
-
-  // ──────────────────────────────────────────────────────
-  // Headline finding + conclusion box
-  // ──────────────────────────────────────────────────────
-  const early01 = data.early_vs_late_0to1.ep_collected[0];
-  const late01  = data.early_vs_late_0to1.ep_collected[data.early_vs_late_0to1.ep_collected.length - 1];
-  const ratio01 = (early01 && early01 > 0) ? (late01 / early01) : null;
-
+  // ── Key finding + stats ──
   document.getElementById('finding-text').innerHTML =
-    `A goal that takes a team from 0–0 to 1–0 in the final fifteen minutes is worth ` +
-    `<strong>${late01.toFixed(2)} expected points</strong>` +
-    (ratio01 ? ` — <strong>${ratio01.toFixed(1)}×</strong> what the same transition is worth in the opening fifteen (${early01.toFixed(2)} EP)` : '') +
-    `. Across ${fmt(co.total_goals)} goals in six leagues, the time-aware model promotes ` +
-    `<strong>${up.player}</strong> the most: <strong>+${up.delta_ep.toFixed(2)} ΔEP</strong> ` +
-    `on ${up.goals_involved} goals + assists.`;
+    `A goal that breaks a level game in the last 15 minutes is worth <strong>${f2(op.late.ep)} expected points</strong>, ` +
+    `<strong>${x2(op.value)}</strong> (95% CI ${f2(op.lo)}–${f2(op.hi)}) the same goal in the first 15 (${f2(op.early.ep)}). ` +
+    `It holds in all ${meta.leagues.length} leagues and in seasons the model never saw. And level late, the next goal is ` +
+    `worth ${x2(lv.ratio)} more to the team that scores it than it costs the team that concedes.`;
+  document.getElementById('stat-goals').textContent = fmt(s.goals_all);
+  document.getElementById('stat-goals-sub').textContent = `${meta.leagues.length} leagues · ${meta.seasons.length} seasons`;
+  document.getElementById('stat-minutes').textContent = fmt(s.matches_model);
+  document.getElementById('stat-minutes-sub').textContent = `${fmt(s.team_minutes)} team-minutes`;
+  document.getElementById('stat-best').textContent = `${f2(op.late.ep)} EP`;
+  document.getElementById('stat-best-sub').textContent = `0→1 in the last 15 · 95% CI ${f2(op.late.lo)}–${f2(op.late.hi)}`;
+  document.getElementById('stat-ratio').textContent = x2(lv.ratio);
+  document.getElementById('stat-ratio-sub').textContent = `${f2(lv.up)} EP for · ${f2(lv.down)} EP against`;
 
-  document.getElementById('concl-goals').textContent = fmt(co.total_goals);
-  document.getElementById('concl-box').innerHTML =
-    `<strong style="color: var(--accent); display: block; margin-bottom: 0.3rem; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em;">TAKEAWAY</strong>` +
-    `Across ${fmt(co.total_goals)} goals, when a goal is scored changes what it is worth: the same 0–0 to 1–0 ` +
-    `goal is worth far more in the final fifteen minutes than in the first. The framework agrees with intuition ` +
-    `(late goals in tight games matter most) and disagrees with the scoreboard.`;
+  // ── Overview + method ──
+  document.getElementById('overview-text').innerHTML =
+    `The answer is steep. Across ${fmt(s.matches_model)} matches, the go-ahead goal from level is worth ${f2(op.early.ep)} ` +
+    `expected points in the first 15 minutes and ${f2(op.late.ep)} in the last 15. A late equaliser is worth ${f2(eq.ep)}. ` +
+    `A second goal when already 1–0 up late adds only ${f2(h.late_cushion.ep)}. Rank players by the expected points their ` +
+    `goals and assists collected and the order changes, though as §9 shows, less than you'd think.`;
+  const s0 = meta.seasons[0], s1 = meta.seasons[meta.seasons.length - 1];
+  const ere = dq.by_league.find(x => x.code === 'Eredivisie');
+  document.getElementById('sample-text').textContent =
+    `${fmt(dq.matches_loaded)} of ${fmt(dq.matches_total)} matches, ${s0} to ${s1}, ${fmt(s.goals_all)} goals. ` +
+    `${fmt(dq.matches_failed)} matches have no usable shot table, ${fmt(ere.failed)} of them in the Eredivisie ` +
+    `(${fmt(ere.failed_pct, 1)}% of its matches), so the Eredivisie is under-represented.`;
+  document.getElementById('og-text').textContent =
+    `the shot table has no own goals, so in ${fmt(dq.og_affected)} matches (${fmt(dq.og_affected_pct, 1)}%) the score ` +
+    `rebuilt from it falls short of the official one, and the running score is wrong after the missing goal. Those ` +
+    `matches are left out of the value model (${fmt(s.matches_model)} matches remain); results use FBref's official ` +
+    `scores. The excluded matches are different: ${fmt(dq.excluded.goals_per_match, 2)} goals a game against ` +
+    `${fmt(dq.kept.goals_per_match, 2)} in the rest, and fewer draws (${fmt(dq.excluded.draw_pct, 1)}% against ` +
+    `${fmt(dq.kept.draw_pct, 1)}%). Including them moves the headline only from ${x2(rb.primary.ratio)} to ` +
+    `${x2(rb.inclusive.ratio)} (§7).`;
+  document.getElementById('unit-text').textContent =
+    `the team-minute for state values (each match gives both teams 90 minutes: ${fmt(s.team_minutes)} in all), ` +
+    `the goal for goal values, the player for the leaderboards.`;
+  document.getElementById('boot-text').textContent =
+    `every interval comes from re-running the model on ${fmt(meta.params.boot_resamples)} resamples of whole matches ` +
+    `(drawn within each league), so a strange match can't fake precision. Cells seen in fewer than ` +
+    `${meta.params.sparse_matches} matches are greyed out.`;
+  const at = pl.attribution;
+  document.getElementById('credit-text').textContent =
+    `a goal credits its scorer and its SCA1 (FBref's first shot-creating action, usually the assist) once per player: ` +
+    `on ${fmt(at.self_sca1)} goals (${fmt(at.self_sca1_pct, 1)}%) the scorer created his own chance and gets one credit, ` +
+    `not two. Players are told apart by birth date, so namesakes stay separate; minutes come from the same matches as ` +
+    `the goals.`;
 
-  // ──────────────────────────────────────────────────────
-  // 1. STATE VALUE TABLE — HTML grid
-  // ──────────────────────────────────────────────────────
+  // ── 1. State value table ──
   (function renderSVT() {
-    const svt = data.state_value_table;
-    const bins = svt.time_bins;
-    const gds = svt.gd_range;
-
-    // Find min/max for color scale, ignoring nulls
+    const svt = data.state_values;
+    const show = svt.gd_range.map((g, i) => i).filter(i => Math.abs(svt.gd_range[i]) <= 4);
     let lo = Infinity, hi = -Infinity;
-    for (const row of svt.matrix) for (const cell of row) {
-      if (cell && cell.exp_points != null) {
-        lo = Math.min(lo, cell.exp_points);
-        hi = Math.max(hi, cell.exp_points);
-      }
-    }
-    if (!isFinite(lo)) { lo = 0; hi = 3; }
-
-    const epToColor = (ep) => {
-      const t = Math.max(0, Math.min(1, (ep - lo) / (hi - lo)));
-      // dim accent-glow → bright accent
-      return `rgba(193, 255, 114, ${0.05 + t * 0.55})`;
-    };
-
-    // Format a GD value with the Renball convention (− for negatives, + for positives, "0" bare)
-    const fmtGD = (n) => n === 0 ? '0' : (n > 0 ? `+${n}` : `${n}`).replace('-', '−');
-
-    const t = document.getElementById('state-value-table');
-    let html = '<thead><tr><th>GD &darr; / Min &rarr;</th>';
-    for (const b of bins) html += `<th>${b}</th>`;
-    html += '</tr></thead><tbody>';
-    for (let i = 0; i < gds.length; i++) {
-      const gd = gds[i];
-      // Plain GD — the cell value is the state value (expected points at that GD), not a transition.
-      const label = fmtGD(gd);
-      const centerRow = (gd === 0) ? ' style="background: var(--accent-glow);"' : '';
-      html += `<tr${centerRow}><th>${label}</th>`;
-      for (let j = 0; j < bins.length; j++) {
-        const c = svt.matrix[i][j];
-        if (!c || c.exp_points == null) {
-          html += '<td class="empty">·</td>';
-        } else {
-          const bg = epToColor(c.exp_points);
-          html += `<td class="cell" style="background:${bg};" title="GD ${label} @ ${bins[j]}: ${c.exp_points.toFixed(3)} EP, n=${c.n.toLocaleString('en-GB')}">` +
-                  `<div class="ep">${c.exp_points.toFixed(2)}</div>` +
-                  `<div class="n">n=${c.n.toLocaleString('en-GB')}</div></td>`;
-        }
-      }
+    show.forEach(i => svt.matrix[i].forEach(c => { if (c) { lo = Math.min(lo, c.ep); hi = Math.max(hi, c.ep); } }));
+    const bg = (ep) => `rgba(193, 255, 114, ${0.05 + 0.55 * (ep - lo) / (hi - lo)})`;
+    let html = '<thead><tr><th>GD ↓ / Min →</th>' + svt.time_bins.map(b => `<th>${b}</th>`).join('') + '</tr></thead><tbody>';
+    [...show].reverse().forEach(i => {
+      const label = svt.gd_labels[i];
+      html += `<tr${svt.gd_range[i] === 0 ? ' style="background: var(--accent-glow);"' : ''}><th>${label}</th>`;
+      svt.matrix[i].forEach((c, j) => {
+        if (!c) { html += '<td class="empty">·</td>'; return; }
+        const dark = (c.ep - lo) / (hi - lo) > 0.62;
+        html += `<td class="cell${c.sparse ? ' sparse' : ''}" style="background:${bg(c.ep)};${dark ? ' color: var(--bg);' : ''}" ` +
+          `title="GD ${label} @ ${svt.time_bins[j]}: ${f2(c.ep)} EP (95% CI ${f2(c.lo)}–${f2(c.hi)}) · ` +
+          `${fmt(c.minutes)} team-minutes in ${fmt(c.matches)} matches">` +
+          `<div class="ep" data-verify-path="$.state_values.matrix[${i}][${j}].ep">${f2(c.ep)}</div>` +
+          `<div class="n" data-verify-path="$.state_values.matrix[${i}][${j}].matches"${dark ? ' style="color: var(--bg-elevated);"' : ''}>${fmt(c.matches)} m</div></td>`;
+      });
       html += '</tr>';
-    }
-    html += '</tbody>';
-    t.innerHTML = html;
+    });
+    document.getElementById('state-value-table').innerHTML = html + '</tbody>';
+    const st = h.states;
+    document.getElementById('svt-text').innerHTML =
+      `The foundation. Read across a row and you see time working on a scoreline: a one-goal lead is worth ` +
+      `${f2(st.lead_early)} points in the first 15 minutes and ${f2(st.lead_late)} in the last 15; level drifts from ` +
+      `${f2(st.level_early)} to ${f2(st.level_late)}; one down sinks from ${f2(st.behind_early)} to ${f2(st.behind_late)}. ` +
+      `Hover any cell for its interval.`;
+    document.getElementById('svt-caption').textContent =
+      `Expected final points (3·win + 1·draw) of a team at that goal difference during that window, averaged over every ` +
+      `team-minute in it. "m" = matches the state occurred in; faded cells: fewer than ${meta.params.sparse_matches}. ` +
+      `${s.cells_with_data} of ${s.cells_total} states occur at all; rows beyond ±4 are in the dashboard.`;
   })();
 
-  // ──────────────────────────────────────────────────────
-  // 2. D3 HEATMAP — transitions × bins
-  // ──────────────────────────────────────────────────────
+  // ── 2. Heatmap ──
   (function renderHeatmap() {
-    const hm = data.value_heatmap;
-    const bins = hm.time_bins;
-    const transitions = hm.transitions; // [{gd_before, gd_after, label}]
-    const matrix = hm.matrix;            // rows = transitions, cols = bins
-
+    const hm = data.goal_values;
+    const keep = hm.transitions.map((t, i) => i).filter(i => hm.transitions[i].gd_before >= -4 && hm.transitions[i].gd_before <= 3);
+    const rows = keep.map(i => hm.transitions[i]).reverse();
+    const mat = keep.map(i => hm.matrix[i]).reverse();
     const container = document.getElementById('heatmap-container');
     const svgEl = document.getElementById('heatmap-svg');
-    const tooltipEl = document.getElementById('hm-tooltip');
-
+    const tip = document.getElementById('hm-tooltip');
     const width = container.clientWidth;
-    const rowH = 28;
-    const margin = { top: 32, right: 24, bottom: 36, left: 80 };
-    const innerW = width - margin.left - margin.right;
-    const innerH = rowH * transitions.length;
+    const rowH = 30, margin = { top: 32, right: 12, bottom: 40, left: narrow ? 52 : 80 };
+    const innerW = width - margin.left - margin.right, innerH = rowH * rows.length;
     const height = innerH + margin.top + margin.bottom;
     svgEl.setAttribute('height', height);
-
+    svgEl.style.height = height + 'px';
     const svg = d3.select(svgEl);
     svg.selectAll('*').remove();
     const g = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
-
-    const x = d3.scaleBand().domain(bins).range([0, innerW]).padding(0.04);
-    const y = d3.scaleBand()
-      .domain(transitions.map(t => t.label))
-      .range([0, innerH]).padding(0.04);
-
-    // Color scale — symmetric around 0 so consolation 0→1 cells (basically null EP)
-    // sit at the dim end and late equalisers blaze at the bright end.
-    const allValues = [];
-    matrix.forEach(row => row.forEach(c => { if (c && c.ep_collected != null) allValues.push(c.ep_collected); }));
-    const maxAbs = d3.max(allValues.map(Math.abs)) || 1;
-    const color = d3.scaleSequential(t => d3.interpolateRgb('#0e150e', tok.accent)(t))
-      .domain([0, maxAbs]);
-
-    // Column headers
-    g.append('g').attr('class', 'hm-cols')
-      .selectAll('text').data(bins).join('text')
-      .attr('x', b => x(b) + x.bandwidth() / 2)
-      .attr('y', -10)
-      .attr('text-anchor', 'middle')
-      .attr('fill', tok.textSecondary)
-      .style('font-family', tok.mono).style('font-size', '11px')
-      .style('letter-spacing', '0.06em').style('text-transform', 'uppercase')
+    const x = d3.scaleBand().domain(hm.time_bins).range([0, innerW]).padding(0.04);
+    const y = d3.scaleBand().domain(rows.map(t => t.label)).range([0, innerH]).padding(0.04);
+    const vals = [];
+    mat.forEach(r => r.forEach(c => { if (c && c.ep != null) vals.push(c.ep); }));
+    const maxV = d3.max(vals) || 1;
+    const color = d3.scaleSequential(t => d3.interpolateRgb('#0e150e', tok.accent)(t)).domain([0, maxV]);
+    g.append('g').selectAll('text').data(hm.time_bins).join('text')
+      .attr('x', b => x(b) + x.bandwidth() / 2).attr('y', -10).attr('text-anchor', 'middle')
+      .attr('fill', tok.textSecondary).style('font-family', tok.mono).style('font-size', narrow ? '9px' : '11px')
       .text(b => b);
-
-    // Row headers
-    g.append('g').attr('class', 'hm-rows')
-      .selectAll('text').data(transitions).join('text')
-      .attr('x', -8)
-      .attr('y', t => y(t.label) + y.bandwidth() / 2 + 4)
-      .attr('text-anchor', 'end')
-      .attr('fill', t => (t.gd_before === 0 && t.gd_after === 1) ? tok.accent : tok.textSecondary)
-      .style('font-family', tok.mono).style('font-size', '11.5px')
-      .style('font-weight', t => (t.gd_before === 0 && t.gd_after === 1) ? '500' : '400')
-      .text(t => t.label);
-
-    // Cells
-    transitions.forEach((tr, i) => {
-      matrix[i].forEach((cell, j) => {
-        const bin = bins[j];
-        const rect = g.append('rect')
-          .attr('x', x(bin)).attr('y', y(tr.label))
-          .attr('width', x.bandwidth()).attr('height', y.bandwidth())
-          .attr('fill', (cell && cell.ep_collected != null) ? color(cell.ep_collected) : 'transparent')
-          .attr('stroke', tok.border).attr('stroke-width', 0.5);
-
-        if (cell && cell.ep_collected != null) {
-          // Value label inside cell when there's room
-          if (y.bandwidth() >= 22 && x.bandwidth() >= 50) {
-            g.append('text')
-              .attr('x', x(bin) + x.bandwidth() / 2)
-              .attr('y', y(tr.label) + y.bandwidth() / 2 + 4)
-              .attr('text-anchor', 'middle')
-              .attr('fill', cell.ep_collected > maxAbs * 0.5 ? tok.bgCard : tok.text)
-              .style('font-family', tok.mono).style('font-size', '10px')
-              .text(cell.ep_collected.toFixed(2));
-          }
-          rect.style('cursor', 'pointer')
-            .on('mousemove', (event) => {
-              const rect2 = container.getBoundingClientRect();
-              tooltipEl.style.left = (event.clientX - rect2.left + 14) + 'px';
-              tooltipEl.style.top  = (event.clientY - rect2.top + 14) + 'px';
-              tooltipEl.style.opacity = '1';
-              tooltipEl.innerHTML =
-                `<strong>${tr.label} @ ${bin}</strong><br>` +
-                `<span class="lbl">EP collected:</span> ${cell.ep_collected.toFixed(3)}<br>` +
-                `<span class="lbl">events:</span> ${cell.n.toLocaleString('en-GB')}`;
-            })
-            .on('mouseleave', () => { tooltipEl.style.opacity = '0'; });
-        }
-      });
-    });
-
-    // Legend
-    const legW = 180, legH = 8;
-    const legG = svg.append('g')
-      .attr('transform', `translate(${width - margin.right - legW}, ${height - 24})`);
-
-    const gradId = 'hm-grad';
-    const defs = svg.append('defs');
-    const grad = defs.append('linearGradient').attr('id', gradId);
-    for (let i = 0; i <= 10; i++) {
-      grad.append('stop').attr('offset', `${i * 10}%`).attr('stop-color', color(maxAbs * i / 10));
-    }
-    legG.append('rect').attr('width', legW).attr('height', legH).attr('fill', `url(#${gradId})`).attr('stroke', tok.border);
-    legG.append('text').attr('x', 0).attr('y', -4).attr('fill', tok.textMuted)
-      .style('font-family', tok.mono).style('font-size', '10px').text('0 EP');
-    legG.append('text').attr('x', legW).attr('y', -4).attr('text-anchor', 'end').attr('fill', tok.textMuted)
-      .style('font-family', tok.mono).style('font-size', '10px').text(`${maxAbs.toFixed(2)} EP`);
+    g.append('g').selectAll('text').data(rows).join('text')
+      .attr('x', -8).attr('y', t => y(t.label) + y.bandwidth() / 2 + 4).attr('text-anchor', 'end')
+      .attr('fill', t => (t.gd_before === 0 ? tok.accent : tok.textSecondary))
+      .style('font-family', tok.mono).style('font-size', narrow ? '10px' : '11.5px').text(t => t.label);
+    rows.forEach((t, i) => mat[i].forEach((c, j) => {
+      const b = hm.time_bins[j];
+      const rect = g.append('rect').attr('x', x(b)).attr('y', y(t.label))
+        .attr('width', x.bandwidth()).attr('height', y.bandwidth())
+        .attr('fill', c && c.ep != null ? color(c.ep) : 'transparent')
+        .attr('opacity', c && c.sparse ? 0.4 : 1)
+        .attr('stroke', tok.border).attr('stroke-width', 0.5);
+      if (!c || c.ep == null) return;
+      if (x.bandwidth() >= 40) {
+        g.append('text').attr('x', x(b) + x.bandwidth() / 2).attr('y', y(t.label) + y.bandwidth() / 2 + 4)
+          .attr('text-anchor', 'middle').attr('fill', c.ep > maxV * 0.68 ? tok.bgCard : tok.text)
+          .style('font-family', tok.mono).style('font-size', narrow ? '9px' : '10px').style('pointer-events', 'none')
+          .text(f2(c.ep));
+      }
+      rect.style('cursor', 'pointer')
+        .on('mousemove', (ev) => {
+          const r2 = container.getBoundingClientRect();
+          tip.style.left = Math.min(ev.clientX - r2.left + 14, r2.width - 190) + 'px';
+          tip.style.top = (ev.clientY - r2.top + 14) + 'px';
+          tip.style.opacity = '1';
+          tip.innerHTML = `<strong>${t.label} @ ${b}</strong><br><span class="lbl">EP:</span> ${f2(c.ep)} ` +
+            `(95% CI ${f2(c.lo)}–${f2(c.hi)})<br><span class="lbl">goals:</span> ${fmt(c.goals)}` +
+            (c.sparse ? '<br><span class="lbl">sparse cell</span>' : '');
+        })
+        .on('mouseleave', () => { tip.style.opacity = '0'; });
+    }));
+    const best = h.best_cell;
+    document.getElementById('heatmap-text').innerHTML =
+      `The state table shows what each scoreline is worth; this map prices the goals that move between them. The brightest ` +
+      `cell is the go-ahead goal from level in the last 15 minutes (${best.transition}, ${f2(best.ep)} EP, ${fmt(best.goals)} ` +
+      `goals). Goals that pull a team level climb with the clock too; goals that stretch a lead late do the opposite, ` +
+      `because the game is already mostly won.`;
+    document.getElementById('heatmap-caption').textContent =
+      `Rows: goal difference before → after, for the scoring team (−4 to +4 shown; the rest in the dashboard). Columns: ` +
+      `minute window. Value = state after minus state before. Faded cells: fewer than ${meta.params.sparse_matches} ` +
+      `matches. Hover for the interval and the number of goals.`;
   })();
 
-  // ──────────────────────────────────────────────────────
-  // 3. EARLY vs LATE 0→1 — bar chart
-  // ──────────────────────────────────────────────────────
-  new Chart(document.getElementById('chart-early-late'), {
-    type: 'bar',
-    data: {
-      labels: data.early_vs_late_0to1.time_bins,
-      datasets: [{
-        label: 'EP collected from 0→1',
-        data: data.early_vs_late_0to1.ep_collected,
-        backgroundColor: C.primary, borderWidth: 0,
-      }],
+  // Whisker plugin: draws dataset.ci = [[lo, hi], …] on vertical bars
+  const whiskers = {
+    id: 'whiskers',
+    afterDatasetsDraw(chart) {
+      const { ctx, scales: { y } } = chart;
+      chart.data.datasets.forEach((ds, di) => {
+        if (!ds.ci) return;
+        const meta = chart.getDatasetMeta(di);
+        if (meta.hidden) return;
+        ctx.save();
+        ctx.strokeStyle = tok.text; ctx.lineWidth = 1.2;
+        meta.data.forEach((bar, i) => {
+          const c = ds.ci[i]; if (!c) return;
+          const xm = bar.x, top = y.getPixelForValue(c[1]), bot = y.getPixelForValue(c[0]), w = Math.min(bar.width * 0.25, 8);
+          ctx.beginPath(); ctx.moveTo(xm, top); ctx.lineTo(xm, bot);
+          ctx.moveTo(xm - w, top); ctx.lineTo(xm + w, top); ctx.moveTo(xm - w, bot); ctx.lineTo(xm + w, bot); ctx.stroke();
+        });
+        ctx.restore();
+      });
     },
-    options: {
-      layout: { padding: { bottom: 12 } },
-      plugins: {
-        title: { display: true, text: '0→1 EP collected, by minute bin' },
-        legend: { display: false },
-        tooltip: { callbacks: {
-          label: (ctx) => `${ctx.parsed.y.toFixed(3)} EP`,
-        }}
-      },
-      scales: {
-        y: {
-          ...RENBALL_HELPERS.niceRange(data.early_vs_late_0to1.ep_collected, { padding: 0.1, step: 0.25, floor: 0, ceil: 3 }),
-          title: { display: true, text: 'EP collected', padding: { bottom: 12 } },
-        },
-        x: { title: { display: true, text: 'Minute bin', padding: { top: 10 } } },
-      },
-    },
-  });
+  };
 
-  // ──────────────────────────────────────────────────────
-  // 4. TOTAL EP COLLECTED BY MINUTE BIN — aggregate bar
-  // Computed client-side from value_heatmap (no new data shape required).
-  // ──────────────────────────────────────────────────────
-  (function renderEPByBin() {
-    const hm = data.value_heatmap;
-    const bins = hm.time_bins;
-
-    // For each bin: total EP cashed in = Σ (ep_collected × n) over every transition.
-    // Also keep the top contributing transitions for the hover.
-    const perBin = bins.map((bin, j) => {
-      let total = 0;
-      const contribs = [];
-      for (let i = 0; i < hm.transitions.length; i++) {
-        const cell = hm.matrix[i][j];
-        if (!cell || cell.ep_collected == null) continue;
-        const epc = cell.ep_collected * cell.n;
-        total += epc;
-        contribs.push({ label: hm.transitions[i].label, ep: epc, n: cell.n });
-      }
-      contribs.sort((a, b) => b.ep - a.ep);
-      return { bin, total, top: contribs.slice(0, 3) };
-    });
-
-    new Chart(document.getElementById('chart-ep-by-bin'), {
+  // ── 3. Opener chart ──
+  (function renderOpener() {
+    const ob = h.opener_by_bin;
+    const eqRow = data.goal_values.transitions.findIndex(t => t.gd_before === -1);
+    const eqCells = data.goal_values.matrix[eqRow];
+    new Chart(document.getElementById('chart-opener'), {
       type: 'bar',
       data: {
         labels: bins,
-        datasets: [{
-          label: 'Total EP collected',
-          data: perBin.map(b => b.total),
-          backgroundColor: C.primary,
-          borderColor: C.primaryDim,
-          borderWidth: 1,
-        }],
+        datasets: [
+          { label: 'Go-ahead from level (0→1)', data: ob.map(c => c.ep), ci: ob.map(c => [c.lo, c.hi]),
+            backgroundColor: C.primary, borderWidth: 0 },
+          { label: 'Equaliser (−1→0)', data: eqCells.map(c => c.ep), ci: eqCells.map(c => [c.lo, c.hi]),
+            backgroundColor: C.secondary, borderWidth: 0 },
+        ],
       },
       options: {
-        layout: { padding: { bottom: 12 } },
         plugins: {
-          title: { display: true, text: 'Expected points collected, by minute bin' },
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: (ctx) => `${fmt(ctx.parsed.y, 0)} EP cashed in`,
-              afterLabel: (ctx) => {
-                const top = perBin[ctx.dataIndex].top;
-                return ['Top contributing transitions:'].concat(
-                  top.map(t => `  ${t.label}: ${t.ep.toFixed(0)} EP  (n=${t.n.toLocaleString('en-GB')})`)
-                );
-              },
-            },
-          },
+          title: { display: true, text: 'EP per goal, by minute window' },
+          tooltip: { callbacks: { label: (ctx) => {
+            const c = ctx.dataset.ci[ctx.dataIndex];
+            return `${ctx.dataset.label}: ${f2(ctx.parsed.y)} EP (95% CI ${f2(c[0])}–${f2(c[1])})`;
+          }}},
         },
         scales: {
-          y: {
-            beginAtZero: true,
-            title: { display: true, text: 'Total EP collected', padding: { bottom: 12 } },
-            ticks: {
-              callback: (v) => v.toLocaleString('en-GB'),
-            },
-          },
-          x: { title: { display: true, text: 'Minute bin', padding: { top: 10 } } },
+          y: { ...RENBALL_HELPERS.niceRange(ob.map(c => c.hi).concat([0]), { padding: 0.1, step: 0.25, floor: 0, ceil: 3 }),
+               title: { display: true, text: 'EP collected per goal' } },
+          x: { title: { display: true, text: 'Minute window' } },
         },
       },
+      plugins: [whiskers],
     });
+    document.getElementById('opener-text').innerHTML =
+      `The go-ahead goal from level is the most common goal in football and the clearest view of the clock at work. ` +
+      `Score it in the first 15 minutes and it's worth ${f2(op.early.ep)} expected points; in the last 15, ` +
+      `<strong>${f2(op.late.ep)}</strong>, ${x2(op.value)} as much (95% CI ${f2(op.lo)}–${f2(op.hi)}). An early lead has ` +
+      `seventy-odd minutes to go wrong; a late one doesn't. The equaliser climbs too, but less: ${f2(eq.ep)} late, ` +
+      `${x2(eq.ratio_vs_early_opener)} an early opener (${f2(eq.ratio_lo)}–${f2(eq.ratio_hi)}). A draw is a point either way.`;
+    document.getElementById('opener-caption').textContent =
+      `Value of a goal from 0–0 (green) and from one down (blue), by minute window. Whiskers: 95% bootstrap intervals ` +
+      `over matches. They are narrow because these goals are common (${fmt(op.late.goals)} late go-ahead goals ` +
+      `from level in the model sample).`;
   })();
 
-  // ──────────────────────────────────────────────────────
-  // 5. TOP 10 EP COLLECTORS — horizontal bar
-  // ──────────────────────────────────────────────────────
-  (function renderTopEP() {
-    const rows = data.top10_ep_collectors;
-    new Chart(document.getElementById('chart-top-ep'), {
-      type: 'bar',
-      data: {
-        labels: rows.map(r => `${r.player} · ${r.team}`),
-        datasets: [{
-          label: 'EP collected (time-aware)',
-          data: rows.map(r => r.ep_timed),
-          backgroundColor: C.primary,
-          borderWidth: 0,
-        }],
-      },
-      options: {
-        indexAxis: 'y',
-        aspectRatio: 1.6,
-        layout: { padding: { bottom: 12, left: 12 } },
-        plugins: {
-          title: { display: true, text: 'EP collected — Goals + Assists, pooled' },
-          legend: { display: false },
-          tooltip: { callbacks: {
-            afterLabel: (ctx) => {
-              const r = rows[ctx.dataIndex];
-              return [
-                `Goals + Assists: ${r.goals_involved}`,
-                `Untimed EP:      ${r.ep_untimed.toFixed(2)}`,
-              ];
-            }
-          }}
-        },
-        scales: {
-          x: {
-            title: { display: true, text: 'EP collected', padding: { top: 10 } },
-            beginAtZero: true,
-          },
-          // Horizontal bar — y axis labels the categories, no title needed
-          y: { ticks: { font: { family: tok.mono, size: 11 } } },
-        },
-      },
-    });
-  })();
-
-  // ──────────────────────────────────────────────────────
-  // 6. TOP 10 TIMED UPGRADES — horizontal bar + spotlight
-  // ──────────────────────────────────────────────────────
-  (function renderUpgrade() {
-    const rows = data.top10_timed_upgrade;
-    new Chart(document.getElementById('chart-upgrade'), {
-      type: 'bar',
-      data: {
-        labels: rows.map(r => `${r.player} · ${r.team}`),
-        datasets: [{
-          label: 'Δ EP (timed − untimed)',
-          data: rows.map(r => r.delta_ep),
-          // Highlight Mário Rui's bar specifically
-          backgroundColor: rows.map(r => r.player === up.player ? C.tokens.accent : C.tokens.accentDim),
-          borderWidth: 0,
-        }],
-      },
-      options: {
-        indexAxis: 'y',
-        aspectRatio: 1.4,
-        layout: { padding: { bottom: 12, left: 12 } },
-        plugins: {
-          title: { display: true, text: 'Biggest time-aware re-rating · G+A, min 5 events' },
-          legend: { display: false },
-          tooltip: { callbacks: {
-            afterLabel: (ctx) => {
-              const r = rows[ctx.dataIndex];
-              return [
-                `Goals + Assists: ${r.goals_involved}`,
-                `Timed EP:        ${r.ep_timed.toFixed(2)}`,
-                `Untimed EP:      ${r.ep_untimed.toFixed(2)}`,
-              ];
-            }
-          }}
-        },
-        scales: {
-          x: {
-            title: { display: true, text: 'Δ EP', padding: { top: 10 } },
-            beginAtZero: true,
-          },
-          // Horizontal bar — y axis labels the categories, no title needed
-          y: { ticks: { font: { family: tok.mono, size: 11 } } },
-        },
-      },
-    });
-
-    // Spotlight content
-    document.getElementById('spot-name').textContent = up.player;
-    document.getElementById('spot-role').textContent = `${up.team} · ${up.goals_involved} Goals + Assists pooled`;
-    document.getElementById('spot-delta').textContent = `+${up.delta_ep.toFixed(2)}`;
-    document.getElementById('spot-delta-inline').textContent = `+${up.delta_ep.toFixed(2)}`;
-  })();
-
-  // ──────────────────────────────────────────────────────
-  // 7. TOP 10 EP-PER-90 — horizontal bar
-  // ──────────────────────────────────────────────────────
-  (function renderEPPer90() {
-    const rows = data.top10_ep_per_90 || [];
-    if (!rows.length) return;
-    new Chart(document.getElementById('chart-top-ep-90'), {
-      type: 'bar',
-      data: {
-        labels: rows.map(r => `${r.player} · ${r.team}`),
-        datasets: [{
-          label: 'EP per 90 minutes',
-          data: rows.map(r => r.ep_per_90),
-          backgroundColor: C.primary,
-          borderWidth: 0,
-        }],
-      },
-      options: {
-        indexAxis: 'y',
-        aspectRatio: 1.6,
-        layout: { padding: { bottom: 12, left: 12 } },
-        plugins: {
-          title: { display: true, text: 'EP per 90 minutes — G+A pooled, ≥ 900 minutes' },
-          legend: { display: false },
-          tooltip: { callbacks: {
-            afterLabel: (ctx) => {
-              const r = rows[ctx.dataIndex];
-              return [
-                `Goals + Assists: ${r.goals_involved}`,
-                `Minutes played:  ${r.minutes_played.toLocaleString('en-GB')}`,
-                `Total EP:        ${r.ep_timed.toFixed(2)}`,
-              ];
-            }
-          }}
-        },
-        scales: {
-          x: {
-            title: { display: true, text: 'EP per 90', padding: { top: 10 } },
-            beginAtZero: true,
-          },
-          y: { ticks: { font: { family: tok.mono, size: 11 } } },
-        },
-      },
-    });
-  })();
-
-  // ──────────────────────────────────────────────────────
-  // 8. TOP 10 EP COLLECTORS — bin-by-bin breakdown table
-  // ──────────────────────────────────────────────────────
-  (function renderTop10ByBin() {
-    const rows = data.top10_ep_collectors || [];
-    if (!rows.length) return;
-    const bins = data.meta.time_bins;
-
-    // Find max bin per row for accent highlight
-    const t = document.getElementById('top10-by-bin-table');
-    let html = '<thead><tr>';
-    html += '<th style="text-align:left">Player</th><th style="text-align:left">Team</th><th>Total EP</th>';
-    for (const b of bins) html += `<th>${b}</th>`;
-    html += '</tr></thead><tbody>';
-    for (const r of rows) {
-      const epBins = r.ep_bins || {};
-      let maxBin = null, maxVal = -Infinity;
-      for (const b of bins) {
-        const v = epBins[b];
-        if (typeof v === 'number' && v > maxVal) { maxVal = v; maxBin = b; }
-      }
-      html += '<tr>';
-      html += `<td style="text-align:left;color:var(--text)">${r.player}</td>`;
-      html += `<td style="text-align:left;color:var(--text-secondary)">${r.team}</td>`;
-      html += `<td>${r.ep_timed.toFixed(1)}</td>`;
-      for (const b of bins) {
-        const v = epBins[b];
-        const isMax = b === maxBin;
-        const display = (typeof v === 'number') ? v.toFixed(1) : '—';
-        const cls = isMax ? 'cell' : '';
-        const bg = isMax ? 'background: var(--accent-glow); color: var(--accent); font-weight: 500;' : '';
-        html += `<td class="${cls}" style="${bg}">${display}</td>`;
-      }
+  // ── 4. Game state table ──
+  (function renderGS() {
+    let html = '<thead><tr><th>Score</th>' + bins.map(b => `<th>${b}</th>`).join('') + '</tr></thead><tbody>';
+    gs.rows.forEach((row, ri) => {
+      html += `<tr><th>${row.label}</th>`;
+      row.bins.forEach((c, bj) => {
+        const at = `$.game_state.rows[${ri}].bins[${bj}]`;
+        const strong = c.ratio >= 1;
+        html += `<td class="cell" style="background:${strong ? 'rgba(193,255,114,' + Math.min(0.08 + 0.1 * Math.log2(c.ratio + 1), 0.55) + ')' : 'var(--bg-card)'};" ` +
+          `title="${row.label} @ ${c.bin}: scoring +${f2(c.up)} EP, conceding −${f2(c.down)} EP · 95% CI ${f2(c.lo)}–${f2(c.hi)}">` +
+          `<div class="ep" data-verify-path="${at}.ratio">${x2(c.ratio)}</div>` +
+          `<div class="n"><span data-verify-path="${at}.up">${f2(c.up)}</span> / ` +
+          `<span data-verify-path="${at}.down">${f2(c.down)}</span></div></td>`;
+      });
       html += '</tr>';
-    }
-    html += '</tbody>';
-    t.innerHTML = html;
+    });
+    document.getElementById('game-state-table').innerHTML = html + '</tbody>';
+    document.getElementById('gs-text').innerHTML =
+      `Flip the value table around and it answers a match-day question: how much is the next goal worth to you, and ` +
+      `how much would conceding it cost? Level early, the two are close (${x2(gs.level_early_ratio)}). Level in the last ` +
+      `15, a goal for is worth <strong>${f2(lv.up)}</strong> and a goal against costs ${f2(lv.down)}: the upside is ` +
+      `<strong>${x2(lv.ratio)}</strong> the downside (95% CI ${f2(lv.lo)}–${f2(lv.hi)}). A draw splits the points, so ` +
+      `winning it gains more than losing it costs. One up late, it flips: conceding costs ${f2(ld.down)}, a second goal ` +
+      `adds ${f2(ld.up)} (${x2(ld.ratio)}). One down late, an equaliser is worth ${x2(tr.ratio)} what a second goal ` +
+      `against would cost.`;
+    document.getElementById('gs-caption').textContent =
+      `Each cell: value of scoring the next goal ÷ cost of conceding it, with both in EP underneath (for / against). Above 1: more to gain ` +
+      `than to lose. Hover for the 95% interval of the ratio.`;
+    document.getElementById('gs-caveat').innerHTML =
+      `<strong>What this doesn't say.</strong> These are prices, not a playbook. They tell you what the next goal is worth ` +
+      `either way; they don't measure how much a change of shape or a striker off the bench moves the chance of scoring ` +
+      `or conceding. At ${x2(lv.ratio)}, a change that adds goals for and against in equal measure is worth making ` +
+      `when level late, if it really does that.`;
   })();
 
+  // ── 5. EP by bin ──
+  (function renderBins() {
+    const eb = h.ep_by_bin, tot = h.ep_last_vs_first_bin;
+    new Chart(document.getElementById('chart-ep-by-bin'), {
+      type: 'bar',
+      data: { labels: eb.map(b => b.bin), datasets: [{ label: 'Total EP', data: eb.map(b => b.total_ep),
+        backgroundColor: eb.map((b, i) => (i === eb.length - 1 ? C.primary : C.primaryDim)), borderWidth: 0 }] },
+      options: {
+        plugins: {
+          title: { display: true, text: 'Expected points delivered, by minute window' },
+          legend: { display: false },
+          tooltip: { callbacks: {
+            label: (ctx) => `${fmt(ctx.parsed.y)} EP from ${fmt(eb[ctx.dataIndex].goals)} goals`,
+            afterLabel: (ctx) => eb[ctx.dataIndex].top.map(t => `  ${t.transition}: ${fmt(t.ep)} EP (${fmt(t.goals)} goals)`),
+          }},
+        },
+        scales: {
+          y: { beginAtZero: true, title: { display: true, text: 'Total EP' } },
+          x: { title: { display: true, text: 'Minute window' } },
+        },
+      },
+    });
+    document.getElementById('bin-text').innerHTML =
+      `Add every goal up at its own price and the last 15 minutes deliver <strong>${x2(tot.value)}</strong> the expected ` +
+      `points of the first 15 (95% CI ${f2(tot.lo)}–${f2(tot.hi)}). Two things stack: more goals are scored late ` +
+      `(${fmt(eb[eb.length - 1].goals)} against ${fmt(eb[0].goals)}), and the ones that break a level game are worth twice ` +
+      `as much. The average late goal is not worth more (${f2(eb[eb.length - 1].ep_per_goal)} EP against ` +
+      `${f2(eb[0].ep_per_goal)}): many come when the game is already decided.`;
+  })();
+
+  // ── 6. Calibration ──
+  (function renderCalib() {
+    const ts = cal.test_seasons;
+    new Chart(document.getElementById('chart-brier'), {
+      type: 'bar',
+      data: { labels: cal.by_bin.map(b => b.bin), datasets: [
+        { label: 'Time-aware', data: cal.by_bin.map(b => b.timed), backgroundColor: C.primary, borderWidth: 0 },
+        { label: 'Time-blind', data: cal.by_bin.map(b => b.untimed), backgroundColor: C.secondary, borderWidth: 0 },
+        { label: 'No score info', data: cal.by_bin.map(b => b.base), backgroundColor: tok.textMuted, borderWidth: 0 },
+      ]},
+      options: {
+        aspectRatio: narrow ? 1 : 1.3,
+        plugins: { title: { display: true, text: 'Prediction error, held-out seasons' },
+                   tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${fmt(ctx.parsed.y, 3)}` } } },
+        scales: { y: { beginAtZero: true, title: { display: true, text: 'Brier score (lower = better)' } },
+                  x: { title: { display: true, text: 'Minute window' } } },
+      },
+    });
+    const rel = cal.reliability;
+    new Chart(document.getElementById('chart-reliability'), {
+      type: 'scatter',
+      data: { datasets: [
+        { label: 'Held-out seasons', data: rel.map(b => ({ x: b.predicted, y: b.observed })), backgroundColor: C.primary,
+          pointRadius: rel.map(b => 3 + Math.sqrt(b.minutes) / 120) },
+        { label: 'Perfect calibration', type: 'line', data: [{ x: 0, y: 0 }, { x: 3, y: 3 }], borderColor: tok.textMuted,
+          borderDash: [4, 4], pointRadius: 0, borderWidth: 1 },
+      ]},
+      options: {
+        aspectRatio: narrow ? 1 : 1.3,
+        plugins: { title: { display: true, text: 'Predicted vs actual points' },
+                   tooltip: { callbacks: { label: (ctx) => ctx.datasetIndex ? '' :
+                     `predicted ${f2(rel[ctx.dataIndex].predicted)} · actual ${f2(rel[ctx.dataIndex].observed)} · ` +
+                     `${fmt(rel[ctx.dataIndex].minutes)} team-minutes` } } },
+        scales: { x: { min: 0, max: 3, title: { display: true, text: 'Predicted EP' } },
+                  y: { min: 0, max: 3, title: { display: true, text: 'Points actually won' } } },
+      },
+    });
+    const late = cal.by_bin[cal.by_bin.length - 1];
+    document.getElementById('calib-text').innerHTML =
+      `A value table is only as good as its predictions. So the model was rebuilt on ${cal.train_seasons[0]} to ` +
+      `${cal.train_seasons[cal.train_seasons.length - 1]} alone and asked to predict the results of ` +
+      `${fmt(cal.test_matches)} matches in ${ts.join(' and ')} from the score and the minute. Its error (Brier score, ` +
+      `lower is better) is ${fmt(cal.brier.timed, 3)}, against ${fmt(cal.brier.untimed, 3)} for the same model without ` +
+      `the clock and ${fmt(cal.brier.base, 3)} with no score information at all. The clock matters most late: ` +
+      `${fmt(late.timed, 3)} against ${fmt(late.untimed, 3)} in the last 15 minutes. And the prices are honest: where ` +
+      `the model expects a team to take 2 points, teams take about 2 (largest gap ${f2(cal.reliability_max_gap)} EP).`;
+    document.getElementById('brier-caption').textContent =
+      `Three-outcome Brier score per team-minute in ${ts.join(' and ')}, by window. The time-aware edge over the ` +
+      `time-blind model, all windows: ${fmt(cal.improvement.value, 3)} (95% CI ${fmt(cal.improvement.lo, 3)}–` +
+      `${fmt(cal.improvement.hi, 3)}).`;
+    document.getElementById('rel-caption').textContent =
+      `Held-out team-minutes grouped by the EP the model gave them (bands of ${f2(cal.band_width)} EP; bands under ` +
+      `${fmt(cal.band_min_minutes)} team-minutes dropped). Dots on the dashed line = prices match what teams then won. ` +
+      `Dot size: team-minutes.`;
+  })();
+
+  // ── 7. Robustness ──
+  (function renderRB() {
+    const body = document.querySelector('#robustness-table tbody');
+    const rows = [
+      { label: 'Primary model', m: s.matches_model, ...rb.primary, lo: op.lo, hi: op.hi, primary: true },
+      { label: 'Own-goal matches put back', m: rb.inclusive.matches, ...rb.inclusive },
+      { label: `Fit on ${rb.train.seasons[0]} to ${rb.train.seasons[rb.train.seasons.length - 1]}`, m: rb.train.matches, ...rb.train },
+      { label: `Fit on ${rb.test.seasons.join(' and ')}`, m: rb.test.matches, ...rb.test },
+      ...rb.by_league.map(x => ({ label: x.label, m: x.matches, ...x })),
+    ];
+    rows.forEach(r => {
+      const tr = document.createElement('tr');
+      if (r.primary) tr.className = 'primary';
+      tr.innerHTML = `<td>${r.label}</td><td class="numeric">${r.m == null ? 'n/a' : fmt(r.m)}</td>` +
+        `<td class="numeric">${f2(r.opener_late)}</td><td class="numeric">${f2(r.opener_early)}</td>` +
+        `<td class="numeric">${x2(r.ratio)}</td><td class="numeric">${r.lo == null ? 'n/a' : f2(r.lo) + '–' + f2(r.hi)}</td>`;
+      body.appendChild(tr);
+    });
+    document.getElementById('rb-text').innerHTML =
+      `The ratio barely moves however the sample is cut. With the own-goal matches back in it is ` +
+      `${x2(rb.inclusive.ratio)}; fitted on the early seasons alone ${x2(rb.train.ratio)}, on the last two ` +
+      `${x2(rb.test.ratio)}. League by league it runs from ${x2(rb.league_ratio_min)} to ${x2(rb.league_ratio_max)}, ` +
+      `and every league's interval sits well above 1. League differences inside that range are not tested here.`;
+    const k = dq.kept, x = dq.excluded;
+    document.getElementById('og-compare-text').innerHTML =
+      `<strong>What leaving out the own-goal matches does.</strong> They are not a random slice: ` +
+      `${fmt(x.goals_per_match, 2)} goals a game against ${fmt(k.goals_per_match, 2)} in the matches kept (a missing ` +
+      `own goal means at least one goal more), and fewer draws (${fmt(x.draw_pct, 1)}% against ${fmt(k.draw_pct, 1)}%). ` +
+      `Dropping them tilts the sample slightly towards tight, low-scoring games. Yet including them moves the headline ` +
+      `only from ${x2(rb.primary.ratio)} to ${x2(rb.inclusive.ratio)}. Their match IDs are in <code>${dq.affected_file}</code> for a future fix from FBref's match reports.`;
+  })();
+
+  // Forest helper: floating bars [lo, hi] + dot at the estimate
+  function forest(canvasId, rows, title, axisTitle, opts = {}) {
+    const labels = rows.map(r => (narrow ? wrap(r.label, 16) : r.label));
+    return new Chart(document.getElementById(canvasId), {
+      type: 'bar',
+      data: { labels, datasets: [{ data: rows.map(r => [r.lo, r.hi]),
+        backgroundColor: rows.map((r, i) => (i === 0 ? 'rgba(193,255,114,0.75)' : 'rgba(143,166,143,0.6)')),
+        borderWidth: 0, barThickness: 8 }] },
+      options: {
+        indexAxis: 'y', maintainAspectRatio: false,
+        plugins: { title: { display: true, text: title }, legend: { display: false },
+                   tooltip: { callbacks: { label: (ctx) => opts.tip(rows[ctx.dataIndex]) } } },
+        scales: { x: { ...(opts.x || {}), title: { display: true, text: axisTitle } },
+                  y: { ticks: { autoSkip: false, font: { family: tok.mono, size: narrow ? 10 : 11 } } } },
+      },
+      plugins: [{
+        id: 'dots',
+        beforeDatasetsDraw(chart) {
+          if (!opts.zero) return;
+          const { ctx, chartArea: a, scales: { x } } = chart;
+          const z = x.getPixelForValue(0);
+          ctx.save(); ctx.strokeStyle = tok.textMuted; ctx.setLineDash([4, 4]);
+          ctx.beginPath(); ctx.moveTo(z, a.top); ctx.lineTo(z, a.bottom); ctx.stroke(); ctx.restore();
+        },
+        afterDatasetsDraw(chart) {
+          const { ctx, scales: { x } } = chart;
+          const m = chart.getDatasetMeta(0);
+          ctx.save();
+          rows.forEach((r, i) => {
+            ctx.fillStyle = i === 0 ? tok.accent : tok.text;
+            ctx.beginPath(); ctx.arc(x.getPixelForValue(r.v), m.data[i].y, 4.5, 0, Math.PI * 2); ctx.fill();
+          });
+          ctx.restore();
+        },
+      }],
+    });
+  }
+
+  // ── 8. Top EP ──
+  (function renderTop() {
+    const rows = pl.top_ep.map(p => ({ label: `${p.player} · ${p.team}`, v: p.ep, lo: p.ep_lo, hi: p.ep_hi, p }));
+    const xLo = Math.floor((Math.min(...rows.map(r => r.lo)) - 5) / 20) * 20;
+    const xHi = Math.ceil((Math.max(...rows.map(r => r.hi)) + 5) / 20) * 20;
+    forest('chart-top-ep', rows, 'EP collected · goals + assists, 95% intervals', 'EP collected', {
+      x: { min: xLo, max: xHi },
+      tip: (r) => `${f2(r.v)} EP (95% CI ${fmt(r.lo, 1)}–${fmt(r.hi, 1)}) · ${r.p.goals} goals + ${r.p.assists} assists`,
+    });
+    const t = pl.top_ep, ts = pl.top_ep_summary;
+    document.getElementById('top-text').innerHTML =
+      `Volume still wins: the top of the board is the players who score and create the most. But look at the bars, not ` +
+      `the order. The top five sit within ${f2(ts.top5_spread)} EP of each other and every one of their intervals overlaps ` +
+      `the leader's. ${t[0].player}, ${t[1].player}, ${t[2].player}, ${t[3].player} and ${t[4].player} are a statistical ` +
+      `tie over these seasons.`;
+    document.getElementById('top-caption').textContent =
+      `EP collected from goals and SCA1 credits (once per player per goal), all six leagues, ${s0} to ${s1}. Dot: ` +
+      `estimate; bar: 95% interval from resampling matches. Team: where most of the player's involvements came.`;
+  })();
+
+  // ── 9. Timing premium ──
+  (function renderPremium() {
+    const rows = pl.top_premium.map(p => ({ label: `${p.player} · ${p.team}`, v: p.premium, lo: p.premium_lo, hi: p.premium_hi, p }));
+    forest('chart-premium', rows, 'Timing premium, top 10 · 95% intervals', 'EP above the same goals at average times', {
+      zero: true,
+      tip: (r) => `${sgn2(r.v)} EP (95% CI ${sgn2(r.lo)} to ${sgn2(r.hi)}) · ${r.p.involvements} goal involvements`,
+    });
+    const ps = pl.premium_summary, top = pl.top_premium[0];
+    document.getElementById('premium-text').innerHTML =
+      `The obvious next question: does anyone score at better moments than everyone else? The <strong>timing ` +
+      `premium</strong> answers it. For each goal a player scored or created, take its time-aware value and subtract the ` +
+      `average value of all goals with the same scoreline change, so an early opener and a late opener are compared, ` +
+      `not an opener and a consolation. Summed over a career, it's what the player gained from <em>when</em> his goals ` +
+      `came. Among the ${fmt(ps.eligible)} players with at least ${ps.min_involvements} goal involvements, ` +
+      `${top.player} leads (${sgn2(top.premium)} EP).`;
+    document.getElementById('premium-text-2').innerHTML =
+      `Now the honest part. Only <strong>${ps.ci_above_zero}</strong> of those ${fmt(ps.eligible)} players have an ` +
+      `interval clearly above zero, fewer than the ~${ps.expected_by_chance_each_side} you'd expect from chance alone. ` +
+      `The top ten's intervals overlap almost completely. More players sit clearly <em>below</em> zero ` +
+      `(${ps.ci_below_zero}): their goals come early more often (${fmt(pl.negative_premium_first30_pct, 1)}% in the ` +
+      `first half hour, against ${fmt(pl.all_first30_pct, 1)}% for everyone), and early goals are cheaper. That is ` +
+      `when their teams tend to score, not a verdict on nerve. A "clutch" label doesn't survive the intervals.`;
+    document.getElementById('premium-caption').textContent =
+      `Timing premium: a player's time-aware EP minus the same goals priced at the average time for their scoreline. ` +
+      `Players with ${ps.min_involvements}+ goal involvements. Dashed line: zero. Bar: 95% interval from resampling ` +
+      `matches.`;
+  })();
+
+  // ── 10. Per 90 ──
+  (function renderP90() {
+    const rows = pl.top_per90.map(p => ({ label: `${p.player} · ${p.team}`, v: p.p90, lo: p.p90_lo, hi: p.p90_hi, p }));
+    forest('chart-p90', rows, 'EP per 90 minutes · 95% intervals', 'EP per 90', {
+      tip: (r) => `${fmt(r.v, 3)} EP per 90 (95% CI ${f2(r.lo)}–${f2(r.hi)}) · ${fmt(r.p.minutes)} minutes`,
+    });
+    const ps = pl.per90_summary;
+    document.getElementById('p90-text').innerHTML =
+      `Total EP rewards volume; per 90 minutes rewards rate. Among the ${fmt(ps.eligible)} players with at least ` +
+      `${fmt(ps.min_minutes)} minutes, the board mixes career-long rates with short hot streaks: ${ps.short_in_top10} ` +
+      `of the top ten played under ${fmt(ps.short_minutes)} minutes, and their intervals are the widest. A minutes filter is a blunt tool: ` +
+      `Project 03 ranks per-90 rates properly, pulling small samples towards the average.`;
+    document.getElementById('p90-caption').textContent =
+      `EP per 90 = EP collected ÷ minutes played × 90, minutes from the same matches as the goals (all six leagues). ` +
+      `At least ${fmt(ps.min_minutes)} minutes. Bar: 95% interval from resampling matches.`;
+  })();
+
+  // ── 11. Top 10 by bin ──
+  (function renderByBin() {
+    let html = '<thead><tr><th style="text-align:left">Player</th><th>Total</th>' + bins.map(b => `<th>${b}</th>`).join('') + '</tr></thead><tbody>';
+    pl.top_ep.forEach((r, k) => {
+      const vals = bins.map(b => r.ep_bins[b]);
+      const mx = Math.max(...vals);
+      html += `<tr><td style="text-align:left;color:var(--text)">${r.player}</td>` +
+        `<td><span data-verify-path="$.players.top_ep[${k}].ep">${fmt(r.ep, 1)}</span></td>` +
+        vals.map((v, j) => `<td${v === mx ? ' style="background: var(--accent-glow); color: var(--accent);"' : ''}>` +
+          `<span data-verify-path="$.players.top_ep[${k}].ep_bins.${bins[j]}">${fmt(v, 1)}</span></td>`).join('') + '</tr>';
+    });
+    document.getElementById('top10-by-bin-table').innerHTML = html + '</tbody>';
+  })();
+
+  // ── Limitations ──
+  document.getElementById('limitations-list').innerHTML = [
+    `<strong>Prices, not causes.</strong> A goal's value is the gap between two states, measured on what teams in ` +
+      `those states went on to do. It doesn't separate the goal from what else was happening: red cards, ` +
+      `substitutions, a team sitting back.`,
+    `<strong>No team strength.</strong> A 1–0 lead is priced the same for the favourite and the underdog. Strong teams ` +
+      `lead more often and hold leads better, so some of what the table credits to the clock belongs to who is leading.`,
+    `<strong>Own goals.</strong> They are missing from the shot table, so ${fmt(dq.og_affected)} matches are left out ` +
+      `of the value model; including them changes the headline from ${x2(rb.primary.ratio)} to ${x2(rb.inclusive.ratio)}.`,
+    `<strong>Eredivisie gaps.</strong> ${fmt(ere.failed)} of its ${fmt(ere.matches)} matches have no usable data.`,
+    `<strong>Every goal counts as one.</strong> A tap-in and a thirty-yard strike move the score equally; nothing here ` +
+      `says how hard the chance was.`,
+    `<strong>"Assist" is SCA1.</strong> FBref's first shot-creating action also counts dribbles, fouls drawn and the ` +
+      `scorer's own actions; ${fmt(at.unassisted)} goals have none recorded.`,
+    `<strong>Fifteen-minute windows.</strong> A goal in the 76th and the 94th minute share a window; stoppage time ` +
+      `folds into the 45th and 90th minutes.`,
+    `<strong>Timing premiums are not tested for repeatability.</strong> Whether a player's premium carries over from ` +
+      `one season to the next is not checked here.`,
+  ].map(x => `<li>${x}</li>`).join('');
+
+  // ── Conclusion ──
+  document.getElementById('conclusion-text').innerHTML =
+    `The clock changes what a goal is worth, and by a lot: the same go-ahead goal from level is worth ` +
+    `${x2(op.value)} as much in the last 15 minutes as in the first, in every league and in seasons the model ` +
+    `never saw. That makes the value table a usable tool for game management: level late, a goal for is worth ` +
+    `${x2(lv.ratio)} what a goal against costs. What it doesn't do is single out "clutch" players: once goals are ` +
+    `compared with the same scorelines at average times, almost nobody's timing stands out from chance.`;
 })();
 </script>
 

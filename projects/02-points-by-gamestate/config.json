@@ -3,10 +3,19 @@
   "title": "Not All Goals Are Equal: A Time-Aware Expected-Points Model",
   "date": "May 2026",
   "type": "HTML + Dashboard + Methodology",
-  "tags": ["Top 5 Leagues + Eredivisie", "Expected Points", "Player Rating", "Time-Aware", "39,381 Goals"],
-  "filter": ["modelling", "player-rating"],
-  "excerpt": "A goal from 0–0 to 1–0 in the fifth minute and the same goal in the eighty-fifth are not the same thing. Expected points (EP) prices every goal by the goal-difference transition it produced and the minute it landed — across 39,381 goals in six top-flight leagues and seven seasons.",
-  "finding": "A goal's value depends on the minute as well as the scoreline: a late go-ahead goal from level is worth far more than an early opener.",
+  "tags": [
+    "Top 5 Leagues + Eredivisie",
+    "Expected Points",
+    "Player Rating",
+    "Time-Aware",
+    "39,403 Goals"
+  ],
+  "filter": [
+    "modelling",
+    "player-rating"
+  ],
+  "excerpt": "A goal from 0–0 to 1–0 in the fifth minute and the same goal in the eighty-fifth are not the same thing. Expected points prices every goal by the scoreline it changes and the minute it lands, estimated from every minute of 13,206 matches in six top-flight leagues.",
+  "finding": "A go-ahead goal from level is worth 2.05× as much in the last 15 minutes as in the first, in every league and in seasons the model never saw. No player's timing stands out from chance.",
   "has_html": true,
   "has_pdf": true,
   "has_methodology": true,
