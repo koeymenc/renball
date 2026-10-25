@@ -1,5 +1,5 @@
 """
-build_slides.py — Renball Project 03 slide builder (The True Contributors)
+build_slides.py, Renball Project 03 slide builder (The True Contributors)
 ==========================================================================
 
 Generates a 16:9 deck for the three-layer expected-points attribution.
@@ -7,7 +7,7 @@ All numbers are pulled from ../data/data.json so the deck stays in sync
 with the build.
 
 Styling and slide layouts come exclusively from
-`assets/slides/renball_slide_master.py` — never reimplement them here.
+`assets/slides/renball_slide_master.py`, never reimplement them here.
 
 Run:
     python code/build_slides.py
@@ -65,17 +65,17 @@ def slide_tldr(prs, d):
     messi_sca2 = d["q6_architects"]["abs_top"][0]["ep_timed"]
     bullets = [
         f"We take project 02's time-aware expected-points (EP) value function and "
-        f"credit a THIRD touchpoint per goal — the pre-assist (SCA2) — alongside the "
+        f"credit a THIRD touchpoint per goal (the pre-assist, SCA2) alongside the "
         f"scorer and the assister.",
         f"Across {meta['total_goals']:,} goals in six leagues and seven seasons, the "
         f"per-90 board still leads with the consensus elite ({top['player']}, "
-        f"{top['ep_per_90']:.2f} EP/90) — the framework clears the eye test before it "
+        f"{top['ep_per_90']:.2f} EP/90), the framework clears the eye test before it "
         f"surfaces surprises.",
         f"The marquee finding: Julian Brandt collects {brandt['ep_sca2']:.2f} EP from "
-        f"pre-assists alone — second in Europe only to Messi ({messi_sca2:.2f}) — and "
+        f"pre-assists alone, second in Europe only to Messi ({messi_sca2:.2f}), and "
         f"39% of his total value comes from that single layer.",
     ]
-    R.add_bullet_slide(prs, "TL;DR — three sentences", bullets, eyebrow="TL;DR")
+    R.add_bullet_slide(prs, "TL;DR: three sentences", bullets, eyebrow="TL;DR")
 
 
 def slide_question(prs, d):
@@ -87,11 +87,11 @@ def slide_question(prs, d):
                font=R.SERIF, size=24, color=R.TEXT, italic=True)
     rows = [
         ("SCORER",
-         "Puts the ball in the net. Always credited — the goal goes on his record."),
+         "Puts the ball in the net. Always credited: the goal goes on his record."),
         ("ASSIST · SCA1",
          "The final pass. Sometimes credited, when the box score bothers to log it."),
         ("PRE-ASSIST · SCA2",
-         "The pass before the pass. Almost never credited — it disappears into the squad page."),
+         "The pass before the pass. Almost never credited: it disappears into the squad page."),
     ]
     y = R.BODY_TOP + 1.05
     for label, body in rows:
@@ -136,9 +136,9 @@ def slide_data_method(prs, d):
 
     y = R.BODY_TOP + 3.05
     for line in [
-        "Inherits project 02's value function verbatim — a goal is priced by the swing in "
+        "Inherits project 02's value function verbatim: a goal is priced by the swing in "
         "expected league points it produces, conditioned on game-state and minute.",
-        "Per-90 = (EP / minutes) × 90. Minutes come from FBref summary tables — Top-5 "
+        "Per-90 = (EP / minutes) × 90. Minutes come from FBref summary tables, Top-5 "
         "leagues only, so every per-90 board excludes Eredivisie.",
     ]:
         R.add_text(s, R.BODY_LEFT, y, R.BODY_MAX_W, 0.5, line,
@@ -168,7 +168,7 @@ def slide_q1a(prs, d):
 
     R.add_chart_slide(
         prs, "The model clears the *eye test*", fig,
-        caption="Top 10 by EP/90, ≥ 1,000 minutes, Top-5 leagues. The consensus elite leads — "
+        caption="Top 10 by EP/90, ≥ 1,000 minutes, Top-5 leagues. The consensus elite leads, "
                 "which is the point. Recover what everyone knows before surfacing surprises.",
         eyebrow="Q1a · FULL-CREDIT LEADERBOARD")
 
@@ -179,11 +179,11 @@ def slide_q1b_robustness(prs, d):
         "Does *weighting* the credits change the answer?",
         bullets=[
             "Re-run the same board with credits weighted 0.40 / 0.35 / 0.25 "
-            "(scorer / SCA1 / SCA2) — EP only, the minutes threshold is unchanged.",
+            "(scorer / SCA1 / SCA2). EP only; the minutes threshold is unchanged.",
             "The top eight is essentially identical. The biggest movers are pure scorers "
             "gaining a little under the heavier scoring weight: Lewandowski +6, Dovbyk +7.",
             "Creator-heavy names slip a few places: Jallow −9, Ljajić −9.",
-            "That the tuned weights reproduce the simple 1/1/1 board IS the result — the "
+            "That the tuned weights reproduce the simple 1/1/1 board IS the result: the "
             "ranking is not an artefact of the credit split.",
         ],
         eyebrow="Q1b · ROBUSTNESS",
@@ -234,11 +234,11 @@ def slide_q2_mvps(prs, d):
             "title": muriel["player"],
             "body": f"{muriel['primary_team']} · {muriel['ep_per_90']:.3f} EP/90 "
                     f"({muriel['goals_involved']} credits).\n\n"
-                    f"The model's Ballon d'Or pick that season — not what the trophy "
+                    f"The model's Ballon d'Or pick that season, not what the trophy "
                     f"cabinet recorded.",
         },
         eyebrow="Q2 · PER-SEASON MVPs",
-        caption=f"Model's top EP/90 pick per (league × season) vs the real award winner — matched in "
+        caption=f"Model's top EP/90 pick per (league × season) vs the real award winner, matched in "
                 f"{m} of {n} cells ({pct}%). The model prices leverage, not reputation. Top-5 only.")
 
 
@@ -280,7 +280,7 @@ def slide_q5_positions(prs, d):
         headers, rows,
         eyebrow="Q5 · POSITION-ADJUSTED",
         col_widths=[2.4, 3.4, 1.8, 2.2, 2.2],
-        caption="Top EP/90 per modal position, ≥ 1,000 minutes. GK excluded — a structural blind "
+        caption="Top EP/90 per modal position, ≥ 1,000 minutes. GK excluded: a structural blind "
                 "spot of the framework (top GK ~0.1 EP/90 vs ~1.1 for forwards). De Bruyne is the "
                 "most-sampled elite pick anywhere here: 14,674 minutes, 206 credits.")
 
@@ -324,7 +324,7 @@ def slide_brandt_spotlight(prs, d):
 
     card_top = R.BODY_TOP
     card_h = R.CAPTION_TOP - R.CAPTION_GAP - card_top
-    # Left card — Brandt headline number
+    # Left card: Brandt headline number
     R.add_rect(s, R.BODY_LEFT, card_top, 6.0, card_h, R.BG_CARD, border=R.ACCENT, border_pt=1.5)
     R.add_mono_label(s, R.BODY_LEFT + 0.25, card_top + 0.2, 5.5, 0.3,
                      "PRE-ASSIST ARCHITECT", color=R.ACCENT, size=10)
@@ -370,7 +370,7 @@ def slide_brandt_spotlight(prs, d):
         y += 0.62
 
     R.add_text(s, R.BODY_LEFT, R.CAPTION_TOP, R.BODY_MAX_W, 0.3,
-               "Brandt's profile — 25% scorer / 37% SCA1 / 39% SCA2 — is shared by no pure goalscorer.",
+               "Brandt's profile (25% scorer / 37% SCA1 / 39% SCA2) is shared by no pure goalscorer.",
                font=R.MONO, size=10, color=R.TEXT_MUTED)
 
 
@@ -395,7 +395,7 @@ def slide_q7_young(prs, d):
     R.add_chart_slide(
         prs, "Young players to *watch*", fig,
         caption="Top 10 EP/90, age ≤ 23, ≥ 500 minutes. Dim bars = under 2,000 minutes "
-                "(low sample). Yamal sits #10 on 2,209 minutes at age 16.9 — real volume, not a cameo.",
+                "(low sample). Yamal sits #10 on 2,209 minutes at age 16.9, real volume, not a cameo.",
         eyebrow="Q7 · UNDER-23 WATCHLIST")
 
 
@@ -406,8 +406,8 @@ def slide_implications(prs, d):
         bullets=[
             "Contribution is a chain, not a tally. Pricing the pre-assist surfaces value "
             "the goal-and-assist box score structurally cannot see.",
-            "Recruitment: a player like Brandt — whose largest layer is the pass before the "
-            "pass — is materially mis-valued by conventional output metrics.",
+            "Recruitment: a player like Brandt, whose largest layer is the pass before the "
+            "pass, is materially mis-valued by conventional output metrics.",
             "The ranking is stable. Re-weighting the three layers barely moves the board, so "
             "the discoveries beneath the elite are not an artefact of the credit split.",
             "The dashboard exposes all seven boards with per-league and per-season drill-down, "
@@ -423,9 +423,9 @@ def slide_limitations(prs, d):
         "What this *isn't*",
         bullets=[
             "Not xG-weighted; penalties not separated; own goals missing from the shot data (inherited from project 02).",
-            "Credit caps at SCA2 — build-up beyond the pre-assist isn't captured.",
+            "Credit caps at SCA2: build-up beyond the pre-assist isn't captured.",
             "Per-90 boards exclude Eredivisie: the minutes source covers the top five leagues only.",
-            "No opinion on goalkeepers — the three credited touchpoints are ones GKs rarely occupy.",
+            "No opinion on goalkeepers: the three credited touchpoints are ones GKs rarely occupy.",
             "Observational, not causal: EP is the gap between states a goal connects, not its counterfactual effect.",
         ],
         eyebrow="LIMITATIONS",
@@ -443,7 +443,7 @@ def slide_contact(prs, d):
             "→ analysis.html        editorial write-up · Chart.js + custom SVG visuals",
             "→ dashboard.html       interactive Tabulator dashboard · 7 datasets · drill-down",
             "→ methodology.html     three-layer attribution · seven questions · nine limitations",
-            "→ code/build.py        Python pipeline — project 02 framework + SCA2 enrichment",
+            "→ code/build.py        Python pipeline: project 02 framework + SCA2 enrichment",
         ],
     )
 

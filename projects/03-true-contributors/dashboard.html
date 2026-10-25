@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The True Contributors · Dashboard — Renball</title>
-<meta name="description" content="Full interactive dashboard for the True Contributors project — every player, every ranking, every league, every season.">
+<title>The True Contributors · Dashboard · Renball</title>
+<meta name="description" content="Full interactive dashboard for the True Contributors project: every player, every ranking, every league, every season.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -335,9 +335,9 @@
   <button class="dismiss" id="helpDismiss">Got it, hide this</button>
   <h3>How to use this dashboard</h3>
   <ul>
-    <li><strong>Switch datasets</strong> with the two dropdowns — pick a ranking dataset, then a view within it.</li>
+    <li><strong>Switch datasets</strong> with the two dropdowns: pick a ranking dataset, then a view within it.</li>
     <li><strong>Understand each dataset</strong> via the "How to read this" toggle just above the table.</li>
-    <li><strong>Filter columns</strong> by typing in the header inputs. Numbers accept <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>, <code>=</code>, <code>!=</code> — e.g. <code>&gt;0.8</code>.</li>
+    <li><strong>Filter columns</strong> by typing in the header inputs. Numbers accept <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>, <code>=</code>, <code>!=</code>, e.g. <code>&gt;0.8</code>.</li>
     <li><strong>Search</strong> any cell with the search box; <strong>sort</strong> by clicking a column header.</li>
     <li><strong>Export</strong> the current view with the <strong>XLSX</strong> or <strong>CSV</strong> button.</li>
     <li><strong>Hover a column header</strong> for a plain-language definition of that metric.</li>
@@ -369,7 +369,7 @@
 <div class="table-meta">
   <span>Generated: <strong id="genAt">…</strong></span>
   <span>Files cached: <strong id="filesLoaded">0</strong> / 9</span>
-  <span class="scope" id="scopeNote">—</span>
+  <span class="scope" id="scopeNote">…</span>
 </div>
 
 <details class="how-to-read" id="howToRead">
@@ -479,7 +479,7 @@
     const n = parseInt(v, 10); if (Number.isNaN(n)) return String(v);
     const formatted = n.toLocaleString('en-GB');
     if (n < 1800) {
-      // sub-half-season — flag in muted italic
+      // sub-half-season, flag in muted italic
       return `<span style="color: var(--text-muted); font-style: italic;" title="half-season sample">${formatted}</span>`;
     }
     return formatted;
@@ -513,7 +513,7 @@
     share_late: 'Share of total EP collected in minutes 60–90',
     ep_total: 'Total EP collected across all time bins',
     ep_late: 'EP collected in the 60–90 minute bins',
-    ratio_ep_per_goal: 'EP collected per credit — value created per contribution',
+    ratio_ep_per_goal: 'EP collected per credit, value created per contribution',
     multiplier: 'Time-aware EP ÷ time-blind EP. Above 1 = scored disproportionately in valuable moments',
     ep_scorer: 'EP from goals scored',
     ep_sca1: 'EP from assists (SCA1)',
@@ -546,7 +546,7 @@
     player:  () => C('player', 'Player', { minWidth: 180,
       tooltip: 'Player name (FBref-cleaned; players pooled across teams).' }),
     team:    () => C('primary_team', 'Team', { minWidth: 140,
-      tooltip: 'Primary team — where most of their credits were registered.' }),
+      tooltip: 'Primary team, where most of their credits were registered.' }),
     pos:     () => C('pos', 'Pos', { width: 70, align: 'center',
       tooltip: 'Modal bucketed position (GK / DF / MF / FW) across all observed matches.' }),
     age:     () => C('age', 'Age', { numeric: true, width: 70, formatter: fmtNum(1),
@@ -558,13 +558,13 @@
     epTimed: () => C('ep_timed', 'EP timed', { numeric: true, width: 100, formatter: fmtNum(2),
       tooltip: 'Total time-aware EP collected across all credits.' }),
     epUntimed: () => C('ep_untimed', 'EP untimed', { numeric: true, width: 100, formatter: fmtNum(2),
-      tooltip: 'Total time-agnostic (untimed) EP — for comparison.' }),
+      tooltip: 'Total time-agnostic (untimed) EP, for comparison.' }),
     epPer90: () => C('ep_per_90', 'EP / 90', { numeric: true, width: 90, formatter: fmtAccent(3),
       tooltip: 'EP collected per 90 minutes played.' }),
   };
 
   // ════════════════════════════════════════════════════════════════
-  // Dataset / view config — heart of the dashboard
+  // Dataset / view config, heart of the dashboard
   // Each view defines a file dependency, extract function, columns, scope text, title.
   // ════════════════════════════════════════════════════════════════
   const SCOPE_PER_90 = 'Top 5 leagues only · Eredivisie excluded (no minutes data)';
@@ -595,7 +595,7 @@
             COL.rank(), COL.player(), COL.team(), COL.pos(), COL.age(),
             COL.minutes(), COL.credits(),
             C('ep_weighted_timed', 'wEP timed', { numeric: true, width: 110, formatter: fmtNum(2),
-              tooltip: 'Sum of (EP × role weight) — weighted by 0.40/0.35/0.25 for scorer/SCA1/SCA2.' }),
+              tooltip: 'Sum of (EP × role weight), weighted by 0.40/0.35/0.25 for scorer/SCA1/SCA2.' }),
             C('ep_weighted_per_90', 'wEP / 90', { numeric: true, width: 100, formatter: fmtAccent(3),
               tooltip: 'Weighted EP per 90 minutes.' }),
             C('credits_scorer', 'Scorer', { numeric: true, width: 85, formatter: fmtInt,
@@ -637,8 +637,8 @@
               for (const ss of d.seasons) {
                 const cell = (d.grid[lg] || {})[ss];
                 if (!cell || !cell.model_pick) {
-                  rows.push({ league: lg, season: ss, player: '—',
-                    primary_team: '—', minutes: null,
+                  rows.push({ league: lg, season: ss, player: 'n/a',
+                    primary_team: 'n/a', minutes: null,
                     ep_per_90: null, ep_timed: null, goals_involved: null,
                     actual: (cell && cell.actual && cell.actual.winner) || null });
                   continue;
@@ -659,7 +659,7 @@
           title: () => `<em>Q2</em> · Model's top EP/90 pick per (league, season)`,
           columns: () => [
             C('season', 'Season', { width: 110,
-              tooltip: 'Football season — formatted as e.g. 2022-2023.' }),
+              tooltip: 'Football season, formatted as e.g. 2022-2023.' }),
             C('league', 'League', { width: 140,
               tooltip: 'League. Top-5 only because per-90 requires minutes.' }),
             COL.player(), COL.team(),
@@ -679,7 +679,7 @@
             for (const ss of d.seasons) {
               const cell = d.combined_5l[ss];
               if (!cell || !cell.model_pick) {
-                rows.push({ season: ss, player: '—', primary_team: '—',
+                rows.push({ season: ss, player: 'n/a', primary_team: 'n/a',
                   minutes: null, ep_per_90: null, ep_timed: null,
                   goals_involved: null, actual: null });
                 continue;
@@ -785,11 +785,11 @@
           columns: () => q4bCols(),
           initialSort: [{ column: 'multiplier', dir: 'desc' }],
         },
-        'Q4c · EP per shot — Coming soon': {
+        'Q4c · EP per shot, Coming soon': {
           file: null,
           comingSoon: {
             title: 'EP per shot · coming soon',
-            body: 'Requires non-goal shot extraction from the upstream <code>shots_all</code> tables — currently only the goal-events subset is captured by project 02\'s pipeline. Extending it is a half-day side-quest; tracked as a TODO in <code>code/enrich.py</code>.',
+            body: 'Requires non-goal shot extraction from the upstream <code>shots_all</code> tables; currently only the goal-events subset is captured by project 02\'s pipeline. Extending it is a half-day side-quest; tracked as a TODO in <code>code/enrich.py</code>.',
           },
         },
       },
@@ -809,7 +809,7 @@
             }
             return out;
           },
-          scope: d => `${SCOPE_PER_90} · ≥ ${d.min_minutes.toLocaleString('en-GB')} min · top ${d.top_n} per position. GK panel omitted — see methodology for the framework's structural blind spot on goalkeepers.`,
+          scope: d => `${SCOPE_PER_90} · ≥ ${d.min_minutes.toLocaleString('en-GB')} min · top ${d.top_n} per position. GK panel omitted; see methodology for the framework's structural blind spot on goalkeepers.`,
           title: d => `<em>Q5</em> · Position-adjusted EP/90 (top ${d.top_n} per outfield panel)`,
           columns: () => [
             COL.rank(), COL.pos(), COL.player(), COL.team(), COL.age(),
@@ -974,13 +974,13 @@
 
   // Per-dataset "how to read this" copy (keyed by dataset name).
   const HOW_TO_READ = {
-    'Q1 · Per-90 leaderboards': 'Players ranked by expected points (EP) contributed per 90 minutes — higher means more valuable per minute on the pitch. Q1a credits the scorer, assist (SCA1) and pre-assist (SCA2) equally; Q1b weights them 40% / 35% / 25%. The rank-shift view shows how the weighting moves players.',
+    'Q1 · Per-90 leaderboards': 'Players ranked by expected points (EP) contributed per 90 minutes: higher means more valuable per minute on the pitch. Q1a credits the scorer, assist (SCA1) and pre-assist (SCA2) equally; Q1b weights them 40% / 35% / 25%. The rank-shift view shows how the weighting moves players.',
     'Q2 · Per-season MVPs': "The model's MVP (top EP/90) for each (league × season) cell, alongside the actual end-of-season award winner. The model rewards high-leverage value per minute, so it rarely agrees with the real award.",
-    'Q3 · Late-game players': 'Players who collect the highest share of their EP in the final 30 minutes (the 60–75 and 75–90 bins) — the closers whose contributions land when matches are decided.',
+    'Q3 · Late-game players': 'Players who collect the highest share of their EP in the final 30 minutes (the 60–75 and 75–90 bins), the closers whose contributions land when matches are decided.',
     'Q4 · Efficiency ratios': 'Efficiency ratios: EP per credit (value per contribution) and the time-aware multiplier (how much the timing of a player\'s goals upgrades them vs a time-blind baseline). See the editorial page for worked examples.',
-    'Q5 · Position-adjusted': 'Top players per outfield position (DF / MF / FW) by EP/90. Goalkeepers are excluded — the framework credits scorers and creators, roles GKs rarely occupy.',
-    'Q6 · Hidden architects (SCA2)': "Players ranked by their SCA2 (pre-assist) contribution — the playmakers-before-the-playmakers, whose passes lead to the passes that lead to goals. The layer view splits each player's EP across scorer / SCA1 / SCA2.",
-    'Q7 · Young players': 'Top young players (age ≤ 23, ≥ 500 minutes) by EP per 90 — the under-23 watchlist.',
+    'Q5 · Position-adjusted': 'Top players per outfield position (DF / MF / FW) by EP/90. Goalkeepers are excluded: the framework credits scorers and creators, roles GKs rarely occupy.',
+    'Q6 · Hidden architects (SCA2)': "Players ranked by their SCA2 (pre-assist) contribution, the playmakers-before-the-playmakers, whose passes lead to the passes that lead to goals. The layer view splits each player's EP across scorer / SCA1 / SCA2.",
+    'Q7 · Young players': 'Top young players (age ≤ 23, ≥ 500 minutes) by EP per 90, the under-23 watchlist.',
   };
   function updateHowToRead(dsName) {
     const body = $('howToReadBody');
@@ -1070,7 +1070,7 @@
       hideLoading();
       return;
     }
-    $('genAt').textContent = (MANIFEST.meta && MANIFEST.meta.created_at) || '—';
+    $('genAt').textContent = (MANIFEST.meta && MANIFEST.meta.created_at) || 'n/a';
 
     setOptions(datasetSel, Object.keys(DATASETS));
     refreshViewDropdown();

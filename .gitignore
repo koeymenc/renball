@@ -52,3 +52,6 @@ _methodology_print.html
 
 # Internal audits (findings on live projects stay private)
 _audit/
+
+# Local extraction caches (project builds)
+**/data/.cache/

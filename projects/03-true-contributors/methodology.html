@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Methodology — The True Contributors: A Three-Layer Expected-Points Attribution of Player Value — Renball</title>
+<title>Methodology · The True Contributors: A Three-Layer Expected-Points Attribution of Player Value · Renball</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -216,22 +216,22 @@ table td:first-child { color: #e8efe8; }
 <strong>Date:</strong> May 2026</p>
 <hr />
 <h2>Abstract</h2>
-<p>The standard scoreboard credits two touchpoints per goal — the scorer and, sometimes, the assister — and treats every goal as one undifferentiated unit. This project applies the time-aware expected-points (EP) value function from <a href="https://renball.com/projects/02-points-by-gamestate/">project 02</a> to a <strong>third</strong> layer of contribution, the pre-assist (FBref's SCA2, the shot-creating action before the assist), and re-ranks players by the EP they collect across all three roles. Across <strong>39,381 goal events</strong> in six top-flight European leagues over seven seasons (2017-2018 to 2023-2024), with minutes/position/age metadata attached for <strong>6,516 players</strong>, the framework reproduces the eye-test at the top (Messi, Mbappé, Neymar lead the per-90 board) and then surfaces the players the box score systematically undervalues. The marquee finding: <strong>Julian Brandt collects 40.93 EP from pre-assists alone — second in Europe only to Lionel Messi (51.69) — and 39% of his total contribution comes from that single layer, roughly double the SCA2 share of pure goalscorers like Mbappé (20%) or Salah (19%).</strong> The work answers seven research questions (Q1–Q7) spanning per-90 leaderboards, season-by-season MVPs, late-game specialists, efficiency ratios, position-adjusted boards, the hidden-architect SCA2 board, and an under-23 watchlist.</p>
+<p>The standard scoreboard credits two touchpoints per goal (the scorer and, sometimes, the assister) and treats every goal as one undifferentiated unit. This project applies the time-aware expected-points (EP) value function from <a href="https://renball.com/projects/02-points-by-gamestate/">project 02</a> to a <strong>third</strong> layer of contribution, the pre-assist (FBref's SCA2, the shot-creating action before the assist), and re-ranks players by the EP they collect across all three roles. Across <strong>39,381 goal events</strong> in six top-flight European leagues over seven seasons (2017-2018 to 2023-2024), with minutes/position/age metadata attached for <strong>6,516 players</strong>, the framework reproduces the eye-test at the top (Messi, Mbappé, Neymar lead the per-90 board) and then surfaces the players the box score systematically undervalues. The marquee finding: <strong>Julian Brandt collects 40.93 EP from pre-assists alone: second in Europe only to Lionel Messi (51.69), and 39% of his total contribution comes from that single layer, roughly double the SCA2 share of pure goalscorers like Mbappé (20%) or Salah (19%).</strong> The work answers seven research questions (Q1–Q7) spanning per-90 leaderboards, season-by-season MVPs, late-game specialists, efficiency ratios, position-adjusted boards, the hidden-architect SCA2 board, and an under-23 watchlist.</p>
 <hr />
 <h2>1. Research Question</h2>
 <blockquote>
-<p>When a goal's expected-points value is credited not just to the scorer and assister but also to the <strong>pre-assist-creator (SCA2)</strong>, which players does the model elevate that conventional goal-and-assist counting overlooks — and is that elevation robust to how the three credit layers are weighted?</p>
+<p>When a goal's expected-points value is credited not just to the scorer and assister but also to the <strong>pre-assist-creator (SCA2)</strong>, which players does the model elevate that conventional goal-and-assist counting overlooks, and is that elevation robust to how the three credit layers are weighted?</p>
 </blockquote>
 <p>This is a value-attribution study, not a hypothesis test. It rests on three evaluable claims, each addressed in §4:</p>
 <ol>
-<li><strong>Face validity</strong> — crediting three layers and normalising per 90 minutes must reproduce the consensus elite at the top of the board, or the framework has no standing to surface surprises beneath it (Q1a).</li>
-<li><strong>Robustness</strong> — the ranking must not be an artefact of the equal <code>1/1/1</code> credit split; re-weighting the layers should move the board only marginally (Q1b).</li>
-<li><strong>Discovery</strong> — the SCA2 layer must isolate a contribution profile (the "hidden architect") that absolute goal-and-assist tallies cannot see (Q6).</li>
+<li><strong>Face validity</strong>: crediting three layers and normalising per 90 minutes must reproduce the consensus elite at the top of the board, or the framework has no standing to surface surprises beneath it (Q1a).</li>
+<li><strong>Robustness</strong>: the ranking must not be an artefact of the equal <code>1/1/1</code> credit split; re-weighting the layers should move the board only marginally (Q1b).</li>
+<li><strong>Discovery</strong>: the SCA2 layer must isolate a contribution profile (the "hidden architect") that absolute goal-and-assist tallies cannot see (Q6).</li>
 </ol>
 <hr />
 <h2>2. Data</h2>
-<p><strong>Primary source — goal events.</strong> Inherited directly from project 02: the per-match FBref-derived shot tables (<code>match_data_final_&lt;league&gt;.pkl</code>), filtered to <code>outcome == "goal"</code>, one row per goal with <code>gd_before</code>, <code>gd_after</code>, <code>minute_bin</code>, the scoring team, and three contributor columns — <code>goalscorer</code>, <code>sca1_creator</code> (assist), and <code>sca2_creator</code> (pre-assist). Project 02's pipeline is used unmodified; project 03 reads its output <code>goal_events</code> DataFrame and the two value lookup tables (<code>val_map_timed</code>, <code>val_map_untimed</code>).</p>
-<p><strong>Secondary source — player metadata.</strong> Minutes played, position, and age are read from <code>FULL_DICT_ROWS.pkl</code> → <code>ROWS_DICTS_SUMMARY</code> (FBref per-player season-summary tables), via <code>RENBALL_DATA_PATH</code>. This source covers the <strong>top five leagues only</strong> — it does <strong>not</strong> contain Eredivisie. Every per-90 calculation is therefore Top-5-only; absolute-EP boards retain all six leagues.</p>
+<p><strong>Primary source: goal events.</strong> Inherited directly from project 02: the per-match FBref-derived shot tables (<code>match_data_final_&lt;league&gt;.pkl</code>), filtered to <code>outcome == "goal"</code>, one row per goal with <code>gd_before</code>, <code>gd_after</code>, <code>minute_bin</code>, the scoring team, and three contributor columns, <code>goalscorer</code>, <code>sca1_creator</code> (assist), and <code>sca2_creator</code> (pre-assist). Project 02's pipeline is used unmodified; project 03 reads its output <code>goal_events</code> DataFrame and the two value lookup tables (<code>val_map_timed</code>, <code>val_map_untimed</code>).</p>
+<p><strong>Secondary source: player metadata.</strong> Minutes played, position, and age are read from <code>FULL_DICT_ROWS.pkl</code> → <code>ROWS_DICTS_SUMMARY</code> (FBref per-player season-summary tables), via <code>RENBALL_DATA_PATH</code>. This source covers the <strong>top five leagues only</strong>, it does <strong>not</strong> contain Eredivisie. Every per-90 calculation is therefore Top-5-only; absolute-EP boards retain all six leagues.</p>
 <p><strong>Leagues (6):</strong> Premier League, La Liga, Serie A, Bundesliga, Ligue 1, Eredivisie.
 <strong>Per-90 scope (5):</strong> as above, minus Eredivisie.
 <strong>Seasons (7):</strong> 2017-2018 through 2023-2024.
@@ -239,9 +239,9 @@ table td:first-child { color: #e8efe8; }
 <p><strong>Cleaning &amp; filtering decisions:</strong></p>
 <ol>
 <li><strong>Unknown contributors dropped.</strong> FBref rows where the scorer/SCA1/SCA2 string cannot be parsed (own goals, fragmented entries) aggregate to a fake <code>"Unknown"</code> player. They are dropped from every editorial board; the dashboard retains them for transparency.</li>
-<li><strong>Player pooling.</strong> A player who appears under multiple <code>(scoring_team, player)</code> rows — because of a mid-period transfer — is pooled to a single row. EP and credit columns are summed; <code>primary_team</code> is set to the team where the player registered the most credits.</li>
+<li><strong>Player pooling.</strong> A player who appears under multiple <code>(scoring_team, player)</code> rows (because of a mid-period transfer) is pooled to a single row. EP and credit columns are summed; <code>primary_team</code> is set to the team where the player registered the most credits.</li>
 <li><strong>Position bucketing.</strong> The FBref <code>Pos</code> string is reduced to its first token (<code>"CM,LB"</code> → <code>"CM"</code>) and mapped to one of four buckets (<code>GK</code>/<code>DF</code>/<code>MF</code>/<code>FW</code>). A player's position is the <strong>modal</strong> bucket across all observed season rows.</li>
-<li><strong>Age.</strong> Taken as the <strong>maximum</strong> age observed across a player's rows — effectively age at the end of the most recent observed season (FBref's fractional-year format is preserved).</li>
+<li><strong>Age.</strong> Taken as the <strong>maximum</strong> age observed across a player's rows, effectively age at the end of the most recent observed season (FBref's fractional-year format is preserved).</li>
 <li><strong>Minutes.</strong> Summed across all in-scope league-seasons per player. Players with zero attached minutes are excluded from every per-90 board.</li>
 </ol>
 <hr />
@@ -251,15 +251,15 @@ table td:first-child { color: #e8efe8; }
 <pre><code>ep_collected_timed   = EP_T(g → g+1, b) − EP_T(g−1 → g, b)
 ep_collected_untimed = EP_T(g → g+1)    − EP_T(g−1 → g)        (bins pooled)
 </code></pre>
-<p>where <code>EP_T(transition, b)</code> is the mean final-match points of the scoring teams over every goal that made that transition in that bin — so a goal is worth the gap in final points between teams that reached <code>g+1</code> with a goal and teams that reached <code>g</code>. The lowest observed transition in each bin is set to 0 (project 02's methodology, §3.4). A late equaliser is worth nearly a full point; a 4–0 consolation, almost nothing. Only one-step transitions in the <code>[−7, +7]</code> GD range are kept. This project does <strong>not</strong> rebuild the value function — it reuses project 02's <code>val_map_timed</code> / <code>val_map_untimed</code> verbatim.</p>
+<p>where <code>EP_T(transition, b)</code> is the mean final-match points of the scoring teams over every goal that made that transition in that bin, so a goal is worth the gap in final points between teams that reached <code>g+1</code> with a goal and teams that reached <code>g</code>. The lowest observed transition in each bin is set to 0 (project 02's methodology, §3.4). A late equaliser is worth nearly a full point; a 4–0 consolation, almost nothing. Only one-step transitions in the <code>[−7, +7]</code> GD range are kept. This project does <strong>not</strong> rebuild the value function, it reuses project 02's <code>val_map_timed</code> / <code>val_map_untimed</code> verbatim.</p>
 <h3>3.2 The third credit layer (SCA2)</h3>
-<p>Project 02 builds contributor tables for two roles, <code>goalscorer</code> and <code>sca1_creator</code>. Project 03 adds a third by re-running the <em>identical</em> aggregation machinery on the <code>sca2_creator</code> column — the pre-assist, FBref's shot-creating action immediately preceding the assist. The result is a parallel SCA2 contributor table carrying the same EP, per-bin (<code>ep_bin_X</code>) and per-transition (<code>cnt_*</code>) breakdowns as the scorer and assist tables. No project-02 code is modified; the SCA2 build composes its public functions.</p>
-<h3>3.3 Three-layer credit (Q1a — the default model)</h3>
+<p>Project 02 builds contributor tables for two roles, <code>goalscorer</code> and <code>sca1_creator</code>. Project 03 adds a third by re-running the <em>identical</em> aggregation machinery on the <code>sca2_creator</code> column, the pre-assist, FBref's shot-creating action immediately preceding the assist. The result is a parallel SCA2 contributor table carrying the same EP, per-bin (<code>ep_bin_X</code>) and per-transition (<code>cnt_*</code>) breakdowns as the scorer and assist tables. No project-02 code is modified; the SCA2 build composes its public functions.</p>
+<h3>3.3 Three-layer credit (Q1a: the default model)</h3>
 <p>The headline credit model gives <strong>each of the three roles one credit per goal involved in</strong>, and sums the EP each role collected:</p>
 <pre><code>three_layer = (scorer ⊕ sca1) ⊕ sca2
 </code></pre>
 <p>where <code>⊕</code> is project 02's outer-merge-and-sum on <code>(scoring_team, contributor)</code>. A player who scored a goal <em>and</em> pre-assisted a different goal receives two credits and the sum of both EP swings; a player who fills two roles on the same goal (scorer and SCA1, say) is credited once per role. <code>goals_involved</code> is the raw count of credit events; EP columns stack additively.</p>
-<h3>3.4 Weighted credit (Q1b — the robustness check)</h3>
+<h3>3.4 Weighted credit (Q1b: the robustness check)</h3>
 <p>To test whether the equal split drives the ranking, the build re-walks every goal event and emits up to three weighted credit rows with weights applied to <strong>EP only</strong> (the <code>goals_involved</code> count stays a raw 1 per credit):</p>
 <table>
 <thead>
@@ -302,7 +302,7 @@ ep_collected_untimed = EP_T(g → g+1)    − EP_T(g−1 → g)        (bins poo
 <tr>
 <td>Q1a, Q1b, Q2, Q5</td>
 <td>≥ 1,000 minutes</td>
-<td>≈ 11 full matches — enough to stabilise a per-90 rate</td>
+<td>≈ 11 full matches, enough to stabilise a per-90 rate</td>
 </tr>
 <tr>
 <td>Q7 (young)</td>
@@ -383,11 +383,11 @@ ep_collected_untimed = EP_T(g → g+1)    − EP_T(g−1 → g)        (bins poo
 </tr>
 </tbody>
 </table>
-<p>Q2 annotates each cell with the real-world award winner where <code>data/static/actual_mvps.json</code> has been manually curated. Q4c (EP per shot) is <strong>deferred</strong> — it requires non-goal shot extraction not present in project 02's goal-events subset.</p>
+<p>Q2 annotates each cell with the real-world award winner where <code>data/static/actual_mvps.json</code> has been manually curated. Q4c (EP per shot) is <strong>deferred</strong>: it requires non-goal shot extraction not present in project 02's goal-events subset.</p>
 <h3>3.8 Software stack</h3>
 <ul>
 <li>Python 3.12 (repo-root project venv)</li>
-<li><code>pandas</code>, <code>numpy</code> — aggregation and per-event credit walking</li>
+<li><code>pandas</code>, <code>numpy</code>: aggregation and per-event credit walking</li>
 <li><code>pickle</code> with a pandas-&lt;2 index shim for the legacy <code>FULL_DICT_ROWS.pkl</code></li>
 <li>Output: <code>data/data.json</code> (editorial payload) and <code>data/dashboard/</code> (9 per-view JSONs + manifest)</li>
 <li><code>code/enrich.py</code> owns all project-03 logic; <code>code/build.py</code> orchestrates project 02's pipeline + this enrichment</li>
@@ -397,7 +397,7 @@ ep_collected_untimed = EP_T(g → g+1)    − EP_T(g−1 → g)        (bins poo
 <blockquote>
 <p>All numbers come from <code>code/build.py</code> → <code>data/data.json</code> and are surfaced live in the editorial page.</p>
 </blockquote>
-<h3>4.1 Q1a — the model clears the eye test</h3>
+<h3>4.1 Q1a: the model clears the eye test</h3>
 <table>
 <thead>
 <tr>
@@ -452,12 +452,12 @@ ep_collected_untimed = EP_T(g → g+1)    − EP_T(g−1 → g)        (bins poo
 </tr>
 </tbody>
 </table>
-<p>The top of the board is exactly the consensus elite — which is the point. Before the framework is trusted to surface surprises, it has to recover what everyone already knows.</p>
-<h3>4.2 Q1b — weighting barely moves the answer</h3>
+<p>The top of the board is exactly the consensus elite, which is the point. Before the framework is trusted to surface surprises, it has to recover what everyone already knows.</p>
+<h3>4.2 Q1b: weighting barely moves the answer</h3>
 <p>Re-running with <code>0.40 / 0.35 / 0.25</code> weights leaves <strong>the top eight essentially identical</strong>. The biggest movers are pure scorers gaining a few places under the heavier scoring weight (Lewandowski +6, Dovbyk +7) and creator-heavy names slipping (Jallow −9, Ljajić −9). That the carefully-tuned weights reproduce the simple <code>1/1/1</code> board <em>is</em> the robustness result: the ranking is not an artefact of the credit split.</p>
-<h3>4.3 Q2 — season-by-season MVPs</h3>
-<p>The model's top per-90 pick for La Liga 2022-2023 is <strong>Nicolas Jackson at Villarreal (1.211 EP/90, 1,598 minutes, 26 credits)</strong> — the season before he joined Chelsea. The 5-league combined pick for 2020-2021 is <strong>Luis Muriel at Atalanta (1.605 EP/90, 43 credits)</strong> — not what the trophy cabinet recorded.</p>
-<h3>4.4 Q3 — late-game substantives (≥ 30 credits)</h3>
+<h3>4.3 Q2: season-by-season MVPs</h3>
+<p>The model's top per-90 pick for La Liga 2022-2023 is <strong>Nicolas Jackson at Villarreal (1.211 EP/90, 1,598 minutes, 26 credits)</strong>, the season before he joined Chelsea. The 5-league combined pick for 2020-2021 is <strong>Luis Muriel at Atalanta (1.605 EP/90, 43 credits)</strong>, not what the trophy cabinet recorded.</p>
+<h3>4.4 Q3: late-game substantives (≥ 30 credits)</h3>
 <table>
 <thead>
 <tr>
@@ -497,14 +497,14 @@ ep_collected_untimed = EP_T(g → g+1)    − EP_T(g−1 → g)        (bins poo
 </tbody>
 </table>
 <p>"Late share" is the fraction of a player's EP collected in the 60–75 and 75–90 bins. Tello's contribution lives almost entirely in the high-leverage minutes.</p>
-<h3>4.5 Q4 — efficiency ratios (≥ 20 credits)</h3>
+<h3>4.5 Q4: efficiency ratios (≥ 20 credits)</h3>
 <ul>
-<li><strong>Q4a · EP per credit:</strong> Evann Guessand leads at <strong>1.105 EP per credit</strong> — he scores and creates in higher-leverage moments per goal than anyone else above the substantive threshold.</li>
-<li><strong>Q4b · time-aware multiplier (<code>ep_timed / ep_untimed</code>):</strong> Guessand again at <strong>1.196×</strong> — the time dimension upgrades him most over the time-blind baseline.</li>
+<li><strong>Q4a · EP per credit:</strong> Evann Guessand leads at <strong>1.105 EP per credit</strong>: he scores and creates in higher-leverage moments per goal than anyone else above the substantive threshold.</li>
+<li><strong>Q4b · time-aware multiplier (<code>ep_timed / ep_untimed</code>):</strong> Guessand again at <strong>1.196×</strong>: the time dimension upgrades him most over the time-blind baseline.</li>
 </ul>
-<h3>4.6 Q5 — position-adjusted (outfield only)</h3>
-<p>The midfielder panel surfaces the framework's most stable elite pick: <strong>Kevin De Bruyne, MF #3, over 14,674 minutes and 206 credits at 0.734 EP/90</strong> — by far the largest sample of any top-3 pick on any board in this project. Jamal Musiala sits MF #2 (6,302 minutes, 0.786). The defender panel is dominated by wing-back archetypes (Grimaldo). <strong>Goalkeepers are excluded</strong> (see §5).</p>
-<h3>4.7 Q6 — the hidden architects (the marquee finding)</h3>
+<h3>4.6 Q5: position-adjusted (outfield only)</h3>
+<p>The midfielder panel surfaces the framework's most stable elite pick: <strong>Kevin De Bruyne, MF #3, over 14,674 minutes and 206 credits at 0.734 EP/90</strong>, by far the largest sample of any top-3 pick on any board in this project. Jamal Musiala sits MF #2 (6,302 minutes, 0.786). The defender panel is dominated by wing-back archetypes (Grimaldo). <strong>Goalkeepers are excluded</strong> (see §5).</p>
+<h3>4.7 Q6: the hidden architects (the marquee finding)</h3>
 <p>Top SCA2 EP collectors, all six leagues pooled:</p>
 <table>
 <thead>
@@ -589,36 +589,36 @@ ep_collected_untimed = EP_T(g → g+1)    − EP_T(g−1 → g)        (bins poo
 </tr>
 </tbody>
 </table>
-<p>The pre-assist is Brandt's single largest contribution layer — a profile no pure goalscorer shares. <strong>Brandt is what the model exists to find.</strong></p>
-<h3>4.8 Q7 — young players to watch (age ≤ 23)</h3>
-<p>The board mixes credible established names (Musiala, Palmer) with very-low-sample flyers (Fofana 1.249 EP/90 on 559 minutes; Durán 1.24 on 611). The most interesting cell is at the bottom: <strong>Lamine Yamal, Q7 #10, 0.738 EP/90 across 2,209 minutes and 23 credits at age 16.9</strong> — the youngest player in the dataset to clear 500 minutes, and his rate rests on nearly a full season of evidence rather than a cameo.</p>
+<p>The pre-assist is Brandt's single largest contribution layer, a profile no pure goalscorer shares. <strong>Brandt is what the model exists to find.</strong></p>
+<h3>4.8 Q7: young players to watch (age ≤ 23)</h3>
+<p>The board mixes credible established names (Musiala, Palmer) with very-low-sample flyers (Fofana 1.249 EP/90 on 559 minutes; Durán 1.24 on 611). The most interesting cell is at the bottom: <strong>Lamine Yamal, Q7 #10, 0.738 EP/90 across 2,209 minutes and 23 credits at age 16.9</strong>, the youngest player in the dataset to clear 500 minutes, and his rate rests on nearly a full season of evidence rather than a cameo.</p>
 <hr />
 <h2>5. Limitations</h2>
 <p>This project inherits every limitation of project 02's value function and adds its own:</p>
 <ol>
-<li><strong>No expected-goal weighting</strong> (inherited). Every goal counts 1.0 — a tap-in and a 30-yard volley value identically.</li>
+<li><strong>No expected-goal weighting</strong> (inherited). Every goal counts 1.0: a tap-in and a 30-yard volley value identically.</li>
 <li><strong>Penalties are not separated, and own goals are missing</strong> (inherited). Penalties trigger the same transition value as open-play goals; own goals are not in the shot data, so some final scores and game states are wrong.</li>
 <li><strong>Observational, not causal</strong> (inherited). EP is the gap between the two states a goal connects, not the goal's counterfactual effect on the final result.</li>
 <li><strong>Credit caps at SCA2.</strong> Project 02 stopped at SCA1; this project adds SCA2 but goes no further. Build-up sequences distribute value further upstream than three layers capture.</li>
 <li><strong>Per-90 boards exclude Eredivisie.</strong> The minutes source (<code>FULL_DICT_ROWS.pkl</code>) covers the top five leagues only. Absolute boards (Q3, Q4, the Q6 absolute board) include all six; per-90 boards (Q1, Q2, Q5, Q6 per-90, Q7) do not. Eredivisie-only players are absent from every per-90 ranking.</li>
-<li><strong>The model has no opinion on goalkeepers.</strong> The three credited touchpoints are ones GKs occupy rarely; the top GK posts ~0.1 EP/90 against ~1.1 for the top forward — a coverage artefact, not a value judgement. GK contribution needs a different model (shot-stopping over expected, distribution value). Q5 reports outfield panels only.</li>
-<li><strong>Equal <code>1/1/1</code> credit is a modelling choice.</strong> Q1b shows the ranking is robust to a reasonable re-weighting, but the "right" weights are not estimated from data — they are a stipulation.</li>
+<li><strong>The model has no opinion on goalkeepers.</strong> The three credited touchpoints are ones GKs occupy rarely; the top GK posts ~0.1 EP/90 against ~1.1 for the top forward, a coverage artefact, not a value judgement. GK contribution needs a different model (shot-stopping over expected, distribution value). Q5 reports outfield panels only.</li>
+<li><strong>Equal <code>1/1/1</code> credit is a modelling choice.</strong> Q1b shows the ranking is robust to a reasonable re-weighting, but the "right" weights are not estimated from data; they are a stipulation.</li>
 <li><strong>Metadata is approximate.</strong> Position is the modal FBref bucket; age is the maximum observed (≈ age at end of latest season). Both are season-summary derived, not match-resolved.</li>
-<li><strong>Q4c (EP per shot) is deferred.</strong> It requires non-goal shot extraction absent from the current goal-events pipeline — tracked as a TODO.</li>
+<li><strong>Q4c (EP per shot) is deferred.</strong> It requires non-goal shot extraction absent from the current goal-events pipeline, tracked as a TODO.</li>
 </ol>
 <hr />
 <h2>6. Conclusion</h2>
-<p>Crediting a third contribution layer does not change who sits at the very top of European football — Messi, Mbappé and Neymar lead the per-90 board with or without the pre-assist, and re-weighting the layers barely moves anyone. That stability is what licenses the interesting claim underneath it: once the SCA2 layer is priced, a small set of players whose value the box score cannot see comes into focus. Julian Brandt is the cleanest example — second only to Messi in pre-assist EP, with the pre-assist as his single largest contribution layer, a profile pure goalscorers never show.</p>
+<p>Crediting a third contribution layer does not change who sits at the very top of European football: Messi, Mbappé and Neymar lead the per-90 board with or without the pre-assist, and re-weighting the layers barely moves anyone. That stability is what licenses the interesting claim underneath it: once the SCA2 layer is priced, a small set of players whose value the box score cannot see comes into focus. Julian Brandt is the cleanest example, second only to Messi in pre-assist EP, with the pre-assist as his single largest contribution layer, a profile pure goalscorers never show.</p>
 <p>The framework is a value-attribution lens, not a recruitment oracle. It says nothing about defending, goalkeeping, or chance creation that doesn't end in a goal, and it is calibrated to leverage rather than to a counterfactual. What it does well is name the contribution football's mainstream stats systematically under-credit. The next iterations are clear: extend credit past SCA2, fold in xG, and build the GK model the EP framework structurally cannot provide.</p>
 <hr />
 <h2>References</h2>
 <ul>
-<li><strong>Inherited framework:</strong> <a href="https://renball.com/projects/02-points-by-gamestate/">Project 02 — Not All Goals Are Equal</a> — the time-aware expected-points value function.</li>
+<li><strong>Inherited framework:</strong> <a href="https://renball.com/projects/02-points-by-gamestate/">Project 02, Not All Goals Are Equal</a>, the time-aware expected-points value function.</li>
 <li><strong>Source data:</strong> FBref (<a href="https://fbref.com">fbref.com</a>). Shot tables (<code>match_data_final_&lt;league&gt;.pkl</code>) and per-player summary tables (<code>FULL_DICT_ROWS.pkl</code>).</li>
-<li><strong>Interactive dashboard:</strong> <a href="dashboard.html"><code>dashboard.html</code></a> — all seven ranking datasets, per-league and per-season drill-down, search, filtering, XLSX/CSV export.</li>
+<li><strong>Interactive dashboard:</strong> <a href="dashboard.html"><code>dashboard.html</code></a>: all seven ranking datasets, per-league and per-season drill-down, search, filtering, XLSX/CSV export.</li>
 <li><strong>Editorial summary:</strong> <a href="analysis.html"><code>analysis.html</code></a> in this project folder.</li>
 <li><strong>Project page:</strong> <a href="https://renball.com/projects/03-true-contributors/">renball.com/projects/03-true-contributors/</a></li>
-<li><strong>Source code:</strong> <code>code/</code> — <code>build.py</code> (orchestrator), <code>enrich.py</code> (SCA2 merge, three-layer credit, Q1–Q7), <code>report.py</code>.</li>
+<li><strong>Source code:</strong> <code>code/</code>: <code>build.py</code> (orchestrator), <code>enrich.py</code> (SCA2 merge, three-layer credit, Q1–Q7), <code>report.py</code>.</li>
 </ul>
 <hr />
 <p><em>Methodology document generated alongside <a href="analysis.html">analysis.html</a> and <a href="slides.pdf">slides.pdf</a>. A print version is in <a href="methodology.pdf">methodology.pdf</a>.</em></p>

@@ -146,11 +146,13 @@ ul.limits li {
   line-height: 1.65;
 }
 ul.limits li::before {
-  content: '—';
+  content: '';
   position: absolute;
-  left: 0;
-  font-family: var(--mono);
-  color: var(--text-muted);
+  left: 0.15rem;
+  top: 0.68em;
+  width: 0.4rem;
+  height: 0.4rem;
+  background: var(--text-muted);
 }
 ul.limits li strong { color: var(--text); font-weight: 500; }
 

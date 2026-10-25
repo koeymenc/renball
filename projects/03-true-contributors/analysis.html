@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The True Contributors — Renball</title>
+<title>The True Contributors · Renball</title>
 <meta name="description" content="Applies the expected-points value model from project 02 to discover and rank players whose true contribution diverges from their box-score reputation. Scorer, assist-creator and pre-assist-creator all credited.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -423,9 +423,8 @@
   <h1>The True <em>Contributors</em>.</h1>
   <p class="lede">
     <strong>Not all goals are created equal.</strong> A 90th-minute equaliser is worth far more to a team's
-    season than a fifth-minute opener in a 4–0 win — yet the scoreboard counts them the same. So how do you
-    price every goal correctly? We calculated the <strong>expected league points</strong> each goal produced —
-    based on the game state and the minute it was scored — then summed every player's contribution across the
+    season than a fifth-minute opener in a 4–0 win, yet the scoreboard counts them the same. So how do you
+    price every goal correctly? We calculated the <strong>expected league points</strong> each goal produced (based on the game state and the minute it was scored) then summed every player's contribution across the
     three players who build a goal: the scorer, the assist-creator and the pre-assist-creator. The result is a
     per-90 rate that captures <strong>value created, not just events counted</strong>, and surfaces the players
     the box score systematically undervalues.
@@ -447,28 +446,28 @@
 <!-- ── KEY FINDING ── -->
 <div class="finding-box">
   <strong style="color: var(--accent); display: block; margin-bottom: 0.3rem; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em;">KEY FINDING</strong>
-  Only Lionel Messi creates more pre-assist value than Julian Brandt — whose <strong>40.93 EP from SCA2 alone</strong> makes up <strong>39%</strong> of his total contribution, more than double Mbappé or Salah.
+  Only Lionel Messi creates more pre-assist value than Julian Brandt, whose <strong>40.93 EP from SCA2 alone</strong> makes up <strong>39%</strong> of his total contribution, more than double Mbappé or Salah.
 </div>
 
 <!-- ── STAT CALLOUTS ── -->
 <div class="stats-row">
   <div class="stat-box">
-    <div class="stat-value" id="stat-goals">—</div>
+    <div class="stat-value" id="stat-goals">…</div>
     <div class="stat-label">Goal Events Modelled</div>
     <div class="stat-sub" id="stat-goals-sub"></div>
   </div>
   <div class="stat-box">
-    <div class="stat-value" id="stat-players">—</div>
+    <div class="stat-value" id="stat-players">…</div>
     <div class="stat-label">Players with Meta</div>
     <div class="stat-sub">Minutes · position · age · league</div>
   </div>
   <div class="stat-box">
-    <div class="stat-value" id="stat-brandt">—</div>
+    <div class="stat-value" id="stat-brandt">…</div>
     <div class="stat-label">Brandt · SCA2 EP</div>
-    <div class="stat-sub">39% of his total — vs ~20% for Mbappé / Salah</div>
+    <div class="stat-sub">39% of his total, vs ~20% for Mbappé / Salah</div>
   </div>
   <div class="stat-box">
-    <div class="stat-value" id="stat-top1">—</div>
+    <div class="stat-value" id="stat-top1">…</div>
     <div class="stat-label">Top EP / 90</div>
     <div class="stat-sub" id="stat-top1-sub"></div>
   </div>
@@ -479,35 +478,35 @@
   <h2>1 · The framework</h2>
   <p>
     Here is the mechanism in one paragraph. For every goal, we compute <strong>expected points (EP)
-    collected</strong> — how much that goal lifted its team's expected final league points, given the
+    collected</strong>: how much that goal lifted its team's expected final league points, given the
     scoreline and the 15-minute window it arrived in. A late equaliser is worth almost a full league point; a
-    4–0 consolation, almost nothing. We then credit that EP to <strong>three</strong> roles per goal — the
-    scorer, the assist-creator (SCA1) and the pre-assist-creator (SCA2) — sum it per player, and divide by
+    4–0 consolation, almost nothing. We then credit that EP to <strong>three</strong> roles per goal (the
+    scorer, the assist-creator SCA1 and the pre-assist-creator SCA2), sum it per player, and divide by
     minutes played to get a per-90 rate. Then we ask who the model elevates that the box score does not. The
     value function itself is built in
     <a href="../02-points-by-gamestate/analysis.html" style="color: var(--accent);">project 02</a>.
   </p>
 </section>
 
-<!-- ── 2 · Q1a + Q1b — Per-90 leaderboards ── -->
+<!-- ── 2 · Q1a + Q1b, Per-90 leaderboards ── -->
 <section class="proj">
   <h2>2 · Per-90, full credit · the model agrees with the eye test</h2>
   <p>
     Open with the leaderboard. <strong>Each goal credits up to three players equally</strong> (scorer + SCA1 +
     SCA2 = 1 each). Sum the EP, normalise per 90 minutes, filter to ≥ 1,000 minutes played and Top-5 leagues
-    only. The top of the list is Messi, Mbappé, Neymar — exactly who you'd expect, which is the point. Before
+    only. The top of the list is Messi, Mbappé, Neymar: exactly who you'd expect, which is the point. Before
     we show you the surprises, the framework has to clear the eye test.
   </p>
   <p style="font-size: 0.85rem; color: var(--text-muted);">
     Bars at <strong style="color: var(--text-secondary);">full opacity</strong> are players with
     <strong style="color: var(--text-secondary);">≥ 3,600 minutes</strong> in scope (~40 full matches).
-    Bars at <strong style="color: var(--text-secondary);">half opacity</strong> are <strong style="color: var(--text-secondary);">half-season samples</strong> — the model has them, but the volume is thinner.
+    Bars at <strong style="color: var(--text-secondary);">half opacity</strong> are <strong style="color: var(--text-secondary);">half-season samples</strong>: the model has them, but the volume is thinner.
   </p>
   <div class="chart-wrap">
     <canvas id="chart-q1a"></canvas>
     <div class="chart-caption">
       Top 15 by EP per 90, three-layer credit (scorer + SCA1 + SCA2 each = 1). ≥ 1,000 minutes played.
-      <span class="scope">Top 5 leagues only — Eredivisie excluded for minutes-data unavailability.</span>
+      <span class="scope">Top 5 leagues only; Eredivisie excluded for minutes-data unavailability.</span>
     </div>
   </div>
 
@@ -522,7 +521,7 @@
   <h2 style="margin-top: 3rem;">Does weighting the credits change the answer?</h2>
   <p>
     Maybe a finishing touch is worth more than a pre-assist. Re-run the same leaderboard with credits weighted
-    <strong>0.40 / 0.35 / 0.25</strong> (scorer / SCA1 / SCA2) — only the EP is weighted, the qualifying-minutes
+    <strong>0.40 / 0.35 / 0.25</strong> (scorer / SCA1 / SCA2). Only the EP is weighted; the qualifying-minutes
     threshold doesn't change. The result: <strong>the top eight is essentially identical</strong>. The biggest
     movers under weighting are pure scorers gaining a few places (Lewandowski +6, Dovbyk +7) and a few
     creator-heavy names losing a few (Jallow −9, Ljajić −9). Conclusion: the simpler 1/1/1 model is doing the
@@ -537,7 +536,7 @@
     </div>
   </div>
   <div class="sub-finding">
-    Under credit weighting <strong>Robert Lewandowski jumps 6 ranks</strong> and <strong>Artem Dovbyk jumps 7</strong> — the model rewards consistent scorers more than fleeting playmakers when you give scoring extra weight. The fact that this only moves the list by a handful of positions is itself the finding.
+    Under credit weighting <strong>Robert Lewandowski jumps 6 ranks</strong> and <strong>Artem Dovbyk jumps 7</strong>: the model rewards consistent scorers more than fleeting playmakers when you give scoring extra weight. The fact that this only moves the list by a handful of positions is itself the finding.
   </div>
 </section>
 
@@ -545,11 +544,11 @@
 <section class="proj">
   <h2>3 · The model's MVPs vs the actual winners</h2>
   <p>
-    For every (league × season) cell, the model's top EP-per-90 player who cleared 1,000 minutes — shown
+    For every (league × season) cell, the model's top EP-per-90 player who cleared 1,000 minutes, shown
     against the <strong>real end-of-season award winner</strong> for that league. The model rewards
     high-leverage value per minute, not reputation, so the two rarely line up: where they do, the cell turns
     green with a <strong>✓ MATCH</strong>. The cell to dwell on is <strong>Nicolas Jackson at Villarreal in
-    2022-23</strong> — the model named him La Liga's most-valuable per-90 player the season before he joined
+    2022-23</strong>: the model named him La Liga's most-valuable per-90 player the season before he joined
     Chelsea, while the actual award went elsewhere. The 5-league column compares the model's combined
     pick against the <strong>Ballon d'Or</strong>.
   </p>
@@ -573,7 +572,7 @@
   <p>
     Of every player's total EP from goals (across all three roles), what share is collected in the last 30
     minutes? Restrict to players with <strong>≥ 30 credits</strong> across the dataset and the super-sub
-    cohort drops away. Cristian Tello at Betis tops the list — <strong>73.8% of his contribution comes after
+    cohort drops away. Cristian Tello at Betis tops the list: <strong>73.8% of his contribution comes after
     the 60th minute</strong> across 44 credits. Yoane Wissa, Ángel Rodríguez, Adama Traoré, Giacomo Raspadori
     all in the same bracket: high-volume, high-leverage closers.
   </p>
@@ -582,7 +581,7 @@
     <div class="chart-caption">
       Top 10 by late share, ≥ 30 three-layer credits. Late = EP collected in 60-75 + 75-90 bins.
       Includes Eredivisie (no per-90 dependency).
-      <span style="color: var(--text-muted);">Players with high late share but low credit volume (super-sub specialists) are excluded from this view — see the full data in the <a href="dashboard.html" style="color: var(--accent);">dashboard</a>.</span>
+      <span style="color: var(--text-muted);">Players with high late share but low credit volume (super-sub specialists) are excluded from this view; see the full data in the <a href="dashboard.html" style="color: var(--accent);">dashboard</a>.</span>
     </div>
   </div>
 </section>
@@ -591,19 +590,19 @@
 <section class="proj">
   <h2>5 · Efficiency ratios</h2>
   <p>
-    Two ways a player can be "efficient" in this framework — both filtered to ≥ 20 credits to keep the noise
+    Two ways a player can be "efficient" in this framework, both filtered to ≥ 20 credits to keep the noise
     out.
   </p>
   <p style="margin-bottom: 0.5rem;">
     <strong style="color: var(--accent); font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.08em;">Q4A · EP PER CREDIT</strong><br>
     How much value did each contribution create on average? Imagine two players with 20 goal contributions
-    each — Player A scored mostly in 4–0 blowouts and 0–4 hammerings (low EP per credit), Player B scored
+    each: Player A scored mostly in 4–0 blowouts and 0–4 hammerings (low EP per credit), Player B scored
     consistently in tight matches where every goal mattered (high EP per credit). This ratio identifies the
     players whose contributions consistently land in high-stakes moments.
   </p>
   <p>
     <strong style="color: var(--accent); font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.08em;">Q4B · TIME-AWARE MULTIPLIER</strong><br>
-    The model values the same goal differently depending on when it happens — a 90th-minute equaliser is worth
+    The model values the same goal differently depending on when it happens: a 90th-minute equaliser is worth
     more than a 5th-minute opener. This ratio compares each player's time-aware EP to a time-blind version. A
     player with a 1.40 multiplier scored 40% more valuably than they would have if all goals were treated
     equally. These are the late-moment specialists.
@@ -620,8 +619,8 @@
   </div>
   <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem;">
     <strong style="color: var(--text-secondary);">EP per shot</strong>
-    <span class="coming-soon">Coming soon</span>
-    — requires non-goal shot extraction (deferred from project 02's pipeline).
+    <span class="coming-soon">Coming soon</span>:
+    requires non-goal shot extraction (deferred from project 02's pipeline).
   </p>
 </section>
 
@@ -631,7 +630,7 @@
   <p>
     Same per-90 board, sliced by modal position. Wing-back archetypes dominate the defender panel (Grimaldo,
     Guerreiro). The midfielder panel surfaces the model's most stable elite pick: <strong>Kevin De Bruyne at
-    14,674 minutes and 206 credits</strong> — by far the largest sample of any top-3 pick anywhere on this
+    14,674 minutes and 206 credits</strong>, by far the largest sample of any top-3 pick anywhere on this
     page. The forward panel is the Q1a top 5.
   </p>
   <div class="pos-grid" id="pos-panels"></div>
@@ -639,12 +638,12 @@
     <strong style="color: var(--text-secondary);">Minutes shown</strong> so readers can self-assess sample
     size. Players at <strong style="color: var(--text-secondary);">&lt; 2,000 mins</strong> (half-season)
     are flagged in muted text.
-    <span class="scope">Top 5 leagues only — ≥ 1,000 minutes played.</span>
+    <span class="scope">Top 5 leagues only, ≥ 1,000 minutes played.</span>
   </div>
   <div class="gk-empty">
     <p>
       <strong>The model has no opinion on goalkeepers.</strong> The EP framework credits scorers, assist-creators
-      and pre-assist-creators — three touchpoints GKs occupy rarely. In this dataset the top GK posts ~0.13 EP/90
+      and pre-assist-creators, three touchpoints GKs occupy rarely. In this dataset the top GK posts ~0.13 EP/90
       against ~1.14 for the top forward, an order-of-magnitude gap that reflects the framework's coverage, not
       the keepers' actual value. Quantifying GK contribution requires a different model (shot-stopping over
       expected, distribution value); we defer it to a future project.
@@ -652,18 +651,16 @@
   </div>
 </section>
 
-<!-- ── 7 · Q6 — MARQUEE — Hidden Architects ── -->
+<!-- ── 7 · Q6 (MARQUEE) Hidden Architects ── -->
 <section class="proj marquee">
   <h2>7 · The Hidden <em>Architects</em></h2>
   <p>
     In football data, every goal has three credited contributors: the <strong>goalscorer</strong> (the player
-    who shot), the <strong>assist provider (SCA1)</strong> — the player whose action directly created the shot
-    — and the <strong>pre-assist (SCA2)</strong> — the player two actions before the shot. Traditional stats
-    stop at goals + assists. SCA2 captures the deep-lying creators, the playmakers-before-the-playmakers —
-    players whose passes lead to passes that lead to goals.
+    who shot), the <strong>assist provider (SCA1)</strong> (the player whose action directly created the shot) and the <strong>pre-assist (SCA2)</strong>, the player two actions before the shot. Traditional stats
+    stop at goals + assists. SCA2 captures the deep-lying creators, the playmakers-before-the-playmakers, players whose passes lead to passes that lead to goals.
   </p>
   <p>
-    Most elite forwards score and assist — <strong>Mbappé collects 80% of his EP from these two roles</strong>.
+    Most elite forwards score and assist: <strong>Mbappé collects 80% of his EP from these two roles</strong>.
     But a different kind of contributor lives almost entirely in the SCA2 layer: the hidden architects whose
     value traditional metrics ignore. Stack the top 10 SCA2 EP collectors, segment each bar by where their EP
     came from (scorer / SCA1 / SCA2 in three colours), and one player is structurally different from everyone
@@ -684,7 +681,7 @@
       <div class="big-number" id="brandt-big">+40.93</div>
       <div class="big-label">EP collected from SCA2 alone</div>
       <div class="layer-rows">
-        <div class="layer-row brandt"><span class="who">BRANDT — SCA2 SHARE</span><span class="val">39%</span></div>
+        <div class="layer-row brandt"><span class="who">BRANDT, SCA2 SHARE</span><span class="val">39%</span></div>
         <div class="layer-row"><span class="who">FEKIR</span><span class="val">32%</span></div>
         <div class="layer-row"><span class="who">PAREJO</span><span class="val">35%</span></div>
         <div class="layer-row"><span class="who">MBAPPÉ</span><span class="val">20%</span></div>
@@ -693,7 +690,7 @@
       </div>
       <p>
         Only Messi creates more pre-assist EP in this dataset. <strong>Brandt's layer profile is unique among
-        elite contributors</strong> — 25% scorer, 37% SCA1, 39% SCA2 — meaning the pre-assist is his
+        elite contributors</strong> (25% scorer, 37% SCA1, 39% SCA2), meaning the pre-assist is his
         single largest contribution layer. Pure goalscorers like Mbappé and Salah collect under 20% of their
         EP from SCA2. Brandt is what the model exists to find.
       </p>
@@ -725,7 +722,7 @@
       <div class="meta">Barcelona · La Liga · 2,209 mins · 23 credits</div>
       <p>
         The youngest player in the dataset to clear 500 minutes. At <strong>0.738 EP per 90 across 2,209 minutes
-        at age 16.9</strong>, his per-90 number is built on real volume — not a four-game cameo. The Q7 #10
+        at age 16.9</strong>, his per-90 number is built on real volume, not a four-game cameo. The Q7 #10
         cell that requires the loudest second-look.
       </p>
     </div>
@@ -745,7 +742,7 @@
 <section class="proj">
   <h2>9 · The Picks</h2>
   <p>
-    Five names the data says the box score systematically undervalues — chosen to span the page's findings,
+    Five names the data says the box score systematically undervalues, chosen to span the page's findings,
     not to chase the headline numbers.
   </p>
   <div class="picks-grid" id="picks-grid"></div>
@@ -766,7 +763,7 @@
   const data = await fetch('data/data.json').then(r => r.json());
   const C = window.RENBALL_COLORS;
   const tok = C.tokens;
-  const fmt = (n, d=0) => (n == null ? '—' : Number(n).toLocaleString('en-GB', { maximumFractionDigits: d, minimumFractionDigits: d }));
+  const fmt = (n, d=0) => (n == null ? 'n/a' : Number(n).toLocaleString('en-GB', { maximumFractionDigits: d, minimumFractionDigits: d }));
 
   // ──────────────────────────────────────────────────────
   // Hero meta + stat callouts
@@ -811,7 +808,7 @@
   }
 
   // ──────────────────────────────────────────────────────
-  // Section 2 · Q1a — top 15 horizontal bar, muted half-season
+  // Section 2 · Q1a, top 15 horizontal bar, muted half-season
   // ──────────────────────────────────────────────────────
   (function renderQ1a() {
     const rows = data.q1a_full_credit.rows.slice(0, 15);
@@ -863,8 +860,8 @@
                 `Minutes:       ${fmt(r.minutes)}  (${cohort})`,
                 `Credits (3-layer): ${r.goals_involved}`,
                 `Total EP timed:    ${r.ep_timed.toFixed(2)}`,
-                `Position:      ${r.pos || '—'}`,
-                `Age:           ${r.age != null ? r.age.toFixed(1) : '—'}`,
+                `Position:      ${r.pos || 'n/a'}`,
+                `Age:           ${r.age != null ? r.age.toFixed(1) : 'n/a'}`,
               ];
             }
           }}
@@ -889,8 +886,8 @@
       rank: r.rank,
       player: r.player,
       team: r.primary_team,
-      league: (r.league || '').replace(/-/g, ' ') || '—',
-      pos: r.pos || '—',
+      league: (r.league || '').replace(/-/g, ' ') || 'n/a',
+      pos: r.pos || 'n/a',
       age: r.age != null ? r.age : null,
       minutes: r.minutes,
       credits: r.goals_involved,
@@ -915,7 +912,7 @@
     let sortKey = 'ep90', sortDir = -1;
 
     function fmt(c, v) {
-      if (v == null || v === '') return '—';
+      if (v == null || v === '') return 'n/a';
       if (c.int) return Number(v).toLocaleString('en-GB');
       if (c.dp != null) return Number(v).toFixed(c.dp);
       return v;
@@ -979,7 +976,7 @@
     const topY = margin.top;
     const botY = height - margin.bottom;
 
-    // Rank domain — use max observed
+    // Rank domain, use max observed
     const allRanks = shifts.flatMap(s => [s.rank_a, s.rank_b]);
     const minRank = 1;
     const maxRank = Math.max(...allRanks);
@@ -1054,7 +1051,7 @@
       const award = actual && actual.award ? actual.award : '';
       const src = actual && actual.source ? actual.source : '';
       const titleAttr = winner
-        ? ` title="Actual: ${esc(winner)} — ${esc(award)}${src ? ' (' + esc(src) + ')' : ''}"`
+        ? ` title="Actual: ${esc(winner)}, ${esc(award)}${src ? ' (' + esc(src) + ')' : ''}"`
         : (actual && actual.note ? ` title="${esc(actual.note)}"` : '');
 
       let actualLine;
@@ -1103,7 +1100,7 @@
       sum.innerHTML =
         `The model's per-90 MVP pick matched the real award winner in ` +
         `<strong>${matches} of ${comparable}</strong> cells where an award was given ` +
-        `(<strong>${pct}%</strong>). The model prices high-leverage value per minute, not reputation — ` +
+        `(<strong>${pct}%</strong>). The model prices high-leverage value per minute, not reputation, ` +
         `so divergence is the expected result, and the whole point of the exercise.`;
     }
   })();
@@ -1252,10 +1249,10 @@
       html += `<div class="pos-panel"><h3>${labels[pos]}</h3><table class="pos-table">`;
       for (const r of entry.rows) {
         const minsClass = (r.minutes != null && r.minutes < 2000) ? 'small' : '';
-        const minsLabel = r.minutes != null ? `${r.minutes.toLocaleString('en-GB')} min` : '— min';
+        const minsLabel = r.minutes != null ? `${r.minutes.toLocaleString('en-GB')} min` : 'n/a';
         html += `<tr>
           <td>${r.rank}.</td>
-          <td><span class="player">${r.player}</span><span class="team">${r.primary_team} · age ${r.age != null ? r.age.toFixed(1) : '—'}</span></td>
+          <td><span class="player">${r.player}</span><span class="team">${r.primary_team} · age ${r.age != null ? r.age.toFixed(1) : 'n/a'}</span></td>
           <td class="ep">${r.ep_per_90.toFixed(3)}</td>
           <td class="mins ${minsClass}">${minsLabel}</td>
         </tr>`;
@@ -1266,7 +1263,7 @@
   })();
 
   // ──────────────────────────────────────────────────────
-  // Section 7 · Q6 marquee — stacked horizontal bar
+  // Section 7 · Q6 marquee, stacked horizontal bar
   // ──────────────────────────────────────────────────────
   (function renderQ6Stack() {
     const rows = (data.q6_architects.layer_breakdown || []).slice(0, 10);
@@ -1352,7 +1349,7 @@
               return [
                 `Minutes:  ${fmt(r.minutes)}`,
                 `SCA2 credits: ${r.goals_involved}`,
-                `Position: ${r.pos || '—'}`,
+                `Position: ${r.pos || 'n/a'}`,
               ];
             }
           }}
@@ -1399,7 +1396,7 @@
               return [
                 `Minutes:  ${fmt(r.minutes)}  (${cohort})`,
                 `Credits:  ${r.goals_involved}`,
-                `Position: ${r.pos || '—'}`,
+                `Position: ${r.pos || 'n/a'}`,
               ];
             }
           }}
@@ -1433,7 +1430,7 @@
         team: 'Borussia Dortmund · MF',
         number: `${brandt.ep_sca2.toFixed(2)} EP`,
         numberLabel: 'from SCA2 alone',
-        copy: `The page's headline finding. <strong>Only Messi creates more pre-assist value</strong>, and Brandt's layer breakdown — 25% scorer, 37% SCA1, 39% SCA2 — is the most balanced architect profile in the dataset. Mbappé and Salah each collect under 20% of their EP from pre-assists; Brandt almost doubles them.`,
+        copy: `The page's headline finding. <strong>Only Messi creates more pre-assist value</strong>, and Brandt's layer breakdown (25% scorer, 37% SCA1, 39% SCA2) is the most balanced architect profile in the dataset. Mbappé and Salah each collect under 20% of their EP from pre-assists; Brandt almost doubles them.`,
       } : null,
       musiala ? {
         rank: '02 · YOUNG · SAMPLED',
@@ -1449,7 +1446,7 @@
         team: 'Manchester City · MF',
         number: `${kdb.ep_per_90.toFixed(3)} EP/90`,
         numberLabel: 'over 14,674 minutes',
-        copy: `By far the most-sampled top-3 pick on the page — <strong>${kdb.minutes.toLocaleString('en-GB')} minutes and ${kdb.goals_involved} credits</strong> of evidence behind the EP/90. Doesn't qualify as a "discovery" by any reasonable definition, which is the point: when the model agrees with conventional wisdom about elite midfielders, the model is doing its job.`,
+        copy: `By far the most-sampled top-3 pick on the page: <strong>${kdb.minutes.toLocaleString('en-GB')} minutes and ${kdb.goals_involved} credits</strong> of evidence behind the EP/90. Doesn't qualify as a "discovery" by any reasonable definition, which is the point: when the model agrees with conventional wisdom about elite midfielders, the model is doing its job.`,
       } : null,
       tello ? {
         rank: '04 · LATE-GAME',
@@ -1457,7 +1454,7 @@
         team: `${tello.primary_team} · Q3 #${tello.rank}`,
         number: `${(tello.share_late * 100).toFixed(1)}%`,
         numberLabel: 'EP from 60-90 mins',
-        copy: `The only Q3 name with both <strong>${tello.goals_involved} credits</strong> and a late share above 70%. The substantive version of "late-game specialist" — not a super-sub, just a player whose contribution lives almost entirely in the high-leverage minutes. <strong>${tello.ep_late.toFixed(1)} of his ${tello.ep_total.toFixed(1)} EP</strong> came in the last 30.`,
+        copy: `The only Q3 name with both <strong>${tello.goals_involved} credits</strong> and a late share above 70%. The substantive version of "late-game specialist": not a super-sub, just a player whose contribution lives almost entirely in the high-leverage minutes. <strong>${tello.ep_late.toFixed(1)} of his ${tello.ep_total.toFixed(1)} EP</strong> came in the last 30.`,
       } : null,
       yamal ? {
         rank: '05 · THE DETAIL',
@@ -1465,7 +1462,7 @@
         team: `Barcelona · age ${yamal.age != null ? yamal.age.toFixed(1) : '?'}`,
         number: `${yamal.ep_per_90.toFixed(3)} EP/90`,
         numberLabel: `${yamal.minutes.toLocaleString('en-GB')} mins · age ${yamal.age != null ? yamal.age.toFixed(1) : '?'}`,
-        copy: `The youngest player in the dataset to clear 500 minutes. At <strong>${yamal.minutes.toLocaleString('en-GB')} minutes</strong> his per-90 isn't a four-game flash — it's almost a full season's evidence. <strong>${yamal.goals_involved} credits at age ${yamal.age != null ? yamal.age.toFixed(1) : '?'}</strong>. The Q7 cell that requires the loudest second-look.`,
+        copy: `The youngest player in the dataset to clear 500 minutes. At <strong>${yamal.minutes.toLocaleString('en-GB')} minutes</strong> his per-90 isn't a four-game flash; it's almost a full season's evidence. <strong>${yamal.goals_involved} credits at age ${yamal.age != null ? yamal.age.toFixed(1) : '?'}</strong>. The Q7 cell that requires the loudest second-look.`,
       } : null,
     ].filter(Boolean);
 

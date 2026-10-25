@@ -122,7 +122,7 @@
       <div class="slide-progress"><span></span></div>
       <div class="slide-controls">
         <button type="button" data-act="prev" aria-label="Previous slide">← Prev</button>
-        <span class="slide-counter" aria-live="polite">— / —</span>
+        <span class="slide-counter" aria-live="polite">… / …</span>
         <button type="button" data-act="next" aria-label="Next slide">Next →</button>
         <span class="spacer"></span>
         <button type="button" data-act="full" class="hide-sm">Fullscreen</button>
@@ -139,7 +139,7 @@
 
     const fail = (err) => {
       console.warn('slide viewer:', err);
-      stage.innerHTML = `<div class="slide-status">Couldn't render the deck here — <a href="${esc(src)}" target="_blank" rel="noopener">open slides.pdf</a></div>`;
+      stage.innerHTML = `<div class="slide-status">Couldn't render the deck here. <a href="${esc(src)}" target="_blank" rel="noopener">open slides.pdf</a></div>`;
       prev.disabled = next.disabled = true;
     };
 

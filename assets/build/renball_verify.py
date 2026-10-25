@@ -122,6 +122,7 @@ DEFAULT_ALLOW: list[tuple[str, str]] = [
     (r"(?:\bper[- ]?|/\s?)90\b", "per-90 unit"),
     (r"(?<![\d.,])(?:0|15|30|45|60|75)\s?[-–]\s?(?:15|30|45|60|75|90)\b(?!\s?%)", "15-minute bin label"),
     (r"§\s?\d+(?:\.\d+)*", "section reference"),
+    (r"\bplausible ranges?\s*\((?:80|90|95|99)\s?%\)", "interval level (plain-language X copy)"),
     (r"\b(?:top|Top|TOP)[ -]?5\b", "league scope"),
 ]
 
@@ -515,7 +516,8 @@ def scan(text: str, truth: Truth, allow: list[tuple[re.Pattern, str]],
 
 def check_numbers(project_dir: Path, *, allow: Iterable[tuple[str, str]] = (),
                   anchors: Iterable[tuple[str, str]] = (),
-                  render: bool = True, report: bool = False) -> int:
+                  render: bool = True, report: bool = False,
+                  units: Optional[list[tuple[str, str, str]]] = None) -> int:
     data = json.loads((project_dir / "data" / "data.json").read_text(encoding="utf-8"))
     truth = Truth(data)
     rules = [(re.compile(p, re.I), why) for p, why in [*DEFAULT_ALLOW, *allow]]
@@ -526,7 +528,7 @@ def check_numbers(project_dir: Path, *, allow: Iterable[tuple[str, str]] = (),
         except (KeyError, IndexError, TypeError):
             raise SystemExit(f"ANCHORS: {path} is not in data.json")
     hits: list[Hit] = []
-    for source, loc, text in collect_copy(project_dir, data, render=render):
+    for source, loc, text in (units if units is not None else collect_copy(project_dir, data, render=render)):
         unit_binds = binds
         if " @ $" in loc:                                   # data-verify-path element
             path = loc.split(" @ ", 1)[1]
@@ -561,6 +563,55 @@ def check_numbers(project_dir: Path, *, allow: Iterable[tuple[str, str]] = (),
         print("  WEAK = the number exists in data.json but can't be tied to one value. Put it next to its\n"
               "  sibling figures, or pin it with an ANCHORS rule in code/verify.py: (regex, '$.path').")
     return len(bad)
+
+
+# ════════════════════════════════════════════════════════════════════════
+# Style check (CLAUDE.md §12): no em dashes in published copy, no en dashes in X copy
+# ════════════════════════════════════════════════════════════════════════
+EM_DASH, EN_DASH = "—", "–"
+_HEAD = re.compile(r"<title>(.*?)</title>|<meta\s+name=\"description\"\s+content=\"(.*?)\"", re.S | re.I)
+
+
+def style_units(project_dir: Path, units: list[tuple[str, str, str]]) -> list[tuple[str, str, str]]:
+    """Published copy: everything the numbers check reads except data.json internals, plus the
+    <title> and meta description of each HTML page."""
+    out = [u for u in units if u[0] != "data.json"]
+    for name in ("analysis.html", "dashboard.html", "methodology.html"):
+        page = project_dir / name
+        if page.exists():
+            for m in _HEAD.finditer(page.read_text(encoding="utf-8")[:6000]):
+                if m.group(2) or name == "methodology.html":      # page titles are already in the DOM text
+                    out.append((name, "head", m.group(1) or m.group(2)))
+    return out
+
+
+def style_problems(units: list[tuple[str, str, str]]) -> list[tuple[str, str, str, str]]:
+    """(source, location, dash, context) for every em dash anywhere and every en dash in X copy."""
+    found = []
+    for source, loc, text in units:
+        for ch, name in ((EM_DASH, "em dash"), (EN_DASH, "en dash")):
+            if ch == EN_DASH and source != "social":
+                continue
+            for m in re.finditer(ch, text):
+                found.append((source, loc, name, text[max(0, m.start() - 40):m.end() + 30].replace("\n", " ")))
+    return found
+
+
+def check_style(project_dir: Path, units: list[tuple[str, str, str]]) -> int:
+    found = style_problems(style_units(project_dir, units))
+    print(f"== Style check: {project_dir.name} ==")
+    if not found:
+        print("  [OK ] no em dashes in published copy, no en dashes in X copy")
+        return 0
+    by_src: dict[str, int] = {}
+    for source, _, _, _ in found:
+        by_src[source] = by_src.get(source, 0) + 1
+    print("  " + " · ".join(f"{s}: {n}" for s, n in by_src.items()))
+    for source, loc, name, ctx in found:
+        print(f"  [FAIL] {source} {loc}: {name}  ...{ctx}...")
+    print("  Rewrite with a comma, colon, full stop or brackets; X copy writes ranges as \"1.9 to 2.2\" "
+          "and scores as \"1-0\".")
+    return len(found)
 
 
 # ════════════════════════════════════════════════════════════════════════
@@ -656,12 +707,20 @@ def main(project_dir: Path, *, allow: Iterable[tuple[str, str]] = (),
     ap.add_argument("--static", action="store_true", help="skip the headless render of analysis.html")
     ap.add_argument("--numbers-only", action="store_true")
     ap.add_argument("--standard-only", action="store_true")
+    ap.add_argument("--style-only", action="store_true", help="only the dash check (CLAUDE.md §12)")
     a = ap.parse_args(argv)
     project_dir = Path(project_dir).resolve()
     fails = 0
     if not a.standard_only:
-        fails += check_numbers(project_dir, allow=allow, anchors=anchors,
-                               render=not a.static, report=a.report)
+        data = json.loads((project_dir / "data" / "data.json").read_text(encoding="utf-8"))
+        units = collect_copy(project_dir, data, render=not a.static)
+        if not a.style_only:
+            fails += check_numbers(project_dir, allow=allow, anchors=anchors,
+                                   render=not a.static, report=a.report, units=units)
+        fails += check_style(project_dir, units)
+        if a.style_only:
+            print("STYLE PASSED" if not fails else f"STYLE FAILED ({fails} problem(s))")
+            return 1 if fails else 0
     if not a.numbers_only:
         fails += check_standard(project_dir)
     print("VERIFY PASSED" if not fails else f"VERIFY FAILED ({fails} problem(s))")
@@ -710,6 +769,12 @@ def selftest() -> int:
     line = md_text(md).splitlines().index("line 6 has 12.55") + 1
     fails += line != 6
     print(f"  [{'OK ' if line == 6 else 'FAIL'}] methodology line numbers survive code blocks (line {line})")
+    sty = [x[2] for x in style_problems([("analysis.html", "p", "prices — not a playbook"),
+                                         ("methodology.md", "line 3", "the 0–15 window"),
+                                         ("social", "thread #2", "1–0 up after 75'")])]
+    want_sty = ["em dash", "en dash"]                     # en dash allowed on the page, not on X
+    fails += sty != want_sty
+    print(f"  [{'OK ' if sty == want_sty else 'FAIL'}] style: em dash anywhere, en dash only in X copy {sty}")
     print("SELFTEST PASSED" if not fails else f"SELFTEST FAILED ({fails})")
     return 1 if fails else 0
 

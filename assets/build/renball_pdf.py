@@ -643,7 +643,7 @@ def build_methodology_html(md_text: str, *, project_num: str,
                            print_theme: str = "light") -> str:
     body_html, has_math = _render_markdown(md_text)
     title = _md_title(md_text)
-    page_title = f"Methodology — {title} — Renball" if title else f"Methodology — Renball Project {project_num}"
+    page_title = f"Methodology · {title} · Renball" if title else f"Methodology · Renball Project {project_num}"
     theme_attr = ' data-print-theme="dark"' if print_theme == "dark" else ""
     css = METHODOLOGY_CSS.replace("__NUM__", project_num)
     if print_theme == "dark":

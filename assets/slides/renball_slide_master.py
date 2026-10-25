@@ -506,7 +506,7 @@ def add_bullet_slide(prs: Presentation, title: str,
                      bullets: Sequence[str], *,
                      caption: Optional[str] = None,
                      eyebrow: Optional[str] = None):
-    """Section header + 3–6 bullets (em-dash markers, accent)."""
+    """Section header + 3 to 6 bullets (small accent square markers; no dash glyphs, CLAUDE.md §12)."""
     s = add_blank_slide(prs)
     add_section_header(s, eyebrow, title)
 
@@ -516,8 +516,7 @@ def add_bullet_slide(prs: Presentation, title: str,
     row_h  = min(0.85, max(0.45, (bottom - top) / n))
     y = top
     for bullet in bullets:
-        add_text(s, BODY_LEFT, y, 0.4, row_h, "—",
-                 font=SERIF, size=22, color=ACCENT)
+        add_rect(s, BODY_LEFT + 0.05, y + 0.17, 0.09, 0.09, ACCENT)
         add_text(s, BODY_LEFT + 0.45, y + 0.05, BODY_MAX_W - 0.5, row_h, bullet,
                  font=SANS, size=15, color=TEXT_SECONDARY)
         y += row_h + 0.15
@@ -676,7 +675,7 @@ def add_quote_slide(prs: Presentation, quote: str, *,
              font=SERIF, size=34, color=TEXT, italic=True,
              align=PP_ALIGN.LEFT, anchor=MSO_ANCHOR.MIDDLE)
     if attribution:
-        add_mono_label(s, 1.5, 6.0, 10.5, 0.4, f"— {attribution}",
+        add_mono_label(s, 1.5, 6.0, 10.5, 0.4, attribution,
                        color=TEXT_MUTED, size=11)
     add_hline(s, 1.5, 6.55, 1.5, color=ACCENT, pt=2)
     return s

@@ -462,4 +462,94 @@ def stat_card(value: str, label: str, fmt: str = "landscape", *,
     return fig, ax
 
 
+AUDIENCES = (("coaches", "Coaches", "training & tactics"), ("managers", "Managers", "match-day decisions"),
+             ("clubs", "Clubs", "recruitment & contracts"), ("agents", "Agents", "positioning a player"))
+EVIDENCE = {"strong": ("Strong", 3, ACCENT), "moderate": ("Moderate", 2, ACCENT_DIM),
+            "exploratory": ("Exploratory", 1, TEXT_SECONDARY)}
+
+
+def takeaways_card(takeaways: dict, fmt: str = "portrait", *, title: Optional[str] = None,
+                   eyebrow: Optional[str] = None, source: Optional[str] = None):
+    """The four-audience takeaways (data.json["takeaways"]) as one image for the thread's
+    "Who should care?" post: audience, evidence label with its 3-step meter, the takeaway.
+    Portrait stacks the four audiences; landscape uses two columns. Text shrinks to fit, never
+    below the phone-legibility floor. En dashes become hyphens (X copy, CLAUDE.md §12)."""
+    import textwrap
+    from matplotlib.patches import Rectangle
+
+    fig, ax = new_figure(fmt, title=title, eyebrow=eyebrow, source=source)
+    ax.axis("off")
+    fig._renball["box"] = None
+    f = spec(fmt)
+    W, H = f["px"]
+    pad, pt = f["pad"], DPI / 72.0
+    top = H - (ax.get_position().y1 * H)
+    bottom = H - f["footer_h"] - 16
+    floor = MIN_PHONE_PX / ((DPI / 72.0) * PHONE_CSS_WIDTH / W) + 0.05
+    gap = 48
+    ncol = 1 if fmt == "portrait" else 2
+    col_w = (W - 2 * pad - gap * (ncol - 1)) / ncol
+    if ncol == 1:
+        splits = [[AUDIENCES]]
+    else:   # every way to share the four audiences between two columns, order kept within a column
+        splits = [[[a for i, a in enumerate(AUDIENCES) if not (m >> i) & 1],
+                   [a for i, a in enumerate(AUDIENCES) if (m >> i) & 1]] for m in range(1, 15)]
+
+    def layout(size: float, cols):
+        small = max(size * 0.8, floor)
+        width = int(col_w / (size * pt * 0.5))
+        rows, ends = [], []
+        for ci, audiences in enumerate(cols):
+            x0, y = pad + ci * (col_w + gap), top
+            for key, name, focus in audiences:
+                rows.append(("head", (name, focus, small), x0, y))
+                y += size * pt * 1.55
+                items = takeaways.get(key) or []
+                if not items:
+                    rows.append(("none", "No defensible claim from this study.", x0, y))
+                    y += size * pt * 1.45
+                for it in items:
+                    rows.append(("pill", (it["evidence"], small), x0, y))
+                    y += max(small, size * 0.85) * pt * 1.45
+                    text = it["text"].replace("**", "").replace("–", "-")
+                    for line in textwrap.wrap(text, width):
+                        rows.append(("text", line, x0, y))
+                        y += size * pt * 1.32
+                    y += size * pt * 0.35
+                y += size * pt * 0.75
+            ends.append(y)
+        return rows, max(ends)
+
+    def best(size: float):
+        return min((layout(size, cols) for cols in splits), key=lambda r: r[1])
+
+    size = f["size"]["annot"]
+    rows, end = best(size)
+    while end > bottom and size > floor:
+        size = max(floor, size - 0.25)
+        rows, end = best(size)
+    for kind, payload, x0, y in rows:
+        yf = 1 - y / H
+        if kind == "head":
+            name, focus, small = payload
+            t = fig.text(x0 / W, yf, name, fontsize=size * 1.25, color=TEXT, family=SERIF, va="top")
+            x = x0 + _text_width_px(fig, t) + 14
+            fig.text(x / W, yf - 0.004, focus.upper(), fontsize=small, color=TEXT_MUTED, family=MONO, va="top")
+        elif kind == "pill":
+            key, small = payload
+            label, level, color = EVIDENCE[key]
+            sq = small * pt * 0.62
+            for i in range(3):
+                fig.patches.append(Rectangle(((x0 + i * (sq + 5)) / W, yf - (sq + 5) / H), sq / W, sq / H,
+                                             transform=fig.transFigure, facecolor=color if i < level else BORDER_LIGHT,
+                                             edgecolor="none"))
+            fig.text((x0 + 3 * (sq + 5) + 8) / W, yf, label.upper(), fontsize=small, color=color, family=MONO,
+                     va="top")
+        elif kind == "none":
+            fig.text(x0 / W, yf, payload, fontsize=size, color=TEXT_MUTED, family=SANS, style="italic", va="top")
+        else:
+            fig.text(x0 / W, yf, payload, fontsize=size, color=TEXT_SECONDARY, family=SANS, va="top")
+    return fig, ax
+
+
 register_fonts()
