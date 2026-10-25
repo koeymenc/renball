@@ -2,7 +2,7 @@
 build_slides.py — Renball Project 01 slide builder
 ===================================================
 
-Generates a 13-slide 16:9 deck for the penalty conversion project. All
+Generates a 17-slide 16:9 deck for the penalty conversion project. All
 numbers are pulled from ../data/data.json so the deck stays in sync
 with the build.
 
@@ -27,11 +27,22 @@ SHARED      = REPO_ROOT / "assets" / "slides"
 sys.path.insert(0, str(SHARED))
 
 import renball_slide_master as R  # noqa: E402
+import renball_chart_style as CS     # noqa: E402  (on sys.path via the slide master)
 from pptx.enum.text import PP_ALIGN  # noqa: E402
 from pptx.util import Pt           # noqa: E402
 
 DATA_JSON   = PROJECT_DIR / "data" / "data.json"
 OUTPUT_PPTX = PROJECT_DIR / "slides.pptx"
+
+
+def sgn(x: float, d: int = 1) -> str:
+    """Signed number with a true minus sign."""
+    return f"{'−' if x < 0 else '+'}{abs(x):.{d}f}"
+
+
+def num(x: float, d: int = 2) -> str:
+    """Unsigned positives, true minus sign for negatives."""
+    return f"{'−' if x < 0 else ''}{abs(x):.{d}f}"
 
 
 # ════════════════════════════════════════════════════════════════════════
@@ -64,8 +75,9 @@ def slide_tldr(prs, d):
          f"One-tailed two-proportion z-test. Treatment n = {t['attempts']} "
          f"({t['rate']}%). Control n = {c['attempts']:,} ({c['rate']}%)."),
         ("THE RESULT",
-         f"Δ = {tst['rate_diff_pp']:+.2f} pp (95% CI {tst['diff_ci_lo']:+.1f} to {tst['diff_ci_hi']:+.1f}) — "
-         f"predicted direction, but p = {tst['p_value']:.3f}, one-tailed: fail to reject H₀."),
+         f"Δ = {sgn(tst['rate_diff_pp'], 2)} pp (95% CI {sgn(tst['diff_ci_lo'])} to {sgn(tst['diff_ci_hi'])}) — "
+         f"predicted direction, but p = {tst['p_value']:.3f}: not detectable. Every check agrees "
+         f"({sgn(d['robustness']['adjusted']['gap_pp'], 2)} pp after controls)."),
     ]
     y = R.BODY_TOP
     for label, body in rows:
@@ -168,16 +180,18 @@ def slide_by_league(prs, d):
     fig, ax = R.new_chart(width=11, height=4.3)
     bars = ax.bar(labels, rates, color=R.MPL_ACCENT,
                   width=0.55, edgecolor="none")
-    ax.set_ylim(0, 100)
+    lo, hi = CS.nice_range(rates)
+    ax.set_ylim(lo, hi)
+    ax.set_yticks(range(int(lo), int(hi) + 1, 5))
     ax.set_ylabel("Conversion rate (%)",
                   color=R.MPL_TEXT_SEC, fontsize=11)
     for bar, val, n in zip(bars, rates, n_vals):
-        ax.text(bar.get_x() + bar.get_width() / 2, val + 1.2,
+        ax.text(bar.get_x() + bar.get_width() / 2, val + 0.3,
                 f"{val:.1f}%",
                 ha="center", color=R.MPL_TEXT, fontsize=10)
-        ax.text(bar.get_x() + bar.get_width() / 2, -6,
+        ax.text(bar.get_x() + bar.get_width() / 2, lo + 0.6,
                 f"n = {n:,}",
-                ha="center", color=R.MPL_TEXT_MUTED, fontsize=8)
+                ha="center", color=R.MPL_BG, fontsize=8)
 
     R.add_chart_slide(prs,
                       "Conversion rate by league",
@@ -196,21 +210,24 @@ def slide_by_season(prs, d):
     fig, ax = R.new_chart(width=11, height=4.3)
     ax.bar(labels, rates, color=R.MPL_ACCENT,
            width=0.55, edgecolor="none")
-    ax.set_ylim(0, 100)
+    lo, hi = CS.nice_range(rates)
+    ax.set_ylim(lo, hi)
+    ax.set_yticks(range(int(lo), int(hi) + 1, 5))
     ax.set_ylabel("Conversion rate (%)",
                   color=R.MPL_TEXT_SEC, fontsize=11)
     for i, (val, n) in enumerate(zip(rates, n_vals)):
-        ax.text(i, val + 1.2, f"{val:.1f}%",
+        ax.text(i, val + 0.3, f"{val:.1f}%",
                 ha="center", color=R.MPL_TEXT, fontsize=9)
-        ax.text(i, -6, f"n = {n:,}",
-                ha="center", color=R.MPL_TEXT_MUTED, fontsize=8)
-    import matplotlib.pyplot as plt
-    plt.setp(ax.get_xticklabels(), rotation=30, ha="right")
+        ax.text(i, lo + 0.6, f"n = {n:,}",
+                ha="center", color=R.MPL_BG, fontsize=8)
 
+    md = d["metadata"]
+    s_lo, s_hi = md["season_rate_min"], md["season_rate_max"]
     R.add_chart_slide(prs,
                       "Conversion across seasons",
                       fig,
-                      caption="Year-on-year stability is high — the ~77–80% band holds across the period in scope.",
+                      caption=f"Season rates run from {s_lo['rate']:.2f}% ({s_lo['season']}) to "
+                              f"{s_hi['rate']:.2f}% ({s_hi['season']}); the lowest is dropped in a sensitivity check.",
                       eyebrow="CONTEXT")
 
 
@@ -291,6 +308,126 @@ def slide_primary(prs, d):
                font=R.MONO, size=10, color=R.TEXT_MUTED)
 
 
+def slide_robustness(prs, d):
+    """Forest plot: every check's gap with its 95% interval."""
+    rb = d["robustness"]
+    adj, margin = rb["adjusted"], rb["tost"]["margin_pp"]
+    rows = [(r["short"], r["diff_pp"], r["ci_lo"], r["ci_hi"]) for r in rb["controls"]]
+    rows.append((adj["short"], adj["gap_pp"], adj["gap_lo"], adj["gap_hi"]))
+    rows += [(r["short"], r["diff_pp"], r["ci_lo"], r["ci_hi"]) for r in rb["samples"]]
+    rows = rows[::-1]                                   # primary on top
+
+    fig, ax = R.new_chart(width=11, height=4.5)
+    ys = list(range(len(rows)))
+    ax.axvspan(-margin, margin, color=R.MPL_ACCENT, alpha=0.07, linewidth=0)
+    ax.axvline(0, color=R.MPL_TEXT_MUTED, linestyle=(0, (4, 4)), linewidth=1)
+    for y, (label, dd, lo, hi) in zip(ys, rows):
+        top = y == len(rows) - 1
+        ax.plot([lo, hi], [y, y], color=R.MPL_ACCENT if top else R.MPL_TEXT_SEC, linewidth=3 if top else 2,
+                solid_capstyle="butt")
+        ax.plot([dd], [y], "o", color=R.MPL_ACCENT if top else R.MPL_TEXT, markersize=7)
+        ax.text(hi + 0.6, y, f"{sgn(dd, 2)}  [{sgn(lo)}, {sgn(hi)}]", va="center",
+                color=R.MPL_TEXT_SEC, fontsize=9)
+    ax.set_yticks(ys)
+    ax.set_yticklabels([r[0] for r in rows], fontsize=10)
+    ax.grid(axis="y", visible=False)
+    ax.grid(axis="x", color=R.MPL_BORDER, alpha=0.7, linewidth=0.6)
+    lo = min(r[2] for r in rows) - 2
+    hi = max(r[3] for r in rows) + 12
+    ax.set_xlim(lo, hi)
+    ax.set_xlabel("Gap in conversion, fouled taker minus comparison (pp)", color=R.MPL_TEXT_SEC, fontsize=10)
+
+    R.add_chart_slide(prs, "Does it *hold up*?", fig,
+                      caption=f"Bars: 95% intervals (adjusted row: cluster bootstrap over takers). Shaded: ±{margin:.0f} pp "
+                              "= no practical difference. Every check straddles zero.",
+                      eyebrow="ROBUSTNESS")
+
+
+def slide_null(prs, d):
+    """Three ways to bound the null."""
+    tst = d["primary"]["test"]
+    tost, t2, bay = d["robustness"]["tost"], d["robustness"]["tost_secondary"], d["robustness"]["bayes"]
+    edge = d["robustness"]["established"]["vs_other"]["diff_pp"]
+    s = R.add_blank_slide(prs)
+    R.add_section_header(s, "BOUNDING THE NULL", "Not significant isn't *no effect*")
+
+    cards = [
+        (f"{tst['mde_pp']:.1f} pp", "SMALLEST DROP WE'D RELIABLY DETECT",
+         f"80% power, one-tailed 5% test. The observed gap ({sgn(tst['rate_diff_pp'], 2)} pp) sits inside this blind spot."),
+        (f"{tost['smallest_margin_pp']:.1f} pp", "BIGGEST DROP THE DATA CAN'T RULE OUT",
+         f"Equivalence within ±{tost['margin_pp']:.0f} pp fails (90% CI {sgn(tost['ci90_lo'])} to "
+         f"{sgn(tost['ci90_hi'])}, p = {tost['p_tost']:.2f}), and so does ±{t2['margin_pp']:.0f} pp "
+         f"(p = {t2['p_tost']:.2f}). ±{tost['margin_pp']:.0f} pp is more than the established taker's "
+         f"{sgn(edge, 2)} pp edge. Margins set after the analysis."),
+        (f"{bay['p_lower_pct']:.1f}%", "CHANCE THE FOULED TAKER CONVERTS LESS",
+         f"Bayesian, flat priors. {bay['p_drop_beyond_margin_pct']:.1f}% chance the drop exceeds "
+         f"{tost['margin_pp']:.0f} pp; 95% credible interval {sgn(bay['cri_lo'])} to {sgn(bay['cri_hi'])} pp."),
+    ]
+    gap = 0.25
+    w = (R.BODY_MAX_W - 2 * gap) / 3
+    h = R.CAPTION_TOP - R.CAPTION_GAP - R.BODY_TOP
+    for i, (value, label, body) in enumerate(cards):
+        x = R.BODY_LEFT + i * (w + gap)
+        R.add_rect(s, x, R.BODY_TOP, w, h, R.BG_CARD, border=R.BORDER_LIGHT, border_pt=0.75)
+        R.add_text(s, x + 0.25, R.BODY_TOP + 0.25, w - 0.5, 1.0, value,
+                   font=R.SERIF, size=44, color=R.ACCENT)
+        R.add_mono_label(s, x + 0.25, R.BODY_TOP + 1.35, w - 0.5, 0.6, label,
+                         color=R.TEXT_MUTED, size=9)
+        R.add_text(s, x + 0.25, R.BODY_TOP + 2.0, w - 0.5, h - 2.2, body,
+                   font=R.SANS, size=14, color=R.TEXT_SECONDARY)
+    R.add_text(s, R.BODY_LEFT, R.CAPTION_TOP, R.BODY_MAX_W, 0.3,
+               "The data lean towards a drop, can't rule out a large one, and can't rule out none.",
+               font=R.MONO, size=10, color=R.TEXT_MUTED)
+
+
+def slide_taker(prs, d):
+    est, rep = d["robustness"]["established"], d["robustness"]["repeatability"]
+    v, sd = est["vs_other"], est["season_definition"]
+    R.add_two_column_slide(
+        prs,
+        title="Is it the foul, or the *taker*?",
+        left={
+            "label": "THE ESTABLISHED TAKER",
+            "title": f"{sgn(v['diff_pp'], 2)} pp",
+            "body": (f"Edge of the team's established taker (most penalties for the club before the match) over "
+                     f"other takers: 95% CI {sgn(v['ci_lo'])} to {sgn(v['ci_hi'])}. He took "
+                     f"{est['share_treatment_pct']:.1f}% of treatment kicks vs {est['share_control_pct']:.1f}% of the rest."),
+            "accent": True,
+        },
+        right={
+            "label": "THE TAKER'S RECORD",
+            "title": f"{num(rep['spearman_brown'])} reliability",
+            "body": (f"Split-half, {rep['n_takers']} takers with {rep['min_attempts']}+ kicks (95% CI "
+                     f"{num(rep['sb_lo'])} to {num(rep['sb_hi'])}). A taker's hit rate on alternate kicks says "
+                     "nothing useful about the rest — penalty records behave like noise at these sample sizes."),
+        },
+        eyebrow="THE TAKER",
+        caption=(f"Define the taker from the whole season instead and the edge jumps to {sgn(sd['diff_pp'], 2)} pp — "
+                 "largely the outcome leaking in: takers who miss lose the job."),
+    )
+
+
+def slide_takeaways(prs, d):
+    R.add_takeaways_slide(prs, d["takeaways"], show_basis=True)
+
+
+def slide_limitations(prs, d):
+    tst, md = d["primary"]["test"], d["metadata"]
+    t = d["primary"]["treatment"]
+    R.add_bullet_slide(
+        prs,
+        "What this *can't* tell you",
+        bullets=[
+            f"Small treatment group: {t['attempts']} penalties — a real drop below ~{tst['mde_pp']:.1f} pp would usually go unseen.",
+            "Taking it is a choice: status, record and experience are controlled; nerve and knocks on the day are not.",
+            "\"Fouled\" is not \"hurt\": the data record who won the penalty, not whether he was injured.",
+            "No minute, scoreline or goalkeeper in the model — the player-match table has neither.",
+            f"{md['n_unlinked']} of {md['n_penalties_total']:,} penalties can't be linked (mostly a team taking 2+ in a match).",
+        ],
+        eyebrow="LIMITATIONS",
+    )
+
+
 def slide_matrix(prs, d):
     """Bespoke 2×2 matrix layout."""
     s = R.add_blank_slide(prs)
@@ -357,8 +494,8 @@ def slide_per_league(prs, d):
 
     blocks = d["primary"]["by_league"]
 
-    headers = ["LEAGUE", "T. RATE", "T. N", "C. RATE", "C. N", "Z", "P (1-T)", "SIG"]
-    col_w = [2.6, 1.4, 1.0, 1.4, 1.2, 1.2, 1.4, 1.4]
+    headers = ["LEAGUE", "T. RATE", "T. N", "C. RATE", "C. N", "Z", "P (1-T)", "P (HOLM)", "SIG"]
+    col_w = [2.3, 1.3, 0.9, 1.3, 1.1, 1.1, 1.2, 1.3, 1.5]
     col_x = [R.BODY_LEFT]
     for w in col_w[:-1]:
         col_x.append(col_x[-1] + w)
@@ -379,8 +516,9 @@ def slide_per_league(prs, d):
         low_n = tt["attempts"] < 30
         z_str = f"{tst['z_stat']:+.3f}" if tst["z_stat"] is not None else "—"
         p_str = f"{tst['p_value']:.4f}" if tst["p_value"] is not None else "—"
-        sig_str = "Yes" if tst["significant_at_05"] else "No"
-        sig_color = R.ACCENT if tst["significant_at_05"] else R.TEXT_MUTED
+        sig = tst["p_holm"] < 0.05
+        sig_str = "Yes" if sig else "No"
+        sig_color = R.ACCENT if sig else R.TEXT_MUTED
         t_rate_color = R.TEXT_MUTED if low_n else R.TEXT
 
         R.add_text(s, col_x[0], y, col_w[0] - 0.1, 0.4, blk["label"],
@@ -403,16 +541,19 @@ def slide_per_league(prs, d):
         R.add_text(s, col_x[6], y, col_w[6] - 0.1, 0.4, p_str,
                    font=R.MONO, size=12, color=R.TEXT,
                    align=PP_ALIGN.RIGHT)
+        R.add_text(s, col_x[7], y, col_w[7] - 0.1, 0.4, f"{tst['p_holm']:.3f}",
+                   font=R.MONO, size=12, color=R.TEXT,
+                   align=PP_ALIGN.RIGHT)
         sig_tag = sig_str + (" · low n" if low_n else "")
-        R.add_text(s, col_x[7], y, col_w[7] - 0.1, 0.4, sig_tag,
+        R.add_text(s, col_x[8], y, col_w[8] - 0.1, 0.4, sig_tag,
                    font=R.MONO, size=12, color=sig_color,
                    align=PP_ALIGN.RIGHT)
         y += 0.5
 
     md = d["metadata"]
     R.add_text(s, R.BODY_LEFT, R.CAPTION_TOP, R.BODY_MAX_W, 0.3,
-               f"Treatment cells of {md['treatment_n_by_league_min']}–{md['treatment_n_by_league_max']} per league: "
-               "five uncorrected, underpowered tests — the pooled test is the inference.",
+               f"Cells of {md['treatment_n_by_league_min']}–{md['treatment_n_by_league_max']}. SIG = after a Holm "
+               f"correction for five tests (smallest adjusted p = {d['robustness']['holm_min_p']:.3f}).",
                font=R.MONO, size=10, color=R.TEXT_MUTED)
 
 
@@ -438,8 +579,10 @@ def slide_conclusion(prs, d):
                f"Conversion is {diff_abs:.2f} pp {direction} when the fouled player takes the kick himself "
                f"({t['rate']:.2f}% vs {c['rate']:.2f}% for everyone else). The point estimate moves in the "
                "predicted direction, but the treatment cell is too small to rule chance out "
-               f"(p = {tst['p_value']:.3f}, one-tailed). With {t['attempts']} such penalties the design only "
-               f"reliably detects a drop of about {tst['mde_pp']:.1f} pp or more.",
+               f"(p = {tst['p_value']:.3f}, one-tailed). Every check lands in the same place "
+               f"({sgn(d['robustness']['adjusted']['gap_pp'], 2)} pp after controls). With {t['attempts']} such "
+               f"penalties the design only reliably detects a drop of about {tst['mde_pp']:.1f} pp, and the data "
+               f"can't rule out one as large as {d['robustness']['tost']['smallest_margin_pp']:.1f} pp.",
                font=R.SANS, size=15, color=R.TEXT_SECONDARY)
 
     R.add_text(s, R.BODY_LEFT, R.BODY_TOP + 3.4, R.BODY_MAX_W, 1.2,
@@ -478,10 +621,15 @@ def main() -> None:
     slide_by_league(prs, d)    # 6
     slide_by_season(prs, d)    # 7
     slide_primary(prs, d)      # 8
-    slide_matrix(prs, d)       # 9
-    slide_per_league(prs, d)   # 10
-    slide_conclusion(prs, d)   # 11
-    slide_sources(prs, d)      # 12
+    slide_robustness(prs, d)   # 9
+    slide_null(prs, d)         # 10
+    slide_taker(prs, d)        # 11
+    slide_matrix(prs, d)       # 12
+    slide_per_league(prs, d)   # 13
+    slide_takeaways(prs, d)    # 14
+    slide_limitations(prs, d)  # 15
+    slide_conclusion(prs, d)   # 16
+    slide_sources(prs, d)      # 17
     R.finalize_deck(prs)
 
     prs.save(OUTPUT_PPTX)

@@ -163,10 +163,18 @@
   table.proj td.sig-no { color: var(--text-muted); }
   table.proj td.lowpower { color: var(--text-muted); font-style: italic; }
 
+  /* ─── Forest plot (robustness checks) ─── */
+  .forest-wrap { position: relative; height: 430px; }
+
+  /* ─── Wide tables scroll inside their own box on phones ─── */
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .table-scroll table.proj { min-width: 560px; }
+
   @media (max-width: 768px) {
     body { padding: 2rem 1.25rem 3rem; }
     .matrix-2x2 { grid-template-columns: 140px 1fr 1fr; }
     .matrix-2x2 .cell .rate { font-size: 1.8rem; }
+    .forest-wrap { height: 480px; }
   }
 </style>
 </head>
@@ -192,6 +200,7 @@
 </header>
 
 <div class="downloads">
+  <a href="#deck" class="download-btn">SLIDES</a>
   <a href="slides.pdf" class="download-btn" target="_blank">SLIDES · PDF</a>
   <a href="methodology.html" class="download-btn" target="_blank">METHODOLOGY</a>
   <a href="methodology.pdf" class="download-btn" target="_blank">METHODOLOGY · PDF</a>
@@ -251,6 +260,7 @@
   <p><strong>Treatment:</strong> linked penalties where the goalkeeper conceded the foul (<code style="color:var(--accent)">PKcon=1</code>) <em>and</em> the player taking the penalty (<code style="color:var(--accent)">PKatt=1</code>) was also the player who won it (<code style="color:var(--accent)">PKwon=1</code>).</p>
   <p><strong>Control:</strong> every other linked penalty — the GK conceded but someone else took it, an outfielder conceded (any taker), or no foul was recorded (e.g. handball).</p>
   <p><strong>Test:</strong> one-tailed two-proportion z-test (<code style="color:var(--accent)">statsmodels.proportions_ztest(alternative='smaller')</code>) with α = 0.05, plus Wilson 95% CIs on each proportion and a Newcombe 95% CI on the difference.</p>
+  <p><strong>Checks:</strong> three alternative control groups, two sensitivity samples, a logistic regression that accounts for who takes the kick, an equivalence test and a Bayesian version of the comparison — each explained in plain words below, in full in the <a href="methodology.html" style="color: var(--accent);">methodology</a>.</p>
 </section>
 
 <section class="proj">
@@ -264,7 +274,7 @@
 
 <section class="proj">
   <h2>Conversion rate across seasons</h2>
-  <p>Year-on-year stability is also high — the ~77–80% band holds across the period in scope.</p>
+  <p id="season-text">[loading]</p>
   <div class="chart-wrap">
     <canvas id="chart-by-season" height="300"></canvas>
     <div class="chart-caption">All matches with at least one penalty event. Bars: conversion rate (%). Hover for attempts and conversions per season.</div>
@@ -288,30 +298,107 @@
     <div><div class="label">Control rate</div><div class="value accent" id="p-rate-c">—</div><div class="stat-sub" id="p-ci-c"></div></div>
     <div><div class="label">Δ (pp)</div><div class="value" id="p-diff">—</div><div class="stat-sub" id="p-diff-ci"></div></div>
     <div><div class="label">Z-statistic</div><div class="value" id="p-z">—</div></div>
-    <div><div class="label">P-value (one-tailed)</div><div class="value" id="p-p">—</div></div>
+    <div><div class="label">P-value (one-tailed)</div><div class="value" id="p-p">—</div><div class="stat-sub" id="p-p-two"></div></div>
     <div><div class="label">Verdict (α=0.05)</div><div class="value muted" id="p-verdict">—</div></div>
   </div>
+</section>
+
+<section class="proj">
+  <span class="hypothesis-pill">Robustness</span>
+  <h2>Does it hold up?</h2>
+  <p id="rb-intro">[loading]</p>
+  <div class="chart-wrap">
+    <div class="forest-wrap"><canvas id="chart-forest"></canvas></div>
+    <div class="chart-caption" id="caption-forest">[loading]</div>
+  </div>
+  <p id="rb-adjusted-text">[loading]</p>
+  <div class="table-scroll">
+    <table class="proj" id="robustness-table">
+      <thead>
+        <tr>
+          <th>Check</th>
+          <th class="numeric">Treatment</th>
+          <th class="numeric">Comparison</th>
+          <th class="numeric">Gap (pp)</th>
+          <th class="numeric">95% CI</th>
+          <th class="numeric">p (one-tailed)</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<section class="proj">
+  <span class="hypothesis-pill">Bounding the null</span>
+  <h2>What "not significant" means here</h2>
+  <p>"Not significant" is not the same as "no effect". Three ways to put a size on what the data can and can't rule out:</p>
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-value" id="null-mde" data-verify-path="$.primary.test.mde_pp">—</div>
+      <div class="stat-label">Smallest drop we'd reliably detect</div>
+      <div class="stat-sub" id="null-mde-sub"></div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value" id="null-tost" data-verify-path="$.robustness.tost.smallest_margin_pp">—</div>
+      <div class="stat-label">Biggest drop the data can't rule out</div>
+      <div class="stat-sub" id="null-tost-sub"></div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value" id="null-bayes" data-verify-path="$.robustness.bayes.p_lower_pct">—</div>
+      <div class="stat-label">Chance the fouled taker converts less</div>
+      <div class="stat-sub" id="null-bayes-sub"></div>
+    </div>
+  </div>
+  <p id="null-mde-text">[loading]</p>
+  <p id="null-tost-text">[loading]</p>
+  <p id="null-bayes-text">[loading]</p>
+</section>
+
+<section class="proj">
+  <span class="hypothesis-pill">The taker</span>
+  <h2>Is it the foul, or who takes the kick?</h2>
+  <p id="taker-text">[loading]</p>
+  <div class="table-scroll">
+    <table class="proj" id="taker-table">
+      <thead>
+        <tr>
+          <th>League</th>
+          <th class="numeric">Established taker</th>
+          <th class="numeric">Other takers</th>
+          <th class="numeric">Gap (pp)</th>
+          <th class="numeric">95% CI</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <p id="taker-leak-text">[loading]</p>
+  <p id="taker-repeat-text">[loading]</p>
 </section>
 
 <section class="proj">
   <span class="hypothesis-pill">Per-League</span>
   <h2>The same test, league by league</h2>
   <p id="per-league-intro">[loading]</p>
-  <table class="proj" id="per-league-table">
-    <thead>
-      <tr>
-        <th>League</th>
-        <th class="numeric">Treatment rate</th>
-        <th class="numeric">Treatment n</th>
-        <th class="numeric">Control rate</th>
-        <th class="numeric">Control n</th>
-        <th class="numeric">Z</th>
-        <th class="numeric">p (one-tailed)</th>
-        <th>Significant (α=0.05)</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <div class="table-scroll">
+    <table class="proj" id="per-league-table">
+      <thead>
+        <tr>
+          <th>League</th>
+          <th class="numeric">Treatment rate</th>
+          <th class="numeric">Treatment n</th>
+          <th class="numeric">Control rate</th>
+          <th class="numeric">Control n</th>
+          <th class="numeric">Z</th>
+          <th class="numeric">p (one-tailed)</th>
+          <th class="numeric">p (Holm)</th>
+          <th>Significant after Holm</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 </section>
 
 <section class="proj">
@@ -327,12 +414,27 @@
   </div>
 </section>
 
+<!-- ── WHO SHOULD CARE (rendered from data.takeaways by renball-components.js) ── -->
+<section class="proj" id="takeaways"></section>
+
+<section class="proj">
+  <h2>Limitations</h2>
+  <ul class="limits" id="limitations-list"></ul>
+</section>
+
 <section class="proj">
   <h2>Conclusion</h2>
   <p id="conclusion-text">[loading]</p>
 </section>
 
+<!-- ── THE DECK (slides.pdf rendered by PDF.js; lazy-loads on scroll) ── -->
+<section class="proj" id="deck">
+  <h2>The deck</h2>
+  <div class="slide-viewer" data-renball="slide-viewer" data-src="slides.pdf"></div>
+</section>
+
 <script src="../../assets/js/chart-defaults.js"></script>
+<script src="../../assets/js/renball-components.js"></script>
 <script>
 (async function () {
   const data = await fetch('data/data.json').then(r => r.json());
@@ -341,6 +443,7 @@
   const pct = (n) => (n == null ? '—' : Number(n).toFixed(2) + '%');
   const pp  = (n) => (n == null ? '—' : (n >= 0 ? '+' : '') + Number(n).toFixed(2) + ' pp');
   const sgn1 = (n) => (n < 0 ? '−' : '+') + Math.abs(n).toFixed(1);
+  const sgn2 = (n) => (n < 0 ? '−' : '+') + Math.abs(n).toFixed(2);
 
   const primary = data.primary;
   const t = primary.treatment;
@@ -348,6 +451,11 @@
   const tst = primary.test;
   const md = data.metadata;
   const pooled = primary.pooled;
+  const rb = data.robustness;
+  const adj = rb.adjusted, tost = rb.tost, bay = rb.bayes, est = rb.established, rep = rb.repeatability;
+  const term = (name) => adj.terms.find(x => x.term === name);
+
+  RENBALL.renderTakeaways(document.getElementById('takeaways'), data.takeaways);
 
   // ─── Stat callouts ───
   document.getElementById('stat-total').textContent = fmt(md.n_linked);
@@ -378,10 +486,12 @@
     `(95% CI [${t.ci_lo}%, ${t.ci_hi}%]) against ${pct(c.rate)} (95% CI [${c.ci_lo}%, ${c.ci_hi}%]) for every ` +
     `other penalty — a ${absDiff.toFixed(2)} pp gap ${dir} in the predicted direction, but well inside what ` +
     `chance can produce at a treatment cell of ${fmt(t.attempts)}. ${sigText} ` +
+    `Every check lands in the same place: accounting for who takes the kick, home/away, league and season moves ` +
+    `the gap to ${sgn2(adj.gap_pp)} pp, and no alternative control group or sample makes it detectable. ` +
     `The binding constraint is sample size: with ${fmt(t.attempts)} treatment penalties this design only reliably ` +
-    `detects a drop of about ${tst.mde_pp.toFixed(1)} pp or more (80% power), so a smaller real effect would usually ` +
-    `go unseen. For now there's no statistical warrant either to insist the fouled player take it, ` +
-    `or to take it off him.`;
+    `detects a drop of about ${tst.mde_pp.toFixed(1)} pp or more (80% power), and the data can't rule out a drop of up to ` +
+    `${tost.smallest_margin_pp.toFixed(1)} pp. For now there's no statistical warrant either to insist the fouled ` +
+    `player take it, or to take it off him.`;
 
   // ─── Sample + linkage text ───
   const seasons = md.seasons;
@@ -401,7 +511,187 @@
     `With only ${fmt(t.attempts)} treatment penalties across all five leagues, splitting further into per-league ` +
     `treatment cells of ${md.treatment_n_by_league_min}–${md.treatment_n_by_league_max} leaves each test severely ` +
     `underpowered. The pooled test above is the headline number; the table below is for transparency and exploratory ` +
-    `reading only — five separate tests, so a single "significant" league is not good evidence on its own.`;
+    `reading only — five separate tests, so a single "significant" league is not good evidence on its own. After a ` +
+    `Holm correction for running five tests, none clears α = 0.05 (smallest adjusted p = ${rb.holm_min_p.toFixed(3)}).`;
+
+  // ─── Season range ───
+  const sLo = md.season_rate_min, sHi = md.season_rate_max;
+  document.getElementById('season-text').textContent =
+    `Season to season the rate moves between ${pct(sLo.rate)} (${sLo.season}) and ${pct(sHi.rate)} (${sHi.season}). ` +
+    `The lowest season sits clearly below the rest, so one of the checks below re-runs the test without it, and the ` +
+    `regression controls for season.`;
+
+  // ─── Robustness: forest plot + table ───
+  document.getElementById('rb-intro').textContent =
+    `One test on ${fmt(t.attempts)} penalties invites the obvious questions: is the control group the right one, is it ` +
+    `the foul or just who takes the kick, and does one odd season drive it? Each check re-runs the comparison a ` +
+    `different way. The bar is the 95% interval for the gap, the dot the estimate, and the shaded band the ` +
+    `±${tost.margin_pp} pp zone we'd call "no practical difference".`;
+  const forest = [...rb.controls, ...rb.samples].map(r => ({ label: r.short, d: r.diff_pp, lo: r.ci_lo, hi: r.ci_hi }));
+  forest.splice(rb.controls.length, 0, { label: adj.short, d: adj.gap_pp, lo: adj.gap_lo, hi: adj.gap_hi });
+  const T = C.tokens;
+  const narrow = window.matchMedia('(max-width: 600px)').matches;
+  const wrap = (s, w) => s.split(' ').reduce((lines, word) => {
+    const last = lines[lines.length - 1];
+    if (last && (last + ' ' + word).length <= w) lines[lines.length - 1] = last + ' ' + word;
+    else lines.push(word);
+    return lines;
+  }, []);
+  const xMin = Math.floor((Math.min(...forest.map(r => r.lo)) - 2) / 5) * 5;
+  const xMax = Math.ceil((Math.max(...forest.map(r => r.hi)) + 2) / 5) * 5;
+  new Chart(document.getElementById('chart-forest'), {
+    type: 'bar',
+    data: {
+      labels: forest.map(r => (narrow ? wrap(r.label, 13) : r.label)),
+      datasets: [{
+        label: '95% interval',
+        data: forest.map(r => [r.lo, r.hi]),
+        backgroundColor: forest.map((r, i) => (i === 0 ? 'rgba(193,255,114,0.75)' : 'rgba(143,166,143,0.6)')),
+        borderWidth: 0,
+        barThickness: 8,
+      }],
+    },
+    options: {
+      indexAxis: 'y',
+      maintainAspectRatio: false,
+      plugins: {
+        title: { display: true, text: 'Gap in conversion: fouled taker minus comparison (pp)' },
+        legend: { display: false },
+        tooltip: { callbacks: { label: (ctx) => {
+          const r = forest[ctx.dataIndex];
+          return `${sgn2(r.d)} pp · 95% CI ${sgn1(r.lo)} to ${sgn1(r.hi)}`;
+        }}},
+      },
+      scales: {
+        x: { min: xMin, max: xMax, title: { display: true, text: 'pp · negative = fouled taker converts less' } },
+        y: { ticks: { autoSkip: false } },
+      },
+    },
+    plugins: [{
+      id: 'forestMarks',
+      beforeDatasetsDraw(chart) {
+        const { ctx, chartArea: a, scales: { x } } = chart;
+        const l = x.getPixelForValue(-tost.margin_pp), r = x.getPixelForValue(tost.margin_pp), z = x.getPixelForValue(0);
+        ctx.save();
+        ctx.fillStyle = 'rgba(193,255,114,0.07)';
+        ctx.fillRect(l, a.top, r - l, a.bottom - a.top);
+        ctx.strokeStyle = T.textMuted;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath(); ctx.moveTo(z, a.top); ctx.lineTo(z, a.bottom); ctx.stroke();
+        ctx.restore();
+      },
+      afterDatasetsDraw(chart) {
+        const { ctx, scales: { x } } = chart;
+        const meta = chart.getDatasetMeta(0);
+        ctx.save();
+        forest.forEach((r, i) => {
+          ctx.fillStyle = i === 0 ? T.accent : T.text;
+          ctx.beginPath(); ctx.arc(x.getPixelForValue(r.d), meta.data[i].y, 4.5, 0, Math.PI * 2); ctx.fill();
+        });
+        ctx.restore();
+      },
+    }],
+  });
+  document.getElementById('caption-forest').textContent =
+    `Bars: 95% intervals (Newcombe; the adjusted row: cluster bootstrap over takers). Dots: estimates. Shaded: ` +
+    `±${tost.margin_pp} pp. The top rows compare the same ${fmt(t.attempts)} treatment penalties with different control ` +
+    `groups; the bottom three restrict both groups to a sub-sample.`;
+  document.getElementById('rb-adjusted-text').innerHTML =
+    `<strong>Accounting for who takes it.</strong> A logistic regression predicts each kick from the treatment flag plus ` +
+    `what was known about the taker before he stepped up — whether he was the team's established taker, his earlier ` +
+    `record (shrunk toward the average, so three kicks don't count as a track record) and how many penalties he had ` +
+    `taken — and home/away, league and season. The gap barely moves: ${sgn2(adj.gap_pp)} pp (95% CI ` +
+    `${sgn1(adj.gap_lo)} to ${sgn1(adj.gap_hi)}; odds ratio ${term('treat').odds_ratio.toFixed(2)}, ` +
+    `p = ${term('treat').p_two.toFixed(2)} two-tailed). The interval comes from re-fitting the model on ` +
+    `${fmt(adj.boot_resamples)} resamples of the ${fmt(adj.n_takers)} takers, so a taker with many kicks can't dominate it.`;
+  const rbody = document.querySelector('#robustness-table tbody');
+  [...rb.controls, ...rb.samples].forEach(r => {
+    const row = document.createElement('tr');
+    row.innerHTML =
+      `<td>${r.label}</td>` +
+      `<td class="numeric">${pct(r.treatment.rate)} (${fmt(r.treatment.attempts)})</td>` +
+      `<td class="numeric">${pct(r.control.rate)} (${fmt(r.control.attempts)})</td>` +
+      `<td class="numeric">${sgn2(r.diff_pp)}</td>` +
+      `<td class="numeric">${sgn1(r.ci_lo)} to ${sgn1(r.ci_hi)}</td>` +
+      `<td class="numeric">${r.p_one.toFixed(2)}</td>`;
+    rbody.appendChild(row);
+  });
+
+  // ─── Bounding the null ───
+  document.getElementById('null-mde').textContent = `${tst.mde_pp.toFixed(1)} pp`;
+  document.getElementById('null-mde-sub').textContent = `80% power · one-tailed α = 0.05`;
+  document.getElementById('null-tost').textContent = `${tost.smallest_margin_pp.toFixed(1)} pp`;
+  document.getElementById('null-tost-sub').textContent = `90% CI ${sgn1(tost.ci90_lo)} to ${sgn1(tost.ci90_hi)} pp`;
+  document.getElementById('null-bayes').textContent = `${bay.p_lower_pct.toFixed(1)}%`;
+  document.getElementById('null-bayes-sub').textContent =
+    `${bay.p_drop_beyond_margin_pct.toFixed(1)}% that the drop is bigger than ${tost.margin_pp} pp`;
+  document.getElementById('null-mde-text').innerHTML =
+    `<strong>Power.</strong> With ${fmt(t.attempts)} treatment penalties, a real drop smaller than ` +
+    `${tst.mde_pp.toFixed(1)} pp would usually slip through unnoticed. The observed gap, ${sgn2(tst.rate_diff_pp)} pp, ` +
+    `sits well inside that blind spot.`;
+  document.getElementById('null-tost-text').innerHTML =
+    `<strong>Equivalence test.</strong> We take ±${tost.margin_pp} pp as "no practical difference": about one extra miss ` +
+    `in every twenty penalties. The bench decision sets that line. It's bigger than the edge a team's established taker ` +
+    `has over everyone else (${sgn2(est.vs_other.diff_pp)} pp, below), so a drop that size would be reason enough to ` +
+    `switch takers. We chose it after running the analysis, not before. To claim the fouled taker is <em>as good</em> ` +
+    `as anyone else, the whole 90% interval would have to sit inside that band. It doesn't (${sgn1(tost.ci90_lo)} to ` +
+    `${sgn1(tost.ci90_hi)} pp; equivalence p = ${tost.p_tost.toFixed(2)}), and a looser ±${rb.tost_secondary.margin_pp} pp ` +
+    `margin fails too (p = ${rb.tost_secondary.p_tost.toFixed(2)}). So "no difference" isn't established either. What ` +
+    `the data do rule out is a drop bigger than about ${tost.smallest_margin_pp.toFixed(1)} pp.`;
+  document.getElementById('null-bayes-text').innerHTML =
+    `<strong>Bayesian view.</strong> Start from "any conversion rate is equally likely" for both groups and update on the ` +
+    `kicks. Given the data, there's a ${bay.p_lower_pct.toFixed(1)}% chance the fouled taker converts less than ` +
+    `everyone else and a ${bay.p_drop_beyond_margin_pct.toFixed(1)}% chance the drop is bigger than ${tost.margin_pp} pp; ` +
+    `the 95% credible interval runs from ${sgn1(bay.cri_lo)} to ${sgn1(bay.cri_hi)} pp. Leaning one way, not settled.`;
+
+  // ─── The taker ───
+  const v = est.vs_other, sd = est.season_definition;
+  document.getElementById('taker-text').innerHTML =
+    `The theory blames the foul. A sceptic would blame the taker: maybe fouled players who take their own penalty are ` +
+    `rarely the team's specialist. Most aren't — but that's true of most penalties. ` +
+    `${est.share_treatment_pct.toFixed(1)}% of the treatment kicks were taken by the team's <strong>established ` +
+    `taker</strong> (the player who had taken the most penalties for that team before the match), against ` +
+    `${est.share_control_pct.toFixed(1)}% of all other penalties. And being the established taker is worth less than ` +
+    `you might think:`;
+  const takerBody = document.querySelector('#taker-table tbody');
+  [{ label: 'All five leagues', ...v }, ...est.by_league].forEach(r => {
+    const row = document.createElement('tr');
+    row.innerHTML =
+      `<td>${r.label}</td>` +
+      `<td class="numeric">${pct(r.a.rate)} (${fmt(r.a.attempts)})</td>` +
+      `<td class="numeric">${pct(r.b.rate)} (${fmt(r.b.attempts)})</td>` +
+      `<td class="numeric">${sgn2(r.diff_pp)}</td>` +
+      `<td class="numeric">${sgn1(r.ci_lo)} to ${sgn1(r.ci_hi)}</td>`;
+    takerBody.appendChild(row);
+  });
+  document.getElementById('taker-leak-text').innerHTML =
+    `A trap worth naming: define "the taker" from the whole season instead — the player who took most of the team's ` +
+    `penalties that year — and the edge jumps to ${sgn2(sd.diff_pp)} pp. Much of that is likely the outcome leaking ` +
+    `into the label: a taker who misses can lose the job, so his misses end up filed under "someone else". Defined ` +
+    `only from what was known before the kick, the established taker's edge is ${sgn2(v.diff_pp)} pp.`;
+  document.getElementById('taker-repeat-text').innerHTML =
+    `The same goes for a taker's record. Among the ${fmt(rep.n_takers)} players with at least ${rep.min_attempts} kicks, ` +
+    `the hit rate on half of their kicks (alternate kicks in date order) says nothing useful about the other half: ` +
+    `split-half reliability ${rep.spearman_brown.toFixed(2)} (95% CI ${rep.sb_lo.toFixed(2)} to ` +
+    `${rep.sb_hi.toFixed(2)}). Over samples this size, penalty conversion behaves more like noise than like a stable ` +
+    `skill — which is also why the taker's record can't explain away the treatment gap.`;
+
+  // ─── Limitations ───
+  document.getElementById('limitations-list').innerHTML = [
+    `<strong>Small treatment group.</strong> ${fmt(t.attempts)} penalties. A real drop smaller than about ` +
+      `${tst.mde_pp.toFixed(1)} pp would usually go unseen, and the data can't rule out one as large as ` +
+      `${tost.smallest_margin_pp.toFixed(1)} pp.`,
+    `<strong>Taking it is a choice.</strong> The regression accounts for the taker's status, record and experience, ` +
+      `but not for what the bench sees on the day — nerve, a knock, who asked for the ball.`,
+    `<strong>"Fouled" is not "hurt".</strong> The data record who won the penalty, not whether he was injured or ` +
+      `rattled, so the treatment only approximates the theory's mechanism.`,
+    `<strong>No minute or scoreline.</strong> Conversion may vary with game state; this table has neither, so it ` +
+      `isn't controlled.`,
+    `<strong>Unlinked penalties.</strong> ${fmt(md.n_unlinked)} of ${fmt(md.n_penalties_total)} penalties can't be ` +
+      `tied to one taker, fouled player and conceder — almost all because a team took two or more in the match.`,
+    `<strong>Recording edge cases.</strong> Who "won" or "conceded" a penalty in a goal-mouth scramble depends on ` +
+      `FBref's labelling.`,
+  ].map(x => `<li>${x}</li>`).join('');
 
   // ─── Chart: by league (descriptive) ───
   new Chart(document.getElementById('chart-by-league'), {
@@ -527,7 +817,10 @@
           ...RENBALL_HELPERS.niceRange([t.rate, c.rate, t.ci_lo, t.ci_hi, c.ci_lo, c.ci_hi], { padding: 3 }),
           title: { display: true, text: 'Conversion rate (%)' },
         },
-        x: { ticks: { callback: function(v) { return this.getLabelForValue(v).split('\n'); } } },
+        x: { ticks: { maxRotation: 0, callback: function(v) {
+          const [head, tail] = this.getLabelForValue(v).split('\n');
+          return narrow ? [head, ...wrap(tail, 12)] : [head, tail];
+        } } },
       },
     },
   });
@@ -541,6 +834,7 @@
   document.getElementById('p-diff-ci').textContent = `95% CI [${sgn1(tst.diff_ci_lo)}, ${sgn1(tst.diff_ci_hi)}]`;
   document.getElementById('p-z').textContent     = tst.z_stat == null ? '—' : tst.z_stat.toFixed(3);
   document.getElementById('p-p').textContent     = tst.p_value == null ? '—' : tst.p_value.toFixed(4);
+  document.getElementById('p-p-two').textContent = `two-tailed: ${rb.p_two_tailed.toFixed(3)}`;
   document.getElementById('p-verdict').textContent = tst.significant_at_05 == null ? '—'
     : (tst.significant_at_05 ? 'Reject H₀' : 'Fail to reject H₀');
 
@@ -559,7 +853,8 @@
       <td class="numeric">${fmt(cc.attempts)}</td>
       <td class="numeric">${ts.z_stat == null ? '—' : ts.z_stat.toFixed(3)}</td>
       <td class="numeric">${ts.p_value == null ? '—' : ts.p_value.toFixed(4)}</td>
-      <td class="${ts.significant_at_05 ? 'sig-yes' : 'sig-no'}">${ts.significant_at_05 ? 'Yes' : 'No'}${lowPower(tt.attempts) ? ' · low n' : ''}</td>
+      <td class="numeric">${ts.p_holm == null ? '—' : ts.p_holm.toFixed(3)}</td>
+      <td class="${ts.p_holm < 0.05 ? 'sig-yes' : 'sig-no'}">${ts.p_holm < 0.05 ? 'Yes' : 'No'}${lowPower(tt.attempts) ? ' · low n' : ''}</td>
     `;
     tbody.appendChild(tr);
   });

@@ -25,6 +25,18 @@ Secondary outputs: per-league breakdown of the same test, the 2x2
 matrix of (GK foul x taker-was-fouled-player) for visual context, and
 descriptive overall / per-league / per-season conversion rates.
 
+Robustness (data.json["robustness"]):
+    two-tailed p; Holm-adjusted per-league p; TOST equivalence at +/-5 pp
+    (primary) and +/-10 pp (secondary), margins chosen after the analysis;
+    Bayesian Beta(1,1) posterior for the gap;
+    logistic regression with the taker's status as the team's established
+    taker at kick time, his prior record (shrunk) and experience, home/away,
+    league and season (SE clustered by taker, cluster-bootstrap CI for the
+    gap in pp); alternative control groups and sensitivity samples; split-
+    half repeatability of takers' conversion rates.
+
+Takeaways (data.json["takeaways"]) are composed here from computed values.
+
 Run:
     python code/build.py
 
@@ -40,6 +52,10 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+from scipy.stats import norm
+from statsmodels.stats.multitest import multipletests
 from statsmodels.stats.power import NormalIndPower
 from statsmodels.stats.proportion import (
     confint_proportions_2indep, proportion_confint, proportion_effectsize, proportions_ztest,
@@ -96,6 +112,14 @@ MATRIX_LABELS = {
 }
 
 CONTROL_KEYS = ["gk_other", "ngk_won", "ngk_other"]
+
+EQUIV_MARGIN_PP = 5.0      # primary TOST margin: one extra miss in twenty (chosen after the analysis)
+EQUIV_MARGIN2_PP = 10.0    # secondary, looser TOST margin
+SHRINK_K = 20              # prior record shrunk toward the mean with 20 pseudo-attempts
+N_BOOT = 1000              # cluster-bootstrap resamples (takers) for the adjusted gap
+N_DRAWS = 400_000          # posterior draws for the Bayesian check
+SEED = 2026
+REPEAT_MIN_ATT = 10        # takers with at least this many attempts enter the split-half check
 
 # Why an attempt can't be tied to one taker / fouled player / conceder
 EXCLUDE_REASONS = {
@@ -291,6 +315,247 @@ def primary_from_cells(cells: dict, label: str, code: str | None = None) -> dict
     return block
 
 
+# ── Robustness helpers ─────────────────────────────────────
+def attempt_rows(combined: dict) -> pd.DataFrame:
+    """Every player-match row with a penalty attempt (all penalties, linked or not)."""
+    frames = []
+    for league, df in combined.items():
+        d = df.copy()
+        d[PEN_COLS] = d[PEN_COLS].fillna(0)
+        d = d[d["Performance_PKatt"] > 0]
+        frames.append(d.assign(league=league)[["league", "Season", "match_id", "team_id", "Player", "date", "site",
+                                               "Performance_PK", "Performance_PKatt"]])
+    A = pd.concat(frames, ignore_index=True)
+    A["date"] = pd.to_datetime(A["date"])
+    A["Season"] = A["Season"].astype(str)
+    return A.sort_values(["date", "match_id"]).reset_index(drop=True)
+
+
+def enrich(L: pd.DataFrame, A: pd.DataFrame) -> pd.DataFrame:
+    """Add what was known about the taker *before* the kick, plus home/away.
+
+    prior_att / prior_conv  the taker's earlier penalties in the data (any club)
+    status                  'established' if he had taken the most penalties for
+                            this team before this match; 'other' if someone else
+                            had; 'tie' / 'no history' otherwise. Defined from past
+                            kicks only — a whole-season definition leaks the outcome
+                            (a taker who misses can lose the job).
+    """
+    A = A.copy()
+    g = A.sort_values(["Player", "date", "match_id"]).groupby("Player")
+    A["prior_att"] = g["Performance_PKatt"].cumsum() - A["Performance_PKatt"]
+    A["prior_conv"] = g["Performance_PK"].cumsum() - A["Performance_PK"]
+
+    lead = {}
+    for tid, team in A.sort_values(["date", "match_id"]).groupby("team_id", sort=False):
+        counts: dict[str, float] = {}
+        for (_, mid), m in team.groupby(["date", "match_id"], sort=True):
+            if not counts:
+                lead[(tid, mid)] = "no history"
+            else:
+                top = max(counts.values())
+                leaders = [p for p, c in counts.items() if c == top]
+                lead[(tid, mid)] = leaders[0] if len(leaders) == 1 else "tie"
+            for r in m.itertuples():
+                counts[r.Player] = counts.get(r.Player, 0) + r.Performance_PKatt
+
+    keys = ["match_id", "team_id", "Player"]
+    out = L.merge(A[keys + ["site", "prior_att", "prior_conv"]].rename(columns={"Player": "taker"}),
+                  on=["match_id", "team_id", "taker"], how="left", validate="one_to_one")
+    lead_now = [lead[(t, m)] for t, m in zip(out["team_id"], out["match_id"])]
+    out["status"] = [s if s in ("no history", "tie") else ("established" if s == tk else "other")
+                     for s, tk in zip(lead_now, out["taker"])]
+    p0 = A["Performance_PK"].sum() / A["Performance_PKatt"].sum()
+    shrunk = (out["prior_conv"] + SHRINK_K * p0) / (out["prior_att"] + SHRINK_K)
+    out["record"] = np.log(shrunk / (1 - shrunk))                 # shrunk prior conversion, logit
+    out["experience"] = np.log1p(out["prior_att"])
+    out["home"] = (out["site"] == "home").astype(int)
+    out["established"] = (out["status"] == "established").astype(int)
+    out["treat"] = (out["conceder_gk"] & (out["won_by"] == "taker")).astype(int)
+    return out
+
+
+def compare(t: pd.Series, c: pd.Series, label: str, key: str, short: str, note: str = "") -> dict:
+    """Treatment vs a control group of penalties: rates, gap, Newcombe 95% CI, one-tailed p."""
+    tb = proportion_block(int(t.size), int(t.sum()))
+    cb = proportion_block(int(c.size), int(c.sum()))
+    _, p = proportions_ztest([tb["conversions"], cb["conversions"]], [tb["attempts"], cb["attempts"]],
+                             alternative="smaller")
+    lo, hi = confint_proportions_2indep(tb["conversions"], tb["attempts"], cb["conversions"], cb["attempts"],
+                                        method="newcomb")
+    return {"key": key, "label": label, "short": short, "note": note, "treatment": tb, "control": cb,
+            "diff_pp": round(tb["rate"] - cb["rate"], 2), "ci_lo": round(float(lo) * 100, 2),
+            "ci_hi": round(float(hi) * 100, 2), "p_one": round(float(p), 3)}
+
+
+def tost_block(k_t: int, n_t: int, k_c: int, n_c: int, margin_pp: float) -> dict:
+    """Two one-sided tests: is the gap inside ±margin? Unpooled SE; 90% Newcombe CI."""
+    p_t, p_c = k_t / n_t, k_c / n_c
+    d = p_t - p_c
+    se = np.sqrt(p_t * (1 - p_t) / n_t + p_c * (1 - p_c) / n_c)
+    m = margin_pp / 100
+    p_low = 1 - norm.cdf((d + m) / se)          # H0: d <= -m
+    p_high = norm.cdf((d - m) / se)              # H0: d >= +m
+    lo, hi = confint_proportions_2indep(k_t, n_t, k_c, n_c, method="newcomb", alpha=0.10)
+    return {
+        "margin_pp": margin_pp,
+        "ci90_lo": round(float(lo) * 100, 2),
+        "ci90_hi": round(float(hi) * 100, 2),
+        "p_tost": round(float(max(p_low, p_high)), 3),
+        "equivalent": bool(max(p_low, p_high) < 0.05),
+        "smallest_margin_pp": round(float(max(abs(lo), abs(hi))) * 100, 1),
+    }
+
+
+def bayes_block(k_t: int, n_t: int, k_c: int, n_c: int, margin_pp: float, margin2_pp: float) -> dict:
+    """Beta(1,1) priors on both conversion rates; posterior of the gap by simulation."""
+    rng = np.random.default_rng(SEED)
+    diff = (rng.beta(1 + k_t, 1 + n_t - k_t, N_DRAWS) - rng.beta(1 + k_c, 1 + n_c - k_c, N_DRAWS)) * 100
+    lo, med, hi = np.percentile(diff, [2.5, 50, 97.5])
+    return {
+        "prior": "Beta(1, 1) on each conversion rate",
+        "draws": N_DRAWS,
+        "p_lower_pct": round(float((diff < 0).mean()) * 100, 1),
+        "p_drop_beyond_margin_pct": round(float((diff < -margin_pp).mean()) * 100, 1),
+        "p_inside_margin_pct": round(float((np.abs(diff) < margin_pp).mean()) * 100, 1),
+        "secondary_margin_pp": margin2_pp,
+        "p_drop_beyond_secondary_pct": round(float((diff < -margin2_pp).mean()) * 100, 1),
+        "median_pp": round(float(med), 2),
+        "cri_lo": round(float(lo), 2),
+        "cri_hi": round(float(hi), 2),
+    }
+
+
+ADJ_FORMULA = "scored ~ treat + established + record + experience + home + C(league) + C(season)"
+
+
+def adjusted_block(L: pd.DataFrame) -> dict:
+    """Logistic regression, SE clustered by taker; gap in pp as the average marginal effect
+    with a cluster-bootstrap (takers) 95% CI."""
+    fam = sm.families.Binomial()
+
+    def fit(d: pd.DataFrame):
+        return smf.glm(ADJ_FORMULA, data=d, family=fam).fit()
+
+    def ame(m, d: pd.DataFrame) -> float:
+        return float((m.predict(d.assign(treat=1)) - m.predict(d.assign(treat=0))).mean() * 100)
+
+    m = smf.glm(ADJ_FORMULA, data=L, family=fam).fit(cov_type="cluster",
+                                                     cov_kwds={"groups": pd.factorize(L["taker"])[0]})
+    point = ame(m, L)
+    rng = np.random.default_rng(SEED)
+    by_taker = {k: g for k, g in L.groupby("taker")}
+    names = np.array(list(by_taker))
+    boots = []
+    for _ in range(N_BOOT):
+        d = pd.concat([by_taker[n] for n in rng.choice(names, size=names.size, replace=True)], ignore_index=True)
+        boots.append(ame(fit(d), d))
+    lo, hi = np.percentile(boots, [2.5, 97.5])
+
+    def term(name: str, label: str) -> dict:
+        b, se = float(m.params[name]), float(m.bse[name])
+        return {"term": name, "label": label, "odds_ratio": round(np.exp(b), 2),
+                "or_lo": round(np.exp(b - 1.96 * se), 2), "or_hi": round(np.exp(b + 1.96 * se), 2),
+                "p_two": round(float(m.pvalues[name]), 3)}
+
+    return {
+        "label": "Adjusted for taker status, record, experience, home/away, league and season",
+        "short": "Adjusted (logistic model)",
+        "formula": ADJ_FORMULA,
+        "n": int(m.nobs),
+        "n_takers": int(names.size),
+        "gap_pp": round(point, 2),
+        "gap_lo": round(float(lo), 2),
+        "gap_hi": round(float(hi), 2),
+        "boot_resamples": N_BOOT,
+        "shrink_k": SHRINK_K,
+        "terms": [
+            term("treat", "GK fouled the taker (treatment)"),
+            term("established", "Team's established taker at kick time"),
+            term("record", "Prior conversion record (shrunk, logit)"),
+            term("experience", "Prior penalties taken (log)"),
+            term("home", "Home side"),
+        ],
+    }
+
+
+def repeatability_block(A: pd.DataFrame) -> dict:
+    """Split-half reliability of takers' conversion: odd vs even kicks in date order."""
+    A = A.sort_values(["Player", "date", "match_id"])
+    kicks = A.loc[A.index.repeat(A["Performance_PKatt"].astype(int))].copy()
+    kicks["scored"] = 0
+    # a row with 2 attempts and 1 goal: first kick scored, second missed (order within a match unknown)
+    kicks["k"] = kicks.groupby(["Player", "match_id"]).cumcount()
+    kicks["scored"] = (kicks["k"] < kicks["Performance_PK"]).astype(int)
+    kicks["n"] = kicks.groupby("Player").cumcount()
+    eligible = kicks.groupby("Player")["n"].transform("size") >= REPEAT_MIN_ATT
+    k = kicks[eligible]
+    halves = k.assign(half=k["n"] % 2).groupby(["Player", "half"])["scored"].mean().unstack()
+    rng = np.random.default_rng(SEED)
+
+    def sb(h: pd.DataFrame) -> float:
+        r = np.corrcoef(h[0], h[1])[0, 1]
+        return 2 * r / (1 + r)
+
+    r = float(np.corrcoef(halves[0], halves[1])[0, 1])
+    boots = [sb(halves.iloc[rng.integers(0, len(halves), len(halves))]) for _ in range(N_BOOT)]
+    lo, hi = np.percentile(boots, [2.5, 97.5])
+    return {
+        "min_attempts": REPEAT_MIN_ATT,
+        "n_takers": int(len(halves)),
+        "n_kicks": int(len(k)),
+        "split_half_r": round(r, 2),
+        "spearman_brown": round(sb(halves), 2),
+        "sb_lo": round(float(lo), 2),
+        "sb_hi": round(float(hi), 2),
+    }
+
+
+# ── Takeaways ──────────────────────────────────────────────
+def fmt_pp(x: float, d: int = 1) -> str:
+    return f"{'−' if x < 0 else '+'}{abs(x):.{d}f}"
+
+
+def fmt_num(x: float, d: int = 2) -> str:
+    """Unsigned positives, true minus sign for negatives."""
+    return f"{'−' if x < 0 else ''}{abs(x):.{d}f}"
+
+
+def takeaways_from(payload: dict) -> dict:
+    """Four audiences, evidence labels per CLAUDE.md §4.3. Every number comes from the payload."""
+    p = payload["primary"]
+    t, c, tst = p["treatment"], p["control"], p["test"]
+    rb = payload["robustness"]
+    adj, est, rep = rb["adjusted"], rb["established"], rb["repeatability"]
+    v = est["vs_other"]
+    return {
+        "intro": (f"{t['attempts']} penalties where the goalkeeper fouled the taker can't settle the bench "
+                  f"question either way. What the data can say:"),
+        "coaches": [{
+            "text": (f"Being the team's established taker adds little: **{fmt_pp(v['diff_pp'])} pp** over other "
+                     f"takers ({fmt_pp(v['ci_lo'])} to {fmt_pp(v['ci_hi'])})."),
+            "evidence": "exploratory",
+            "basis": (f"n = {v['a']['attempts']:,} vs {v['b']['attempts']:,} penalties · 95% CI includes zero · "
+                      f"higher in {est['leagues_positive']} of 5 leagues"),
+        }],
+        "managers": [{
+            "text": (f"No case yet for taking the ball off a fouled player: **{fmt_pp(tst['rate_diff_pp'])} pp**, "
+                     f"plausibly anywhere from {fmt_pp(tst['diff_ci_lo'])} to {fmt_pp(tst['diff_ci_hi'])}."),
+            "evidence": "exploratory",
+            "basis": (f"n = {t['attempts']} vs {c['attempts']:,} penalties · p = {tst['p_value']:.2f} · "
+                      f"{fmt_pp(adj['gap_pp'], 2)} pp after controls"),
+        }],
+        "clubs": [{
+            "text": (f"Don't pay for a penalty record: a taker's hit rate on alternate kicks didn't predict the "
+                     f"rest (reliability **{fmt_num(rep['spearman_brown'])}**)."),
+            "evidence": "moderate",
+            "basis": (f"{rep['n_takers']} takers with {rep['min_attempts']}+ kicks · split-half · 95% CI "
+                      f"{fmt_num(rep['sb_lo'])} to {fmt_num(rep['sb_hi'])}"),
+        }],
+        "agents": [],
+    }
+
+
 # ── Main ───────────────────────────────────────────────────
 def main() -> None:
     print(f"Loading FULL_DICT_ROWS from {DATA_PATH} ...")
@@ -387,6 +652,83 @@ def main() -> None:
     primary["by_league"] = primary_by_league
     t_by_league = [b["treatment"]["attempts"] for b in primary_by_league]
 
+    # ── Robustness ────────────────────────────────────────
+    A = attempt_rows(combined)
+    E = enrich(L, A)
+    tr = E["treat"] == 1
+    gk, self_taker = E["conceder_gk"], E["won_by"] == "taker"
+    s = E["scored"]
+    t_k, t_n = int(s[tr].sum()), int(tr.sum())
+    c_k, c_n = int(s[~tr].sum()), int((~tr).sum())
+
+    holm = multipletests([b["test"]["p_value"] for b in primary_by_league], method="holm")[1]
+    for b, ph in zip(primary_by_league, holm):
+        b["test"]["p_holm"] = round(float(ph), 3)
+    _, p_two = proportions_ztest([t_k, c_k], [t_n, c_n], alternative="two-sided")
+
+    controls = [
+        compare(s[tr], s[~tr], "All other penalties (primary)", "all", "Primary: all other penalties"),
+        compare(s[tr], s[gk & ~self_taker], "Same goalkeeper foul, someone else took it", "gk_other", "Same GK foul, other taker",
+                "isolates who takes it: the foul is the same"),
+        compare(s[tr], s[~gk & self_taker], "Fouled player took it, but an outfielder fouled him", "ngk_won", "Self-taker, outfielder foul",
+                "isolates the goalkeeper: the taker was fouled in both"),
+        compare(s[tr], s[~tr & (E["won_by"] != "none")], "Excluding penalties with no fouled player recorded",
+                "no_handballs", "No handballs in control", "drops handballs and unrecorded fouls from the control"),
+    ]
+    no_first = E["season"] != E["season"].min()
+    samples = [
+        compare(s[tr & no_first], s[~tr & no_first], f"Without {E['season'].min()} (lowest-converting season)",
+                "no_first_season", f"Without {E['season'].min()}"),
+        compare(s[tr & (E["status"] == "established")], s[~tr & (E["status"] == "established")],
+                "Established takers only, both groups", "established_only", "Established takers only"),
+        compare(s[tr & (E["status"] == "other")], s[~tr & (E["status"] == "other")],
+                "Other takers only, both groups", "other_only", "Other takers only"),
+    ]
+
+    def gap(a: pd.Series, b: pd.Series) -> dict:
+        ka, na, kb, nb = int(a.sum()), int(a.size), int(b.sum()), int(b.size)
+        lo, hi = confint_proportions_2indep(ka, na, kb, nb, method="newcomb")
+        return {"a": proportion_block(na, ka), "b": proportion_block(nb, kb),
+                "diff_pp": round(rate_pct(ka, na) - rate_pct(kb, nb), 2),
+                "ci_lo": round(float(lo) * 100, 2), "ci_hi": round(float(hi) * 100, 2)}
+
+    est, oth = E["status"] == "established", E["status"] == "other"
+    ts = (A.groupby(["team_id", "Season", "Player"])["Performance_PKatt"].sum().reset_index()
+          .sort_values("Performance_PKatt", ascending=False).drop_duplicates(["team_id", "Season"]))
+    season_top = {(r.team_id, r.Season): r.Player for r in ts.itertuples()}
+    season_des = pd.Series([season_top.get((t, se)) == tk for t, se, tk in zip(E["team_id"], E["season"], E["taker"])],
+                           index=E.index)
+    established = {
+        "definition": "took the most penalties for this team before this match (ties and a team's first penalty "
+                      "excluded)",
+        "share_treatment_pct": round(float(est[tr].mean()) * 100, 1),
+        "share_control_pct": round(float(est[~tr].mean()) * 100, 1),
+        "n_treatment_established": int(est[tr].sum()),
+        "status_counts": {k: int(v) for k, v in E["status"].value_counts().items()},
+        "vs_other": gap(s[est], s[oth]),
+        "by_league": [{"code": lg, "label": LEAGUE_LABELS.get(lg, lg),
+                       **gap(s[est & (E["league"] == lg)], s[oth & (E["league"] == lg)])} for lg in leagues],
+        "season_definition": {
+            "note": "defined from the whole season (including later kicks) — leaks the outcome",
+            **gap(s[season_des], s[~season_des]),
+        },
+    }
+    established["leagues_positive"] = sum(b["diff_pp"] > 0 for b in established["by_league"])
+
+    robustness = {
+        "p_two_tailed": round(float(p_two), 3),
+        "tost": tost_block(t_k, t_n, c_k, c_n, EQUIV_MARGIN_PP),
+        "tost_secondary": tost_block(t_k, t_n, c_k, c_n, EQUIV_MARGIN2_PP),
+        "bayes": bayes_block(t_k, t_n, c_k, c_n, EQUIV_MARGIN_PP, EQUIV_MARGIN2_PP),
+        "adjusted": adjusted_block(E),
+        "controls": controls,
+        "samples": samples,
+        "established": established,
+        "repeatability": repeatability_block(A),
+        "holm_min_p": round(float(min(holm)), 3),
+        "n_tests_per_league": len(holm),
+    }
+
     # ── Payload ───────────────────────────────────────────
     payload = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -402,6 +744,8 @@ def main() -> None:
             "unlinked": {k: {"label": EXCLUDE_REASONS[k], "attempts": v} for k, v in excluded.items()},
             "treatment_n_by_league_min": min(t_by_league),
             "treatment_n_by_league_max": max(t_by_league),
+            "season_rate_min": min(by_season, key=lambda r: r["rate"]),
+            "season_rate_max": max(by_season, key=lambda r: r["rate"]),
             "filter_note": (
                 "Descriptive stats (overall, by_league, by_season) use the loose filter — "
                 "any match with a non-zero penalty event. The primary test and 2x2 matrix "
@@ -418,7 +762,9 @@ def main() -> None:
         "by_season": by_season,
         "primary": primary,
         "matrix": matrix_block,
+        "robustness": robustness,
     }
+    payload["takeaways"] = takeaways_from(payload)
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
@@ -453,6 +799,35 @@ def main() -> None:
               f"{cell['conversions']}/{cell['attempts']} = {cell['rate']:>5}%   ({cell['label']}){marker}")
 
     print(f"\nDescriptive overall (loose filter): {overall_conv}/{overall_att} = {payload['overall']['rate']}%")
+
+    rb = robustness
+    adj, tost, bay = rb["adjusted"], rb["tost"], rb["bayes"]
+    print("\n-- Robustness --")
+    print(f"  two-tailed p = {rb['p_two_tailed']}   Holm per-league min p = {rb['holm_min_p']}")
+    print(f"  TOST +/-{tost['margin_pp']} pp: 90% CI [{tost['ci90_lo']}, {tost['ci90_hi']}]  p = {tost['p_tost']}  "
+          f"equivalent = {tost['equivalent']}  smallest margin = {tost['smallest_margin_pp']} pp")
+    t2 = rb["tost_secondary"]
+    print(f"  TOST +/-{t2['margin_pp']} pp: p = {t2['p_tost']}  equivalent = {t2['equivalent']}  "
+          f"P(drop > {t2['margin_pp']} pp) = {bay['p_drop_beyond_secondary_pct']}%")
+    print(f"  Bayes: P(lower) = {bay['p_lower_pct']}%  P(drop > {tost['margin_pp']} pp) = "
+          f"{bay['p_drop_beyond_margin_pct']}%  95% CrI [{bay['cri_lo']}, {bay['cri_hi']}]")
+    print(f"  adjusted gap = {adj['gap_pp']:+.2f} pp [{adj['gap_lo']:+.2f}, {adj['gap_hi']:+.2f}]  "
+          f"(n = {adj['n']}, {adj['n_takers']} takers)")
+    for tm in adj["terms"]:
+        print(f"      {tm['label']:<42} OR {tm['odds_ratio']:.2f} [{tm['or_lo']:.2f}, {tm['or_hi']:.2f}]  p = {tm['p_two']}")
+    for blk in rb["controls"] + rb["samples"]:
+        print(f"  {blk['label']:<55} {blk['treatment']['rate']:6.2f}% ({blk['treatment']['attempts']}) vs "
+              f"{blk['control']['rate']:6.2f}% ({blk['control']['attempts']})  {blk['diff_pp']:+.2f} pp "
+              f"[{blk['ci_lo']:+.2f}, {blk['ci_hi']:+.2f}]  p = {blk['p_one']}")
+    es = rb["established"]
+    v = es["vs_other"]
+    print(f"  established {es['share_treatment_pct']}% of treatment vs {es['share_control_pct']}% of control; "
+          f"established vs other {v['diff_pp']:+.2f} pp [{v['ci_lo']:+.2f}, {v['ci_hi']:+.2f}], "
+          f"{es['leagues_positive']}/5 leagues positive; season definition "
+          f"{es['season_definition']['diff_pp']:+.2f} pp")
+    rp = rb["repeatability"]
+    print(f"  split-half: {rp['n_takers']} takers >= {rp['min_attempts']} kicks, r = {rp['split_half_r']}, "
+          f"Spearman-Brown {rp['spearman_brown']} [{rp['sb_lo']}, {rp['sb_hi']}]")
 
 
 if __name__ == "__main__":

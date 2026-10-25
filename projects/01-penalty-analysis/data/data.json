@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-24T12:17:09.391566+00:00",
+  "generated_at": "2026-10-25T07:58:11.150699+00:00",
   "metadata": {
     "leagues": [
       {
@@ -62,6 +62,18 @@
     },
     "treatment_n_by_league_min": 10,
     "treatment_n_by_league_max": 23,
+    "season_rate_min": {
+      "season": "2017-2018",
+      "attempts": 540,
+      "conversions": 392,
+      "rate": 72.59
+    },
+    "season_rate_max": {
+      "season": "2021-2022",
+      "attempts": 583,
+      "conversions": 471,
+      "rate": 80.79
+    },
     "filter_note": "Descriptive stats (overall, by_league, by_season) use the loose filter \u2014 any match with a non-zero penalty event. The primary test and 2x2 matrix use linked penalties \u2014 one row per penalty whose taker, fouled player and conceder are unambiguous (the team took exactly one penalty in that match)."
   },
   "overall": {
@@ -217,7 +229,8 @@
           "rate_diff_pp": 1.43,
           "diff_ci_lo": -23.9,
           "diff_ci_hi": 14.71,
-          "alternative": "smaller (one-tailed)"
+          "alternative": "smaller (one-tailed)",
+          "p_holm": 1.0
         },
         "code": "SERIEA"
       },
@@ -246,7 +259,8 @@
           "rate_diff_pp": -21.81,
           "diff_ci_lo": -43.85,
           "diff_ci_hi": -1.68,
-          "alternative": "smaller (one-tailed)"
+          "alternative": "smaller (one-tailed)",
+          "p_holm": 0.076
         },
         "code": "LALIGA"
       },
@@ -275,7 +289,8 @@
           "rate_diff_pp": 11.67,
           "diff_ci_lo": -6.68,
           "diff_ci_hi": 18.82,
-          "alternative": "smaller (one-tailed)"
+          "alternative": "smaller (one-tailed)",
+          "p_holm": 1.0
         },
         "code": "PL"
       },
@@ -304,7 +319,8 @@
           "rate_diff_pp": -19.83,
           "diff_ci_lo": -48.72,
           "diff_ci_hi": 3.61,
-          "alternative": "smaller (one-tailed)"
+          "alternative": "smaller (one-tailed)",
+          "p_holm": 0.247
         },
         "code": "BUNDESLIGA"
       },
@@ -333,7 +349,8 @@
           "rate_diff_pp": 4.91,
           "diff_ci_lo": -22.08,
           "diff_ci_hi": 16.37,
-          "alternative": "smaller (one-tailed)"
+          "alternative": "smaller (one-tailed)",
+          "p_holm": 1.0
         },
         "code": "LIGUE1"
       }
@@ -398,5 +415,485 @@
         "rate": 79.0
       }
     ]
+  },
+  "robustness": {
+    "p_two_tailed": 0.516,
+    "tost": {
+      "margin_pp": 5.0,
+      "ci90_lo": -11.77,
+      "ci90_hi": 4.05,
+      "p_tost": 0.341,
+      "equivalent": false,
+      "smallest_margin_pp": 11.8
+    },
+    "tost_secondary": {
+      "margin_pp": 10.0,
+      "ci90_lo": -11.77,
+      "ci90_hi": 4.05,
+      "p_tost": 0.075,
+      "equivalent": false,
+      "smallest_margin_pp": 11.8
+    },
+    "bayes": {
+      "prior": "Beta(1, 1) on each conversion rate",
+      "draws": 400000,
+      "p_lower_pct": 76.8,
+      "p_drop_beyond_margin_pct": 37.4,
+      "p_inside_margin_pct": 59.8,
+      "secondary_margin_pp": 10.0,
+      "p_drop_beyond_secondary_pct": 9.8,
+      "median_pp": -3.42,
+      "cri_lo": -13.65,
+      "cri_hi": 5.16
+    },
+    "adjusted": {
+      "label": "Adjusted for taker status, record, experience, home/away, league and season",
+      "short": "Adjusted (logistic model)",
+      "formula": "scored ~ treat + established + record + experience + home + C(league) + C(season)",
+      "n": 3535,
+      "n_takers": 822,
+      "gap_pp": -3.25,
+      "gap_lo": -12.6,
+      "gap_hi": 5.63,
+      "boot_resamples": 1000,
+      "shrink_k": 20,
+      "terms": [
+        {
+          "term": "treat",
+          "label": "GK fouled the taker (treatment)",
+          "odds_ratio": 0.83,
+          "or_lo": 0.5,
+          "or_hi": 1.38,
+          "p_two": 0.474
+        },
+        {
+          "term": "established",
+          "label": "Team's established taker at kick time",
+          "odds_ratio": 1.07,
+          "or_lo": 0.86,
+          "or_hi": 1.34,
+          "p_two": 0.535
+        },
+        {
+          "term": "record",
+          "label": "Prior conversion record (shrunk, logit)",
+          "odds_ratio": 0.76,
+          "or_lo": 0.47,
+          "or_hi": 1.25,
+          "p_two": 0.279
+        },
+        {
+          "term": "experience",
+          "label": "Prior penalties taken (log)",
+          "odds_ratio": 1.1,
+          "or_lo": 0.99,
+          "or_hi": 1.22,
+          "p_two": 0.086
+        },
+        {
+          "term": "home",
+          "label": "Home side",
+          "odds_ratio": 1.07,
+          "or_lo": 0.91,
+          "or_hi": 1.26,
+          "p_two": 0.418
+        }
+      ]
+    },
+    "controls": [
+      {
+        "key": "all",
+        "label": "All other penalties (primary)",
+        "short": "Primary: all other penalties",
+        "note": "",
+        "treatment": {
+          "attempts": 79,
+          "conversions": 60,
+          "misses": 19,
+          "rate": 75.95,
+          "ci_lo": 65.46,
+          "ci_hi": 84.03
+        },
+        "control": {
+          "attempts": 3456,
+          "conversions": 2729,
+          "misses": 727,
+          "rate": 78.96,
+          "ci_lo": 77.57,
+          "ci_hi": 80.29
+        },
+        "diff_pp": -3.01,
+        "ci_lo": -13.58,
+        "ci_hi": 5.18,
+        "p_one": 0.258
+      },
+      {
+        "key": "gk_other",
+        "label": "Same goalkeeper foul, someone else took it",
+        "short": "Same GK foul, other taker",
+        "note": "isolates who takes it: the foul is the same",
+        "treatment": {
+          "attempts": 79,
+          "conversions": 60,
+          "misses": 19,
+          "rate": 75.95,
+          "ci_lo": 65.46,
+          "ci_hi": 84.03
+        },
+        "control": {
+          "attempts": 203,
+          "conversions": 159,
+          "misses": 44,
+          "rate": 78.33,
+          "ci_lo": 72.16,
+          "ci_hi": 83.44
+        },
+        "diff_pp": -2.38,
+        "ci_lo": -14.04,
+        "ci_hi": 7.79,
+        "p_one": 0.334
+      },
+      {
+        "key": "ngk_won",
+        "label": "Fouled player took it, but an outfielder fouled him",
+        "short": "Self-taker, outfielder foul",
+        "note": "isolates the goalkeeper: the taker was fouled in both",
+        "treatment": {
+          "attempts": 79,
+          "conversions": 60,
+          "misses": 19,
+          "rate": 75.95,
+          "ci_lo": 65.46,
+          "ci_hi": 84.03
+        },
+        "control": {
+          "attempts": 491,
+          "conversions": 388,
+          "misses": 103,
+          "rate": 79.02,
+          "ci_lo": 75.2,
+          "ci_hi": 82.39
+        },
+        "diff_pp": -3.07,
+        "ci_lo": -14.09,
+        "ci_hi": 5.86,
+        "p_one": 0.268
+      },
+      {
+        "key": "no_handballs",
+        "label": "Excluding penalties with no fouled player recorded",
+        "short": "No handballs in control",
+        "note": "drops handballs and unrecorded fouls from the control",
+        "treatment": {
+          "attempts": 79,
+          "conversions": 60,
+          "misses": 19,
+          "rate": 75.95,
+          "ci_lo": 65.46,
+          "ci_hi": 84.03
+        },
+        "control": {
+          "attempts": 2590,
+          "conversions": 2050,
+          "misses": 540,
+          "rate": 79.15,
+          "ci_lo": 77.54,
+          "ci_hi": 80.67
+        },
+        "diff_pp": -3.2,
+        "ci_lo": -13.8,
+        "ci_hi": 5.04,
+        "p_one": 0.245
+      }
+    ],
+    "samples": [
+      {
+        "key": "no_first_season",
+        "label": "Without 2017-2018 (lowest-converting season)",
+        "short": "Without 2017-2018",
+        "note": "",
+        "treatment": {
+          "attempts": 69,
+          "conversions": 54,
+          "misses": 15,
+          "rate": 78.26,
+          "ci_lo": 67.18,
+          "ci_hi": 86.36
+        },
+        "control": {
+          "attempts": 2999,
+          "conversions": 2394,
+          "misses": 605,
+          "rate": 79.83,
+          "ci_lo": 78.35,
+          "ci_hi": 81.22
+        },
+        "diff_pp": -1.57,
+        "ci_lo": -12.73,
+        "ci_hi": 6.67,
+        "p_one": 0.374
+      },
+      {
+        "key": "established_only",
+        "label": "Established takers only, both groups",
+        "short": "Established takers only",
+        "note": "",
+        "treatment": {
+          "attempts": 28,
+          "conversions": 23,
+          "misses": 5,
+          "rate": 82.14,
+          "ci_lo": 64.41,
+          "ci_hi": 92.12
+        },
+        "control": {
+          "attempts": 1057,
+          "conversions": 850,
+          "misses": 207,
+          "rate": 80.42,
+          "ci_lo": 77.92,
+          "ci_hi": 82.7
+        },
+        "diff_pp": 1.72,
+        "ci_lo": -16.15,
+        "ci_hi": 12.01,
+        "p_one": 0.59
+      },
+      {
+        "key": "other_only",
+        "label": "Other takers only, both groups",
+        "short": "Other takers only",
+        "note": "",
+        "treatment": {
+          "attempts": 44,
+          "conversions": 32,
+          "misses": 12,
+          "rate": 72.73,
+          "ci_lo": 58.15,
+          "ci_hi": 83.65
+        },
+        "control": {
+          "attempts": 1864,
+          "conversions": 1470,
+          "misses": 394,
+          "rate": 78.86,
+          "ci_lo": 76.95,
+          "ci_hi": 80.66
+        },
+        "diff_pp": -6.13,
+        "ci_lo": -20.82,
+        "ci_hi": 4.96,
+        "p_one": 0.163
+      }
+    ],
+    "established": {
+      "definition": "took the most penalties for this team before this match (ties and a team's first penalty excluded)",
+      "share_treatment_pct": 35.4,
+      "share_control_pct": 30.6,
+      "n_treatment_established": 28,
+      "status_counts": {
+        "other": 1908,
+        "established": 1085,
+        "tie": 404,
+        "no history": 138
+      },
+      "vs_other": {
+        "a": {
+          "attempts": 1085,
+          "conversions": 873,
+          "misses": 212,
+          "rate": 80.46,
+          "ci_lo": 78.0,
+          "ci_hi": 82.71
+        },
+        "b": {
+          "attempts": 1908,
+          "conversions": 1502,
+          "misses": 406,
+          "rate": 78.72,
+          "ci_lo": 76.83,
+          "ci_hi": 80.5
+        },
+        "diff_pp": 1.74,
+        "ci_lo": -1.3,
+        "ci_hi": 4.68
+      },
+      "by_league": [
+        {
+          "code": "SERIEA",
+          "label": "Serie A",
+          "a": {
+            "attempts": 312,
+            "conversions": 248,
+            "misses": 64,
+            "rate": 79.49,
+            "ci_lo": 74.66,
+            "ci_hi": 83.6
+          },
+          "b": {
+            "attempts": 432,
+            "conversions": 338,
+            "misses": 94,
+            "rate": 78.24,
+            "ci_lo": 74.11,
+            "ci_hi": 81.87
+          },
+          "diff_pp": 1.25,
+          "ci_lo": -4.79,
+          "ci_hi": 7.07
+        },
+        {
+          "code": "LALIGA",
+          "label": "La Liga",
+          "a": {
+            "attempts": 219,
+            "conversions": 174,
+            "misses": 45,
+            "rate": 79.45,
+            "ci_lo": 73.62,
+            "ci_hi": 84.27
+          },
+          "b": {
+            "attempts": 381,
+            "conversions": 294,
+            "misses": 87,
+            "rate": 77.17,
+            "ci_lo": 72.69,
+            "ci_hi": 81.1
+          },
+          "diff_pp": 2.29,
+          "ci_lo": -4.75,
+          "ci_hi": 8.86
+        },
+        {
+          "code": "PL",
+          "label": "Premier League",
+          "a": {
+            "attempts": 218,
+            "conversions": 176,
+            "misses": 42,
+            "rate": 80.73,
+            "ci_lo": 74.98,
+            "ci_hi": 85.42
+          },
+          "b": {
+            "attempts": 326,
+            "conversions": 259,
+            "misses": 67,
+            "rate": 79.45,
+            "ci_lo": 74.73,
+            "ci_hi": 83.48
+          },
+          "diff_pp": 1.29,
+          "ci_lo": -5.74,
+          "ci_hi": 7.93
+        },
+        {
+          "code": "BUNDESLIGA",
+          "label": "Bundesliga",
+          "a": {
+            "attempts": 158,
+            "conversions": 134,
+            "misses": 24,
+            "rate": 84.81,
+            "ci_lo": 78.39,
+            "ci_hi": 89.57
+          },
+          "b": {
+            "attempts": 323,
+            "conversions": 253,
+            "misses": 70,
+            "rate": 78.33,
+            "ci_lo": 73.52,
+            "ci_hi": 82.47
+          },
+          "diff_pp": 6.48,
+          "ci_lo": -1.16,
+          "ci_hi": 13.25
+        },
+        {
+          "code": "LIGUE1",
+          "label": "Ligue 1",
+          "a": {
+            "attempts": 178,
+            "conversions": 141,
+            "misses": 37,
+            "rate": 79.21,
+            "ci_lo": 72.67,
+            "ci_hi": 84.53
+          },
+          "b": {
+            "attempts": 446,
+            "conversions": 358,
+            "misses": 88,
+            "rate": 80.27,
+            "ci_lo": 76.32,
+            "ci_hi": 83.7
+          },
+          "diff_pp": -1.06,
+          "ci_lo": -8.45,
+          "ci_hi": 5.56
+        }
+      ],
+      "season_definition": {
+        "note": "defined from the whole season (including later kicks) \u2014 leaks the outcome",
+        "a": {
+          "attempts": 2259,
+          "conversions": 1875,
+          "misses": 384,
+          "rate": 83.0,
+          "ci_lo": 81.4,
+          "ci_hi": 84.49
+        },
+        "b": {
+          "attempts": 1276,
+          "conversions": 914,
+          "misses": 362,
+          "rate": 71.63,
+          "ci_lo": 69.09,
+          "ci_hi": 74.04
+        },
+        "diff_pp": 11.37,
+        "ci_lo": 8.48,
+        "ci_hi": 14.31
+      },
+      "leagues_positive": 4
+    },
+    "repeatability": {
+      "min_attempts": 10,
+      "n_takers": 126,
+      "n_kicks": 2091,
+      "split_half_r": -0.04,
+      "spearman_brown": -0.08,
+      "sb_lo": -0.47,
+      "sb_hi": 0.18
+    },
+    "holm_min_p": 0.076,
+    "n_tests_per_league": 5
+  },
+  "takeaways": {
+    "intro": "79 penalties where the goalkeeper fouled the taker can't settle the bench question either way. What the data can say:",
+    "coaches": [
+      {
+        "text": "Being the team's established taker adds little: **+1.7 pp** over other takers (\u22121.3 to +4.7).",
+        "evidence": "exploratory",
+        "basis": "n = 1,085 vs 1,908 penalties \u00b7 95% CI includes zero \u00b7 higher in 4 of 5 leagues"
+      }
+    ],
+    "managers": [
+      {
+        "text": "No case yet for taking the ball off a fouled player: **\u22123.0 pp**, plausibly anywhere from \u221213.6 to +5.2.",
+        "evidence": "exploratory",
+        "basis": "n = 79 vs 3,456 penalties \u00b7 p = 0.26 \u00b7 \u22123.25 pp after controls"
+      }
+    ],
+    "clubs": [
+      {
+        "text": "Don't pay for a penalty record: a taker's hit rate on alternate kicks didn't predict the rest (reliability **\u22120.08**).",
+        "evidence": "moderate",
+        "basis": "126 takers with 10+ kicks \u00b7 split-half \u00b7 95% CI \u22120.47 to 0.18"
+      }
+    ],
+    "agents": []
   }
 }
