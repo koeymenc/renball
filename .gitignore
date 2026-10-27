@@ -53,5 +53,8 @@ _methodology_print.html
 # Internal audits (findings on live projects stay private)
 _audit/
 
+# Local review pack for CK (hub, X review, calendar, decisions, feedback)
+review/
+
 # Local extraction caches (project builds)
 **/data/.cache/
