@@ -1,13 +1,10 @@
 """
-build_slides.py, Renball Project 03 slide builder (The True Contributors)
-==========================================================================
+build_slides.py — Renball Project 03 slide builder
+==================================================
 
-Generates a 16:9 deck for the three-layer expected-points attribution.
-All numbers are pulled from ../data/data.json so the deck stays in sync
-with the build.
-
-Styling and slide layouts come exclusively from
-`assets/slides/renball_slide_master.py`, never reimplement them here.
+Generates the 16:9 deck for "The True Contributors". Every number comes from
+../data/data.json; styling and layouts come from the shared
+assets/slides/renball_slide_master.py — never reimplemented here.
 
 Run:
     python code/build_slides.py
@@ -17,466 +14,367 @@ from __future__ import annotations
 
 import json
 import sys
+from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 
-# ── Pull in the shared Renball slide master ─────────────────
-SCRIPT_DIR  = Path(__file__).resolve().parent
+SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = SCRIPT_DIR.parent
-REPO_ROOT   = PROJECT_DIR.parent.parent                 # …/renball/
-SHARED      = REPO_ROOT / "assets" / "slides"
-sys.path.insert(0, str(SHARED))
+REPO_ROOT = PROJECT_DIR.parent.parent
+sys.path.insert(0, str(REPO_ROOT / "assets" / "slides"))
 
 import renball_slide_master as R  # noqa: E402
-from pptx.enum.text import PP_ALIGN  # noqa: E402
 
-DATA_JSON   = PROJECT_DIR / "data" / "data.json"
+DATA_JSON = PROJECT_DIR / "data" / "data.json"
 OUTPUT_PPTX = PROJECT_DIR / "slides.pptx"
 
 
+def fx(x: float, d: int = 2) -> str:
+    """Half-up on the shortest decimal form, the same rounding as the page; true minus sign."""
+    s = str(Decimal(repr(float(x))).quantize(Decimal(1).scaleb(-d), rounding=ROUND_HALF_UP))
+    return s.replace("-", "−")
+
+
+def n(x) -> str:
+    return f"{int(x):,}"
+
+
 # ════════════════════════════════════════════════════════════════════════
-# Small helpers
-# ════════════════════════════════════════════════════════════════════════
-def _date_str(meta: dict) -> str:
-    return (meta.get("generated_at") or "").replace("-", "·")[:7] or "May 2026"
-
-
-def _short_team(name: str) -> str:
-    return {"Paris S-G": "PSG", "Bayern Munich": "Bayern"}.get(name, name)
-
-
-# ════════════════════════════════════════════════════════════════════════
-# Slide content (one function per slide)
+# Slides
 # ════════════════════════════════════════════════════════════════════════
 def slide_title(prs, d):
-    R.add_title_slide(
-        prs,
-        title="The True *Contributors*.",
-        subtitle="WHO ACTUALLY MOVES THE TABLE? · A THREE-LAYER EXPECTED-POINTS ATTRIBUTION",
-        date=_date_str(d["meta"]),
-        project_num="03",
-    )
+    R.add_title_slide(prs, title="The True *Contributors*.",
+                      subtitle="WHO ACTUALLY MOVES THE TABLE? · EXPECTED POINTS PER 90 WITH HONEST RANKS",
+                      date="May 2026", project_num="03")
 
 
 def slide_tldr(prs, d):
-    meta = d["meta"]
-    top = d["q1a_full_credit"]["rows"][0]
-    brandt = next(r for r in d["q6_architects"]["layer_breakdown"]
-                  if r["player"] == "Julian Brandt")
-    messi_sca2 = d["q6_architects"]["abs_top"][0]["ep_timed"]
-    bullets = [
-        f"We take project 02's time-aware expected-points (EP) value function and "
-        f"credit a THIRD touchpoint per goal (the pre-assist, SCA2) alongside the "
-        f"scorer and the assister.",
-        f"Across {meta['total_goals']:,} goals in six leagues and seven seasons, the "
-        f"per-90 board still leads with the consensus elite ({top['player']}, "
-        f"{top['ep_per_90']:.2f} EP/90), the framework clears the eye test before it "
-        f"surfaces surprises.",
-        f"The marquee finding: Julian Brandt collects {brandt['ep_sca2']:.2f} EP from "
-        f"pre-assists alone, second in Europe only to Messi ({messi_sca2:.2f}), and "
-        f"39% of his total value comes from that single layer.",
-    ]
-    R.add_bullet_slide(prs, "TL;DR: three sentences", bullets, eyebrow="TL;DR")
-
-
-def slide_question(prs, d):
-    s = R.add_blank_slide(prs)
-    R.add_section_header(s, "THE QUESTION", "Three touchpoints, *two* counted")
-    R.add_text(s, R.BODY_LEFT, R.BODY_TOP, R.BODY_MAX_W, 0.9,
-               "Every goal is built by a chain of contributions. The scoreboard credits the "
-               "end of the chain and forgets the rest.",
-               font=R.SERIF, size=24, color=R.TEXT, italic=True)
+    b, rep, aw = d["board"], d["repeatability"], d["awards"]
+    t = b["top"]
+    sl = R.add_blank_slide(prs)
+    R.add_section_header(sl, "TL;DR", "Three *sentences*")
     rows = [
-        ("SCORER",
-         "Puts the ball in the net. Always credited: the goal goes on his record."),
-        ("ASSIST · SCA1",
-         "The final pass. Sometimes credited, when the box score bothers to log it."),
-        ("PRE-ASSIST · SCA2",
-         "The pass before the pass. Almost never credited: it disappears into the squad page."),
+        ("THE BOARD",
+         f"{t[0]['player']} ({fx(t[0]['theta'])} EP per 90) and {t[1]['player']} ({fx(t[1]['theta'])}) are the only "
+         f"players sure of a top-10 place. Number 3 could rank anywhere from {t[2]['rank_lo']} to {t[2]['rank_hi']}."),
+        ("WHAT REPEATS",
+         f"EP per 90 carries over from season to season (r = {fx(rep['p90']['r'])}); how decisive a player's goals "
+         f"are barely does (r = {fx(rep['ep_per_inv']['r'])})."),
+        ("REALITY CHECK",
+         f"The model names the actual award winner in {aw['exact']} of {aw['eligible_winners']} league-seasons "
+         f"(chance: {fx(aw['chance_exact'], 1)}); a goals + assists count names {aw['ga_exact']}."),
     ]
-    y = R.BODY_TOP + 1.05
+    y = R.BODY_TOP
     for label, body in rows:
-        accent = label.startswith("PRE-ASSIST")
-        R.add_mono_label(s, R.BODY_LEFT, y, 3.0, 0.3, label,
-                         color=R.ACCENT if accent else R.TEXT_SECONDARY, size=10)
-        R.add_text(s, R.BODY_LEFT + 3.1, y - 0.05, 8.6, 0.65, body,
-                   font=R.SANS, size=14,
-                   color=R.TEXT if accent else R.TEXT_SECONDARY)
-        y += 0.78
-    R.add_text(s, R.BODY_LEFT, R.CAPTION_TOP, R.BODY_MAX_W, 0.3,
-               "→ Credit all three. Then ask who the model elevates that the box score does not.",
-               font=R.SANS, size=14, color=R.ACCENT, italic=True)
+        R.add_mono_label(sl, R.BODY_LEFT, y, 2.4, 0.3, label, color=R.ACCENT, size=10)
+        R.add_text(sl, R.BODY_LEFT + 2.5, y - 0.07, 9.3, 1.3, body, font=R.SERIF, size=20, color=R.TEXT)
+        y += 1.6
 
 
-def slide_data_method(prs, d):
-    meta = d["meta"]
-    s = R.add_blank_slide(prs)
-    R.add_section_header(s, "DATA & METHOD", "What the framework runs on")
+def slide_framework(prs, d):
+    fw, q = d["framework"], d["quality"]
+    sl = R.add_blank_slide(prs)
+    R.add_section_header(sl, "THE FRAMEWORK", "Price the goal, then *share* it")
+    R.add_text(sl, R.BODY_LEFT, R.BODY_TOP, R.BODY_MAX_W, 0.7,
+               "Goals win points, but not the same number of points, and a goal is rarely one player's work.",
+               font=R.SERIF, size=24, color=R.TEXT, italic=True)
+    R.add_text(sl, R.BODY_LEFT, R.BODY_TOP + 1.2, 5.8, 3.4,
+               f"The price comes from Project 02: the expected final points just after a goal minus just before, "
+               f"from every minute of {n(fw['matches_model'])} matches. A go-ahead goal from level is worth "
+               f"{fx(fw['opener_early'], 3)} EP in the first 15 minutes and {fx(fw['opener_late'], 3)} in the last 15.",
+               font=R.SANS, size=15, color=R.TEXT_SECONDARY)
+    R.add_text(sl, R.BODY_LEFT + 6.3, R.BODY_TOP + 1.2, 5.7, 3.4,
+               f"The credit goes to the scorer, SCA1 (the action before the shot) and SCA2 (the action before that), "
+               f"each at the goal's full value, once per player per goal: {n(q['collapsed'])} role credits merge "
+               f"into {n(q['credits'])} credits.",
+               font=R.SANS, size=15, color=R.TEXT_SECONDARY)
 
-    stats = [
-        (f"{meta['total_goals']:,}",                 "GOAL EVENTS"),
-        (f"{len(meta['leagues'])}",                  "LEAGUES"),
-        (f"{len(meta['seasons'])}",                  "SEASONS"),
-        (f"{meta['total_players_with_meta']:,}",     "PLAYERS W/ META"),
-    ]
+
+def slide_data(prs, d):
+    q, b = d["quality"], d["board"]
+    sl = R.add_blank_slide(prs)
+    R.add_section_header(sl, "DATA", "Five leagues, seven *seasons*")
+    stats = [(n(q["goals"]), "GOALS PRICED"), (n(q["matches"]), "MATCHES"),
+             (n(q["players_eligible"]), f"PLAYERS · {n(b['min_minutes'])}+ MIN"), (f"{fx(q['sca2_pct'], 1)}%", "GOALS WITH SCA2")]
     x = R.BODY_LEFT
     for value, label in stats:
-        R.add_rect(s, x, R.BODY_TOP, 2.85, 1.5, R.BG_CARD, border=R.BORDER, border_pt=0.75)
-        R.add_text(s, x + 0.2, R.BODY_TOP + 0.12, 2.6, 0.9, value,
-                   font=R.SERIF, size=38, color=R.ACCENT)
-        R.add_mono_label(s, x + 0.2, R.BODY_TOP + 0.98, 2.6, 0.3, label,
-                         color=R.TEXT_MUTED, size=9)
+        R.add_rect(sl, x, R.BODY_TOP, 2.85, 1.6, R.BG_CARD, border=R.BORDER, border_pt=0.75)
+        R.add_text(sl, x + 0.2, R.BODY_TOP + 0.15, 2.6, 0.9, value, font=R.SERIF, size=34, color=R.ACCENT)
+        R.add_mono_label(sl, x + 0.2, R.BODY_TOP + 1.05, 2.6, 0.3, label, color=R.TEXT_MUTED, size=9)
         x += 3.0
-
-    # Three-layer credit card
-    R.add_rect(s, R.BODY_LEFT, R.BODY_TOP + 1.85, R.BODY_MAX_W, 1.0, R.BG_CARD,
-               border=R.ACCENT, border_pt=1.2)
-    R.add_text(s, R.BODY_LEFT + 0.3, R.BODY_TOP + 2.05, R.BODY_MAX_W - 0.6, 0.55,
-               "three_layer credit  =  scorer + SCA1 + SCA2     (each role = 1 credit · EP summed)",
-               font=R.MONO, size=16, color=R.ACCENT)
-
-    y = R.BODY_TOP + 3.05
-    for line in [
-        "Inherits project 02's value function verbatim: a goal is priced by the swing in "
-        "expected league points it produces, conditioned on game-state and minute.",
-        "Per-90 = (EP / minutes) × 90. Minutes come from FBref summary tables, Top-5 "
-        "leagues only, so every per-90 board excludes Eredivisie.",
-    ]:
-        R.add_text(s, R.BODY_LEFT, y, R.BODY_MAX_W, 0.5, line,
-                   font=R.SANS, size=13, color=R.TEXT_SECONDARY)
-        y += 0.55
-    R.add_text(s, R.BODY_LEFT, R.CAPTION_TOP, R.BODY_MAX_W, 0.3,
-               "Absolute-EP boards keep all six leagues; per-90 boards are Top-5 only.",
-               font=R.MONO, size=10, color=R.TEXT_MUTED)
-
-
-def slide_q1a(prs, d):
-    rows = d["q1a_full_credit"]["rows"][:10][::-1]   # reversed for barh bottom-up
-    labels = [r["player"] for r in rows]
-    values = [r["ep_per_90"] for r in rows]
-    teams = [_short_team(r["primary_team"]) for r in rows]
-
-    fig, ax = R.new_chart(width=11, height=4.6)
-    bars = ax.barh(labels, values, color=R.MPL_ACCENT, edgecolor=R.MPL_ACCENT, linewidth=0)
-    for bar, val, team in zip(bars, values, teams):
-        ax.text(val + max(values) * 0.01, bar.get_y() + bar.get_height() / 2,
-                f"{val:.3f}  ·  {team}", ha="left", va="center",
-                color=R.MPL_TEXT_SEC, fontsize=10)
-    ax.set_xlabel("EP per 90 · three-layer credit (scorer + SCA1 + SCA2)",
-                  color=R.MPL_TEXT_SEC, fontsize=11)
-    ax.set_xlim(0, max(values) * 1.25)
-    ax.tick_params(axis="y", labelsize=11)
-
-    R.add_chart_slide(
-        prs, "The model clears the *eye test*", fig,
-        caption="Top 10 by EP/90, ≥ 1,000 minutes, Top-5 leagues. The consensus elite leads, "
-                "which is the point. Recover what everyone knows before surfacing surprises.",
-        eyebrow="Q1a · FULL-CREDIT LEADERBOARD")
-
-
-def slide_q1b_robustness(prs, d):
-    R.add_bullet_slide(
-        prs,
-        "Does *weighting* the credits change the answer?",
-        bullets=[
-            "Re-run the same board with credits weighted 0.40 / 0.35 / 0.25 "
-            "(scorer / SCA1 / SCA2). EP only; the minutes threshold is unchanged.",
-            "The top eight is essentially identical. The biggest movers are pure scorers "
-            "gaining a little under the heavier scoring weight: Lewandowski +6, Dovbyk +7.",
-            "Creator-heavy names slip a few places: Jallow −9, Ljajić −9.",
-            "That the tuned weights reproduce the simple 1/1/1 board IS the result: the "
-            "ranking is not an artefact of the credit split.",
-        ],
-        eyebrow="Q1b · ROBUSTNESS",
-        caption="Full rank-shift table on the dashboard · Q1 Rank Shift (A vs B)")
-
-
-def _q2_agreement(d):
-    """Count cells where the model's pick == the real award winner."""
-    grid = d["q2_mvp_grid"]["grid"]
-    comb = d["q2_mvp_grid"]["combined_5l"]
-    matches = comparable = 0
-    for seasons in grid.values():
-        for cell in seasons.values():
-            mp = cell.get("model_pick")
-            w = (cell.get("actual") or {}).get("winner")
-            if mp and w:
-                comparable += 1
-                if mp["player"] == w:
-                    matches += 1
-    for cell in comb.values():
-        mp = cell.get("model_pick")
-        w = (cell.get("actual_ballon_dor") or {}).get("winner")
-        if mp and w:
-            comparable += 1
-            if mp["player"] == w:
-                matches += 1
-    pct = round(matches / comparable * 100) if comparable else 0
-    return matches, comparable, pct
-
-
-def slide_q2_mvps(prs, d):
-    jackson = d["q2_mvp_grid"]["grid"]["La-Liga"]["2022-2023"]["model_pick"]
-    muriel = d["q2_mvp_grid"]["combined_5l"]["2020-2021"]["model_pick"]
-    m, n, pct = _q2_agreement(d)
-    R.add_two_column_slide(
-        prs,
-        "The model's MVPs, *season by season*",
-        left={
-            "label": "LA LIGA · 2022-23",
-            "title": jackson["player"],
-            "body": f"{jackson['primary_team']} · {jackson['ep_per_90']:.3f} EP/90 over "
-                    f"{jackson['minutes']:,} minutes ({jackson['goals_involved']} credits).\n\n"
-                    f"La Liga's top per-90 pick the season before he joined Chelsea.",
-            "accent": True,
-        },
-        right={
-            "label": "5 LEAGUES COMBINED · 2020-21",
-            "title": muriel["player"],
-            "body": f"{muriel['primary_team']} · {muriel['ep_per_90']:.3f} EP/90 "
-                    f"({muriel['goals_involved']} credits).\n\n"
-                    f"The model's Ballon d'Or pick that season, not what the trophy "
-                    f"cabinet recorded.",
-        },
-        eyebrow="Q2 · PER-SEASON MVPs",
-        caption=f"Model's top EP/90 pick per (league × season) vs the real award winner, matched in "
-                f"{m} of {n} cells ({pct}%). The model prices leverage, not reputation. Top-5 only.")
-
-
-def slide_q3_late(prs, d):
-    rows = d["q3_late_game"]["rows_substantive"][:10][::-1]
-    labels = [r["player"] for r in rows]
-    values = [r["share_late"] * 100 for r in rows]
-    teams = [_short_team(r["primary_team"]) for r in rows]
-
-    fig, ax = R.new_chart(width=11, height=4.6)
-    bars = ax.barh(labels, values, color=R.MPL_ACCENT, edgecolor=R.MPL_ACCENT, linewidth=0)
-    for bar, val, team in zip(bars, values, teams):
-        ax.text(val + max(values) * 0.01, bar.get_y() + bar.get_height() / 2,
-                f"{val:.1f}%  ·  {team}", ha="left", va="center",
-                color=R.MPL_TEXT_SEC, fontsize=10)
-    ax.set_xlabel("Share of EP collected in the 60–90 minute bins",
-                  color=R.MPL_TEXT_SEC, fontsize=11)
-    ax.set_xlim(0, max(values) * 1.18)
-    ax.tick_params(axis="y", labelsize=11)
-
-    R.add_chart_slide(
-        prs, "The late-game *substantives*", fig,
-        caption="Top 10 by late share, ≥ 30 three-layer credits (super-subs filtered out). "
-                "Includes all six leagues. Tello takes 73.8% of his value after the 60th minute.",
-        eyebrow="Q3 · LATE-GAME SPECIALISTS")
-
-
-def slide_q5_positions(prs, d):
-    panels = d["q5_position"]["panels"]
-    headers = ["Position", "#1 pick", "EP/90", "Minutes", "Credits"]
-    rows = []
-    for pos, label in [("DF", "Defender"), ("MF", "Midfielder"), ("FW", "Forward")]:
-        r = panels[pos]["rows"][0]
-        rows.append([label, r["player"], f"{r['ep_per_90']:.3f}",
-                     f"{r['minutes']:,}", str(r["goals_involved"])])
-    R.add_table_slide(
-        prs,
-        "Position-adjusted · *outfield* only",
-        headers, rows,
-        eyebrow="Q5 · POSITION-ADJUSTED",
-        col_widths=[2.4, 3.4, 1.8, 2.2, 2.2],
-        caption="Top EP/90 per modal position, ≥ 1,000 minutes. GK excluded: a structural blind "
-                "spot of the framework (top GK ~0.1 EP/90 vs ~1.1 for forwards). De Bruyne is the "
-                "most-sampled elite pick anywhere here: 14,674 minutes, 206 credits.")
-
-
-def slide_q6_architects(prs, d):
-    rows = d["q6_architects"]["layer_breakdown"][:10][::-1]
-    labels = [r["player"] for r in rows]
-    scorer = [r["ep_scorer"] for r in rows]
-    sca1 = [r["ep_sca1"] for r in rows]
-    sca2 = [r["ep_sca2"] for r in rows]
-
-    fig, ax = R.new_chart(width=11, height=4.6)
-    ax.barh(labels, scorer, color="#3f5a2a", edgecolor="none", label="Scorer EP")
-    ax.barh(labels, sca1, left=scorer, color=R.MPL_BORDER_LIGHT, edgecolor="none",
-            label="SCA1 (assist) EP")
-    left2 = [a + b for a, b in zip(scorer, sca1)]
-    ax.barh(labels, sca2, left=left2, color=R.MPL_ACCENT, edgecolor="none",
-            label="SCA2 (pre-assist) EP")
-    ax.set_xlabel("EP collected (cumulative, by role)", color=R.MPL_TEXT_SEC, fontsize=11)
-    ax.tick_params(axis="y", labelsize=11)
-    ax.grid(axis="y", visible=False)
-    leg = ax.legend(loc="lower right", fontsize=9, frameon=False)
-    for txt in leg.get_texts():
-        txt.set_color(R.MPL_TEXT_SEC)
-
-    R.add_chart_slide(
-        prs, "The Hidden *Architects*", fig,
-        caption="Top 10 SCA2 EP collectors, stacked by contribution role. Bright accent = the "
-                "pre-assist layer. One player is structurally different from everyone else.",
-        eyebrow="Q6 · MARQUEE FINDING")
-
-
-def slide_brandt_spotlight(prs, d):
-    brandt = next(r for r in d["q6_architects"]["layer_breakdown"]
-                  if r["player"] == "Julian Brandt")
-    messi_sca2 = d["q6_architects"]["abs_top"][0]["ep_timed"]
-    sca2_share = brandt["ep_sca2"] / brandt["ep_total"] * 100
-
-    s = R.add_blank_slide(prs)
-    R.add_section_header(s, "SPOTLIGHT", "What the model *exists to find*")
-
-    card_top = R.BODY_TOP
-    card_h = R.CAPTION_TOP - R.CAPTION_GAP - card_top
-    # Left card: Brandt headline number
-    R.add_rect(s, R.BODY_LEFT, card_top, 6.0, card_h, R.BG_CARD, border=R.ACCENT, border_pt=1.5)
-    R.add_mono_label(s, R.BODY_LEFT + 0.25, card_top + 0.2, 5.5, 0.3,
-                     "PRE-ASSIST ARCHITECT", color=R.ACCENT, size=10)
-    R.add_text(s, R.BODY_LEFT + 0.25, card_top + 0.55, 5.5, 0.7, brandt["player"],
-               font=R.SERIF, size=32, color=R.TEXT)
-    R.add_text(s, R.BODY_LEFT + 0.25, card_top + 1.3, 5.5, 0.4,
-               "Borussia Dortmund · MF",
-               font=R.MONO, size=11, color=R.TEXT_SECONDARY)
-    R.add_text(s, R.BODY_LEFT + 0.25, card_top + 1.95, 5.5, 1.1,
-               f"{brandt['ep_sca2']:.2f}",
-               font=R.SERIF, size=64, color=R.ACCENT)
-    R.add_mono_label(s, R.BODY_LEFT + 0.25, card_top + 3.10, 5.5, 0.3,
-                     "EP COLLECTED FROM SCA2 ALONE", color=R.TEXT_MUTED, size=9)
-    R.add_text(s, R.BODY_LEFT + 0.25, card_top + 3.5, 5.5, 0.8,
-               f"Second in Europe only to Messi ({messi_sca2:.2f}). The pre-assist is his single "
-               f"largest contribution layer.",
-               font=R.SANS, size=13, color=R.TEXT_SECONDARY)
-
-    # Right: SCA2-share comparison
-    right_x = R.BODY_LEFT + 6.3
-    right_w = R.BODY_MAX_W - 6.3
-    R.add_mono_label(s, right_x, card_top + 0.15, right_w, 0.3,
-                     "SCA2 SHARE OF TOTAL EP", color=R.TEXT_MUTED, size=10)
-    R.add_hline(s, right_x, card_top + 0.55, right_w, color=R.BORDER, pt=1)
-    compare = [
-        ("Julian Brandt", sca2_share, True),
-        ("Nabil Fekir", 31.6, False),
-        ("Lionel Messi", 24.7, False),
-        ("Kylian Mbappé", 19.6, False),
-        ("Mohamed Salah", 19.5, False),
+    lines = [
+        f"FBref match pages, {q['first_season']} to {q['last_season']}: Premier League, La Liga, Serie A, Bundesliga, "
+        f"Ligue 1. Shot tables, official scores, every player's minutes, position and age per match.",
+        f"The data end in {q['last_season']}: the SCA2 data end there because the source discontinued them.",
+        f"Players told apart by birth date ({q['namesakes']} shared names); minutes from the same matches as the goals.",
     ]
-    y = card_top + 0.7
-    for name, share, hot in compare:
-        R.add_text(s, right_x, y, 3.0, 0.4, name, font=R.SANS, size=13,
-                   color=R.ACCENT if hot else R.TEXT_SECONDARY, bold=hot)
-        # mini bar
-        bar_full = right_w - 3.0 - 1.15          # between the name column and the % label
-        R.add_rect(s, right_x + 3.0, y + 0.11, bar_full * share / max(c[1] for c in compare), 0.18,
-                   R.ACCENT if hot else R.BORDER_LIGHT)
-        R.add_text(s, right_x + right_w - 1.0, y, 1.0, 0.4, f"{share:.1f}%",
-                   font=R.MONO, size=12, color=R.ACCENT if hot else R.TEXT_SECONDARY,
-                   align=PP_ALIGN.RIGHT, bold=hot)
-        y += 0.62
-
-    R.add_text(s, R.BODY_LEFT, R.CAPTION_TOP, R.BODY_MAX_W, 0.3,
-               "Brandt's profile (25% scorer / 37% SCA1 / 39% SCA2) is shared by no pure goalscorer.",
-               font=R.MONO, size=10, color=R.TEXT_MUTED)
+    y = R.BODY_TOP + 1.95
+    for line in lines:
+        R.add_text(sl, R.BODY_LEFT, y, R.BODY_MAX_W, 0.6, line, font=R.SANS, size=13, color=R.TEXT_SECONDARY)
+        y += 0.7
 
 
-def slide_q7_young(prs, d):
-    rows = d["q7_young"]["rows"][:10][::-1]
-    labels = [f"{r['player']} (age {r['age']:.0f})" if r.get("age") else r["player"]
-              for r in rows]
-    values = [r["ep_per_90"] for r in rows]
-    # opacity proxy: mute low-sample (< 2000 min) by using dim colour
-    colors = [R.MPL_ACCENT if (r.get("minutes") or 0) >= 2000 else "#6f8a3f" for r in rows]
-
-    fig, ax = R.new_chart(width=11, height=4.6)
-    bars = ax.barh(labels, values, color=colors, edgecolor="none")
-    for bar, val, r in zip(bars, values, rows):
-        ax.text(val + max(values) * 0.01, bar.get_y() + bar.get_height() / 2,
-                f"{val:.3f}  ·  {r['minutes']:,} min", ha="left", va="center",
-                color=R.MPL_TEXT_SEC, fontsize=9.5)
-    ax.set_xlabel("EP per 90 · age ≤ 23", color=R.MPL_TEXT_SEC, fontsize=11)
-    ax.set_xlim(0, max(values) * 1.28)
-    ax.tick_params(axis="y", labelsize=10.5)
-
-    R.add_chart_slide(
-        prs, "Young players to *watch*", fig,
-        caption="Top 10 EP/90, age ≤ 23, ≥ 500 minutes. Dim bars = under 2,000 minutes "
-                "(low sample). Yamal sits #10 on 2,209 minutes at age 16.9, real volume, not a cameo.",
-        eyebrow="Q7 · UNDER-23 WATCHLIST")
-
-
-def slide_implications(prs, d):
-    R.add_bullet_slide(
-        prs,
-        "What this *changes*",
-        bullets=[
-            "Contribution is a chain, not a tally. Pricing the pre-assist surfaces value "
-            "the goal-and-assist box score structurally cannot see.",
-            "Recruitment: a player like Brandt, whose largest layer is the pass before the "
-            "pass, is materially mis-valued by conventional output metrics.",
-            "The ranking is stable. Re-weighting the three layers barely moves the board, so "
-            "the discoveries beneath the elite are not an artefact of the credit split.",
-            "The dashboard exposes all seven boards with per-league and per-season drill-down, "
-            "so any analyst can apply their own thresholds.",
-        ],
-        eyebrow="IMPLICATIONS",
+def slide_method(prs, d):
+    pa, p = d["board"]["pull_at"], d["meta"]["params"]
+    R.add_two_column_slide(
+        prs, title="Shrink the noise, then *rank*",
+        left={"label": "ADJUSTED RATE", "title": "Pulled toward the position average",
+              "body": f"EP per 90 is noisy over few minutes. Each rate is pulled toward its position's average, "
+                      f"more when minutes are few: a forward with {n(pa[0]['minutes'])} minutes "
+                      f"{fx(pa[0]['pull_pct'], 0)}%, with {n(pa[2]['minutes'])} minutes {fx(pa[2]['pull_pct'], 0)}%.",
+              "accent": True},
+        right={"label": "PLAUSIBLE RANK", "title": "A range, not a place",
+               "body": f"Every player's adjusted rate is drawn {n(p['posterior_draws'])} times with its "
+                       f"uncertainty and ranked each time. The plausible rank is where he lands 95% of the time."},
+        eyebrow="METHOD",
+        caption=f"Empirical Bayes by position (DerSimonian–Laird priors) · measured ranges from Project 02's "
+                f"{n(p['boot_resamples'])} match-bootstrap resamples · fixed seed",
     )
+
+
+def slide_board_chart(prs, d):
+    top = d["board"]["top"][:15]
+    fig, ax = R.new_chart(width=11, height=4.5)
+    rows = top[::-1]
+    ys = range(len(rows))
+    colors = [R.MPL_ACCENT if (p.get("p_top10_pct") or 0) >= 95 else R.MPL_TEXT_MUTED for p in rows]
+    ax.barh(list(ys), [p["theta"] for p in rows], color=colors, height=0.62, edgecolor="none")
+    for y, p in zip(ys, rows):
+        ax.plot([p["theta_lo"], p["theta_hi"]], [y, y], color=R.MPL_TEXT, linewidth=1.2)
+        ax.text(p["theta_hi"] + 0.012, y, fx(p["theta"]), va="center", color=R.MPL_TEXT, fontsize=9)
+    ax.set_yticks(list(ys))
+    ax.set_yticklabels([f"{p['player']} · {p['team']}" for p in rows], fontsize=9)
+    ax.set_xlim(0, 1)
+    ax.grid(axis="y", visible=False)
+    ax.set_xlabel("EP per 90, adjusted", color=R.MPL_TEXT_SEC, fontsize=10)
+    b = d["board"]
+    R.add_chart_slide(prs, "Two players are *sure*. The rest is a shortlist.", fig, eyebrow="HEADLINE",
+                      caption=f"{n(b['eligible'])} players with {n(b['min_minutes'])}+ minutes. Green: top-10 chance of "
+                              f"95% or more. Whisker: 95% interval of the adjusted rate.")
+
+
+def slide_board_table(prs, d):
+    top = d["board"]["top"][:10]
+    rows = [[str(p["rank"]), p["player"], p["team"], n(p["minutes"]), fx(p["p90"], 3), fx(p["theta"], 3),
+             f"{p['rank_lo']}–{p['rank_hi']}", f"{fx(p['p_top10_pct'], 0)}%"] for p in top]
+    R.add_table_slide(prs, "The top 10, with *plausible ranks*",
+                      ["#", "PLAYER", "TEAM", "MINUTES", "MEASURED", "ADJUSTED", "PLAUSIBLE RANK", "TOP-10 CHANCE"],
+                      rows, eyebrow="THE BOARD", col_widths=[0.6, 2.6, 2.0, 1.3, 1.4, 1.4, 1.7, 1.6],
+                      caption="EP per 90 measured and adjusted toward the position average. Plausible rank: 95% of "
+                              "4,000 joint draws. Top-10 chance: share of draws in the top 10.")
+
+
+def slide_raw(prs, d):
+    raw = d["board"]["raw_top"]
+    gone = set(d["board"]["raw_top10_dropped_names"])
+    fig, ax = R.new_chart(width=11, height=4.4)
+    rows = raw[::-1]
+    for y, p in enumerate(rows):
+        c = R.MPL_TEXT_MUTED if p["player"] in gone else R.MPL_ACCENT
+        ax.plot([p["theta"], p["p90"]], [y, y], color=R.MPL_TEXT_MUTED, linewidth=2)
+        ax.plot([p["p90"]], [y], "o", markerfacecolor="none", markeredgecolor=R.MPL_TEXT_SEC, markersize=8)
+        ax.plot([p["theta"]], [y], "o", color=c, markersize=8)
+    ax.set_yticks(range(len(rows)))
+    ax.set_yticklabels([f"{p['player']} · {n(p['minutes'])} min" for p in rows], fontsize=9)
+    ax.set_xlim(0.4, 1.0)
+    ax.grid(axis="y", visible=False)
+    ax.set_xlabel("EP per 90: open circle measured, dot adjusted", color=R.MPL_TEXT_SEC, fontsize=10)
+    b = d["board"]
+    R.add_chart_slide(prs, "The raw top 10 *misleads*", fig, eyebrow="SHRINKAGE",
+                      caption=f"{b['raw_top10_dropped']} of the raw top 10 leave the adjusted top 10 (grey): all short "
+                              f"careers. {raw[2]['player']}'s {fx(raw[2]['p90'], 3)} over {n(raw[2]['minutes'])} minutes "
+                              f"is pulled to {fx(raw[2]['theta'], 3)}.")
+
+
+def slide_rules(prs, d):
+    cr = d["credit_rules"]
+    w = cr["weighted"]
+    rows = [["Every role a credit (old rule)", str(cr["roles"]["top10_overlap"]), fx(cr["roles"]["rank_corr"], 3),
+             cr["roles"]["leader"]],
+            ["40/35/25 split", str(w["top10_overlap"]), fx(w["rank_corr"], 3), w["leader"]]]
+    R.add_table_slide(prs, "The credit rule barely *matters*", ["RULE VS FULL CREDIT", "TOP-10 OVERLAP",
+                                                                 "RANK CORRELATION", "LEADER"],
+                      rows, eyebrow="ROBUSTNESS", col_widths=[4.4, 2.2, 2.6, 3.0],
+                      caption=f"The split favours finishers: {w['biggest_riser']['player']} {w['biggest_riser']['rank_full']} → "
+                              f"{w['biggest_riser']['rank_alt']}, {w['biggest_faller']['player']} "
+                              f"{w['biggest_faller']['rank_full']} → {w['biggest_faller']['rank_alt']}.")
+
+
+def slide_repeat(prs, d):
+    rep = d["repeatability"]
+    keys = ["inv_p90", "p90", "sca2_share", "ep_per_inv"]
+    fig, ax = R.new_chart(width=11, height=4.2)
+    rows = keys[::-1]
+    for y, k in enumerate(rows):
+        x = rep[k]
+        c = R.MPL_TEXT_MUTED if k == "ep_per_inv" else R.MPL_ACCENT
+        ax.plot([x["lo"], x["hi"]], [y, y], color=R.MPL_TEXT_SEC, linewidth=6, solid_capstyle="butt", alpha=0.6)
+        ax.plot([x["r"]], [y], "o", color=c, markersize=10)
+        ax.text(x["r"], y + 0.25, f"r = {fx(x['r'])}", ha="center", color=R.MPL_TEXT, fontsize=10)
+    ax.set_yticks(range(len(rows)))
+    ax.set_yticklabels([rep[k]["label"] for k in rows], fontsize=10)
+    ax.set_xlim(0, 1)
+    ax.set_ylim(-0.6, len(rows) - 0.4)
+    ax.grid(axis="y", visible=False)
+    ax.set_xlabel("Correlation with the next season", color=R.MPL_TEXT_SEC, fontsize=10)
+    R.add_chart_slide(prs, "Volume repeats. Decisiveness *doesn't*.", fig, eyebrow="SKILL OR NOISE",
+                      caption=f"Consecutive seasons, top 5 leagues. EP per 90: r = {fx(rep['p90']['r'])} "
+                              f"({n(rep['p90']['pairs'])} pairs); EP per involvement: {fx(rep['ep_per_inv']['r'])}. "
+                              f"Lines: 95% intervals.")
+
+
+def slide_awards(prs, d):
+    aw = d["awards"]
+    seasons = sorted({c["season_label"] for c in aw["grid"]})
+    leagues = []
+    for c in aw["grid"]:
+        if c["league"] not in leagues:
+            leagues.append(c["league"])
+
+    def cell(c):
+        last = c["pick"].split(" ")[-1]
+        if not c["winner"]:
+            return f"{last} · no award"
+        if c.get("winner_rank") is None:
+            return f"{last} · GK winner"
+        return f"{last} · won" if c["winner_rank"] == 1 else f"{last} · #{c['winner_rank']}"
+
+    rows = []
+    for lg in leagues:
+        rows.append([lg] + [cell(next(c for c in aw["grid"] if c["league"] == lg and c["season_label"] == se))
+                            for se in seasons])
+    R.add_table_slide(prs, "The model's pick vs the *award*", ["LEAGUE"] + seasons, rows, eyebrow="REALITY CHECK",
+                      col_widths=[1.9] + [1.45] * len(seasons),
+                      caption=f"Pick (surname) · won: the pick won the award · #: the actual winner's rank on the model's list. "
+                              f"{aw['exact']} of {aw['eligible_winners']} named; top 3 in {aw['top3']}; chance "
+                              f"{fx(aw['chance_exact'], 1)}; goals + assists leader {aw['ga_exact']}.")
+
+
+def slide_sca2(prs, d):
+    s2 = d["sca2"]
+    top = s2["top"][:10]
+    fig, ax = R.new_chart(width=11, height=4.4)
+    rows = top[::-1]
+    ax.barh(range(len(rows)), [p["ep_sca2"] for p in rows], color=R.MPL_SECONDARY, height=0.6, edgecolor="none")
+    for y, p in enumerate(rows):
+        ax.plot([p["ep_sca2_lo"], p["ep_sca2_hi"]], [y, y], color=R.MPL_TEXT, linewidth=1.2)
+        ax.text(p["ep_sca2_hi"] + 0.8, y, f"{fx(p['ep_sca2'], 1)} · {fx(p['share_sca2_pct'], 0)}% of his EP",
+                va="center", color=R.MPL_TEXT, fontsize=9)
+    ax.set_yticks(range(len(rows)))
+    ax.set_yticklabels([f"{p['player']} · {p['team']}" for p in rows], fontsize=9)
+    ax.set_xlim(0, 95)
+    ax.grid(axis="y", visible=False)
+    ax.set_xlabel("EP from SCA2 credits (the pass before the assist)", color=R.MPL_TEXT_SEC, fontsize=10)
+    br = top[1]
+    R.add_chart_slide(prs, "The hidden *architects*", fig, eyebrow="SCA2",
+                      caption=f"{br['player']} is second with {fx(br['ep_sca2'])} EP from SCA2 alone, but his plausible "
+                              f"rank runs from {br['rank_lo']} to {br['rank_hi']}. Roles counted separately; whiskers: 95%.")
+
+
+def slide_eff(prs, d):
+    ef = d["efficiency"]
+    rows = (ef["top"][:6] + ef["bottom"])[::-1]
+    fig, ax = R.new_chart(width=11, height=4.4)
+    ax.axvline(ef["avg"], color=R.MPL_TEXT_MUTED, linestyle=(0, (4, 4)), linewidth=1)
+    n_bottom = len(ef["bottom"])
+    for y, p in enumerate(rows):
+        c = R.MPL_TEXT_SEC if y < n_bottom else R.MPL_ACCENT
+        ax.plot([p["lo"], p["hi"]], [y, y], color=c, linewidth=3, solid_capstyle="butt", alpha=0.7)
+        ax.plot([p["ep_per_inv"]], [y], "o", color=c, markersize=7)
+    ax.set_yticks(range(len(rows)))
+    ax.set_yticklabels([f"{p['player']} · {p['team']}" for p in rows], fontsize=9)
+    ax.set_xlim(0.3, 1.1)
+    ax.grid(axis="y", visible=False)
+    ax.set_xlabel("EP per involvement (dashed: the average credit)", color=R.MPL_TEXT_SEC, fontsize=10)
+    R.add_chart_slide(prs, "Decisive goals describe the *team*", fig, eyebrow="EP PER INVOLVEMENT",
+                      caption=f"Average credit {fx(ef['avg'], 3)} EP. {ef['above']} players clearly above, {ef['below']} "
+                              f"below (chance: ~{ef['chance_each_side']} each). The lowest all played for "
+                              f"{', '.join(ef['bottom_teams'][:-1])} or {ef['bottom_teams'][-1]}.")
+
+
+def slide_positions(prs, d):
+    pos = d["positions"]
+    rows = []
+    for i in range(5):
+        row = [str(i + 1)]
+        for p in ("FW", "MF", "DF"):
+            x = pos[p][i]
+            row += [x["player"], fx(x["theta"], 3)]
+        rows.append(row)
+    b = d["board"]
+    R.add_table_slide(prs, "Best by *position*", ["#", "FORWARD", "ADJ.", "MIDFIELDER", "ADJ.", "DEFENDER", "ADJ."],
+                      rows, eyebrow="POSITIONS", col_widths=[0.5, 2.7, 1.0, 2.7, 1.0, 2.7, 1.0],
+                      caption=f"Each pulled toward its own position's average (forwards {fx(b['priors']['FW']['mu'], 3)}, "
+                              f"midfielders {fx(b['priors']['MF']['mu'], 3)}, defenders {fx(b['priors']['DF']['mu'], 3)}). "
+                              f"Goalkeepers left out: best {fx(b['gk_max_theta'], 3)}.")
+
+
+def slide_young(prs, d):
+    y = d["young"]
+    rows = [[str(i + 1), p["player"], p["team"], str(int(p["age_end"])), n(p["minutes"]), fx(p["p90"], 3),
+             fx(p["theta"], 3), str(p["rank"])] for i, p in enumerate(y["rows"][:8])]
+    R.add_table_slide(prs, "Young players to *watch*", ["#", "PLAYER", "TEAM", "AGE", "MINUTES", "MEASURED", "ADJUSTED",
+                                                        "OVERALL RANK"],
+                      rows, eyebrow="23 OR UNDER", col_widths=[0.5, 2.8, 2.0, 0.9, 1.4, 1.5, 1.5, 1.8],
+                      caption=f"Aged {y['max_age']} or under on 30 June 2024 (end of the data), {n(d['board']['min_minutes'])}+ "
+                              f"minutes: {n(y['eligible'])} players. Short careers are pulled hardest.")
+
+
+def slide_takeaways(prs, d):
+    R.add_takeaways_slide(prs, d["takeaways"], show_basis=True)
 
 
 def slide_limitations(prs, d):
+    q = d["quality"]
     R.add_bullet_slide(
-        prs,
-        "What this *isn't*",
+        prs, "What this *can't* tell you",
         bullets=[
-            "Not xG-weighted; penalties not separated; own goals missing from the shot data (inherited from project 02).",
-            "Credit caps at SCA2: build-up beyond the pre-assist isn't captured.",
-            "Per-90 boards exclude Eredivisie: the minutes source covers the top five leagues only.",
-            "No opinion on goalkeepers: the three credited touchpoints are ones GKs rarely occupy.",
-            "Observational, not causal: EP is the gap between states a goal connects, not its counterfactual effect.",
+            "Prices, not causes: a goal's value says how much it mattered, not how hard it was.",
+            "Three roles only: defending, pressing and off-ball runs earn nothing; keepers and defenders are undervalued.",
+            "No team or league adjustment: players at high-scoring clubs get more involvements.",
+            f"SCA2 missing for {fx(q['sca2_missing_pct'], 1)}% of goals; the data end in {q['last_season']} (source discontinued).",
+            "A normal prior pulls true outliers in too hard; plausible ranks ignore shared price uncertainty.",
         ],
         eyebrow="LIMITATIONS",
-        caption="Full discussion: methodology.html · §5",
     )
 
 
-def slide_contact(prs, d):
+def slide_conclusion(prs, d):
+    t = d["board"]["top"]
+    sl = R.add_blank_slide(prs)
+    R.add_section_header(sl, "CONCLUSION", "What this *changes*")
+    tb = R.textbox(sl, R.BODY_LEFT, R.BODY_TOP, R.BODY_MAX_W, 1.0)
+    p = tb.text_frame.paragraphs[0]
+    R.add_run(p, "Two certainties. ", font=R.SERIF, size=32, color=R.TEXT)
+    R.add_run(p, "Then a shortlist.", font=R.SERIF, size=32, color=R.ACCENT, italic=True)
+    R.add_text(sl, R.BODY_LEFT, R.BODY_TOP + 1.2, R.BODY_MAX_W, 2.2,
+               f"{t[0]['player']} and {t[1]['player']} are clear of everyone at {fx(t[0]['theta'])} and "
+               f"{fx(t[1]['theta'])} EP per 90. Below them, ranks are ranges. Short careers inflate raw per-90s, the "
+               "volume of a player's involvement repeats while the decisiveness of his goals does not, and award "
+               "voters follow the box score. For a club, the useful number is the adjusted rate with its plausible rank.",
+               font=R.SANS, size=15, color=R.TEXT_SECONDARY)
+
+
+def slide_sources(prs, d):
     R.add_closing_slide(
-        prs,
-        headline="Every player, every league, every season.",
-        url="renball.com",
+        prs, headline="Thanks for reading.", url="renball.com",
         project_path="/projects/03-true-contributors/",
-        lines=[
-            "→ analysis.html        editorial write-up · Chart.js + custom SVG visuals",
-            "→ dashboard.html       interactive Tabulator dashboard · 7 datasets · drill-down",
-            "→ methodology.html     three-layer attribution · seven questions · nine limitations",
-            "→ code/build.py        Python pipeline: project 02 framework + SCA2 enrichment",
-        ],
+        lines=["→ methodology      the shrinkage, the rank intervals, the award check",
+               "→ dashboard        every player and player-season, with intervals",
+               "→ code/            players.py · shrink.py · build.py"],
     )
 
 
-# ════════════════════════════════════════════════════════════════════════
-# Main
-# ════════════════════════════════════════════════════════════════════════
 def main() -> None:
-    with open(DATA_JSON, encoding="utf-8") as f:
-        d = json.load(f)
-
+    d = json.loads(DATA_JSON.read_text(encoding="utf-8"))
     prs = R.create_deck()
-    slide_title(prs, d)            # 1
-    slide_tldr(prs, d)             # 2
-    slide_question(prs, d)         # 3
-    slide_data_method(prs, d)      # 4
-    slide_q1a(prs, d)              # 5
-    slide_q1b_robustness(prs, d)   # 6
-    slide_q2_mvps(prs, d)          # 7
-    slide_q3_late(prs, d)          # 8
-    slide_q5_positions(prs, d)     # 9
-    slide_q6_architects(prs, d)    # 10
-    slide_brandt_spotlight(prs, d) # 11
-    slide_q7_young(prs, d)         # 12
-    slide_implications(prs, d)     # 13
-    slide_limitations(prs, d)      # 14
-    slide_contact(prs, d)          # 15
+    for fn in (slide_title, slide_tldr, slide_framework, slide_data, slide_method, slide_board_chart,
+               slide_board_table, slide_raw, slide_rules, slide_repeat, slide_awards, slide_sca2, slide_eff,
+               slide_positions, slide_young, slide_takeaways, slide_limitations, slide_conclusion, slide_sources):
+        fn(prs, d)
     R.finalize_deck(prs)
-
     prs.save(OUTPUT_PPTX)
-    size_kb = OUTPUT_PPTX.stat().st_size / 1024
-    print(f"[OK] Wrote {OUTPUT_PPTX.relative_to(PROJECT_DIR)} "
-          f"({size_kb:.1f} KB, {len(prs.slides)} slides)")
+    print(f"[OK] Wrote {OUTPUT_PPTX.relative_to(PROJECT_DIR)} ({OUTPUT_PPTX.stat().st_size / 1024:.1f} KB, "
+          f"{len(prs.slides)} slides)")
 
 
 if __name__ == "__main__":

@@ -1,37 +1,38 @@
 # The True Contributors: Who Actually Moves the Table?
 
-Applies project 02's expected-points (EP) value model to discover and rank
-players whose true contribution diverges from their box-score reputation.
-Scorer, assist-creator (SCA1) and pre-assist-creator (SCA2) all credited.
+Every goal in the top 5 leagues from 2017-18 to 2023-24 priced by the expected
+points it added (Project 02's team-minute model, unchanged) and credited to
+the scorer, SCA1 and SCA2, once per player per goal. EP per 90 is pulled
+toward each position's average by empirical Bayes; every rank carries a
+plausible range.
 
 ## Files
 
-- `analysis.html` — Editorial dashboard (live on website).
-- `dashboard.html` — Full Tabulator drill-down across all 7 ranking datasets (lazy-loaded from `data/dashboard/`).
-- `slides.pdf` — Presentation slideshow.
-- `methodology.html` — Technical write-up, styled in Renball design tokens (generated from `methodology.md`).
-- `code/build.py` — Orchestrator. Runs project 02's pipeline + this project's enrichments.
-- `code/enrich.py` — Player metadata loaders, SCA2 + three-layer merge, Q1...Q7 rankings.
-- `data/data.json` — Editorial payload consumed by `analysis.html`.
-- `data/dashboard/manifest.json` + `data/dashboard/<dataset>/<view>.json` — Per-view JSONs for the full dashboard.
-- `data/static/actual_mvps.json` — **Manually curated** lookup of real-world POTY winners (annotations on Q2 grid).
-- `config.json` — Card metadata (mirrored in repo-root `projects.json`).
+- `analysis.html` — editorial page (live on the website).
+- `dashboard.html` — Tabulator drill-down: players, player-seasons, award check, SCA2 board, decisive goals (lazy-loaded from `data/dashboard/`).
+- `methodology.md` → `methodology.html` / `methodology.pdf` — full method and results.
+- `slides.pptx` → `slides.pdf` — the deck.
+- `code/build.py` — orchestrator: Project 02's extraction and value model → credits → boards → `data/data.json` + dashboard files.
+- `code/players.py` — identity (name + birth date), credit tables, positions, bootstrap of player rates.
+- `code/shrink.py` — empirical Bayes rates, rank intervals, repeatability.
+- `code/build_slides.py`, `code/build_pdfs.py`, `code/build_social.py`, `code/verify.py` — deck, PDFs, X images + validation, numbers check.
+- `data/static/actual_mvps.json` — actual player-of-the-season winners per league and season, each with its source URL.
 
-## Rebuilding the data
+## Rebuilding
 
 ```bash
-python code/build.py
+python code/build.py        # ~3 min warm (Project 02's extraction cache), bootstrap cached in data/.cache/
+python code/build_slides.py
+python code/build_pdfs.py
+python code/build_social.py
+python code/verify.py
 ```
 
-Requires:
-- `RENBALL_MATCH_DATA_PATH` -> per-league match-event pickles (project 02's source).
-- `RENBALL_DATA_PATH` -> `READY_DATA/` folder with `FULL_DICT_ROWS.pkl` (for minutes / position / age enrichment).
+Requires `RENBALL_MATCH_DATA_PATH` (per-league match pickles, Project 02's source). The build stops if the goal prices it recomputes differ from Project 02's published `data.json`.
 
-Defaults match CK's local layout (see `code/build.py`); never hardcode user-specific paths.
+## Scope
 
-## Scope caveat
-
-The seven research questions span six leagues (Premier League, La Liga, Serie A, Bundesliga, Ligue 1, Eredivisie) and all available seasons. **Per-90 calculations** (Q1a, Q1b, Q2, Q5, Q6 per-90, Q7) are **Top-5 only** because `FULL_DICT_ROWS.pkl` doesn't cover Eredivisie minutes. Absolute-EP boards (Q3, Q4, Q6 absolute) include all six leagues. Every dashboard view carries `scope` + `scope_note` metadata to make this explicit.
+Top 5 leagues only (the Eredivisie, used by Project 02's value model, is left out of the boards so every player is compared within the leagues the award check covers). The data end in 2023-24: the SCA2 data end there because the source discontinued them.
 
 ## Live on
 

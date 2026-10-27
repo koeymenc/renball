@@ -8,9 +8,9 @@ For every match in match_data_final_<league>.pkl this extracts
                score rebuilt from the shot table, load status
   goals        one row per goal in the shot table: minute, side, running score,
                scorer / SCA1 / SCA2 (cleaned names)
-  apps         one row per player per match: team side, minutes, birth date
-               (match date minus FBref's "years-days" age) — the identity key
-               that separates namesakes
+  apps         one row per player per match: team side, minutes, position,
+               birth date (match date minus FBref's "years-days" age) — the
+               identity key that separates namesakes
 
 The shot table has no own goals, so a match whose rebuilt score falls short
 of the official score is flagged (`og_affected`): its running score is wrong
@@ -35,7 +35,7 @@ import pandas as pd
 from config import DATA_DIR
 from extraction import _clean_player_name, _normalize_cols, _parse_minute, _pick_col, _pick_exact, assign_bin
 
-EXTRACT_VERSION = 3
+EXTRACT_VERSION = 4
 CACHE_DIR = Path(__file__).resolve().parents[1] / "data" / ".cache"
 
 LEAGUE_LABELS = {
@@ -136,7 +136,7 @@ def extract_match(league: str, season: str, mkey: str, mobj) -> tuple[dict, list
                 for s in tc[sc].dropna().astype(str).unique():
                     side_of.setdefault(s, side)
 
-    # appearances: minutes + birth date per player, by side
+    # appearances: minutes, position + birth date per player, by side
     apps = []
     sums = _summary_tables(mobj)
     born_by_side: dict[str, dict[str, date | None]] = {"home": {}, "away": {}}
@@ -147,18 +147,21 @@ def extract_match(league: str, season: str, mkey: str, mobj) -> tuple[dict, list
         pc = _pick_col(sdf.columns, "__Player", prefer_prefix="unnamed")
         ac = _pick_col(sdf.columns, "__Age", prefer_prefix="unnamed")
         mc = _pick_col(sdf.columns, "__Min", prefer_prefix="unnamed")
+        poc = _pick_col(sdf.columns, "__Pos", prefer_prefix="unnamed")
         if pc is None:
             continue
         players = sdf[pc].map(_clean_player_name)
         mins = pd.to_numeric(sdf[mc], errors="coerce").fillna(0) if mc else pd.Series(0, index=sdf.index)
         ages = sdf[ac] if ac else pd.Series(None, index=sdf.index)
-        for p, mn, ag in zip(players, mins, ages):
+        poss = sdf[poc] if poc else pd.Series(None, index=sdf.index)
+        for p, mn, ag, po in zip(players, mins, ages, poss):
             if not isinstance(p, str) or p.lower().endswith(" players"):      # FBref's "16 Players" total row
                 continue
             b = _birth(day, ag)
             born_by_side[side][p] = b
             apps.append({"match_id": mid, "side": side, "team": home if side == "home" else away,
-                         "player": p, "born": b.isoformat() if b else None, "minutes": int(mn)})
+                         "player": p, "born": b.isoformat() if b else None, "minutes": int(mn),
+                         "pos": str(po).strip() if isinstance(po, str) and po.strip() else None})
 
     dfx = _normalize_cols(df)
     minute_col = _pick_col(dfx.columns, "__Minute", prefer_prefix="unnamed")

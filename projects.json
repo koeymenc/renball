@@ -4,10 +4,16 @@
     "title": "Should the Fouled Player Take the Penalty Himself?",
     "date": "May 2026",
     "type": "HTML + PDF",
-    "tags": ["Top 5 Leagues", "Penalties", "One-Tailed Z-Test"],
-    "filter": ["tactical", "set-pieces"],
-    "excerpt": "A player gets fouled by the GK and walks straight to the spot. Should he? Theory says no: jarred, agitated, while the keeper is locked in. A one-tailed z-test on 79 treatment penalties vs 3,456 controls in the top 5 European leagues.",
-    "finding": "When the fouled player takes the penalty himself, conversion drops 3.0 pp (75.95% vs 78.96%), but with only 79 such cases the data can't yet say 'hand it to someone else' (p = 0.26, one-tailed).",
+    "tags": [
+      "Top 5 Leagues",
+      "Penalties",
+      "Hypothesis Test"
+    ],
+    "filter": [
+      "set-pieces"
+    ],
+    "excerpt": "A player gets fouled by the keeper and walks straight to the spot. Should he? Theory says no: he's jarred and wound up while the keeper is locked in. We tested it on 79 such penalties against 3,456 others in Europe's top 5 leagues.",
+    "finding": "When the fouled player takes the penalty himself, 75.95% go in against 78.96% for everyone else: 3 points lower, but with only 79 such kicks the data can't yet say 'hand it to someone else'.",
     "has_html": true,
     "has_pdf": true,
     "has_methodology": true
@@ -16,9 +22,18 @@
     "folder": "02-points-by-gamestate",
     "title": "Not All Goals Are Equal: A Time-Aware Expected-Points Model",
     "date": "May 2026",
-    "type": "HTML + Dashboard + Methodology",
-    "tags": ["Top 5 Leagues + Eredivisie", "Expected Points", "Player Rating", "Time-Aware", "39,403 Goals"],
-    "filter": ["modelling", "player-rating"],
+    "type": "HTML + Dashboard + PDF",
+    "tags": [
+      "Top 5 Leagues + Eredivisie",
+      "Expected Points",
+      "Player Rating",
+      "Time-Aware",
+      "39,403 Goals"
+    ],
+    "filter": [
+      "game-state",
+      "expected-points"
+    ],
     "excerpt": "A goal from 0–0 to 1–0 in the fifth minute and the same goal in the eighty-fifth are not the same thing. Expected points prices every goal by the scoreline it changes and the minute it lands, estimated from every minute of 13,206 matches in six top-flight leagues.",
     "finding": "A go-ahead goal from level is worth 2.05× as much in the last 15 minutes as in the first, in every league and in seasons the model never saw. No player's timing stands out from chance.",
     "has_html": true,
@@ -31,10 +46,18 @@
     "title": "The True Contributors: Who Actually Moves the Table?",
     "date": "May 2026",
     "type": "HTML + Dashboard + PDF",
-    "tags": ["Top 5 Leagues + Eredivisie", "Player Value", "EP Model"],
-    "filter": ["players", "value-model", "rankings"],
-    "excerpt": "Applies the expected-points value model from project 02 to rank players whose true contribution diverges from their box-score reputation. Scorer, assist-creator and pre-assist-creator all credited.",
-    "finding": "Julian Brandt creates more pre-assist value than any player in Europe except Lionel Messi: 40.93 EP from SCA2 alone, 39% of his total contribution.",
+    "tags": [
+      "Top 5 Leagues",
+      "Player Value",
+      "Rankings with Intervals",
+      "34,054 Goals"
+    ],
+    "filter": [
+      "player-value",
+      "expected-points"
+    ],
+    "excerpt": "Every goal priced by the points it was worth and shared with the scorer, the assister and the pass before. Who adds the most per 90 once luck and short careers are allowed for, and how sure can anyone be?",
+    "finding": "Lionel Messi and Kylian Mbappé are the only players sure to rank in the top 10 for expected points added per 90 (0.81 and 0.77). Behind them nothing is settled: the number 3, Neymar, could plausibly rank anywhere from 1 to 34.",
     "has_html": true,
     "has_pdf": true,
     "has_methodology": true,

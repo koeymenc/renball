@@ -3,10 +3,18 @@
   "title": "The True Contributors: Who Actually Moves the Table?",
   "date": "May 2026",
   "type": "HTML + Dashboard + PDF",
-  "tags": ["Top 5 Leagues + Eredivisie", "Player Value", "EP Model"],
-  "filter": ["players", "value-model", "rankings"],
-  "excerpt": "Applies the expected-points value model from project 02 to rank players whose true contribution diverges from their box-score reputation. Scorer, assist-creator and pre-assist-creator all credited.",
-  "finding": "Julian Brandt creates more pre-assist value than any player in Europe except Lionel Messi: 40.93 EP from SCA2 alone, 39% of his total contribution.",
+  "tags": [
+    "Top 5 Leagues",
+    "Player Value",
+    "Rankings with Intervals",
+    "34,054 Goals"
+  ],
+  "filter": [
+    "player-value",
+    "expected-points"
+  ],
+  "excerpt": "Every goal priced by the points it was worth and shared with the scorer, the assister and the pass before. Who adds the most per 90 once luck and short careers are allowed for, and how sure can anyone be?",
+  "finding": "Lionel Messi and Kylian Mbappé are the only players sure to rank in the top 10 for expected points added per 90 (0.81 and 0.77). Behind them nothing is settled: the number 3, Neymar, could plausibly rank anywhere from 1 to 34.",
   "has_html": true,
   "has_pdf": true,
   "has_methodology": true,

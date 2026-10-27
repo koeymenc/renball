@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The True Contributors · Dashboard · Renball</title>
-<meta name="description" content="Full interactive dashboard for the True Contributors project: every player, every ranking, every league, every season.">
+<meta name="description" content="Interactive dashboard for The True Contributors: every player's expected points per 90 with intervals, every player-season, the award check, the SCA2 board and decisive goals.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -49,7 +49,7 @@
     padding: 1.1rem 1.25rem; background: var(--bg-card);
     border: 1px solid var(--border); margin-bottom: 1rem;
   }
-  .tb-group { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+  .tb-group { display: flex; flex-direction: column; gap: 0.3rem; }
   .tb-label {
     font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em;
     text-transform: uppercase; color: var(--text-muted);
@@ -59,13 +59,21 @@
     font-family: var(--mono); font-size: 0.78rem;
     background: var(--bg); color: var(--text);
     border: 1px solid var(--border); padding: 0.45rem 0.7rem;
-    min-width: 220px; transition: border-color 0.15s;
+    min-width: 180px; transition: border-color 0.15s;
   }
   .toolbar select:focus,
   .toolbar input[type="text"]:focus {
     outline: none; border-color: var(--accent-dim);
   }
   .toolbar select option { background: var(--bg); color: var(--text); }
+
+  .tb-toggles { display: flex; gap: 1rem; align-items: center; }
+  .tb-toggle {
+    display: flex; align-items: center; gap: 0.45rem;
+    font-family: var(--mono); font-size: 0.7rem; color: var(--text-secondary);
+    letter-spacing: 0.04em; cursor: pointer; user-select: none;
+  }
+  .tb-toggle input[type="checkbox"] { accent-color: var(--accent); }
 
   .tb-buttons { display: flex; gap: 0.5rem; margin-left: auto; align-items: flex-end; }
   .tb-btn {
@@ -100,19 +108,14 @@
   .table-meta {
     display: flex; gap: 1.5rem; padding: 0.65rem 0;
     font-family: var(--mono); font-size: 0.7rem; color: var(--text-muted);
-    letter-spacing: 0.04em; flex-wrap: wrap;
+    letter-spacing: 0.04em;
   }
   .table-meta strong { color: var(--text-secondary); font-weight: 500; }
-  .table-meta .scope {
-    color: var(--accent-dim); border-left: 2px solid var(--accent-dim);
-    padding-left: 0.6rem;
-  }
 
   #table-title {
     font-family: var(--serif); font-size: 1.25rem; color: var(--text);
     margin: 0.4rem 0 0.75rem; letter-spacing: -0.005em;
   }
-  #table-title em { font-style: italic; color: var(--accent); }
   #table-title .rowcount {
     font-family: var(--mono); font-size: 0.75rem; color: var(--text-muted);
     margin-left: 0.5rem; letter-spacing: 0.06em;
@@ -185,11 +188,9 @@
     font-variant-numeric: tabular-nums;
   }
   .tabulator .tabulator-cell[tabulator-field="player"],
-  .tabulator .tabulator-cell[tabulator-field="primary_team"] {
+  .tabulator .tabulator-cell[tabulator-field="pick"],
+  .tabulator .tabulator-cell[tabulator-field="winner"] {
     color: var(--text); font-weight: 500;
-  }
-  .tabulator .tabulator-cell[tabulator-field="rank"] {
-    color: var(--text-muted); font-family: var(--mono);
   }
 
   .tabulator .tabulator-footer {
@@ -221,6 +222,20 @@
   }
   .tabulator .tabulator-footer .tabulator-paginator label { color: var(--text-muted); }
 
+  /* ─── Intro + per-dataset help ─── */
+  .dash-intro {
+    max-width: 900px; margin: 0 0 1.5rem; color: var(--text-secondary);
+    font-size: 0.9rem; line-height: 1.65;
+  }
+  .dash-intro p { margin-bottom: 0.6rem; }
+  .dash-intro strong { color: var(--text); font-weight: 500; }
+  .ds-help {
+    font-family: var(--mono); font-size: 0.72rem; color: var(--text-secondary);
+    line-height: 1.6; letter-spacing: 0.02em; padding: 0.7rem 1rem; margin-bottom: 0.75rem;
+    border-left: 2px solid var(--accent-dim); background: var(--accent-glow);
+  }
+  .ds-help strong { color: var(--accent); font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; }
+
   /* ─── Tips footer ─── */
   .tips {
     margin-top: 1rem; font-family: var(--mono); font-size: 0.7rem;
@@ -230,76 +245,6 @@
   .tips code {
     color: var(--accent); background: var(--accent-glow);
     padding: 0.05em 0.3em;
-  }
-
-  /* ─── Help: dismissible intro panel ─── */
-  .help-panel {
-    position: relative; background: var(--bg-card);
-    border: 1px solid var(--accent-dim); border-left: 3px solid var(--accent);
-    padding: 1.1rem 1.3rem; margin-bottom: 1rem;
-  }
-  .help-panel.hidden { display: none; }
-  .help-panel h3 {
-    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em;
-    text-transform: uppercase; color: var(--accent); margin-bottom: 0.7rem;
-  }
-  .help-panel ul {
-    list-style: none; display: grid; grid-template-columns: 1fr 1fr;
-    gap: 0.4rem 1.6rem; font-family: var(--sans); font-size: 0.8rem;
-    color: var(--text-secondary); line-height: 1.5;
-  }
-  .help-panel li { padding-left: 1rem; position: relative; }
-  .help-panel li::before { content: '→'; position: absolute; left: 0; color: var(--accent-dim); }
-  .help-panel li strong { color: var(--text); font-weight: 500; }
-  .help-panel code {
-    font-family: var(--mono); color: var(--accent); background: var(--accent-glow); padding: 0.05em 0.3em;
-  }
-  .help-panel .dismiss {
-    position: absolute; top: 0.8rem; right: 0.9rem;
-    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase;
-    background: transparent; color: var(--text-muted); border: 1px solid var(--border);
-    padding: 0.3rem 0.65rem; cursor: pointer; transition: all 0.15s;
-  }
-  .help-panel .dismiss:hover { color: var(--accent); border-color: var(--accent-dim); }
-
-  /* ─── Help: per-dataset "how to read this" toggle ─── */
-  details.how-to-read {
-    background: var(--bg-elevated); border: 1px solid var(--border); margin: 0.25rem 0 0.5rem;
-  }
-  details.how-to-read summary {
-    cursor: pointer; list-style: none; padding: 0.55rem 0.8rem;
-    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.08em;
-    text-transform: uppercase; color: var(--text-secondary); user-select: none;
-  }
-  details.how-to-read summary::-webkit-details-marker { display: none; }
-  details.how-to-read summary::before { content: '▸ '; color: var(--accent); }
-  details.how-to-read[open] summary::before { content: '▾ '; }
-  details.how-to-read summary:hover { color: var(--accent); }
-  details.how-to-read .htr-body {
-    padding: 0 0.85rem 0.8rem; font-family: var(--sans); font-size: 0.82rem;
-    color: var(--text-secondary); line-height: 1.6; max-width: 820px;
-  }
-
-  @media (max-width: 768px) { .help-panel ul { grid-template-columns: 1fr; } }
-
-  /* ─── Coming-soon empty state ─── */
-  .coming-soon-card {
-    background: var(--bg-card); border: 1px dashed var(--border-light);
-    padding: 3rem 2rem; text-align: center; margin: 1rem 0;
-  }
-  .coming-soon-card .badge {
-    display: inline-block; font-family: var(--mono); font-size: 0.62rem;
-    letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent);
-    border: 1px solid var(--accent-dim); padding: 0.35rem 0.75rem;
-    margin-bottom: 1rem;
-  }
-  .coming-soon-card h3 {
-    font-family: var(--serif); font-size: 1.6rem; color: var(--text);
-    letter-spacing: -0.01em; margin-bottom: 0.6rem;
-  }
-  .coming-soon-card p {
-    font-family: var(--sans); color: var(--text-secondary); font-size: 0.9rem;
-    line-height: 1.7; max-width: 540px; margin: 0 auto;
   }
 
   /* ─── Empty / error states ─── */
@@ -322,39 +267,45 @@
 <a href="analysis.html" class="back-link">← Back to research write-up</a>
 
 <header class="dash-header">
-  <div class="renball-mark"><span>ren</span><span class="ball">·ball</span><span class="sep">DASHBOARD · PROJECT 03</span></div>
+  <div class="renball-mark"><span>ren</span><span class="ball">ball</span><span class="sep">DASHBOARD · PROJECT 03</span></div>
   <h1 class="dash-title">The True <em>Contributors</em>.</h1>
   <div class="dash-subtitle">
-    Seven ranking datasets · Six leagues · Seven seasons · 39,381 goals · Three-layer credit (scorer + SCA1 + SCA2) ·
-    <a href="analysis.html">read the editorial &nearr;</a>
+    Expected points per 90 with intervals · Top 5 leagues · Five datasets ·
+    <a href="analysis.html">read the editorial &nearr;</a> · <a href="methodology.html">methodology &nearr;</a>
   </div>
 </header>
 
-<!-- ── Help: how-to-use panel (dismissible, remembers via localStorage) ── -->
-<div class="help-panel" id="helpPanel">
-  <button class="dismiss" id="helpDismiss">Got it, hide this</button>
-  <h3>How to use this dashboard</h3>
-  <ul>
-    <li><strong>Switch datasets</strong> with the two dropdowns: pick a ranking dataset, then a view within it.</li>
-    <li><strong>Understand each dataset</strong> via the "How to read this" toggle just above the table.</li>
-    <li><strong>Filter columns</strong> by typing in the header inputs. Numbers accept <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>, <code>=</code>, <code>!=</code>, e.g. <code>&gt;0.8</code>.</li>
-    <li><strong>Search</strong> any cell with the search box; <strong>sort</strong> by clicking a column header.</li>
-    <li><strong>Export</strong> the current view with the <strong>XLSX</strong> or <strong>CSV</strong> button.</li>
-    <li><strong>Hover a column header</strong> for a plain-language definition of that metric.</li>
-  </ul>
+<div class="dash-intro">
+  <p><strong>What's here.</strong> Every goal in the top 5 leagues from 2017-18 to 2023-24 is priced by what it was worth
+  to the team that scored it (Project 02's expected-points model) and credited to the players involved: the scorer,
+  SCA1 (the action right before the shot) and SCA2 (the action before that), once per player per goal. A player's
+  expected points (EP) per 90 is that value over his minutes.</p>
+  <p><strong>How to use it.</strong> Pick a dataset; filter any column (<code>&gt;0.5</code>, <code>&lt;=10</code>) or search
+  a name. Hover a column header for what it means. <code>p90</code> is the rate as measured, with its 95% bootstrap range
+  (<code>p90_lo</code> / <code>p90_hi</code>); <code>theta</code> is the rate pulled toward the position average, more for
+  players with few minutes, and is what the rankings use. Sort by <code>theta</code>, not <code>p90</code>, to avoid
+  short-career flukes.</p>
 </div>
 
 <!-- ── Toolbar ── -->
 <div class="toolbar">
   <div class="tb-group">
-    <label class="tb-label" for="datasetSel">Ranking dataset</label>
+    <label class="tb-label" for="datasetSel">Dataset</label>
     <select id="datasetSel"></select>
   </div>
   <div class="tb-group">
     <label class="tb-label" for="viewSel">View</label>
     <select id="viewSel"></select>
   </div>
-  <div class="tb-group" style="min-width: 240px;">
+  <div class="tb-group" id="keyWrap" style="display: none;">
+    <label class="tb-label" id="keyLabel" for="keySel">League</label>
+    <select id="keySel"></select>
+  </div>
+  <div class="tb-group" id="seasonWrap" style="display: none;">
+    <label class="tb-label" for="seasonSel">Season</label>
+    <select id="seasonSel"></select>
+  </div>
+  <div class="tb-group" style="min-width: 220px;">
     <label class="tb-label" for="searchBox">Search rows</label>
     <input id="searchBox" type="text" placeholder="type to filter any cell…" />
   </div>
@@ -368,44 +319,40 @@
 
 <div class="table-meta">
   <span>Generated: <strong id="genAt">…</strong></span>
-  <span>Files cached: <strong id="filesLoaded">0</strong> / 9</span>
-  <span class="scope" id="scopeNote">…</span>
+  <span>Datasets loaded: <strong id="datasetsLoaded">0</strong></span>
 </div>
 
-<details class="how-to-read" id="howToRead">
-  <summary>How to read this</summary>
-  <div class="htr-body" id="howToReadBody"></div>
-</details>
-
-<div id="table-title"><span id="title-text">…</span><span class="rowcount" id="rowcount"></span></div>
-<div id="table-host">
-  <div id="table"></div>
-  <div id="empty-state" style="display:none;"></div>
-</div>
+<div class="ds-help" id="dsHelp"></div>
+<div id="table-title">…<span class="rowcount" id="rowcount"></span></div>
+<div id="table"></div>
 
 <div class="tips">
   <strong>Column filters</strong> support numeric operators: <code>&gt;</code>, <code>&gt;=</code>,
   <code>&lt;</code>, <code>&lt;=</code>, <code>=</code>, <code>!=</code>. Try
-  <code>&gt;0.8</code>, <code>&lt;=20</code>. Click headers to sort. Hover for column explanations.
-  Each ranking dataset loads on first access and is cached in memory for the session.
+  <code>&gt;900</code>, <code>&lt;=0.7</code>. Click headers to sort. Hover for column explanations.
 </div>
 
 <script>
 (async function () {
   // ════════════════════════════════════════════════════════════════
-  // Constants + DOM refs
+  // State
   // ════════════════════════════════════════════════════════════════
   const MANIFEST_URL = 'data/dashboard/manifest.json';
   const DATA_ROOT    = 'data/dashboard/';
 
   let MANIFEST = null;
-  const fileCache = new Map();   // filename -> parsed JSON
+  const cache = new Map();   // file path -> decoded view container
   let table = null;
   let loadingCount = 0;
 
   const $ = (id) => document.getElementById(id);
   const datasetSel = $('datasetSel');
   const viewSel    = $('viewSel');
+  const keySel     = $('keySel');
+  const seasonSel  = $('seasonSel');
+  const keyWrap    = $('keyWrap');
+  const seasonWrap = $('seasonWrap');
+  const keyLabel   = $('keyLabel');
   const searchBox  = $('searchBox');
   const loader     = $('loader');
 
@@ -413,7 +360,105 @@
   function hideLoading() { loadingCount = Math.max(0, loadingCount - 1); if (!loadingCount) loader.classList.remove('visible'); }
 
   // ════════════════════════════════════════════════════════════════
-  // Smart filter (>X, <Y, =Z, !=, etc.)
+  // Sparse decoder: g.X.Y -> cnt_X_to_Y, b.X -> cnt_bin_X, e.X -> ep_bin_X
+  // ════════════════════════════════════════════════════════════════
+  function expandKey(k, scheme) {
+    if (k.startsWith(scheme.cnt_gd_prefix)) {
+      const body = k.slice(scheme.cnt_gd_prefix.length);
+      const i = body.lastIndexOf('.');
+      if (i > 0) return `cnt_${body.slice(0, i)}_to_${body.slice(i + 1)}`;
+    }
+    if (k.startsWith(scheme.cnt_bin_prefix)) return 'cnt_bin_' + k.slice(scheme.cnt_bin_prefix.length);
+    if (k.startsWith(scheme.ep_bin_prefix))  return 'ep_bin_'  + k.slice(scheme.ep_bin_prefix.length);
+    return k;
+  }
+
+  function decodeRecord(row, isContrib, scheme) {
+    if (!isContrib) return row;
+    const out = {};
+    for (const k in row) out[expandKey(k, scheme)] = row[k];
+    return out;
+  }
+
+  function decodeRecords(records, isContrib, scheme) {
+    return records.map(r => decodeRecord(r, isContrib, scheme));
+  }
+
+  function decodeView(view, isContrib) {
+    const scheme = MANIFEST.key_scheme;
+    if (Array.isArray(view)) {
+      return decodeRecords(view, isContrib, scheme);
+    }
+    if (view && typeof view === 'object') {
+      const out = {};
+      for (const k in view) {
+        const v = view[k];
+        if (Array.isArray(v)) out[k] = decodeRecords(v, isContrib, scheme);
+        else if (v && typeof v === 'object') {
+          const inner = {};
+          for (const k2 in v) {
+            const v2 = v[k2];
+            inner[k2] = Array.isArray(v2) ? decodeRecords(v2, isContrib, scheme) : v2;
+          }
+          out[k] = inner;
+        } else out[k] = v;
+      }
+      return out;
+    }
+    return view;
+  }
+
+  // ════════════════════════════════════════════════════════════════
+  // Lazy fetch (with in-memory cache)
+  // ════════════════════════════════════════════════════════════════
+  async function loadView(dsName, vwName) {
+    const entry = MANIFEST.datasets[dsName].views[vwName];
+    const path = DATA_ROOT + entry.file;
+    if (cache.has(path)) return cache.get(path);
+
+    showLoading();
+    try {
+      const raw = await fetch(path).then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status} on ${entry.file}`);
+        return r.json();
+      });
+      const isContrib = MANIFEST.datasets[dsName].contributor;
+      const decoded = decodeView(raw, isContrib);
+      cache.set(path, decoded);
+      $('datasetsLoaded').textContent = cache.size;
+      return decoded;
+    } finally {
+      hideLoading();
+    }
+  }
+
+  // ════════════════════════════════════════════════════════════════
+  // Container shape helpers (mirror dashboard.py logic)
+  //   - nested  = {league: {season: records}}
+  //   - keyed   = {key: records}      (multi-key)
+  //   - single  = {only_key: records} (single-key)
+  // ════════════════════════════════════════════════════════════════
+  function isNested(obj) {
+    if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return false;
+    const k1 = Object.keys(obj); if (!k1.length) return false;
+    const v1 = obj[k1[0]];
+    if (!v1 || typeof v1 !== 'object' || Array.isArray(v1)) return false;
+    const k2 = Object.keys(v1);
+    return k2.length > 0 && Array.isArray(v1[k2[0]]);
+  }
+  function isKeyed(obj) {
+    if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return false;
+    const k = Object.keys(obj);
+    return k.length > 1 && Array.isArray(obj[k[0]]);
+  }
+  function isSingle(obj) {
+    if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return false;
+    const k = Object.keys(obj);
+    return k.length === 1 && Array.isArray(obj[k[0]]);
+  }
+
+  // ════════════════════════════════════════════════════════════════
+  // Smart filter (>X, <Y, =Z, !=)
   // ════════════════════════════════════════════════════════════════
   function smartFilter(hv, rv) {
     if (hv == null) return true;
@@ -435,600 +480,50 @@
   }
 
   // ════════════════════════════════════════════════════════════════
-  // Formatters
+  // Column generation
   // ════════════════════════════════════════════════════════════════
-  function fmtNum(d) {
-    return (cell) => {
-      const v = cell.getValue();
-      if (v == null || v === '') return '';
-      const n = parseFloat(v); if (Number.isNaN(n)) return String(v);
-      return n.toFixed(d);
-    };
+  function colTooltip(col) {
+    const h = MANIFEST.columnHelp || {};
+    return h[col] || '';
   }
-  function fmtInt(cell) {
+
+  function linkFormatter(cell) {
     const v = cell.getValue();
-    if (v == null || v === '') return '';
-    const n = parseFloat(v); if (Number.isNaN(n)) return String(v);
-    return n.toLocaleString('en-GB');
-  }
-  function fmtPct(cell) {
-    const v = cell.getValue();
-    if (v == null || v === '') return '';
-    const n = parseFloat(v); if (Number.isNaN(n)) return String(v);
-    return (n * 100).toFixed(1) + '%';
-  }
-  function fmtAccent(d) {
-    return (cell) => {
-      const v = cell.getValue();
-      if (v == null || v === '') return '';
-      const n = parseFloat(v); if (Number.isNaN(n)) return String(v);
-      return `<span style="color: var(--accent); font-weight: 500;">${n.toFixed(d)}</span>`;
-    };
-  }
-  function fmtDelta(cell) {
-    const v = cell.getValue();
-    if (v == null || v === '') return '';
-    const n = parseFloat(v); if (Number.isNaN(n)) return String(v);
-    if (n > 0)  return `<span style="color: var(--accent); font-weight: 500;">+${n}</span>`;
-    if (n < 0)  return `<span style="color: #ff8866; font-weight: 500;">${n}</span>`;
-    return `<span style="color: var(--text-muted)">${n}</span>`;
-  }
-  function fmtMaybeMutedMins(cell) {
-    const v = cell.getValue();
-    if (v == null || v === '') return '';
-    const n = parseInt(v, 10); if (Number.isNaN(n)) return String(v);
-    const formatted = n.toLocaleString('en-GB');
-    if (n < 1800) {
-      // sub-half-season, flag in muted italic
-      return `<span style="color: var(--text-muted); font-style: italic;" title="half-season sample">${formatted}</span>`;
-    }
-    return formatted;
+    if (!v) return '';
+    const short = String(v).replace(/^https?:\/\/(www\.)?/, '').split('/')[0];
+    return `<a href="${v}" target="_blank" rel="noopener" style="color:var(--accent)">${short}</a>`;
   }
 
-  // Field -> default header tooltip. Guarantees every derived-metric column
-  // carries a plain-language explanation even when a column def omits one.
-  const FIELD_TOOLTIPS = {
-    rank: 'Position in this ranking',
-    player: 'Player name (FBref-cleaned; pooled across teams)',
-    primary_team: "Team where most of the player's credits were registered",
-    league: 'League of the primary team',
-    pos: 'Modal bucketed position (GK / DF / MF / FW)',
-    age: 'Age at end of most-recent observed season',
-    minutes: 'Total minutes played in scope (sample size). Under 1,800 flagged as half-season',
-    goals_involved: 'Total credited contributions across scorer / SCA1 / SCA2 roles (sample size)',
-    ep_timed: 'Total time-aware expected points collected',
-    ep_untimed: 'Total time-blind expected points collected (for comparison)',
-    ep_per_90: 'Expected points contributed per 90 minutes played',
-    ep_weighted_timed: 'Role-weighted EP (scorer 0.40 / SCA1 0.35 / SCA2 0.25)',
-    ep_weighted_per_90: 'Role-weighted EP per 90 minutes played',
-    credits_scorer: 'Goals scored',
-    credits_sca1: 'Assists (SCA1)',
-    credits_sca2: 'Pre-assists (SCA2)',
-    rank_a: 'Rank in the full-credit (Q1a) board',
-    rank_b: 'Rank in the weighted-credit (Q1b) board',
-    delta: 'rank_a − rank_b. Positive = weighting moved the player up',
-    season: 'Football season',
-    league_q2: 'League (Top-5 only, since per-90 needs minutes)',
-    actual: 'Real-world award winner for that league-season',
-    share_late: 'Share of total EP collected in minutes 60–90',
-    ep_total: 'Total EP collected across all time bins',
-    ep_late: 'EP collected in the 60–90 minute bins',
-    ratio_ep_per_goal: 'EP collected per credit, value created per contribution',
-    multiplier: 'Time-aware EP ÷ time-blind EP. Above 1 = scored disproportionately in valuable moments',
-    ep_scorer: 'EP from goals scored',
-    ep_sca1: 'EP from assists (SCA1)',
-    ep_sca2: 'EP from pre-assists (SCA2)',
-    sca2_share: 'SCA2 EP as a share of the player\'s total EP',
-  };
-
-  // Column factory
-  function C(field, title, opts) {
-    opts = opts || {};
-    const col = {
-      title: title || field, field,
-      headerFilter: 'input', headerFilterFunc: smartFilter,
-      headerFilterPlaceholder: 'filter…',
-      headerTooltip: opts.tooltip || FIELD_TOOLTIPS[field] || '',
-      hozAlign: opts.align || (opts.numeric ? 'right' : 'left'),
-    };
-    if (opts.width)     col.width = opts.width;
-    if (opts.minWidth)  col.minWidth = opts.minWidth;
-    if (opts.formatter) col.formatter = opts.formatter;
-    if (opts.headerSort === false) col.headerSort = false;
-    return col;
+  function fillSparse(rows) {
+    // Every column is kept at build time; nothing to fill.
+    return rows;
   }
 
-  // ════════════════════════════════════════════════════════════════
-  // Column presets
-  // ════════════════════════════════════════════════════════════════
-  const COL = {
-    rank:    () => C('rank', '#', { numeric: true, width: 55 }),
-    player:  () => C('player', 'Player', { minWidth: 180,
-      tooltip: 'Player name (FBref-cleaned; players pooled across teams).' }),
-    team:    () => C('primary_team', 'Team', { minWidth: 140,
-      tooltip: 'Primary team, where most of their credits were registered.' }),
-    pos:     () => C('pos', 'Pos', { width: 70, align: 'center',
-      tooltip: 'Modal bucketed position (GK / DF / MF / FW) across all observed matches.' }),
-    age:     () => C('age', 'Age', { numeric: true, width: 70, formatter: fmtNum(1),
-      tooltip: 'Age at end of most-recent observed season (float).' }),
-    minutes: () => C('minutes', 'Minutes', { numeric: true, width: 100, formatter: fmtMaybeMutedMins,
-      tooltip: 'Total minutes played in scope. < 1,800 minutes flagged as half-season.' }),
-    credits: () => C('goals_involved', 'Credits', { numeric: true, width: 90, formatter: fmtInt,
-      tooltip: 'Total credit events (scorer + SCA1 + SCA2, each = 1 per goal involved in).' }),
-    epTimed: () => C('ep_timed', 'EP timed', { numeric: true, width: 100, formatter: fmtNum(2),
-      tooltip: 'Total time-aware EP collected across all credits.' }),
-    epUntimed: () => C('ep_untimed', 'EP untimed', { numeric: true, width: 100, formatter: fmtNum(2),
-      tooltip: 'Total time-agnostic (untimed) EP, for comparison.' }),
-    epPer90: () => C('ep_per_90', 'EP / 90', { numeric: true, width: 90, formatter: fmtAccent(3),
-      tooltip: 'EP collected per 90 minutes played.' }),
-  };
+  function buildColumns(data, dsName) {
+    if (!data.length) return [];
+    const keys = new Set();
+    for (const r of data) for (const k in r) keys.add(k);
 
-  // ════════════════════════════════════════════════════════════════
-  // Dataset / view config, heart of the dashboard
-  // Each view defines a file dependency, extract function, columns, scope text, title.
-  // ════════════════════════════════════════════════════════════════
-  const SCOPE_PER_90 = 'Top 5 leagues only · Eredivisie excluded (no minutes data)';
+    // Columns keep the order build.py wrote them in (first row's keys, then any extras)
+    const ordered = [...Object.keys(data[0]), ...[...keys].filter(k => !(k in data[0]))];
+    const text = new Set(['player', 'team', 'league', 'pos', 'season', 'pick', 'winner', 'award', 'ga_leader', 'source']);
+    const phone = window.matchMedia('(max-width: 600px)').matches;
 
-  const DATASETS = {
-    'Q1 · Per-90 leaderboards': {
-      defaultView: 'Q1a · Full credit',
-      views: {
-        'Q1a · Full credit': {
-          file: 'q1a_full_credit.json',
-          extract: d => d.rows,
-          scope: d => `${SCOPE_PER_90} · ≥ ${d.min_minutes.toLocaleString('en-GB')} min · ${d.credit_model}`,
-          title: d => `<em>Q1a</em> · Top ${d.rows.length} by EP per 90, full credit (1/1/1)`,
-          columns: () => [
-            COL.rank(), COL.player(), COL.team(), COL.pos(), COL.age(),
-            COL.minutes(), COL.credits(),
-            COL.epTimed(),
-            COL.epPer90(),
-          ],
-          initialSort: [{ column: 'rank', dir: 'asc' }],
-        },
-        'Q1b · Weighted credit': {
-          file: 'q1b_weighted_credit.json',
-          extract: d => d.rows,
-          scope: d => `${SCOPE_PER_90} · ≥ ${d.min_minutes.toLocaleString('en-GB')} min · weights ${d.weights.scorer}/${d.weights.sca1}/${d.weights.sca2}`,
-          title: d => `<em>Q1b</em> · Top ${d.rows.length} by weighted EP per 90 (0.40 / 0.35 / 0.25)`,
-          columns: () => [
-            COL.rank(), COL.player(), COL.team(), COL.pos(), COL.age(),
-            COL.minutes(), COL.credits(),
-            C('ep_weighted_timed', 'wEP timed', { numeric: true, width: 110, formatter: fmtNum(2),
-              tooltip: 'Sum of (EP × role weight), weighted by 0.40/0.35/0.25 for scorer/SCA1/SCA2.' }),
-            C('ep_weighted_per_90', 'wEP / 90', { numeric: true, width: 100, formatter: fmtAccent(3),
-              tooltip: 'Weighted EP per 90 minutes.' }),
-            C('credits_scorer', 'Scorer', { numeric: true, width: 85, formatter: fmtInt,
-              tooltip: 'Number of goals scored.' }),
-            C('credits_sca1', 'SCA1', { numeric: true, width: 75, formatter: fmtInt,
-              tooltip: 'Number of credited assists (SCA1).' }),
-            C('credits_sca2', 'SCA2', { numeric: true, width: 75, formatter: fmtInt,
-              tooltip: 'Number of pre-assists (SCA2).' }),
-          ],
-          initialSort: [{ column: 'rank', dir: 'asc' }],
-        },
-        'Q1 · Rank shift A → B': {
-          file: 'q1_rank_shift.json',
-          extract: d => d.rows,
-          scope: () => `Movement between Q1a (full credit) and Q1b (weighted credit) leaderboards. Positive Δ = weighting HELPED.`,
-          title: () => `<em>Q1</em> · Rank shift across full vs weighted credit models`,
-          columns: () => [
-            COL.player(),
-            C('rank_a', 'Rank in Q1a', { numeric: true, width: 110, formatter: fmtInt,
-              tooltip: 'Rank in Q1a (full credit) leaderboard.' }),
-            C('rank_b', 'Rank in Q1b', { numeric: true, width: 110, formatter: fmtInt,
-              tooltip: 'Rank in Q1b (weighted credit) leaderboard.' }),
-            C('delta', 'Δ (a − b)', { numeric: true, width: 110, formatter: fmtDelta,
-              tooltip: 'rank_a − rank_b. Positive = weighting moved the player UP the ranking. Negative = weighting moved them DOWN.' }),
-          ],
-          initialSort: [{ column: 'rank_a', dir: 'asc' }],
-        },
-      },
-    },
-
-    'Q2 · Per-season MVPs': {
-      defaultView: 'Per (league × season) picks',
-      views: {
-        'Per (league × season) picks': {
-          file: 'q2_mvp_grid.json',
-          extract: d => {
-            const rows = [];
-            for (const lg of d.leagues) {
-              for (const ss of d.seasons) {
-                const cell = (d.grid[lg] || {})[ss];
-                if (!cell || !cell.model_pick) {
-                  rows.push({ league: lg, season: ss, player: 'n/a',
-                    primary_team: 'n/a', minutes: null,
-                    ep_per_90: null, ep_timed: null, goals_involved: null,
-                    actual: (cell && cell.actual && cell.actual.winner) || null });
-                  continue;
-                }
-                const p = cell.model_pick;
-                rows.push({
-                  league: lg, season: ss,
-                  player: p.player, primary_team: p.primary_team,
-                  minutes: p.minutes, ep_per_90: p.ep_per_90,
-                  ep_timed: p.ep_timed, goals_involved: p.goals_involved,
-                  actual: (cell.actual && cell.actual.winner) || null,
-                });
-              }
-            }
-            return rows;
-          },
-          scope: d => `${SCOPE_PER_90} · ≥ ${d.min_minutes.toLocaleString('en-GB')} min in that league-season · ${d.leagues.length} leagues × ${d.seasons.length} seasons`,
-          title: () => `<em>Q2</em> · Model's top EP/90 pick per (league, season)`,
-          columns: () => [
-            C('season', 'Season', { width: 110,
-              tooltip: 'Football season, formatted as e.g. 2022-2023.' }),
-            C('league', 'League', { width: 140,
-              tooltip: 'League. Top-5 only because per-90 requires minutes.' }),
-            COL.player(), COL.team(),
-            COL.minutes(), COL.credits(),
-            COL.epPer90(),
-            C('ep_timed', 'EP', { numeric: true, width: 80, formatter: fmtNum(1),
-              tooltip: 'Total EP collected that season.' }),
-            C('actual', 'Actual winner', { minWidth: 160,
-              tooltip: 'Real-world player-of-the-season award winner (sourced in data/static/actual_mvps.json). Empty = no award that season.' }),
-          ],
-          initialSort: [{ column: 'season', dir: 'desc' }, { column: 'league', dir: 'asc' }],
-        },
-        '5L combined · Ballon d\'Or picks': {
-          file: 'q2_mvp_grid.json',
-          extract: d => {
-            const rows = [];
-            for (const ss of d.seasons) {
-              const cell = d.combined_5l[ss];
-              if (!cell || !cell.model_pick) {
-                rows.push({ season: ss, player: 'n/a', primary_team: 'n/a',
-                  minutes: null, ep_per_90: null, ep_timed: null,
-                  goals_involved: null, actual: null });
-                continue;
-              }
-              const p = cell.model_pick;
-              rows.push({
-                season: ss,
-                player: p.player, primary_team: p.primary_team,
-                minutes: p.minutes, ep_per_90: p.ep_per_90,
-                ep_timed: p.ep_timed, goals_involved: p.goals_involved,
-                actual: (cell.actual_ballon_dor && cell.actual_ballon_dor.winner) || null,
-              });
-            }
-            return rows;
-          },
-          scope: d => `${SCOPE_PER_90} · ≥ ${d.min_minutes.toLocaleString('en-GB')} min in season (summed across top-5 leagues)`,
-          title: () => `<em>Q2</em> · Top-5-leagues combined MVP per season`,
-          columns: () => [
-            C('season', 'Season', { width: 110, tooltip: 'Football season.' }),
-            COL.player(), COL.team(),
-            COL.minutes(), COL.credits(),
-            COL.epPer90(),
-            C('ep_timed', 'EP', { numeric: true, width: 80, formatter: fmtNum(1),
-              tooltip: 'Total EP collected that season.' }),
-            C('actual', 'Ballon d\'Or winner', { minWidth: 200,
-              tooltip: 'Real-world Ballon d\'Or winner if data/static/actual_mvps.json has been curated.' }),
-          ],
-          initialSort: [{ column: 'season', dir: 'desc' }],
-        },
-      },
-    },
-
-    'Q3 · Late-game players': {
-      defaultView: 'Substantive (≥ 30 credits)',
-      views: {
-        'Substantive (≥ 30 credits)': {
-          file: 'q3_late_game.json',
-          extract: d => d.rows_substantive,
-          scope: d => `≥ ${d.editorial_min} credits across the dataset · sorted by late share descending · top ${d.top_n}`,
-          title: d => `<em>Q3</em> · Late-game substantives (≥ ${d.editorial_min} credits)`,
-          columns: () => [
-            COL.rank(), COL.player(), COL.team(),
-            COL.credits(),
-            C('share_late', 'Late share', { numeric: true, width: 110, formatter: fmtPct,
-              tooltip: 'Share of EP collected in the 60-75 + 75-90 bins.' }),
-            C('ep_total', 'Total EP', { numeric: true, width: 100, formatter: fmtNum(2),
-              tooltip: 'Total EP collected across all time bins.' }),
-            C('ep_late', 'Late EP', { numeric: true, width: 100, formatter: fmtAccent(2),
-              tooltip: 'EP collected in 60-90 minute bins.' }),
-          ],
-          initialSort: [{ column: 'share_late', dir: 'desc' }],
-        },
-        'All (≥ 15 credits)': {
-          file: 'q3_late_game.json',
-          extract: d => d.rows,
-          scope: d => `≥ ${d.min_goals_involved} credits · includes super-sub small-sample specialists · top ${d.top_n}`,
-          title: d => `<em>Q3</em> · Late-game · all qualifying (≥ ${d.min_goals_involved} credits)`,
-          columns: () => [
-            COL.rank(), COL.player(), COL.team(),
-            COL.credits(),
-            C('share_late', 'Late share', { numeric: true, width: 110, formatter: fmtPct,
-              tooltip: 'Share of EP collected in the 60-75 + 75-90 bins.' }),
-            C('ep_total', 'Total EP', { numeric: true, width: 100, formatter: fmtNum(2) }),
-            C('ep_late', 'Late EP', { numeric: true, width: 100, formatter: fmtAccent(2) }),
-          ],
-          initialSort: [{ column: 'share_late', dir: 'desc' }],
-        },
-      },
-    },
-
-    'Q4 · Efficiency ratios': {
-      defaultView: 'Q4a · EP per credit · substantive (≥ 20)',
-      views: {
-        'Q4a · EP per credit · substantive (≥ 20)': {
-          file: 'q4_efficiency.json',
-          extract: d => d.q4a_substantive,
-          scope: d => `EP per credit (≥ ${d.editorial_min} credits) · top ${d.top_n} · sorted by ratio descending`,
-          title: d => `<em>Q4a</em> · EP per credit · substantive (≥ ${d.editorial_min} credits)`,
-          columns: () => q4aCols(),
-          initialSort: [{ column: 'ratio_ep_per_goal', dir: 'desc' }],
-        },
-        'Q4a · EP per credit · all (≥ 5)': {
-          file: 'q4_efficiency.json',
-          extract: d => d.q4a,
-          scope: d => `EP per credit (≥ ${d.min_goals_involved} credits) · top ${d.top_n} · includes low-volume samples`,
-          title: d => `<em>Q4a</em> · EP per credit · all qualifying (≥ ${d.min_goals_involved} credits)`,
-          columns: () => q4aCols(),
-          initialSort: [{ column: 'ratio_ep_per_goal', dir: 'desc' }],
-        },
-        'Q4b · Time multiplier · substantive (≥ 20)': {
-          file: 'q4_efficiency.json',
-          extract: d => d.q4b_substantive,
-          scope: d => `Time-aware multiplier (≥ ${d.editorial_min} credits) · top ${d.top_n}`,
-          title: d => `<em>Q4b</em> · Time-aware multiplier · substantive (≥ ${d.editorial_min} credits)`,
-          columns: () => q4bCols(),
-          initialSort: [{ column: 'multiplier', dir: 'desc' }],
-        },
-        'Q4b · Time multiplier · all (≥ 5)': {
-          file: 'q4_efficiency.json',
-          extract: d => d.q4b,
-          scope: d => `Time-aware multiplier (≥ ${d.min_goals_involved} credits) · top ${d.top_n}`,
-          title: d => `<em>Q4b</em> · Time-aware multiplier · all qualifying (≥ ${d.min_goals_involved} credits)`,
-          columns: () => q4bCols(),
-          initialSort: [{ column: 'multiplier', dir: 'desc' }],
-        },
-        'Q4c · EP per shot, Coming soon': {
-          file: null,
-          comingSoon: {
-            title: 'EP per shot · coming soon',
-            body: 'Requires non-goal shot extraction from the upstream <code>shots_all</code> tables; currently only the goal-events subset is captured by project 02\'s pipeline. Extending it is a half-day side-quest; tracked as a TODO in <code>code/enrich.py</code>.',
-          },
-        },
-      },
-    },
-
-    'Q5 · Position-adjusted': {
-      defaultView: 'All 3 panels (DF / MF / FW)',
-      views: {
-        'All 3 panels (DF / MF / FW)': {
-          file: 'q5_position.json',
-          extract: d => {
-            const out = [];
-            for (const pos of ['DF', 'MF', 'FW']) {
-              const entry = d.panels[pos];
-              if (!entry) continue;
-              for (const r of entry.rows) out.push({ ...r, pos });
-            }
-            return out;
-          },
-          scope: d => `${SCOPE_PER_90} · ≥ ${d.min_minutes.toLocaleString('en-GB')} min · top ${d.top_n} per position. GK panel omitted; see methodology for the framework's structural blind spot on goalkeepers.`,
-          title: d => `<em>Q5</em> · Position-adjusted EP/90 (top ${d.top_n} per outfield panel)`,
-          columns: () => [
-            COL.rank(), COL.pos(), COL.player(), COL.team(), COL.age(),
-            COL.minutes(), COL.credits(),
-            C('ep_timed', 'Total EP', { numeric: true, width: 100, formatter: fmtNum(2) }),
-            COL.epPer90(),
-          ],
-          initialSort: [{ column: 'pos', dir: 'asc' }, { column: 'rank', dir: 'asc' }],
-        },
-      },
-    },
-
-    'Q6 · Hidden architects (SCA2)': {
-      defaultView: 'Absolute SCA2 EP (top 20)',
-      views: {
-        'Absolute SCA2 EP (top 20)': {
-          file: 'q6_architects.json',
-          extract: d => d.abs_top,
-          scope: () => `All six leagues · pooled across seasons · sorted by SCA2 EP descending`,
-          title: () => `<em>Q6a</em> · Top 20 absolute SCA2 EP collectors`,
-          columns: () => [
-            COL.rank(), COL.player(), COL.team(),
-            C('goals_involved', 'SCA2 credits', { numeric: true, width: 130, formatter: fmtInt,
-              tooltip: 'Number of pre-assists (SCA2 events).' }),
-            C('ep_timed', 'SCA2 EP', { numeric: true, width: 110, formatter: fmtAccent(2),
-              tooltip: 'Total time-aware EP from SCA2 contributions alone.' }),
-          ],
-          initialSort: [{ column: 'ep_timed', dir: 'desc' }],
-        },
-        'Per-90 SCA2 EP (top 10)': {
-          file: 'q6_architects.json',
-          extract: d => d.per_90_top.rows,
-          scope: d => `${d.per_90_top.scope} · ≥ ${d.per_90_top.min_minutes.toLocaleString('en-GB')} min`,
-          title: d => `<em>Q6b</em> · Top 10 SCA2 EP per 90 (≥ ${d.per_90_top.min_minutes.toLocaleString('en-GB')} min)`,
-          columns: () => [
-            COL.rank(), COL.player(), COL.team(), COL.pos(),
-            COL.minutes(),
-            C('goals_involved', 'SCA2 credits', { numeric: true, width: 130, formatter: fmtInt }),
-            C('ep_timed', 'SCA2 EP', { numeric: true, width: 100, formatter: fmtNum(2) }),
-            C('ep_per_90', 'SCA2 EP/90', { numeric: true, width: 120, formatter: fmtAccent(3),
-              tooltip: 'SCA2 EP normalised per 90 minutes played.' }),
-          ],
-          initialSort: [{ column: 'ep_per_90', dir: 'desc' }],
-        },
-        'Layer breakdown (top 20)': {
-          file: 'q6_architects.json',
-          extract: d => d.layer_breakdown.map(r => ({
-            ...r,
-            sca2_share: r.ep_total > 0 ? r.ep_sca2 / r.ep_total : 0,
-          })),
-          scope: () => 'Top 20 by absolute SCA2 EP · EP collected split across scorer / SCA1 / SCA2 roles.',
-          title: () => `<em>Q6</em> · Layer breakdown · how each architect's EP splits by role`,
-          columns: () => [
-            COL.player(), COL.team(),
-            C('ep_total', 'Total EP', { numeric: true, width: 100, formatter: fmtNum(2),
-              tooltip: 'Total EP collected across all three roles.' }),
-            C('ep_scorer', 'Scorer EP', { numeric: true, width: 110, formatter: fmtNum(2) }),
-            C('ep_sca1', 'SCA1 EP', { numeric: true, width: 100, formatter: fmtNum(2) }),
-            C('ep_sca2', 'SCA2 EP', { numeric: true, width: 100, formatter: fmtAccent(2),
-              tooltip: 'EP from SCA2 (pre-assist) layer only.' }),
-            C('sca2_share', 'SCA2 share', { numeric: true, width: 110, formatter: fmtPct,
-              tooltip: 'SCA2 EP as a percentage of total EP. Brandt ~39%, Mbappé/Salah ~20%.' }),
-          ],
-          initialSort: [{ column: 'ep_sca2', dir: 'desc' }],
-        },
-      },
-    },
-
-    'Q7 · Young players': {
-      defaultView: 'Top 10 (age ≤ 23)',
-      views: {
-        'Top 10 (age ≤ 23)': {
-          file: 'q7_young.json',
-          extract: d => d.rows,
-          scope: d => `${SCOPE_PER_90} · age ≤ ${d.max_age} · ≥ ${d.min_minutes.toLocaleString('en-GB')} min`,
-          title: d => `<em>Q7</em> · Top 10 EP/90 · age ≤ ${d.max_age}, ≥ ${d.min_minutes.toLocaleString('en-GB')} min`,
-          columns: () => [
-            COL.rank(), COL.player(), COL.team(), COL.pos(), COL.age(),
-            COL.minutes(), COL.credits(),
-            C('ep_timed', 'Total EP', { numeric: true, width: 100, formatter: fmtNum(2) }),
-            COL.epPer90(),
-          ],
-          initialSort: [{ column: 'rank', dir: 'asc' }],
-        },
-      },
-    },
-  };
-
-  // Helper column builders for Q4 (used in 4 places)
-  function q4aCols() {
-    return [
-      COL.rank(), COL.player(), COL.team(),
-      COL.credits(),
-      C('ep_timed', 'Total EP', { numeric: true, width: 100, formatter: fmtNum(2) }),
-      C('ratio_ep_per_goal', 'EP / credit', { numeric: true, width: 110, formatter: fmtAccent(3),
-        tooltip: 'EP collected per credit event. Higher = scores/creates in higher-leverage moments per goal.' }),
-    ];
-  }
-  function q4bCols() {
-    return [
-      COL.rank(), COL.player(), COL.team(),
-      COL.credits(),
-      C('ep_timed', 'EP timed', { numeric: true, width: 100, formatter: fmtNum(2) }),
-      C('ep_untimed', 'EP untimed', { numeric: true, width: 110, formatter: fmtNum(2) }),
-      C('multiplier', 'Multiplier', { numeric: true, width: 110, formatter: fmtAccent(3),
-        tooltip: 'ep_timed / ep_untimed. Higher = the time dimension upgrades the player more.' }),
-    ];
-  }
-
-  // ════════════════════════════════════════════════════════════════
-  // File loader (lazy + cached)
-  // ════════════════════════════════════════════════════════════════
-  async function loadFile(filename) {
-    if (fileCache.has(filename)) return fileCache.get(filename);
-    showLoading();
-    try {
-      const raw = await fetch(DATA_ROOT + filename).then(r => {
-        if (!r.ok) throw new Error(`HTTP ${r.status} on ${filename}`);
-        return r.json();
-      });
-      fileCache.set(filename, raw);
-      $('filesLoaded').textContent = fileCache.size;
-      return raw;
-    } finally {
-      hideLoading();
-    }
-  }
-
-  // ════════════════════════════════════════════════════════════════
-  // Render
-  // ════════════════════════════════════════════════════════════════
-  function applySearch() {
-    if (!table) return;
-    const q = (searchBox.value || '').trim().toLowerCase();
-    if (!q) { table.clearFilter(true); return; }
-    table.setFilter(row => {
-      for (const k in row) {
-        const v = row[k];
-        if (v != null && String(v).toLowerCase().includes(q)) return true;
-      }
-      return false;
+    return ordered.map(k => {
+      const col = {
+        title: k, field: k,
+        headerTooltip: colTooltip(k),
+        headerFilter: 'input',
+        headerFilterFunc: smartFilter,
+        headerFilterPlaceholder: 'filter…',
+      };
+      if (k === 'source') col.formatter = linkFormatter;
+      if (!text.has(k)) col.hozAlign = 'right';
+      if ((k === 'player' || k === 'pick') && !phone) col.frozen = true;
+      if (k === 'player' || k === 'pick' || k === 'winner' || k === 'ga_leader') col.minWidth = 170;
+      if (k === 'team' || k === 'league' || k === 'award') col.minWidth = 130;
+      return col;
     });
-  }
-
-  function showComingSoon(spec) {
-    if (table) { table.destroy(); table = null; }
-    $('table').style.display = 'none';
-    const host = $('empty-state');
-    host.style.display = 'block';
-    host.innerHTML = `
-      <div class="coming-soon-card">
-        <div class="badge">Coming soon</div>
-        <h3>${spec.title}</h3>
-        <p>${spec.body}</p>
-      </div>`;
-  }
-
-  function clearComingSoon() {
-    $('empty-state').style.display = 'none';
-    $('table').style.display = '';
-  }
-
-  // Per-dataset "how to read this" copy (keyed by dataset name).
-  const HOW_TO_READ = {
-    'Q1 · Per-90 leaderboards': 'Players ranked by expected points (EP) contributed per 90 minutes: higher means more valuable per minute on the pitch. Q1a credits the scorer, assist (SCA1) and pre-assist (SCA2) equally; Q1b weights them 40% / 35% / 25%. The rank-shift view shows how the weighting moves players.',
-    'Q2 · Per-season MVPs': "The model's MVP (top EP/90) for each (league × season) cell, alongside the actual end-of-season award winner. The model rewards high-leverage value per minute, so it rarely agrees with the real award.",
-    'Q3 · Late-game players': 'Players who collect the highest share of their EP in the final 30 minutes (the 60–75 and 75–90 bins), the closers whose contributions land when matches are decided.',
-    'Q4 · Efficiency ratios': 'Efficiency ratios: EP per credit (value per contribution) and the time-aware multiplier (how much the timing of a player\'s goals upgrades them vs a time-blind baseline). See the editorial page for worked examples.',
-    'Q5 · Position-adjusted': 'Top players per outfield position (DF / MF / FW) by EP/90. Goalkeepers are excluded: the framework credits scorers and creators, roles GKs rarely occupy.',
-    'Q6 · Hidden architects (SCA2)': "Players ranked by their SCA2 (pre-assist) contribution, the playmakers-before-the-playmakers, whose passes lead to the passes that lead to goals. The layer view splits each player's EP across scorer / SCA1 / SCA2.",
-    'Q7 · Young players': 'Top young players (age ≤ 23, ≥ 500 minutes) by EP per 90, the under-23 watchlist.',
-  };
-  function updateHowToRead(dsName) {
-    const body = $('howToReadBody');
-    if (body) body.textContent = HOW_TO_READ[dsName] || '';
-  }
-
-  async function renderView() {
-    const dsName = datasetSel.value;
-    const vwName = viewSel.value;
-    if (!dsName || !vwName) return;
-
-    const ds = DATASETS[dsName];
-    const vw = ds.views[vwName];
-    if (!vw) return;
-
-    updateHowToRead(dsName);
-
-    if (vw.comingSoon) {
-      $('title-text').innerHTML = `<em>${dsName}</em> · ${vwName}`;
-      $('rowcount').textContent = '';
-      $('scopeNote').textContent = 'No data yet';
-      showComingSoon(vw.comingSoon);
-      return;
-    }
-
-    clearComingSoon();
-    const raw = await loadFile(vw.file);
-    const rows = vw.extract(raw) || [];
-
-    $('title-text').innerHTML = vw.title(raw);
-    $('rowcount').textContent = `(${rows.length.toLocaleString('en-GB')} rows)`;
-    $('scopeNote').textContent = vw.scope(raw);
-
-    if (table) table.destroy();
-    table = new Tabulator('#table', {
-      data: rows,
-      columns: vw.columns(),
-      layout: 'fitDataStretch',
-      height: '70vh',
-      movableColumns: true,
-      pagination: true,
-      paginationSize: 50,
-      paginationSizeSelector: [25, 50, 100, 250, 500],
-      downloadRowRange: 'active',
-      placeholder: 'No rows in this slice.',
-      initialSort: vw.initialSort || [],
-    });
-    applySearch();
   }
 
   // ════════════════════════════════════════════════════════════════
@@ -1049,10 +544,105 @@
     if (pick) sel.value = pick;
   }
 
-  function refreshViewDropdown() {
-    const ds = DATASETS[datasetSel.value];
-    const viewNames = Object.keys(ds.views);
-    setOptions(viewSel, viewNames, ds.defaultView);
+  function setKeyLabel(ds, vw) {
+    const v = (vw || '').toLowerCase();
+    if (v.includes('league') || v.includes('per league')) { keyLabel.textContent = 'League'; return; }
+    if (v.includes('season')) { keyLabel.textContent = 'Season'; return; }
+    if (v.includes('pooled') || v.includes('all')) { keyLabel.textContent = ''; return; }
+    keyLabel.textContent = 'Key';
+  }
+
+  async function updateSelectors() {
+    const ds = datasetSel.value, vw = viewSel.value;
+    if (!ds || !vw) return null;
+
+    // Make sure this view is loaded so we can read its shape.
+    const container = await loadView(ds, vw);
+
+    keyWrap.style.display = 'none';
+    seasonWrap.style.display = 'none';
+    setKeyLabel(ds, vw);
+
+    if (isNested(container)) {
+      setOptions(keySel, Object.keys(container).sort(), keySel.value);
+      keyWrap.style.display = '';
+      const inner = container[keySel.value] || {};
+      setOptions(seasonSel, Object.keys(inner).sort(), seasonSel.value);
+      seasonWrap.style.display = '';
+      return container;
+    }
+    if (isKeyed(container)) {
+      setOptions(keySel, Object.keys(container).sort(), keySel.value);
+      keyWrap.style.display = '';
+      return container;
+    }
+    if (isSingle(container)) {
+      // exactly one key; no selector needed
+      return container;
+    }
+    return container;
+  }
+
+  function getActiveData(container) {
+    const ds = datasetSel.value, vw = viewSel.value;
+    let rows = [], title = `${ds} · ${vw}`;
+
+    if (isNested(container)) {
+      const lg = keySel.value, ss = seasonSel.value;
+      rows = (container[lg] && container[lg][ss]) ? container[lg][ss] : [];
+      title += ` · ${lg} · ${ss}`;
+    } else if (isKeyed(container)) {
+      rows = container[keySel.value] || [];
+      title += ` · ${keySel.value}`;
+    } else if (isSingle(container)) {
+      const k = Object.keys(container)[0];
+      rows = container[k] || [];
+      if (k !== 'Pooled' && k !== 'All' && k !== 'All leagues') title += ` · ${k}`;
+    } else if (Array.isArray(container)) {
+      rows = container;
+    }
+    return { rows, title };
+  }
+
+  function applySearch() {
+    if (!table) return;
+    const q = (searchBox.value || '').trim().toLowerCase();
+    if (!q) { table.clearFilter(true); return; }
+    table.setFilter(row => {
+      for (const k in row) {
+        const v = row[k];
+        if (v != null && String(v).toLowerCase().includes(q)) return true;
+      }
+      return false;
+    });
+  }
+
+  async function renderTable() {
+    const container = await updateSelectors();
+    if (!container) return;
+    const { rows, title } = getActiveData(container);
+    const dense = fillSparse(rows.map(r => ({ ...r })));  // shallow clone, fill 0s
+    const help = (MANIFEST.datasetHelp || {})[datasetSel.value];
+    $('dsHelp').innerHTML = help ? `<strong>How to read this</strong> · ${help}` : '';
+    $('dsHelp').style.display = help ? '' : 'none';
+
+    $('table-title').firstChild.textContent = title + '  ';
+    $('rowcount').textContent = `(${dense.length.toLocaleString('en-GB')} rows)`;
+
+    if (table) table.destroy();
+    table = new Tabulator('#table', {
+      data: dense,
+      columns: buildColumns(dense, datasetSel.value),
+      layout: 'fitDataStretch',
+      height: '70vh',
+      movableColumns: true,
+      pagination: true,
+      paginationSize: 50,
+      paginationSizeSelector: [25, 50, 100, 250, 500],
+      downloadRowRange: 'active',
+      placeholder: 'No rows in this slice.',
+    });
+    applySearch();
   }
 
   // ════════════════════════════════════════════════════════════════
@@ -1062,7 +652,7 @@
     showLoading();
     try {
       MANIFEST = await fetch(MANIFEST_URL).then(r => {
-        if (!r.ok) throw new Error(`HTTP ${r.status} on manifest.json`);
+        if (!r.ok) throw new Error(`Manifest fetch failed: ${r.status}`);
         return r.json();
       });
     } catch (e) {
@@ -1070,32 +660,40 @@
       hideLoading();
       return;
     }
+
     $('genAt').textContent = (MANIFEST.meta && MANIFEST.meta.created_at) || 'n/a';
 
-    setOptions(datasetSel, Object.keys(DATASETS));
-    refreshViewDropdown();
+    const datasets = Object.keys(MANIFEST.datasets);
+    setOptions(datasetSel, datasets);
+    const views = Object.keys(MANIFEST.datasets[datasets[0]].views);
+    setOptions(viewSel, views);
+
     hideLoading();
-    await renderView();
+    await renderTable();
   }
 
+  // ────────────────────────────────────────────
   // Event wiring
+  // ────────────────────────────────────────────
   datasetSel.addEventListener('change', () => {
-    refreshViewDropdown();
-    renderView();
+    const ds = datasetSel.value;
+    const views = Object.keys(MANIFEST.datasets[ds].views);
+    setOptions(viewSel, views);
+    renderTable();
   });
-  viewSel.addEventListener('change', renderView);
+  viewSel.addEventListener('change', renderTable);
+  keySel.addEventListener('change', async () => {
+    // For nested containers we have to refresh the season list before re-rendering
+    const ds = datasetSel.value, vw = viewSel.value;
+    const container = await loadView(ds, vw);
+    if (isNested(container)) {
+      const inner = container[keySel.value] || {};
+      setOptions(seasonSel, Object.keys(inner).sort(), seasonSel.value);
+    }
+    renderTable();
+  });
+  seasonSel.addEventListener('change', renderTable);
   searchBox.addEventListener('input', applySearch);
-
-  // Help panel: remember "hide this" across sessions via localStorage
-  (function wireHelpPanel() {
-    const panel = $('helpPanel'), btn = $('helpDismiss');
-    const KEY = 'renball_p03_dash_help_dismissed';
-    try { if (panel && localStorage.getItem(KEY) === '1') panel.classList.add('hidden'); } catch (e) {}
-    if (btn && panel) btn.addEventListener('click', () => {
-      panel.classList.add('hidden');
-      try { localStorage.setItem(KEY, '1'); } catch (e) {}
-    });
-  })();
 
   $('resetBtn').addEventListener('click', () => {
     searchBox.value = '';

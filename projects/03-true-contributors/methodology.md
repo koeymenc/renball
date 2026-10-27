@@ -1,4 +1,4 @@
-# The True Contributors: A Three-Layer Expected-Points Attribution of Player Value
+# The True Contributors: Expected Points per 90, Shared Credit and Honest Rankings
 
 **Author:** Can Luca Köymen
 **Site:** [renball.com](https://renball.com)
@@ -8,232 +8,239 @@
 
 ## Abstract
 
-The standard scoreboard credits two touchpoints per goal (the scorer and, sometimes, the assister) and treats every goal as one undifferentiated unit. This project applies the time-aware expected-points (EP) value function from [project 02](https://renball.com/projects/02-points-by-gamestate/) to a **third** layer of contribution, the pre-assist (FBref's SCA2, the shot-creating action before the assist), and re-ranks players by the EP they collect across all three roles. Across **39,381 goal events** in six top-flight European leagues over seven seasons (2017-2018 to 2023-2024), with minutes/position/age metadata attached for **6,516 players**, the framework reproduces the eye-test at the top (Messi, Mbappé, Neymar lead the per-90 board) and then surfaces the players the box score systematically undervalues. The marquee finding: **Julian Brandt collects 40.93 EP from pre-assists alone: second in Europe only to Lionel Messi (51.69), and 39% of his total contribution comes from that single layer, roughly double the SCA2 share of pure goalscorers like Mbappé (20%) or Salah (19%).** The work answers seven research questions (Q1–Q7) spanning per-90 leaderboards, season-by-season MVPs, late-game specialists, efficiency ratios, position-adjusted boards, the hidden-architect SCA2 board, and an under-23 watchlist.
+Every goal scored in the Premier League, La Liga, Serie A, Bundesliga and Ligue 1 from 2017-18 to 2023-24 (34,054 goals in 12,599 matches) is priced by the expected points it added for the scoring team, using the team-minute model of Project 02 unchanged, and credited to the players involved: the scorer, SCA1 (the action before the shot) and SCA2 (the action before that), once per player per goal. A player's expected points (EP) per 90 minutes is then pulled toward the average for his position by an empirical Bayes model whose strength depends on his minutes, and every player's rank gets a 95% interval from 4,000 joint posterior draws. Among 4,167 players with at least 900 minutes, **Lionel Messi (0.813 EP per 90) and Kylian Mbappé (0.773) are the only players with a top-10 probability of 95% or more**; the number 3, Neymar, has a plausible rank from 1 to 34. Five of the ten highest raw per-90 rates belong to short careers that leave the adjusted top 10. EP per 90 repeats from one season to the next (r = 0.69, 95% CI 0.67–0.71), the share of a player's credits from SCA2 partly repeats (0.38, 0.27–0.48), and EP per involvement (how decisive a player's goals are) barely does (0.17, 0.11–0.23). Against the actual player-of-the-season award in each league, the model's pick names the winner in 12 of 33 league-seasons (chance: about 0.1), fewer than a simple goals-plus-assists count (17).
 
 ---
 
 ## 1. Research Question
 
-> When a goal's expected-points value is credited not just to the scorer and assister but also to the **pre-assist-creator (SCA2)**, which players does the model elevate that conventional goal-and-assist counting overlooks, and is that elevation robust to how the three credit layers are weighted?
+> Which players add the most expected points per 90 minutes, once each goal is priced by what it was worth and shared with the players who made it, and how sure can a ranking of them be?
 
-This is a value-attribution study, not a hypothesis test. It rests on three evaluable claims, each addressed in §4:
+Four evaluable parts:
 
-1. **Face validity**: crediting three layers and normalising per 90 minutes must reproduce the consensus elite at the top of the board, or the framework has no standing to surface surprises beneath it (Q1a).
-2. **Robustness**: the ranking must not be an artefact of the equal `1/1/1` credit split; re-weighting the layers should move the board only marginally (Q1b).
-3. **Discovery**: the SCA2 layer must isolate a contribution profile (the "hidden architect") that absolute goal-and-assist tallies cannot see (Q6).
+1. **Ranking with uncertainty:** an EP-per-90 board where small samples are shrunk and every rank carries an interval.
+2. **Credit rule:** whether the way a goal's value is shared (full credit once per player, every role separately, or a 40/35/25 split) changes the answer.
+3. **Skill or noise:** which of the numbers repeat from one season to the next.
+4. **External check:** how often the model's best player in a league-season matches the actual award winner, against chance and against a goals-plus-assists count.
 
 ---
 
 ## 2. Data
 
-**Primary source: goal events.** Inherited directly from project 02: the per-match FBref-derived shot tables (`match_data_final_<league>.pkl`), filtered to `outcome == "goal"`, one row per goal with `gd_before`, `gd_after`, `minute_bin`, the scoring team, and three contributor columns, `goalscorer`, `sca1_creator` (assist), and `sca2_creator` (pre-assist). Project 02's pipeline is used unmodified; project 03 reads its output `goal_events` DataFrame and the two value lookup tables (`val_map_timed`, `val_map_untimed`).
+**Sources:** FBref match pages, stored locally as one pickle per league (`match_data_final_<league>.pkl` in `RENBALL_MATCH_DATA_PATH`), read through Project 02's extraction (`matches.py`). Per match: the shot table (minute, team, scorer, outcome, SCA1 and SCA2 players), `match_details` (official score, teams, date) and each side's player summary (minutes, position and age per player). Award winners: `data/static/actual_mvps.json`, one entry per league and season with the award name and a source URL, checked in October 2026.
 
-**Secondary source: player metadata.** Minutes played, position, and age are read from `FULL_DICT_ROWS.pkl` → `ROWS_DICTS_SUMMARY` (FBref per-player season-summary tables), via `RENBALL_DATA_PATH`. This source covers the **top five leagues only**, it does **not** contain Eredivisie. Every per-90 calculation is therefore Top-5-only; absolute-EP boards retain all six leagues.
+**Scope:** the top 5 leagues, 2017-18 to 2023-24 (seven seasons). The Eredivisie, which Project 02's value model also uses, is left out of the boards so that every player is compared within the same five leagues the award check covers.
 
-**Leagues (6):** Premier League, La Liga, Serie A, Bundesliga, Ligue 1, Eredivisie.
-**Per-90 scope (5):** as above, minus Eredivisie.
-**Seasons (7):** 2017-2018 through 2023-2024.
-**Sample:** 39,381 goal events; 6,516 players with attached metadata.
+**Where the data ends:** 2023-24. The SCA2 data end there because the source discontinued them, so the study can't be extended to later seasons with the same method. Ages and the "young players" board refer to 30 June 2024.
 
-**Cleaning & filtering decisions:**
+**Sample:** 12,599 matches with a usable shot table and no goal of unknown minute; 34,054 goals; 6,566 players with minutes, 4,167 of them with at least 900. SCA1 is recorded for 94.3% of goals and SCA2 for 78.3% (77.7% to 79.1% in every season); the scorer is his own SCA1 on 10.4% of goals.
 
-1. **Unknown contributors dropped.** FBref rows where the scorer/SCA1/SCA2 string cannot be parsed (own goals, fragmented entries) aggregate to a fake `"Unknown"` player. They are dropped from every editorial board; the dashboard retains them for transparency.
-2. **Player pooling.** A player who appears under multiple `(scoring_team, player)` rows (because of a mid-period transfer) is pooled to a single row. EP and credit columns are summed; `primary_team` is set to the team where the player registered the most credits.
-3. **Position bucketing.** The FBref `Pos` string is reduced to its first token (`"CM,LB"` → `"CM"`) and mapped to one of four buckets (`GK`/`DF`/`MF`/`FW`). A player's position is the **modal** bucket across all observed season rows.
-4. **Age.** Taken as the **maximum** age observed across a player's rows, effectively age at the end of the most recent observed season (FBref's fractional-year format is preserved).
-5. **Minutes.** Summed across all in-scope league-seasons per player. Players with zero attached minutes are excluded from every per-90 board.
+**Units of analysis:** the *goal* for credits; the *player over all seven seasons* for the boards; the *player-league-season* for the award check; the *pair of consecutive seasons* for repeatability.
+
+**Cleaning and construction:**
+
+1. **Goal prices.** Project 02's team-minute model on its own sample (13,206 matches in six leagues, own-goal matches excluded), recomputed here and checked against Project 02's published values before anything else runs: a go-ahead goal from level is worth 0.733 EP in the first 15 minutes and 1.507 in the last 15.
+2. **Player identity.** FBref's per-match age (`years-days`) gives a birth date; players are keyed by name + birth date, so 45 names shared by different players are kept apart (shown with a birth year).
+3. **Credits.** A goal's recorded roles (scorer, SCA1, SCA2) become role credits (92,842). For the per-90 boards a player gets one credit per goal at its full value, whatever his roles, which merges 8,694 role credits (9.4%) into 84,148 credits. For the SCA2 board every role counts separately.
+4. **Minutes, position, age** come from the player summaries of the same matches, so a player's EP and minutes cover exactly the same games. Position is the one he played most minutes in (FBref's first listed position, grouped into GK, DF, MF, FW). Two credits have no matching appearance and are kept.
+5. **Own goals.** The shot table has none, so in matches with an own goal the running score is wrong from it on. 8.1% of goals come from such matches; they keep their value on the boards, as in Project 02.
 
 ---
 
 ## 3. Methodology
 
-### 3.1 The inherited value function
+### 3.1 Goal value and EP per 90
 
-Project 02 prices each goal by the expected league points it collects, conditioned on game state and minute. For a goal that moves the scoring team's goal difference from `g` to `g+1` in minute bin `b`:
+For a goal from goal difference \(g\) to \(g+1\) in 15-minute window \(b\), Project 02's value is
 
-```
-ep_collected_timed   = EP_T(g → g+1, b) − EP_T(g−1 → g, b)
-ep_collected_untimed = EP_T(g → g+1)    − EP_T(g−1 → g)        (bins pooled)
-```
+$$v = V(g+1, b) - V(g, b),$$
 
-where `EP_T(transition, b)` is the mean final-match points of the scoring teams over every goal that made that transition in that bin, so a goal is worth the gap in final points between teams that reached `g+1` with a goal and teams that reached `g`. The lowest observed transition in each bin is set to 0 (project 02's methodology, §3.4). A late equaliser is worth nearly a full point; a 4–0 consolation, almost nothing. Only one-step transitions in the `[−7, +7]` GD range are kept. This project does **not** rebuild the value function, it reuses project 02's `val_map_timed` / `val_map_untimed` verbatim.
+where \(V\) is the expected final points of a team in that state, estimated from every team-minute. A player's EP is the sum of \(v\) over his credits; EP per 90 is \(x_i = 90 \cdot \text{EP}_i / m_i\) for \(m_i\) minutes.
 
-### 3.2 The third credit layer (SCA2)
+### 3.2 Empirical Bayes shrinkage
 
-Project 02 builds contributor tables for two roles, `goalscorer` and `sca1_creator`. Project 03 adds a third by re-running the *identical* aggregation machinery on the `sca2_creator` column, the pre-assist, FBref's shot-creating action immediately preceding the assist. The result is a parallel SCA2 contributor table carrying the same EP, per-bin (`ep_bin_X`) and per-transition (`cnt_*`) breakdowns as the scorer and assist tables. No project-02 code is modified; the SCA2 build composes its public functions.
+Each player's observed rate is treated as a noisy measurement of his true rate \(\theta_i\):
 
-### 3.3 Three-layer credit (Q1a: the default model)
+$$x_i \mid \theta_i \sim N\!\left(\theta_i,\; v_i\right), \qquad v_i = \frac{90^2\,\varphi_p}{m_i}, \qquad \theta_i \sim N(\mu_p, \tau_p^2),$$
 
-The headline credit model gives **each of the three roles one credit per goal involved in**, and sums the EP each role collected:
+where \(p\) is the player's position. The dispersion \(\varphi_p\) is the per-minute variance of a player's match EP around his own rate, pooled within the position (quasi-Poisson):
 
-```
-three_layer = (scorer ⊕ sca1) ⊕ sca2
-```
+$$\varphi_p = \frac{\sum_i \sum_j (e_{ij} - r_i m_{ij})^2 / m_{ij}}{\sum_i (n_i - 1)},$$
 
-where `⊕` is project 02's outer-merge-and-sum on `(scoring_team, contributor)`. A player who scored a goal *and* pre-assisted a different goal receives two credits and the sum of both EP swings; a player who fills two roles on the same goal (scorer and SCA1, say) is credited once per role. `goals_involved` is the raw count of credit events; EP columns stack additively.
+with \(e_{ij}\) and \(m_{ij}\) the EP and minutes of player \(i\) in match \(j\), \(r_i\) his per-minute rate and \(n_i\) his matches. The prior mean and spread \(\mu_p, \tau_p^2\) are estimated by the DerSimonian–Laird method from players with at least 900 minutes. The adjusted rate and its posterior variance are
 
-### 3.4 Weighted credit (Q1b: the robustness check)
+$$\hat\theta_i = \mu_p + \frac{\tau_p^2}{\tau_p^2 + v_i}\,(x_i - \mu_p), \qquad s_i^2 = \frac{\tau_p^2\, v_i}{\tau_p^2 + v_i}.$$
 
-To test whether the equal split drives the ranking, the build re-walks every goal event and emits up to three weighted credit rows with weights applied to **EP only** (the `goals_involved` count stays a raw 1 per credit):
+| Position | Players (900+ min) | \(\mu\) (EP per 90) | \(\tau\) | \(\varphi\) |
+|---|---:|---:|---:|---:|
+| Forwards | 963 | 0.402 | 0.100 | 0.00468 |
+| Midfielders | 1,303 | 0.221 | 0.109 | 0.00263 |
+| Defenders | 1,588 | 0.114 | 0.062 | 0.00128 |
+| Goalkeepers | 313 | 0.009 | 0.003 | 0.00009 |
 
-| Role | Weight |
-|---|---:|
-| Scorer | 0.40 |
-| SCA1 (assist) | 0.35 |
-| SCA2 (pre-assist) | 0.25 |
+For a forward, the share of the gap to \(\mu\) that the shrinkage removes is 79% at 1,000 minutes, 56% at 3,000 and 28% at 10,000.
 
-The weighted EP is then pooled and normalised per 90 exactly as in Q1a. Comparing the Q1a and Q1b rankings (Q1 rank-shift) isolates the effect of the weighting choice.
+### 3.3 Rank intervals
 
-### 3.5 Per-90 normalisation
+All 4,167 eligible players' rates are drawn together from \(N(\hat\theta_i, s_i^2)\) 4,000 times (seed 2026); each draw is ranked, and a player's plausible rank is the 2.5th to 97.5th percentile of his ranks. The top-10 probability is the share of draws in which he ranks 10th or better. The draws are independent across players: they carry each player's sampling noise, not the shared uncertainty of the goal prices.
 
-Total EP rewards volume; **EP per 90 minutes** rewards rate:
+### 3.4 Measured intervals
 
-```
-ep_per_90 = (exp_points_collected_timed / minutes_played) × 90
-```
+The 95% ranges on measured EP and EP per 90 come from Project 02's 1,000 match-bootstrap resamples (stratified by league, seed 2026): each resample re-prices every goal with that resample's values and reweights the matches each credit and each minute came from.
 
-Because `minutes_played` comes from the Top-5-only summary tables, **every per-90 board excludes Eredivisie**. This scope is stamped into the `scope` / `scope_note` metadata of every per-90 view and surfaced as subtitle text on the dashboard and editorial page.
+### 3.5 Credit rules
 
-### 3.6 Qualification thresholds
+Three rules, each shrunk the same way: full credit once per player per goal (the headline); the old rule, every role a credit (a self-assisted goal counts twice); and a split of each goal's value 40/35/25 between scorer, SCA1 and SCA2, renormalised over the roles recorded for that goal. Ranks among the 4,167 eligible players are compared by top-10 overlap and rank correlation.
 
-| View | Threshold | Rationale |
-|---|---|---|
-| Q1a, Q1b, Q2, Q5 | ≥ 1,000 minutes | ≈ 11 full matches, enough to stabilise a per-90 rate |
-| Q7 (young) | ≥ 500 minutes | young players have less playing time; floor lowered deliberately |
-| Q3 (late-game) | ≥ 15 credits (dashboard) · ≥ 30 (editorial) | the editorial cut removes super-sub small-sample specialists |
-| Q4 (efficiency) | ≥ 5 credits (dashboard) · ≥ 20 (editorial) | ditto, for the ratio boards |
+### 3.6 Repeatability
 
-The dashboard exposes the looser threshold for transparency; the editorial page uses the stricter "substantive" cut so the narrative isn't carried by four-game cameos.
+Per player-season (all five leagues together), the Pearson correlation between consecutive seasons of: EP per 90 and goal involvements per 90 (900+ minutes in both seasons), EP per involvement (10+ involvements in both) and the SCA2 share of role credits (20+ role credits in both). Intervals: 1,000 bootstrap resamples of players.
 
-### 3.7 The seven research questions
+### 3.7 Award check
 
-| Q | Board | Key metric | Scope |
-|---|---|---|---|
-| Q1a | Full-credit leaderboard | EP/90, credits 1/1/1 | Top-5, ≥1,000 min |
-| Q1b | Weighted leaderboard | weighted EP/90 (0.40/0.35/0.25) | Top-5, ≥1,000 min |
-| Q2 | Per-(league × season) MVPs + 5-league combined | top EP/90 per cell | Top-5, ≥1,000 min/season |
-| Q3 | Late-game specialists | share of EP from the 60–90 bins | all 6 leagues |
-| Q4 | Efficiency ratios | EP per credit (Q4a); time multiplier (Q4b) | all 6 leagues |
-| Q5 | Position-adjusted (DF/MF/FW) | EP/90 by modal position | Top-5, ≥1,000 min |
-| Q6 | Hidden architects | absolute & per-90 SCA2 EP; role split | abs: all 6; per-90: Top-5 |
-| Q7 | Young players (≤ 23) | EP/90 | Top-5, ≥500 min |
+Per league-season, every player with 900+ minutes gets a season rate shrunk the same way (priors re-estimated from player-league-seasons). The model's pick is the highest adjusted season rate. It is compared with the actual award: PFA Players' Player of the Year (Premier League), Trofeo Alfredo Di Stéfano (La Liga; La Liga's own award was not given for most of the period), Serie A MVP (Serie A Footballer of the Year for 2017-18), VDV Player of the Season (Bundesliga) and UNFP Player of the Year (Ligue 1). Goalkeeper winners can't be picked and are left out of the counts. Baselines: a qualified player picked at random (expected matches \(\sum_c 1/n_c\)), the goals-plus-assists leader and the total-EP leader.
 
-Q2 annotates each cell with the real-world award winner where `data/static/actual_mvps.json` has been manually curated. Q4c (EP per shot) is **deferred**: it requires non-goal shot extraction not present in project 02's goal-events subset.
+### 3.8 Decisive goals
 
-### 3.8 Software stack
+EP per involvement is EP divided by credits: the average value of the goals a player was involved in. Its 95% interval comes from the same bootstrap; players with 50+ involvements are compared with the average credit, and the number clearly above or below is set against the 2.5% per side expected by chance.
 
-- Python 3.12 (repo-root project venv)
-- `pandas`, `numpy`: aggregation and per-event credit walking
-- `pickle` with a pandas-<2 index shim for the legacy `FULL_DICT_ROWS.pkl`
-- Output: `data/data.json` (editorial payload) and `data/dashboard/` (9 per-view JSONs + manifest)
-- `code/enrich.py` owns all project-03 logic; `code/build.py` orchestrates project 02's pipeline + this enrichment
+### 3.9 Team context
+
+A player's team share is his EP divided by his team's goal value while he played, with each match's team EP weighted by his minutes over 90.
+
+### 3.10 Software
+
+Python 3.12 (pandas, NumPy), Project 02's `matches.py` and `value_model.py`, this project's `players.py` and `shrink.py`; Chart.js on the page, Tabulator on the dashboard, python-pptx for the deck.
 
 ---
 
 ## 4. Results
 
-> All numbers come from `code/build.py` → `data/data.json` and are surfaced live in the editorial page.
+### 4.1 The board
 
-### 4.1 Q1a: the model clears the eye test
+| # | Player | Team | Minutes | Measured EP / 90 | 95% range | Adjusted | Plausible rank | Top-10 chance | Team share |
+|---:|---|---|---:|---:|---:|---:|---:|---:|---:|
+| 1 | Lionel Messi | Barcelona | 16,516 | 0.908 | 0.812–1.019 | 0.813 | 1–4 | 100% | 66.2% |
+| 2 | Kylian Mbappé | Paris S-G | 16,403 | 0.858 | 0.756–0.960 | 0.773 | 1–7 | 100% | 60.4% |
+| 3 | Neymar | Paris S-G | 9,354 | 0.824 | 0.706–0.938 | 0.702 | 1–34 | 78% | 58.0% |
+| 4 | Erling Haaland | Dortmund | 10,702 | 0.798 | 0.666–0.939 | 0.695 | 2–31 | 75% | 55.7% |
+| 5 | Robert Lewandowski | Bayern Munich | 18,888 | 0.736 | 0.648–0.832 | 0.680 | 2–33 | 67% | 52.0% |
+| 6 | Josip Iličić | Atalanta | 8,176 | 0.802 | 0.633–0.988 | 0.675 | 2–57 | 60% | 63.2% |
+| 7 | Cristiano Ronaldo | Juventus | 13,704 | 0.748 | 0.638–0.859 | 0.673 | 2–41 | 59% | 58.5% |
+| 8 | Paulo Dybala | Juventus | 13,538 | 0.744 | 0.627–0.855 | 0.669 | 3–45 | 56% | 56.9% |
+| 9 | Mohamed Salah | Liverpool | 20,697 | 0.705 | 0.618–0.789 | 0.658 | 3–42 | 45% | 53.6% |
+| 10 | Harry Kane | Tottenham | 20,645 | 0.703 | 0.622–0.792 | 0.656 | 3–43 | 44% | 60.7% |
 
-| # | Player | Team | Minutes | Credits | EP/90 |
-|--:|---|---|--:|--:|--:|
-| 1 | Lionel Messi | Barcelona | 16,516 | 356 | **1.141** |
-| 2 | Kylian Mbappé | Paris S-G | 16,403 | 334 | 1.054 |
-| 3 | Neymar | Paris S-G | 9,354 | 205 | 0.986 |
-| 4 | Cole Palmer | Chelsea | 3,111 | 50 | 0.983 |
-| 5 | Josip Iličić | Atalanta | 8,176 | 139 | 0.958 |
+Only Messi and Mbappé have a top-10 probability of 95% or more. The plausible ranks of the top 10 reach down to 57. Messi's adjusted rate (0.813) sits at the bottom of his measured range: a normal prior pulls genuine outliers in somewhat too hard (§6).
 
-The top of the board is exactly the consensus elite, which is the point. Before the framework is trusted to surface surprises, it has to recover what everyone already knows.
+### 4.2 Raw versus adjusted
 
-### 4.2 Q1b: weighting barely moves the answer
+| Player | Minutes | Measured EP / 90 | Adjusted | Adjusted rank | Pulled toward the average |
+|---|---:|---:|---:|---:|---:|
+| Cole Palmer | 3,111 | 0.841 | 0.600 | 19 | 54.9% |
+| Victor Boniface | 1,546 | 0.804 | 0.518 | 69 | 71.0% |
+| Adem Ljajić | 2,185 | 0.788 | 0.533 | 50 | 44.9% |
+| Clinton N'Jie | 1,238 | 0.775 | 0.494 | 99 | 75.4% |
+| Artem Dovbyk | 2,587 | 0.754 | 0.544 | 46 | 59.5% |
 
-Re-running with `0.40 / 0.35 / 0.25` weights leaves **the top eight essentially identical**. The biggest movers are pure scorers gaining a few places under the heavier scoring weight (Lewandowski +6, Dovbyk +7) and creator-heavy names slipping (Jallow −9, Ljajić −9). That the carefully-tuned weights reproduce the simple `1/1/1` board *is* the robustness result: the ranking is not an artefact of the credit split.
+These five of the raw top 10 leave the adjusted top 10; the other five (Messi, Mbappé, Neymar, Iličić, Haaland) stay.
 
-### 4.3 Q2: season-by-season MVPs
+### 4.3 Credit rules
 
-The model's top per-90 pick for La Liga 2022-2023 is **Nicolas Jackson at Villarreal (1.211 EP/90, 1,598 minutes, 26 credits)**, the season before he joined Chelsea. The 5-league combined pick for 2020-2021 is **Luis Muriel at Atalanta (1.605 EP/90, 43 credits)**, not what the trophy cabinet recorded.
+| Rule | Top-10 overlap with full credit | Rank correlation | Leader |
+|---|---:|---:|---|
+| Every role a credit | 10 | 0.998 | Lionel Messi |
+| 40/35/25 split | 9 | 0.994 | Lionel Messi |
 
-### 4.4 Q3: late-game substantives (≥ 30 credits)
+The split favours finishers: Mauro Icardi rises from 39 to 17 and Kevin De Bruyne falls from 16 to 43.
 
-| # | Player | Team | Credits | Late share | Late EP / Total EP |
-|--:|---|---|--:|--:|--:|
-| 1 | Cristian Tello | Betis | 44 | **73.8%** | 28.2 / 38.2 |
-| 2 | Sergio León | Betis | 33 | 66.7% | 17.3 / 25.9 |
-| 3 | Matías Vecino | Inter | 47 | 65.9% | 24.2 / 36.7 |
+### 4.4 Repeatability
 
-"Late share" is the fraction of a player's EP collected in the 60–75 and 75–90 bins. Tello's contribution lives almost entirely in the high-leverage minutes.
+| Measure | r | 95% CI | Season pairs | Players |
+|---|---:|---:|---:|---:|
+| Goal involvements per 90 | 0.76 | 0.74–0.78 | 5,665 | 2,161 |
+| EP per 90 | 0.69 | 0.67–0.71 | 5,665 | 2,161 |
+| SCA2 share of role credits | 0.38 | 0.27–0.48 | 352 | 160 |
+| EP per involvement | 0.17 | 0.11–0.23 | 1,329 | 586 |
 
-### 4.5 Q4: efficiency ratios (≥ 20 credits)
+### 4.5 Award check
 
-- **Q4a · EP per credit:** Evann Guessand leads at **1.105 EP per credit**: he scores and creates in higher-leverage moments per goal than anyone else above the substantive threshold.
-- **Q4b · time-aware multiplier (`ep_timed / ep_untimed`):** Guessand again at **1.196×**: the time dimension upgrades him most over the time-blind baseline.
+Of 34 league-seasons with an award, one winner is a goalkeeper (Marc-André ter Stegen, La Liga 2022-23), leaving 33. The model's pick names the winner in **12**; the winner is in its top 3 in 20 and its top 10 in 30, with a median rank of 2. A random qualified player (242 to 321 per league-season) would name about 0.1. The goals-plus-assists leader names 17 and the total-EP leader 10.
 
-### 4.6 Q5: position-adjusted (outfield only)
+| League | 2017-18 | 2018-19 | 2019-20 | 2020-21 | 2021-22 | 2022-23 | 2023-24 |
+|---|---|---|---|---|---|---|---|
+| Premier League | Salah ✓ | Agüero (van Dijk #174) | Mané (De Bruyne #4) | Fernandes (De Bruyne #56) | Salah ✓ | Haaland ✓ | Palmer (Foden #10) |
+| La Liga | Messi ✓ | Messi ✓ | Messi (Benzema #2) | Messi (Suárez #6) | Benzema ✓ | Griezmann (ter Stegen, GK) | Sørloth (Bellingham #3) |
+| Serie A | Dybala (Icardi #7) | Mertens (Ronaldo #4) | Ronaldo (Dybala #3) | Muriel (Lukaku #2) | Immobile (Leão #5) | Osimhen (Kvaratskhelia #2) | Dybala (Martínez #8) |
+| Bundesliga | Lewandowski ✓ | Sancho (Reus #4) | Sancho (Lewandowski #2) | Lewandowski ✓ | Schick (Nkunku #4) | Nkunku (Bellingham #70) | Guirassy (Wirtz #7) |
+| Ligue 1 | Fekir (Neymar #2) | Mbappé ✓ | Neymar (no award) | Mbappé ✓ | Mbappé ✓ | Messi (Mbappé #3) | Mbappé ✓ |
 
-The midfielder panel surfaces the framework's most stable elite pick: **Kevin De Bruyne, MF #3, over 14,674 minutes and 206 credits at 0.734 EP/90**, by far the largest sample of any top-3 pick on any board in this project. Jamal Musiala sits MF #2 (6,302 minutes, 0.786). The defender panel is dominated by wing-back archetypes (Grimaldo). **Goalkeepers are excluded** (see §5).
+Cell: the model's pick; in brackets, the winner and his rank on the model's list; ✓ the pick won.
 
-### 4.7 Q6: the hidden architects (the marquee finding)
+### 4.6 SCA2
 
-Top SCA2 EP collectors, all six leagues pooled:
+| # | Player | Team | SCA2 credits | EP from SCA2 | 95% range | Plausible rank | Share from SCA2 |
+|---:|---|---|---:|---:|---:|---:|---:|
+| 1 | Lionel Messi | Barcelona | 89 | 51.65 | 39.31–66.71 | 1–4 | 24.4% |
+| 2 | Julian Brandt | Dortmund | 66 | 40.98 | 29.22–54.22 | 1–26 | 38.5% |
+| 3 | Kylian Mbappé | Paris S-G | 61 | 37.42 | 27.00–48.71 | 2–41 | 19.5% |
+| 4 | Mohamed Salah | Liverpool | 58 | 36.73 | 24.61–49.10 | 2–59 | 19.2% |
+| 5 | Joshua Kimmich | Bayern Munich | 66 | 35.12 | 24.52–46.81 | 2–60 | 40.7% |
 
-| # | Player | Team | SCA2 credits | SCA2 EP |
-|--:|---|---|--:|--:|
-| 1 | Lionel Messi | Barcelona | 89 | 51.69 |
-| 2 | **Julian Brandt** | **Dortmund** | **66** | **40.93** |
-| 3 | Kylian Mbappé | Paris S-G | 60 | 37.55 |
+Among the 150 players with 100+ role credits the median SCA2 share is 22.5%; the highest are Luka Modrić (41.7%), Joshua Kimmich (40.7%) and Jordan Veretout (40.0%).
 
-Splitting each player's total EP by role exposes Brandt's structural difference:
+### 4.7 Decisive goals
 
-| Player | Scorer EP | SCA1 EP | SCA2 EP | SCA2 share |
-|---|--:|--:|--:|--:|
-| **Julian Brandt** | 26.10 | 38.75 | 40.93 | **38.7%** |
-| Nabil Fekir | 35.24 | 39.76 | 34.65 | 31.6% |
-| Lionel Messi | 84.15 | 73.61 | 51.69 | 24.7% |
-| Kylian Mbappé | 97.28 | 57.25 | 37.55 | 19.6% |
-| Mohamed Salah | 96.58 | 58.20 | 37.44 | 19.5% |
+The average credit is worth 0.687 EP. Of 432 players with 50+ involvements, 26 are clearly above it and 53 clearly below (about 11 per side expected by chance). The highest is M'Baye Niang (0.865, 0.778–0.952); the five lowest (Leroy Sané 0.477, Sergio Agüero 0.488, Neymar 0.492, Philippe Coutinho 0.503, Julian Draxler 0.506) all played for Barcelona, Bayern Munich, Manchester City or Paris S-G, whose goals often came with the match already decided.
 
-The pre-assist is Brandt's single largest contribution layer, a profile no pure goalscorer shares. **Brandt is what the model exists to find.**
+### 4.8 Positions and young players
 
-### 4.8 Q7: young players to watch (age ≤ 23)
-
-The board mixes credible established names (Musiala, Palmer) with very-low-sample flyers (Fofana 1.249 EP/90 on 559 minutes; Durán 1.24 on 611). The most interesting cell is at the bottom: **Lamine Yamal, Q7 #10, 0.738 EP/90 across 2,209 minutes and 23 credits at age 16.9**, the youngest player in the dataset to clear 500 minutes, and his rate rests on nearly a full season of evidence rather than a cameo.
-
----
-
-## 5. Limitations
-
-This project inherits every limitation of project 02's value function and adds its own:
-
-1. **No expected-goal weighting** (inherited). Every goal counts 1.0: a tap-in and a 30-yard volley value identically.
-2. **Penalties are not separated, and own goals are missing** (inherited). Penalties trigger the same transition value as open-play goals; own goals are not in the shot data, so some final scores and game states are wrong.
-3. **Observational, not causal** (inherited). EP is the gap between the two states a goal connects, not the goal's counterfactual effect on the final result.
-4. **Credit caps at SCA2.** Project 02 stopped at SCA1; this project adds SCA2 but goes no further. Build-up sequences distribute value further upstream than three layers capture.
-5. **Per-90 boards exclude Eredivisie.** The minutes source (`FULL_DICT_ROWS.pkl`) covers the top five leagues only. Absolute boards (Q3, Q4, the Q6 absolute board) include all six; per-90 boards (Q1, Q2, Q5, Q6 per-90, Q7) do not. Eredivisie-only players are absent from every per-90 ranking.
-6. **The model has no opinion on goalkeepers.** The three credited touchpoints are ones GKs occupy rarely; the top GK posts ~0.1 EP/90 against ~1.1 for the top forward, a coverage artefact, not a value judgement. GK contribution needs a different model (shot-stopping over expected, distribution value). Q5 reports outfield panels only.
-7. **Equal `1/1/1` credit is a modelling choice.** Q1b shows the ranking is robust to a reasonable re-weighting, but the "right" weights are not estimated from data; they are a stipulation.
-8. **Metadata is approximate.** Position is the modal FBref bucket; age is the maximum observed (≈ age at end of latest season). Both are season-summary derived, not match-resolved.
-9. **Q4c (EP per shot) is deferred.** It requires non-goal shot extraction absent from the current goal-events pipeline, tracked as a TODO.
+Best adjusted rate by position: forwards Messi (0.813), midfielders Kevin De Bruyne (0.604, rank 16 overall), defenders Raphaël Guerreiro (0.389, rank 557). The best goalkeeper's adjusted rate is 0.012 against a median forward's 0.391. Among 505 players aged 23 or under on 30 June 2024 with 900+ minutes, Erling Haaland leads (0.695, rank 4), then Cole Palmer (0.600) and Jamal Musiala (0.533).
 
 ---
 
-## 6. Conclusion
+## 5. Practical takeaways
 
-Crediting a third contribution layer does not change who sits at the very top of European football: Messi, Mbappé and Neymar lead the per-90 board with or without the pre-assist, and re-weighting the layers barely moves anyone. That stability is what licenses the interesting claim underneath it: once the SCA2 layer is priced, a small set of players whose value the box score cannot see comes into focus. Julian Brandt is the cleanest example, second only to Messi in pre-assist EP, with the pre-assist as his single largest contribution layer, a profile pure goalscorers never show.
+### Evidence labels
 
-The framework is a value-attribution lens, not a recruitment oracle. It says nothing about defending, goalkeeping, or chance creation that doesn't end in a goal, and it is calibrated to leverage rather than to a counterfactual. What it does well is name the contribution football's mainstream stats systematically under-credit. The next iterations are clear: extend credit past SCA2, fold in xG, and build the GK model the EP framework structurally cannot provide.
+- **Strong**: large sample; the 95% interval excludes zero (or, for a "no effect" claim, sits inside a pre-stated equivalence margin); survives the main controls; holds across leagues or seasons.
+- **Moderate**: consistent direction and plausible size, with one gap: interval touches zero, single method or sample, or partial replication.
+- **Exploratory**: small samples, interval comfortably includes zero, untested confounders, or a pattern found by looking rather than tested. A question worth asking, not advice.
+
+### Who should care
+
+- **Clubs (Strong):** rank on adjusted rates, not raw per-90s: 5 of the raw top 10 drop out once short careers are allowed for. Basis: 4,167 players, position priors, season-to-season r = 0.69.
+- **Clubs (Strong):** EP per 90 repeats (r = 0.69); how decisive a player's goals look barely does (r = 0.17). Pay for involvement.
+- **Agents (Moderate):** a pre-assist habit is partly real (SCA2 share r = 0.38, 352 season pairs, SCA2 recorded on 78.3% of goals).
+- **Agents (Exploratory):** awards follow box scores: the goals-plus-assists leader matched 17 of 33 winners, the model 12; five different awards, a count rather than a test.
+- **Coaches, managers:** no defensible claim from this study. It prices outcomes; it says nothing about how to train or change a match.
+
+---
+
+## 6. Limitations
+
+1. **Prices, not causes.** Goal values come from what teams at that score went on to do; they say how much a goal mattered, not how hard it was.
+2. **Three roles only.** Scorer, SCA1 and SCA2 are credited; defending, pressing, off-ball runs and earlier build-up earn nothing, so defenders and goalkeepers are undervalued by design.
+3. **No team or league adjustment.** Players at high-scoring clubs get more involvements (the team share shows how much ran through them, nothing is subtracted); goal prices are pooled over six leagues.
+4. **SCA2 coverage.** Missing for 21.7% of goals, and the data end in 2023-24 because the source discontinued it.
+5. **Normal prior.** It pulls genuine outliers in too hard; the order at the top is robust, the level is conservative.
+6. **Independent draws.** Plausible ranks carry each player's own noise, not the shared uncertainty of the goal prices.
+7. **Own goals.** Goals in matches with an own goal (8.1%) keep a slightly mispriced value.
+8. **Awards.** Five awards with different voters and one winner per season; a reality check, not a test.
+9. **Weights.** The 40/35/25 split is a judgement, which is why it is a check and not the headline.
+
+---
+
+## 7. Conclusion
+
+Priced by what each goal was worth and shared with the players who made it, the top of European football is Messi and Mbappé, clear of everyone at 0.813 and 0.773 EP per 90. Below them a ranking is a shortlist: the number 3 could plausibly be anywhere from 1 to 34. Short careers inflate raw per-90 rates, the volume of a player's involvement repeats while the decisiveness of his goals does not, and award voters follow the box score more closely than the model does.
 
 ---
 
 ## References
 
-- **Inherited framework:** [Project 02, Not All Goals Are Equal](https://renball.com/projects/02-points-by-gamestate/), the time-aware expected-points value function.
-- **Source data:** FBref ([fbref.com](https://fbref.com)). Shot tables (`match_data_final_<league>.pkl`) and per-player summary tables (`FULL_DICT_ROWS.pkl`).
-- **Interactive dashboard:** [`dashboard.html`](dashboard.html): all seven ranking datasets, per-league and per-season drill-down, search, filtering, XLSX/CSV export.
-- **Editorial summary:** [`analysis.html`](analysis.html) in this project folder.
-- **Project page:** [renball.com/projects/03-true-contributors/](https://renball.com/projects/03-true-contributors/)
-- **Source code:** `code/`: `build.py` (orchestrator), `enrich.py` (SCA2 merge, three-layer credit, Q1–Q7), `report.py`.
-
----
-
-*Methodology document generated alongside [analysis.html](analysis.html) and [slides.pdf](slides.pdf). A print version is in [methodology.pdf](methodology.pdf).*
+[^1]: FBref, match reports and shot tables, top 5 European leagues, 2017-18 to 2023-24. <https://fbref.com>
+[^2]: Renball Project 02, *Not All Goals Are Equal*. <https://renball.com/projects/02-points-by-gamestate/analysis.html>
+[^3]: DerSimonian, R. and Laird, N. (1986). Meta-analysis in clinical trials. *Controlled Clinical Trials* 7(3), 177–188.
+[^4]: Efron, B. and Morris, C. (1975). Data analysis using Stein's estimator and its generalizations. *Journal of the American Statistical Association* 70(350), 311–319.
+[^5]: Award winners and sources: `data/static/actual_mvps.json` (PFA, Marca's Trofeo Alfredo Di Stéfano, Lega Serie A, VDV, UNFP).

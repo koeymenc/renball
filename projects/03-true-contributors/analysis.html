@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The True Contributors · Renball</title>
-<meta name="description" content="Applies the expected-points value model from project 02 to discover and rank players whose true contribution diverges from their box-score reputation. Scorer, assist-creator and pre-assist-creator all credited.">
+<meta name="description" content="Who adds the most expected points per 90 minutes in Europe's top 5 leagues, once every goal is priced by the scoreline and minute it changed and shared with the players who made it, and once luck and short careers are allowed for.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,7 +25,6 @@
   .project-hero h1 em { font-style: italic; color: var(--accent); }
   .project-hero .lede { color: var(--text-secondary); font-size: 1.1rem; max-width: 760px; line-height: 1.7; }
   .project-hero .lede strong { color: var(--text); font-weight: 500; }
-
   .meta-row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 1.5rem; }
   .meta-pill {
     font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em;
@@ -45,7 +44,40 @@
   }
   .download-btn:hover { color: var(--accent); border-color: var(--accent-dim); background: var(--accent-glow); }
   .download-btn.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
-  .download-btn.primary:hover { background: var(--accent-bright); }
+  .download-btn.primary:hover { background: var(--accent-dim); }
+
+  /* ── Sections ── */
+  section.proj { margin: 3.5rem 0; }
+  section.proj h2 {
+    font-family: var(--serif); font-size: 1.85rem;
+    margin-bottom: 1.25rem; letter-spacing: -0.01em;
+  }
+  section.proj h2 em { font-style: italic; color: var(--accent); }
+  section.proj h3 {
+    font-family: var(--serif); font-size: 1.3rem; color: var(--text); margin: 0 0 0.75rem;
+  }
+  section.proj p { color: var(--text-secondary); margin-bottom: 1.25rem; }
+  section.proj p strong { color: var(--text); }
+  section.proj a { color: var(--accent); }
+  section.proj code {
+    font-family: var(--mono); font-size: 0.85em; color: var(--accent);
+    background: var(--accent-glow); padding: 0.05em 0.35em; border-radius: 2px;
+  }
+  .hypothesis-pill {
+    display: inline-block; font-family: var(--mono); font-size: 0.62rem;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 0.3rem 0.7rem; margin-bottom: 0.75rem;
+    color: var(--accent); border: 1px solid var(--accent-dim); background: var(--accent-glow);
+  }
+  .explainer {
+    border-left: 2px solid var(--border-light); padding: 0.2rem 0 0.2rem 1.1rem; margin: 0 0 1.5rem;
+  }
+  .explainer p { margin-bottom: 0.6rem; }
+  .explainer p:last-child { margin-bottom: 0; }
+  .explainer .lbl {
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-muted); display: block; margin-bottom: 0.35rem;
+  }
 
   /* ── Stat callouts ── */
   .stats-row {
@@ -66,288 +98,62 @@
     margin-top: 0.55rem; line-height: 1.5;
   }
 
-  /* ── Sections ── */
-  section.proj { margin: 4rem 0; }
-  section.proj h2 {
-    font-family: var(--serif); font-size: 1.85rem;
-    margin-bottom: 1.25rem; letter-spacing: -0.01em;
-  }
-  section.proj h2 em { font-style: italic; color: var(--accent); }
-  section.proj p { color: var(--text-secondary); margin-bottom: 1.25rem; }
-  section.proj p strong { color: var(--text); }
-  section.proj code {
-    font-family: var(--mono); font-size: 0.85em; color: var(--accent);
-    background: var(--accent-glow); padding: 0.05em 0.35em; border-radius: 2px;
-  }
-
-  /* ── Chart container ── */
-  .chart-wrap {
-    background: var(--bg-card); border: 1px solid var(--border);
-    padding: 1.75rem; margin: 1.5rem 0;
-  }
+  /* ── Charts ── */
+  .chart-wrap { background: var(--bg-card); border: 1px solid var(--border); padding: 1.75rem; margin: 1.5rem 0; }
   .chart-wrap canvas { max-width: 100%; }
   .chart-caption {
     font-family: var(--mono); font-size: 0.7rem; color: var(--text-muted);
     margin-top: 0.85rem; line-height: 1.6; letter-spacing: 0.04em;
   }
-  .chart-caption .scope {
-    display: inline-block; color: var(--accent-dim);
-    border-left: 2px solid var(--accent-dim); padding-left: 0.5rem; margin-left: 0.5rem;
-  }
   .chart-title {
     font-family: var(--serif); font-size: 1.4rem; color: var(--text);
     letter-spacing: -0.01em; margin-bottom: 1rem;
   }
+  .tall { position: relative; height: 520px; }
+  .mid { position: relative; height: 380px; }
+  .short { position: relative; height: 260px; }
+  .nw { white-space: nowrap; }
+  .two-up { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  .two-up .chart-wrap { margin: 0; }
 
-  /* ── Sub-finding pull ── */
-  .sub-finding {
-    background: var(--bg-elevated); border: 1px solid var(--border);
-    border-left: 3px solid var(--accent-dim); padding: 1rem 1.25rem;
-    margin: 1.5rem 0; font-family: var(--mono); font-size: 0.78rem;
-    color: var(--text-secondary); line-height: 1.7;
+  /* ── Tables ── */
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .table-scroll table.proj { min-width: 640px; }
+  table.proj { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: 0.85rem; }
+  table.proj th, table.proj td { padding: 0.55rem 0.7rem; text-align: left; border-bottom: 1px solid var(--border); }
+  table.proj th {
+    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border-light);
   }
-  .sub-finding strong { color: var(--accent); font-weight: 500; }
+  table.proj td { color: var(--text-secondary); }
+  table.proj td:first-child { color: var(--text); }
+  table.proj td.numeric, table.proj th.numeric { text-align: right; font-family: var(--mono); }
+  table.proj td.player { color: var(--text); }
+  table.proj tr.primary td { color: var(--accent); }
+  table.proj tr.muted td { opacity: 0.55; }
 
-  /* ── Slope chart (custom SVG) ── */
-  .slope-wrap { background: var(--bg-card); border: 1px solid var(--border); padding: 1.5rem; margin: 1.5rem 0; }
-  #slope-svg { width: 100%; height: 380px; display: block; }
-  .slope-legend {
-    font-family: var(--mono); font-size: 0.65rem; color: var(--text-muted);
-    letter-spacing: 0.06em; display: flex; gap: 1.5rem; margin-top: 0.75rem;
+  /* ── Award grid ── */
+  .grid-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table.award { border-collapse: collapse; font-family: var(--mono); font-size: 0.68rem; min-width: 900px; width: 100%; }
+  table.award th, table.award td { border: 1px solid var(--border); padding: 0.5rem 0.45rem; vertical-align: top; }
+  table.award thead th {
+    background: var(--bg-elevated); color: var(--text-secondary); font-weight: 500;
+    letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.6rem; text-align: center;
   }
-  .slope-legend .swatch { display: inline-block; width: 14px; height: 3px; vertical-align: middle; margin-right: 0.5rem; }
+  table.award tbody th { background: var(--bg-elevated); color: var(--text-secondary); font-weight: 500; text-align: left; }
+  table.award td .pick { color: var(--text); line-height: 1.3; }
+  table.award td .win { color: var(--text-muted); margin-top: 0.3rem; line-height: 1.3; }
+  table.award td .rk { color: var(--text-secondary); }
+  table.award td.hit { background: var(--accent-glow); }
+  table.award td.hit .pick { color: var(--accent); }
+  table.award td.none { color: var(--text-muted); }
 
-  /* ── Q2 MVP grid table ── */
-  .grid-wrap { overflow-x: auto; }
-  table.mvp-grid {
-    width: 100%; border-collapse: collapse;
-    font-family: var(--sans); font-size: 0.85rem; margin: 1rem 0;
-  }
-  table.mvp-grid th, table.mvp-grid td {
-    padding: 0.7rem 0.8rem; text-align: left; border: 1px solid var(--border);
-    vertical-align: top;
-  }
-  table.mvp-grid thead th {
-    background: var(--bg-elevated); color: var(--text-secondary);
-    font-family: var(--mono); font-weight: 500; font-size: 0.65rem;
-    letter-spacing: 0.08em; text-transform: uppercase; text-align: center;
-  }
-  table.mvp-grid thead th.season-col { text-align: left; }
-  table.mvp-grid tbody th {
-    background: var(--bg-elevated); color: var(--text-secondary);
-    font-family: var(--mono); font-weight: 500; font-size: 0.7rem;
-    letter-spacing: 0.06em; text-align: left;
-  }
-  table.mvp-grid td .player { color: var(--text); font-weight: 500; display: block; line-height: 1.3; }
-  table.mvp-grid td .team-line {
-    font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.05em;
-    color: var(--text-muted); margin-top: 0.2rem;
-  }
-  table.mvp-grid td .ep-val { color: var(--accent); font-family: var(--mono); font-size: 0.7rem; }
-  table.mvp-grid td.empty { color: var(--text-muted); text-align: center; font-style: italic; font-size: 0.75rem; }
-  table.mvp-grid td.spotlight {
-    background: var(--accent-glow); border-color: var(--accent-dim);
-    position: relative;
-  }
-  table.mvp-grid td.spotlight::after {
-    content: '✓ MODEL SPOTTED';
-    position: absolute; top: 0.25rem; right: 0.4rem;
-    font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.1em;
-    color: var(--accent);
-  }
-  table.mvp-grid td.match {
-    background: var(--accent-glow);
-    box-shadow: inset 0 0 0 1px var(--accent-dim);
-  }
-  table.mvp-grid td .actual-line {
-    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.04em;
-    margin-top: 0.45rem; padding-top: 0.4rem; border-top: 1px solid var(--border);
-    line-height: 1.4;
-  }
-  table.mvp-grid td .actual-line.match { color: var(--accent); font-weight: 500; }
-  table.mvp-grid td .actual-line.diff { color: var(--text-secondary); }
-  table.mvp-grid td .actual-line.diff .dnote {
-    display: block; color: var(--text-muted); font-size: 0.92em; opacity: 0.8; margin-top: 0.1rem;
-  }
-  table.mvp-grid td .actual-line.none { color: var(--text-muted); font-style: italic; }
+  /* ── Position panels ── */
+  .pos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  .pos-panel { background: var(--bg-card); border: 1px solid var(--border); padding: 1.25rem; }
+  .pos-panel table.proj { margin: 0; font-size: 0.8rem; }
 
-  /* ── Position panels (Q5) ── */
-  .pos-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0;
-  }
-  .pos-panel {
-    background: var(--bg-card); border: 1px solid var(--border); padding: 1.25rem;
-  }
-  .pos-panel h3 {
-    font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.14em;
-    text-transform: uppercase; color: var(--accent); margin-bottom: 1rem;
-  }
-  table.pos-table {
-    width: 100%; border-collapse: collapse;
-    font-family: var(--sans); font-size: 0.78rem;
-  }
-  table.pos-table td {
-    padding: 0.45rem 0.4rem; border-bottom: 1px solid var(--border);
-    vertical-align: top;
-  }
-  table.pos-table td:first-child {
-    font-family: var(--mono); color: var(--text-muted); width: 1.5rem; font-size: 0.7rem;
-  }
-  table.pos-table td .player { color: var(--text); font-weight: 500; }
-  table.pos-table td .team {
-    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.04em;
-    color: var(--text-muted); display: block; margin-top: 0.15rem;
-  }
-  table.pos-table td.ep { color: var(--accent); font-family: var(--mono); text-align: right; white-space: nowrap; }
-  table.pos-table td.mins {
-    font-family: var(--mono); font-size: 0.68rem; color: var(--text-secondary); text-align: right;
-  }
-  table.pos-table td.mins.small { color: var(--text-muted); font-style: italic; }
-  .gk-empty {
-    background: var(--bg-card); border: 1px dashed var(--border-light);
-    padding: 1.5rem 1.75rem; margin: 1.5rem 0; position: relative;
-  }
-  .gk-empty::before {
-    content: 'GK · STRUCTURAL BLIND SPOT';
-    position: absolute; top: -0.55rem; left: 1rem; background: var(--bg);
-    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em;
-    padding: 0.1rem 0.6rem; color: var(--text-muted);
-  }
-  .gk-empty p {
-    color: var(--text-secondary); font-size: 0.85rem; line-height: 1.7; margin: 0;
-  }
-  .gk-empty p strong { color: var(--text); }
-
-  /* ── Q6 MARQUEE section ── */
-  section.marquee {
-    background: var(--bg-elevated); border: 1px solid var(--accent-dim);
-    padding: 2.5rem 2rem; margin: 5rem -0.5rem; position: relative;
-  }
-  section.marquee::before {
-    content: 'THE MARQUEE FINDING';
-    position: absolute; top: -0.7rem; left: 1.5rem; background: var(--accent);
-    color: var(--bg); font-family: var(--mono); font-size: 0.65rem;
-    letter-spacing: 0.18em; padding: 0.25rem 0.85rem; font-weight: 500;
-  }
-  section.marquee h2 {
-    font-size: 2.15rem; margin-top: 0.5rem;
-  }
-  .marquee-spotlight {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 2rem 0;
-    align-items: stretch;
-  }
-  .marquee-card {
-    background: var(--bg-card); border: 1px solid var(--accent);
-    padding: 2rem; position: relative;
-  }
-  .marquee-card::before {
-    content: 'SPOTLIGHT';
-    position: absolute; top: -0.6rem; left: 1rem;
-    background: var(--accent); color: var(--bg);
-    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.16em;
-    padding: 0.18rem 0.6rem;
-  }
-  .marquee-card h3 {
-    font-family: var(--serif); font-size: 2rem;
-    color: var(--text); letter-spacing: -0.01em;
-    margin-bottom: 0.4rem; margin-top: 0.5rem; line-height: 1.1;
-  }
-  .marquee-card .role {
-    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.4rem;
-  }
-  .marquee-card .big-number {
-    font-family: var(--serif); font-size: 3.5rem; color: var(--accent);
-    line-height: 1; margin-bottom: 0.4rem;
-  }
-  .marquee-card .big-label {
-    font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.4rem;
-  }
-  .marquee-card .layer-rows {
-    display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.2rem;
-  }
-  .marquee-card .layer-row {
-    display: flex; justify-content: space-between; align-items: baseline;
-    font-family: var(--mono); font-size: 0.75rem;
-  }
-  .marquee-card .layer-row .who { color: var(--text-muted); letter-spacing: 0.06em; }
-  .marquee-card .layer-row .val { color: var(--text); font-size: 0.85rem; }
-  .marquee-card .layer-row.brandt .who { color: var(--accent); }
-  .marquee-card .layer-row.brandt .val { color: var(--accent); }
-  .marquee-card p {
-    color: var(--text-secondary); font-size: 0.92rem; line-height: 1.65; margin: 0;
-  }
-  .marquee-card p strong { color: var(--text); }
-
-  /* ── Q7 Yamal pull ── */
-  .yamal-pull {
-    background: var(--bg-card); border: 1px solid var(--border);
-    border-left: 4px solid var(--accent); padding: 1.5rem 1.75rem; margin: 1.5rem 0;
-    display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;
-  }
-  .yamal-pull .big {
-    font-family: var(--serif); font-size: 4rem; color: var(--accent);
-    line-height: 1; flex-shrink: 0;
-  }
-  .yamal-pull .copy { flex: 1; min-width: 240px; }
-  .yamal-pull .copy .name {
-    font-family: var(--serif); font-size: 1.5rem; color: var(--text);
-    margin-bottom: 0.3rem; letter-spacing: -0.01em;
-  }
-  .yamal-pull .copy .meta {
-    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em;
-    color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.6rem;
-  }
-  .yamal-pull .copy p {
-    margin: 0; color: var(--text-secondary); font-size: 0.92rem; line-height: 1.6;
-  }
-
-  /* ── The Picks ── */
-  .picks-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.25rem; margin: 2rem 0;
-  }
-  .pick-card {
-    background: var(--bg-card); border: 1px solid var(--border);
-    padding: 1.5rem; display: flex; flex-direction: column; gap: 0.6rem;
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .pick-card:hover { border-color: var(--accent-dim); background: var(--bg-card-hover); }
-  .pick-card .pick-rank {
-    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.16em;
-    color: var(--accent); text-transform: uppercase;
-  }
-  .pick-card .pick-name {
-    font-family: var(--serif); font-size: 1.45rem; color: var(--text);
-    letter-spacing: -0.01em; line-height: 1.15;
-  }
-  .pick-card .pick-team {
-    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em;
-    color: var(--text-muted); text-transform: uppercase;
-  }
-  .pick-card .pick-number {
-    font-family: var(--serif); font-size: 1.7rem; color: var(--accent);
-    line-height: 1; margin-top: 0.5rem;
-  }
-  .pick-card .pick-number-label {
-    font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em;
-    color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.4rem;
-  }
-  .pick-card .pick-rationale {
-    color: var(--text-secondary); font-size: 0.88rem; line-height: 1.6; margin-top: 0.5rem;
-  }
-  .pick-card .pick-rationale strong { color: var(--text); }
-
-  /* ── Coming-soon pill (Q4c) ── */
-  .coming-soon {
-    display: inline-block; font-family: var(--mono); font-size: 0.62rem;
-    letter-spacing: 0.14em; color: var(--text-muted); text-transform: uppercase;
-    padding: 0.35rem 0.7rem; border: 1px dashed var(--border-light);
-    margin-top: 0.5rem;
-  }
-
-  /* ── CTA box ── */
+  /* ── CTA box + related ── */
   .cta-box {
     background: var(--accent-glow); border: 1px solid var(--accent-dim);
     padding: 2rem 2.25rem; margin: 3rem 0; display: flex; gap: 1.5rem;
@@ -356,54 +162,25 @@
   .cta-box .copy { flex: 1; min-width: 260px; }
   .cta-box h3 {
     font-family: var(--serif); font-size: 1.6rem; color: var(--text);
-    margin-bottom: 0.5rem; letter-spacing: -0.01em;
+    margin-bottom: 0.5rem; letter-spacing: -0.01em; font-weight: 400; font-synthesis: none;
   }
   .cta-box p { color: var(--text-secondary); margin: 0; line-height: 1.6; }
+  .related { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .related a {
+    display: block; border: 1px solid var(--border); padding: 1.1rem 1.25rem; text-decoration: none;
+    background: var(--bg-card); transition: all 0.2s;
+  }
+  .related a:hover { border-color: var(--accent-dim); }
+  .related .num { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em; color: var(--text-muted); }
+  .related .ttl { font-family: var(--serif); font-size: 1.15rem; color: var(--text); margin-top: 0.3rem; }
+  .related .why { font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.35rem; }
 
-  /* Two-up chart layout for Q4 */
-  .ratio-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0;
-  }
-
-  /* ── Sortable data table (Q1a) ── */
-  .data-table-wrap { overflow-x: auto; margin: 0.5rem 0 1.5rem; }
-  table.data-table {
-    width: 100%; border-collapse: collapse;
-    font-family: var(--sans); font-size: 0.82rem;
-  }
-  table.data-table thead th {
-    background: var(--bg-elevated); color: var(--text-secondary);
-    font-family: var(--mono); font-weight: 500; font-size: 0.62rem;
-    letter-spacing: 0.07em; text-transform: uppercase;
-    padding: 0.6rem 0.7rem; text-align: right; cursor: pointer;
-    border-bottom: 1px solid var(--accent-dim); white-space: nowrap;
-    user-select: none; transition: color 0.15s;
-  }
-  table.data-table thead th:first-child,
-  table.data-table thead th.left { text-align: left; }
-  table.data-table thead th:hover { color: var(--accent); }
-  table.data-table thead th .arrow { color: var(--accent); font-size: 0.7em; margin-left: 0.25em; }
-  table.data-table tbody td {
-    padding: 0.5rem 0.7rem; text-align: right; border-bottom: 1px solid var(--border);
-    font-variant-numeric: tabular-nums; color: var(--text-secondary);
-  }
-  table.data-table tbody td.left { text-align: left; }
-  table.data-table tbody td.player { color: var(--text); font-weight: 500; }
-  table.data-table tbody td.ep90 { color: var(--accent); font-family: var(--mono); }
-  table.data-table tbody tr:hover { background: var(--bg-card-hover); }
-  table.data-table tbody tr.half-season td { font-style: italic; color: var(--text-muted); }
-  table.data-table tbody tr.half-season td.player { color: var(--text-secondary); }
-  table.data-table tbody tr.half-season td.ep90 { color: var(--accent-dim); }
-
-  @media (max-width: 900px) {
-    .pos-grid { grid-template-columns: 1fr; }
-    .ratio-grid { grid-template-columns: 1fr; }
-    .marquee-spotlight { grid-template-columns: 1fr; }
-  }
   @media (max-width: 768px) {
     body { padding: 2rem 1.25rem 3rem; }
-    section.marquee { margin: 3rem -0.25rem; padding: 1.75rem 1.25rem; }
-    .picks-grid { grid-template-columns: 1fr; }
+    .cta-box { padding: 1.5rem; }
+    .two-up, .pos-grid, .related { grid-template-columns: 1fr; }
+    .tall { height: 600px; }
+    .mid { height: 420px; }
   }
 </style>
 </head>
@@ -415,1070 +192,755 @@
 <header class="project-hero">
   <div class="meta-row">
     <span class="meta-pill accent">RESEARCH · 03</span>
-    <span class="meta-pill" id="meta-date">May 2026</span>
-    <span class="meta-pill">Top 5 Leagues + Eredivisie</span>
+    <span class="meta-pill">May 2026</span>
+    <span class="meta-pill">Top 5 Leagues</span>
     <span class="meta-pill">Player Value</span>
-    <span class="meta-pill">EP Model</span>
+    <span class="meta-pill">Rankings with Intervals</span>
   </div>
-  <h1>The True <em>Contributors</em>.</h1>
+  <h1>The True <em>Contributors</em>: Who Actually Moves the Table?</h1>
   <p class="lede">
-    <strong>Not all goals are created equal.</strong> A 90th-minute equaliser is worth far more to a team's
-    season than a fifth-minute opener in a 4–0 win, yet the scoreboard counts them the same. So how do you
-    price every goal correctly? We calculated the <strong>expected league points</strong> each goal produced (based on the game state and the minute it was scored) then summed every player's contribution across the
-    three players who build a goal: the scorer, the assist-creator and the pre-assist-creator. The result is a
-    per-90 rate that captures <strong>value created, not just events counted</strong>, and surfaces the players
-    the box score systematically undervalues.
-    <span style="display:block; margin-top:1.1rem; font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.04em;">
-      <a href="../02-points-by-gamestate/analysis.html" style="color: var(--accent);">Full methodology and value model documented in Project 02 →</a>
-    </span>
+    Goals win points, but not all goals win the same number of points, and a goal is rarely one player's work.
+    This study prices every goal by <strong>how many points it was worth</strong> to the team that scored it,
+    shares that value with the <strong>scorer, the player who set up the shot and the player before him</strong>,
+    and asks who adds the most per 90 minutes once luck and short careers are taken out.
   </p>
 </header>
 
-<!-- ── DOWNLOADS ── -->
 <div class="downloads">
-  <a href="dashboard.html" class="download-btn primary">FULL DASHBOARD →</a>
+  <a href="dashboard.html" class="download-btn primary">FULL INTERACTIVE DASHBOARD →</a>
+  <a href="#deck" class="download-btn">SLIDES</a>
+  <a href="slides.pdf" class="download-btn" target="_blank">SLIDES · PDF</a>
   <a href="methodology.html" class="download-btn" target="_blank">METHODOLOGY</a>
   <a href="methodology.pdf" class="download-btn" target="_blank">METHODOLOGY · PDF</a>
-  <a href="slides.pdf" class="download-btn" target="_blank">SLIDES · PDF</a>
   <a href="code/build.py" class="download-btn" target="_blank">SOURCE · PYTHON</a>
 </div>
 
-<!-- ── KEY FINDING ── -->
 <div class="finding-box">
   <strong style="color: var(--accent); display: block; margin-bottom: 0.3rem; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em;">KEY FINDING</strong>
-  Only Lionel Messi creates more pre-assist value than Julian Brandt, whose <strong>40.93 EP from SCA2 alone</strong> makes up <strong>39%</strong> of his total contribution, more than double Mbappé or Salah.
+  <span id="finding-text">[loading]</span>
 </div>
 
-<!-- ── STAT CALLOUTS ── -->
 <div class="stats-row">
   <div class="stat-box">
-    <div class="stat-value" id="stat-goals">…</div>
-    <div class="stat-label">Goal Events Modelled</div>
+    <div class="stat-value" id="stat-goals" data-verify-path="$.quality.goals">…</div>
+    <div class="stat-label">Goals priced and shared</div>
     <div class="stat-sub" id="stat-goals-sub"></div>
   </div>
   <div class="stat-box">
-    <div class="stat-value" id="stat-players">…</div>
-    <div class="stat-label">Players with Meta</div>
-    <div class="stat-sub">Minutes · position · age · league</div>
+    <div class="stat-value" id="stat-players" data-verify-path="$.quality.players_eligible">…</div>
+    <div class="stat-label">Players ranked</div>
+    <div class="stat-sub" id="stat-players-sub"></div>
   </div>
   <div class="stat-box">
-    <div class="stat-value" id="stat-brandt">…</div>
-    <div class="stat-label">Brandt · SCA2 EP</div>
-    <div class="stat-sub">39% of his total, vs ~20% for Mbappé / Salah</div>
+    <div class="stat-value" id="stat-top" data-verify-path="$.board.top[0].theta">…</div>
+    <div class="stat-label" id="stat-top-label">Top EP per 90</div>
+    <div class="stat-sub" id="stat-top-sub"></div>
   </div>
   <div class="stat-box">
-    <div class="stat-value" id="stat-top1">…</div>
-    <div class="stat-label">Top EP / 90</div>
-    <div class="stat-sub" id="stat-top1-sub"></div>
+    <div class="stat-value" id="stat-sure" data-verify-path="$.board.top10_sure">…</div>
+    <div class="stat-label">Players sure of a top-10 place</div>
+    <div class="stat-sub" id="stat-sure-sub"></div>
   </div>
 </div>
 
-<!-- ── 1 · SETUP ── -->
+<!-- ── OVERVIEW: THE FRAMEWORK ── -->
 <section class="proj">
-  <h2>1 · The framework</h2>
-  <p>
-    Here is the mechanism in one paragraph. For every goal, we compute <strong>expected points (EP)
-    collected</strong>: how much that goal lifted its team's expected final league points, given the
-    scoreline and the 15-minute window it arrived in. A late equaliser is worth almost a full league point; a
-    4–0 consolation, almost nothing. We then credit that EP to <strong>three</strong> roles per goal (the
-    scorer, the assist-creator SCA1 and the pre-assist-creator SCA2), sum it per player, and divide by
-    minutes played to get a per-90 rate. Then we ask who the model elevates that the box score does not. The
-    value function itself is built in
-    <a href="../02-points-by-gamestate/analysis.html" style="color: var(--accent);">project 02</a>.
-  </p>
+  <h2>How a goal becomes points, and points become credit</h2>
+  <p id="framework-text">[loading]</p>
+  <div class="explainer">
+    <span class="lbl">Who gets the credit</span>
+    <p id="credit-text">[loading]</p>
+  </div>
+  <div class="explainer">
+    <span class="lbl">Per 90, and why the raw number isn't enough</span>
+    <p id="shrink-text">[loading]</p>
+  </div>
 </section>
 
-<!-- ── 2 · Q1a + Q1b, Per-90 leaderboards ── -->
+<!-- ── DATA & METHOD ── -->
 <section class="proj">
-  <h2>2 · Per-90, full credit · the model agrees with the eye test</h2>
-  <p>
-    Open with the leaderboard. <strong>Each goal credits up to three players equally</strong> (scorer + SCA1 +
-    SCA2 = 1 each). Sum the EP, normalise per 90 minutes, filter to ≥ 1,000 minutes played and Top-5 leagues
-    only. The top of the list is Messi, Mbappé, Neymar: exactly who you'd expect, which is the point. Before
-    we show you the surprises, the framework has to clear the eye test.
-  </p>
-  <p style="font-size: 0.85rem; color: var(--text-muted);">
-    Bars at <strong style="color: var(--text-secondary);">full opacity</strong> are players with
-    <strong style="color: var(--text-secondary);">≥ 3,600 minutes</strong> in scope (~40 full matches).
-    Bars at <strong style="color: var(--text-secondary);">half opacity</strong> are <strong style="color: var(--text-secondary);">half-season samples</strong>: the model has them, but the volume is thinner.
-  </p>
+  <h2>Data &amp; Method</h2>
+  <p><strong>Sources:</strong> FBref match pages for the Premier League, La Liga, Serie A, Bundesliga and Ligue 1: shot tables (goals, minutes, scorer, SCA1 and SCA2), official scores, and every player's minutes, position and age in every match. Award winners from the pages linked in the dashboard.</p>
+  <p><strong>Sample:</strong> <span id="sample-text">[loading]</span></p>
+  <p><strong>Where the data ends:</strong> <span id="end-text">[loading]</span></p>
+  <p><strong>Unit of analysis:</strong> <span id="unit-text">[loading]</span></p>
+  <p><strong>How sure:</strong> <span id="boot-text">[loading]</span></p>
+</section>
+
+<!-- ── 1. THE BOARD ── -->
+<section class="proj">
+  <span class="hypothesis-pill">Headline</span>
+  <h2>1 · EP per 90, with honest error bars</h2>
+  <p id="board-text">[loading]</p>
   <div class="chart-wrap">
-    <canvas id="chart-q1a"></canvas>
-    <div class="chart-caption">
-      Top 15 by EP per 90, three-layer credit (scorer + SCA1 + SCA2 each = 1). ≥ 1,000 minutes played.
-      <span class="scope">Top 5 leagues only; Eredivisie excluded for minutes-data unavailability.</span>
-    </div>
+    <div class="chart-title">Expected points added per 90 · top 15</div>
+    <div class="tall"><canvas id="chart-board"></canvas></div>
+    <div class="chart-caption" id="board-caption">[loading]</div>
   </div>
-
-  <div class="chart-caption" style="margin-top: 1.5rem;">
-    Top 15 by EP per 90 (≥ 1,000 minutes, top-5 leagues). Half-season picks (italic) shown for transparency.
-    Click any column header to re-sort.
+  <div class="table-scroll">
+    <table class="proj" id="board-table">
+      <thead>
+        <tr>
+          <th class="numeric">#</th><th>Player</th><th>Team</th><th>Pos</th><th class="numeric">Minutes</th>
+          <th class="numeric">EP / 90 measured</th><th class="numeric">95% range</th><th class="numeric">EP / 90 adjusted</th>
+          <th class="numeric">Plausible rank</th><th class="numeric">Top-10 chance</th><th class="numeric">Share of team EP</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
   </div>
-  <div class="data-table-wrap">
-    <table id="q1a-table" class="data-table"></table>
-  </div>
-
-  <h2 style="margin-top: 3rem;">Does weighting the credits change the answer?</h2>
-  <p>
-    Maybe a finishing touch is worth more than a pre-assist. Re-run the same leaderboard with credits weighted
-    <strong>0.40 / 0.35 / 0.25</strong> (scorer / SCA1 / SCA2). Only the EP is weighted; the qualifying-minutes
-    threshold doesn't change. The result: <strong>the top eight is essentially identical</strong>. The biggest
-    movers under weighting are pure scorers gaining a few places (Lewandowski +6, Dovbyk +7) and a few
-    creator-heavy names losing a few (Jallow −9, Ljajić −9). Conclusion: the simpler 1/1/1 model is doing the
-    same work as the carefully-tuned weights, which is reassuring.
-  </p>
-  <div class="slope-wrap">
-    <div class="chart-title">Biggest rank shifts · full credit (Q1a) → weighted credit (Q1b)</div>
-    <svg id="slope-svg"></svg>
-    <div class="slope-legend">
-      <span><span class="swatch" style="background: var(--accent);"></span>Weighting HELPED (pure scorer)</span>
-      <span><span class="swatch" style="background: var(--text-muted);"></span>Weighting HURT (creator-heavy)</span>
-    </div>
-  </div>
-  <div class="sub-finding">
-    Under credit weighting <strong>Robert Lewandowski jumps 6 ranks</strong> and <strong>Artem Dovbyk jumps 7</strong>: the model rewards consistent scorers more than fleeting playmakers when you give scoring extra weight. The fact that this only moves the list by a handful of positions is itself the finding.
-  </div>
+  <p id="team-text">[loading]</p>
 </section>
 
-<!-- ── 3 · Q2 MVP grid ── -->
+<!-- ── 2. RAW VS ADJUSTED ── -->
 <section class="proj">
-  <h2>3 · The model's MVPs vs the actual winners</h2>
-  <p>
-    For every (league × season) cell, the model's top EP-per-90 player who cleared 1,000 minutes, shown
-    against the <strong>real end-of-season award winner</strong> for that league. The model rewards
-    high-leverage value per minute, not reputation, so the two rarely line up: where they do, the cell turns
-    green with a <strong>✓ MATCH</strong>. The cell to dwell on is <strong>Nicolas Jackson at Villarreal in
-    2022-23</strong>: the model named him La Liga's most-valuable per-90 player the season before he joined
-    Chelsea, while the actual award went elsewhere. The 5-league column compares the model's combined
-    pick against the <strong>Ballon d'Or</strong>.
-  </p>
-  <div id="mvp-summary" class="sub-finding">Calculating model-vs-actual agreement…</div>
-  <div class="grid-wrap">
-    <table class="mvp-grid" id="mvp-grid"></table>
-  </div>
-  <div class="chart-caption">
-    Each cell: the model's top EP-per-90 pick (≥ 1,000 minutes in that league-season) above the real award
-    winner. <span class="scope">Top 5 leagues only.</span>
-    Awards (sources in <code style="color: var(--accent);">data/static/actual_mvps.json</code>): PFA Players'
-    Player of the Year (PL), La Liga Best Player, Serie A MVP, UNFP (Ligue 1), German Footballer of the Year
-    (Bundesliga proxy), Ballon d'Or (5-league column). Hover a cell for the exact award + source. Bordered
-    cell = featured pick (Jackson).
-  </div>
-</section>
-
-<!-- ── 4 · Q3 Late-Game Substantives ── -->
-<section class="proj">
-  <h2>4 · The late-game substantives</h2>
-  <p>
-    Of every player's total EP from goals (across all three roles), what share is collected in the last 30
-    minutes? Restrict to players with <strong>≥ 30 credits</strong> across the dataset and the super-sub
-    cohort drops away. Cristian Tello at Betis tops the list: <strong>73.8% of his contribution comes after
-    the 60th minute</strong> across 44 credits. Yoane Wissa, Ángel Rodríguez, Adama Traoré, Giacomo Raspadori
-    all in the same bracket: high-volume, high-leverage closers.
-  </p>
+  <h2>2 · Why the raw per-90 list misleads</h2>
+  <p id="raw-text">[loading]</p>
   <div class="chart-wrap">
-    <canvas id="chart-q3"></canvas>
-    <div class="chart-caption">
-      Top 10 by late share, ≥ 30 three-layer credits. Late = EP collected in 60-75 + 75-90 bins.
-      Includes Eredivisie (no per-90 dependency).
-      <span style="color: var(--text-muted);">Players with high late share but low credit volume (super-sub specialists) are excluded from this view; see the full data in the <a href="dashboard.html" style="color: var(--accent);">dashboard</a>.</span>
-    </div>
+    <div class="chart-title">The raw top 10: measured vs adjusted EP per 90</div>
+    <div class="mid"><canvas id="chart-raw"></canvas></div>
+    <div class="chart-caption" id="raw-caption">[loading]</div>
   </div>
 </section>
 
-<!-- ── 5 · Q4 Efficiency ratios ── -->
+<!-- ── 3. CREDIT RULES ── -->
 <section class="proj">
-  <h2>5 · Efficiency ratios</h2>
-  <p>
-    Two ways a player can be "efficient" in this framework, both filtered to ≥ 20 credits to keep the noise
-    out.
-  </p>
-  <p style="margin-bottom: 0.5rem;">
-    <strong style="color: var(--accent); font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.08em;">Q4A · EP PER CREDIT</strong><br>
-    How much value did each contribution create on average? Imagine two players with 20 goal contributions
-    each: Player A scored mostly in 4–0 blowouts and 0–4 hammerings (low EP per credit), Player B scored
-    consistently in tight matches where every goal mattered (high EP per credit). This ratio identifies the
-    players whose contributions consistently land in high-stakes moments.
-  </p>
-  <p>
-    <strong style="color: var(--accent); font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.08em;">Q4B · TIME-AWARE MULTIPLIER</strong><br>
-    The model values the same goal differently depending on when it happens: a 90th-minute equaliser is worth
-    more than a 5th-minute opener. This ratio compares each player's time-aware EP to a time-blind version. A
-    player with a 1.40 multiplier scored 40% more valuably than they would have if all goals were treated
-    equally. These are the late-moment specialists.
-  </p>
-  <div class="ratio-grid">
-    <div class="chart-wrap" style="margin: 0;">
-      <canvas id="chart-q4a"></canvas>
-      <div class="chart-caption">EP per credit (≥ 20 credits). Higher = scores/creates in higher-leverage moments per goal.</div>
-    </div>
-    <div class="chart-wrap" style="margin: 0;">
-      <canvas id="chart-q4b"></canvas>
-      <div class="chart-caption">Time-aware multiplier = ep_timed / ep_untimed (≥ 20 credits). Higher = the time dimension upgrades them more.</div>
-    </div>
+  <span class="hypothesis-pill">Robustness</span>
+  <h2>3 · Does the way credit is shared change the answer?</h2>
+  <p id="rules-text">[loading]</p>
+  <div class="table-scroll">
+    <table class="proj" id="rules-table">
+      <thead>
+        <tr><th>Player</th><th class="numeric">Rank, full credit</th><th class="numeric">Rank, 40/35/25 split</th><th class="numeric">Change</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
   </div>
-  <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem;">
-    <strong style="color: var(--text-secondary);">EP per shot</strong>
-    <span class="coming-soon">Coming soon</span>:
-    requires non-goal shot extraction (deferred from project 02's pipeline).
-  </p>
 </section>
 
-<!-- ── 6 · Q5 Position-adjusted ── -->
+<!-- ── 4. REPEATABILITY ── -->
 <section class="proj">
-  <h2>6 · Top 5 per position · outfield only</h2>
-  <p>
-    Same per-90 board, sliced by modal position. Wing-back archetypes dominate the defender panel (Grimaldo,
-    Guerreiro). The midfielder panel surfaces the model's most stable elite pick: <strong>Kevin De Bruyne at
-    14,674 minutes and 206 credits</strong>, by far the largest sample of any top-3 pick anywhere on this
-    page. The forward panel is the Q1a top 5.
-  </p>
+  <span class="hypothesis-pill">Skill or noise</span>
+  <h2>4 · What carries over from one season to the next</h2>
+  <p id="rep-text">[loading]</p>
+  <div class="chart-wrap">
+    <div class="chart-title">Season-to-season correlation · 95% intervals</div>
+    <div class="short"><canvas id="chart-rep"></canvas></div>
+    <div class="chart-caption" id="rep-caption">[loading]</div>
+  </div>
+</section>
+
+<!-- ── 5. AWARDS ── -->
+<section class="proj">
+  <span class="hypothesis-pill">Reality check</span>
+  <h2>5 · The model's player of the season vs the real one</h2>
+  <p id="award-text">[loading]</p>
+  <div class="chart-wrap">
+    <div class="chart-title">Model pick vs award winner · by league and season</div>
+    <div class="grid-wrap"><table class="award" id="award-grid"></table></div>
+    <div class="chart-caption" id="award-caption">[loading]</div>
+  </div>
+  <p id="award-text-2">[loading]</p>
+</section>
+
+<!-- ── 6. SCA2 ── -->
+<section class="proj">
+  <h2>6 · The hidden architects: value from the pass before the assist</h2>
+  <div class="explainer">
+    <span class="lbl">What SCA2 is, and why it matters</span>
+    <p id="sca2-explain">[loading]</p>
+  </div>
+  <p id="sca2-text">[loading]</p>
+  <div class="two-up">
+    <div class="chart-wrap">
+      <div class="mid"><canvas id="chart-sca2"></canvas></div>
+      <div class="chart-caption" id="sca2-caption">[loading]</div>
+    </div>
+    <div class="chart-wrap">
+      <div class="mid"><canvas id="chart-sca2-split"></canvas></div>
+      <div class="chart-caption" id="split-caption">[loading]</div>
+    </div>
+  </div>
+  <p id="sca2-text-2">[loading]</p>
+</section>
+
+<!-- ── 7. DECISIVE GOALS ── -->
+<section class="proj">
+  <h2>7 · How decisive is a player's average goal?</h2>
+  <div class="explainer">
+    <span class="lbl">EP per involvement, in plain words</span>
+    <p id="eff-explain">[loading]</p>
+  </div>
+  <p id="eff-text">[loading]</p>
+  <div class="chart-wrap">
+    <div class="chart-title">EP per involvement · highest 10 and lowest 5</div>
+    <div class="mid"><canvas id="chart-eff"></canvas></div>
+    <div class="chart-caption" id="eff-caption">[loading]</div>
+  </div>
+</section>
+
+<!-- ── 8. POSITIONS ── -->
+<section class="proj">
+  <h2>8 · Best by position</h2>
+  <p id="pos-text">[loading]</p>
   <div class="pos-grid" id="pos-panels"></div>
-  <div class="chart-caption" style="margin: 0.5rem 0 1.5rem;">
-    <strong style="color: var(--text-secondary);">Minutes shown</strong> so readers can self-assess sample
-    size. Players at <strong style="color: var(--text-secondary);">&lt; 2,000 mins</strong> (half-season)
-    are flagged in muted text.
-    <span class="scope">Top 5 leagues only, ≥ 1,000 minutes played.</span>
-  </div>
-  <div class="gk-empty">
-    <p>
-      <strong>The model has no opinion on goalkeepers.</strong> The EP framework credits scorers, assist-creators
-      and pre-assist-creators, three touchpoints GKs occupy rarely. In this dataset the top GK posts ~0.13 EP/90
-      against ~1.14 for the top forward, an order-of-magnitude gap that reflects the framework's coverage, not
-      the keepers' actual value. Quantifying GK contribution requires a different model (shot-stopping over
-      expected, distribution value); we defer it to a future project.
-    </p>
-  </div>
 </section>
 
-<!-- ── 7 · Q6 (MARQUEE) Hidden Architects ── -->
-<section class="proj marquee">
-  <h2>7 · The Hidden <em>Architects</em></h2>
-  <p>
-    In football data, every goal has three credited contributors: the <strong>goalscorer</strong> (the player
-    who shot), the <strong>assist provider (SCA1)</strong> (the player whose action directly created the shot) and the <strong>pre-assist (SCA2)</strong>, the player two actions before the shot. Traditional stats
-    stop at goals + assists. SCA2 captures the deep-lying creators, the playmakers-before-the-playmakers, players whose passes lead to passes that lead to goals.
-  </p>
-  <p>
-    Most elite forwards score and assist: <strong>Mbappé collects 80% of his EP from these two roles</strong>.
-    But a different kind of contributor lives almost entirely in the SCA2 layer: the hidden architects whose
-    value traditional metrics ignore. Stack the top 10 SCA2 EP collectors, segment each bar by where their EP
-    came from (scorer / SCA1 / SCA2 in three colours), and one player is structurally different from everyone
-    else.
-  </p>
-  <div class="chart-wrap" style="margin: 2rem 0;">
-    <canvas id="chart-q6-stack"></canvas>
-    <div class="chart-caption">
-      Top 10 by absolute SCA2 EP. Bars stacked by contribution role.
-      <strong style="color: var(--accent);">Bright accent</strong> = SCA2 (pre-assist) layer.
-      Dim = scorer, mid = SCA1.
-    </div>
-  </div>
-  <div class="marquee-spotlight">
-    <div class="marquee-card">
-      <h3 id="brandt-name">Julian Brandt</h3>
-      <div class="role" id="brandt-role">Borussia Dortmund · MF</div>
-      <div class="big-number" id="brandt-big">+40.93</div>
-      <div class="big-label">EP collected from SCA2 alone</div>
-      <div class="layer-rows">
-        <div class="layer-row brandt"><span class="who">BRANDT, SCA2 SHARE</span><span class="val">39%</span></div>
-        <div class="layer-row"><span class="who">FEKIR</span><span class="val">32%</span></div>
-        <div class="layer-row"><span class="who">PAREJO</span><span class="val">35%</span></div>
-        <div class="layer-row"><span class="who">MBAPPÉ</span><span class="val">20%</span></div>
-        <div class="layer-row"><span class="who">SALAH</span><span class="val">19%</span></div>
-        <div class="layer-row"><span class="who">IAGO ASPAS</span><span class="val">21%</span></div>
-      </div>
-      <p>
-        Only Messi creates more pre-assist EP in this dataset. <strong>Brandt's layer profile is unique among
-        elite contributors</strong> (25% scorer, 37% SCA1, 39% SCA2), meaning the pre-assist is his
-        single largest contribution layer. Pure goalscorers like Mbappé and Salah collect under 20% of their
-        EP from SCA2. Brandt is what the model exists to find.
-      </p>
-    </div>
-    <div class="chart-wrap" style="margin: 0;">
-      <canvas id="chart-q6-per90"></canvas>
-      <div class="chart-caption">
-        SCA2 EP per 90 · ≥ 2,000 minutes. Editorial threshold lifted from the dashboard's 1,000 to remove
-        sub-half-season noise.
-        <span class="scope">Top 5 leagues only.</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── 8 · Q7 Young players ── -->
+<!-- ── 9. YOUNG ── -->
 <section class="proj">
-  <h2>8 · Young players to watch</h2>
-  <p>
-    Same per-90 board, restricted to players aged ≤ 23 at end of their most recent season, with the minutes
-    threshold dropped to 500 (young players have less PT). The leaderboard mixes credible established names
-    (Musiala, Palmer, Bynoe-Gittens, Moukoko) with very-low-sample flyers (Fofana, Durán, Doucouré, Rogers
-    at under 700 minutes). The most interesting name is at the bottom of the list:
-  </p>
-  <div class="yamal-pull">
-    <div class="big">16.9</div>
-    <div class="copy">
-      <div class="name">Lamine Yamal</div>
-      <div class="meta">Barcelona · La Liga · 2,209 mins · 23 credits</div>
-      <p>
-        The youngest player in the dataset to clear 500 minutes. At <strong>0.738 EP per 90 across 2,209 minutes
-        at age 16.9</strong>, his per-90 number is built on real volume, not a four-game cameo. The Q7 #10
-        cell that requires the loudest second-look.
-      </p>
-    </div>
-  </div>
-  <div class="chart-wrap">
-    <canvas id="chart-q7"></canvas>
-    <div class="chart-caption">
-      Top 10 EP per 90 with age ≤ 23, ≥ 500 minutes played.
-      <span class="scope">Top 5 leagues only.</span>
-      <strong style="color: var(--text-muted);">Bar opacity</strong> = minutes-played cohort (full = ≥ 2,000;
-      half = under).
-    </div>
+  <h2>9 · Young players to watch</h2>
+  <p id="young-text">[loading]</p>
+  <div class="table-scroll">
+    <table class="proj" id="young-table">
+      <thead>
+        <tr><th class="numeric">#</th><th>Player</th><th>Team</th><th class="numeric">Age</th><th class="numeric">Minutes</th>
+          <th class="numeric">EP / 90 measured</th><th class="numeric">EP / 90 adjusted</th><th class="numeric">Overall rank</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
   </div>
 </section>
 
-<!-- ── 9 · The Picks ── -->
+<!-- ── WHO SHOULD CARE ── -->
+<section class="proj" id="takeaways"></section>
+
 <section class="proj">
-  <h2>9 · The Picks</h2>
-  <p>
-    Five names the data says the box score systematically undervalues, chosen to span the page's findings,
-    not to chase the headline numbers.
-  </p>
-  <div class="picks-grid" id="picks-grid"></div>
+  <h2>Limitations</h2>
+  <ul class="limits" id="limitations-list"></ul>
 </section>
 
-<!-- ── CTA ── -->
+<section class="proj">
+  <h2>What this changes</h2>
+  <p id="conclusion-text">[loading]</p>
+</section>
+
 <div class="cta-box">
   <div class="copy">
-    <h3>Every player, every league, every season.</h3>
-    <p>The full dashboard exposes all seven ranking datasets with per-league and per-season drilldown, search, column filtering, and XLSX/CSV export.</p>
+    <h3>Every player, every season, every interval.</h3>
+    <p>The dashboard has all players with 450+ minutes, every player-season, the full award check with sources, the SCA2 board and the decisive-goals table, with search, column filters and XLSX/CSV export.</p>
   </div>
   <a href="dashboard.html" class="download-btn primary">OPEN DASHBOARD →</a>
 </div>
 
+<!-- ── THE DECK ── -->
+<section class="proj" id="deck">
+  <h2>The deck</h2>
+  <div class="slide-viewer" data-renball="slide-viewer" data-src="slides.pdf"></div>
+</section>
+
+<section class="proj">
+  <h2>More Renball research</h2>
+  <div class="related">
+    <a href="../02-points-by-gamestate/analysis.html">
+      <div class="num">PROJECT 02</div>
+      <div class="ttl">Not All Goals Are Equal</div>
+      <div class="why">Where every goal price on this page comes from: the team-minute model of expected points.</div>
+    </a>
+    <a href="../01-penalty-analysis/analysis.html">
+      <div class="num">PROJECT 01</div>
+      <div class="ttl">Should the Fouled Player Take the Penalty Himself?</div>
+      <div class="why">Another repeatability test: a penalty record barely carries over from one half of a career to the other.</div>
+    </a>
+  </div>
+</section>
+
 <script src="../../assets/js/chart-defaults.js"></script>
+<script src="../../assets/js/renball-components.js"></script>
 <script>
 (async function () {
   const data = await fetch('data/data.json').then(r => r.json());
   const C = window.RENBALL_COLORS;
   const tok = C.tokens;
-  const fmt = (n, d=0) => (n == null ? 'n/a' : Number(n).toLocaleString('en-GB', { maximumFractionDigits: d, minimumFractionDigits: d }));
+  const fmt = (n, d = 0) => (n == null ? 'n/a' : Number(n).toLocaleString('en-GB', { maximumFractionDigits: d, minimumFractionDigits: d }));
+  const f2 = (n) => fmt(n, 2);
+  const f3 = (n) => fmt(n, 3);
+  const V = (path, txt) => `<span data-verify-path="${path}">${txt}</span>`;
+  const narrow = window.matchMedia('(max-width: 600px)').matches;
+  const seasonLabel = (s) => `${s.slice(0, 4)}-${s.slice(-2)}`;
 
-  // ──────────────────────────────────────────────────────
-  // Hero meta + stat callouts
-  // ──────────────────────────────────────────────────────
-  const meta = data.meta;
-  document.getElementById('meta-date').textContent =
-    (meta.generated_at || '').slice(0, 7).replace('-', '·') || 'May 2026';
+  const meta = data.meta, q = data.quality, fw = data.framework, b = data.board;
+  const rep = data.repeatability, aw = data.awards, s2 = data.sca2, ef = data.efficiency, cr = data.credit_rules;
+  const top = b.top, lead = top[0], second = top[1], third = top[2];
+  const posName = { FW: 'forward', MF: 'midfielder', DF: 'defender', GK: 'goalkeeper' };
 
-  document.getElementById('stat-goals').textContent = fmt(meta.total_goals);
-  document.getElementById('stat-goals-sub').textContent =
-    `${meta.leagues.length} leagues · ${meta.seasons.length} seasons`;
-  document.getElementById('stat-players').textContent = fmt(meta.total_players_with_meta);
+  RENBALL.renderTakeaways(document.getElementById('takeaways'), data.takeaways);
 
-  const brandt = (data.q6_architects.layer_breakdown || []).find(r => r.player === 'Julian Brandt');
-  if (brandt) {
-    document.getElementById('stat-brandt').textContent = `${brandt.ep_sca2.toFixed(1)} EP`;
-  }
-  const top1 = data.q1a_full_credit.rows[0];
-  document.getElementById('stat-top1').textContent = `${top1.ep_per_90.toFixed(2)} EP`;
-  document.getElementById('stat-top1-sub').textContent =
-    `${top1.player} · ${top1.primary_team} · ${fmt(top1.minutes)} min`;
+  // ── Key finding + stats ──
+  document.getElementById('finding-text').innerHTML =
+    `<strong>${lead.player}</strong> and <strong>${second.player}</strong> are the only players sure to rank in the top 10 ` +
+    `for expected points added per 90 minutes (${V('$.board.top[0].theta', f2(lead.theta))} and ` +
+    `${V('$.board.top[1].theta', f2(second.theta))} EP once luck and short careers are allowed for). Behind them ` +
+    `nothing is settled: the number 3, ${third.player}, could plausibly rank anywhere from ` +
+    `${V('$.board.top[2].rank_lo', third.rank_lo)} to ${V('$.board.top[2].rank_hi', third.rank_hi)}.`;
+  document.getElementById('stat-goals').textContent = fmt(q.goals);
+  document.getElementById('stat-goals-sub').textContent = `${fmt(q.matches)} matches · ${q.first_season} to ${q.last_season}`;
+  document.getElementById('stat-players').textContent = fmt(q.players_eligible);
+  document.getElementById('stat-players-sub').textContent = `${fmt(b.min_minutes)}+ minutes in the top 5 leagues`;
+  document.getElementById('stat-top').textContent = f2(lead.theta);
+  document.getElementById('stat-top-label').textContent = `EP per 90 · ${lead.player}`;
+  document.getElementById('stat-top-sub').innerHTML =
+    `adjusted · measured ${V('$.board.top[0].p90', f3(lead.p90))} (95% range ${V('$.board.top[0].p90_lo', f3(lead.p90_lo))}–` +
+    `${V('$.board.top[0].p90_hi', f3(lead.p90_hi))})`;
+  document.getElementById('stat-sure').textContent = fmt(b.top10_sure);
+  document.getElementById('stat-sure-sub').textContent = `top-10 chance of 95% or more`;
 
-  // ──────────────────────────────────────────────────────
-  // Helpers
-  // ──────────────────────────────────────────────────────
-  const HALF_SEASON_MIN = 3600;
+  // ── Framework ──
+  const p02 = '<a href="../02-points-by-gamestate/analysis.html">Project 02</a>';
+  document.getElementById('framework-text').innerHTML =
+    `Start with the price of a goal. ${p02} worked out, from every minute of ${V('$.framework.matches_model', fmt(fw.matches_model))} ` +
+    `matches, how many points a team can expect to finish with at each scoreline in each 15-minute window. A goal ` +
+    `is worth the difference it makes: the expected points just after it minus just before. So the goal that puts ` +
+    `a team ahead from level is worth ${V('$.framework.opener_early', f2(fw.opener_early))} expected points (EP) in the ` +
+    `first 15 minutes and ${V('$.framework.opener_late', f2(fw.opener_late))} in the last 15, while a second goal at ` +
+    `1–0 up late adds only ${V('$.framework.cushion_late', f2(fw.cushion_late))}. This page uses those prices unchanged ` +
+    `and asks the next question: which players collect the most of them?`;
+  document.getElementById('credit-text').innerHTML =
+    `FBref records three roles for most goals: the <strong>scorer</strong>, <strong>SCA1</strong> (the action right ` +
+    `before the shot, usually the assist) and <strong>SCA2</strong> (the action before that). Each player involved ` +
+    `gets the goal's full value, <strong>once per goal</strong>: a player who sets up his own shot is not paid twice. ` +
+    `That merges ${V('$.quality.collapsed', fmt(q.collapsed))} role credits (${V('$.quality.collapsed_pct', fmt(q.collapsed_pct, 1))}%) ` +
+    `into ${V('$.quality.credits', fmt(q.credits))} credits. Two other rules are checked in §3: counting every role ` +
+    `separately, and splitting each goal ` +
+    `${V('$.meta.params.weights_pct.goal', meta.params.weights_pct.goal)}/${V('$.meta.params.weights_pct.sca1', meta.params.weights_pct.sca1)}/${V('$.meta.params.weights_pct.sca2', meta.params.weights_pct.sca2)} between the three.`;
+  const pa = b.pull_at;
+  document.getElementById('shrink-text').innerHTML =
+    `Dividing EP by minutes played gives a rate per 90. But a rate measured over a few hundred minutes is mostly ` +
+    `luck: one lucky late winner can put a squad player above Messi. So each rate is pulled toward the average for the ` +
+    `player's position, by more when his minutes are few (statisticians call this <strong>empirical Bayes</strong>). ` +
+    `A forward with ${V('$.board.pull_at[0].minutes', fmt(pa[0].minutes))} minutes is pulled ` +
+    `${V('$.board.pull_at[0].pull_pct', fmt(pa[0].pull_pct))}% of the way to the forward average; with ` +
+    `${V('$.board.pull_at[1].minutes', fmt(pa[1].minutes))} minutes, ${V('$.board.pull_at[1].pull_pct', fmt(pa[1].pull_pct))}%; ` +
+    `with ${V('$.board.pull_at[2].minutes', fmt(pa[2].minutes))}, ${V('$.board.pull_at[2].pull_pct', fmt(pa[2].pull_pct))}%. ` +
+    `The adjusted rate is the best estimate of how good a player really was. Ranking every player's adjusted rate ` +
+    `${V('$.meta.params.posterior_draws', fmt(meta.params.posterior_draws))} times, each time with its ` +
+    `uncertainty, then gives each player a <strong>plausible rank</strong>: the range he lands in 95% of the time.`;
 
-  // Opacity callback: full for ≥ HALF_SEASON_MIN, half-transparent otherwise.
-  function muteByMinutes(rows, minKey, baseColor) {
-    return rows.map(r => {
-      const m = r[minKey];
-      if (m == null || m >= HALF_SEASON_MIN) return baseColor;
-      // Inject alpha 0.4 onto the hex. Accent = #c1ff72.
-      return 'rgba(193, 255, 114, 0.4)';
-    });
-  }
+  // ── Data & method ──
+  document.getElementById('sample-text').innerHTML =
+    `${V('$.quality.matches', fmt(q.matches))} matches, ${q.first_season} to ${q.last_season}, ` +
+    `${V('$.quality.goals', fmt(q.goals))} goals, ${V('$.quality.players', fmt(q.players))} players with minutes. ` +
+    `SCA1 is recorded for ${V('$.quality.sca1_pct', fmt(q.sca1_pct, 1))}% of goals and SCA2 for ` +
+    `${V('$.quality.sca2_pct', fmt(q.sca2_pct, 1))}% (between ${V('$.quality.sca2_pct_min', fmt(q.sca2_pct_min, 1))}% ` +
+    `and ${V('$.quality.sca2_pct_max', fmt(q.sca2_pct_max, 1))}% in every season). Players are told apart by birth ` +
+    `date, so namesakes stay separate; minutes come from the same matches as the goals.`;
+  document.getElementById('end-text').textContent =
+    `the data stop with the ${q.last_season} season. The SCA2 data (who made the pass before the assist) end there ` +
+    `because the source discontinued them, so later seasons can't be added with this method. Ages and "young" ` +
+    `refer to 30 June 2024.`;
+  document.getElementById('unit-text').textContent =
+    `the goal for credits; the player over all seven seasons for the boards; the player-league-season for the award ` +
+    `check; a pair of consecutive seasons for repeatability.`;
+  document.getElementById('boot-text').innerHTML =
+    `the measured ranges come from ${fmt(meta.params.boot_resamples)} resamples of whole matches (the same resamples ` +
+    `Project 02 used), each re-pricing every goal; the adjusted rates and plausible ranks from the shrinkage above. ` +
+    `Full detail in the <a href="methodology.html">methodology</a>.`;
 
-  function shortLabel(r) {
-    const m = r.minutes != null ? r.minutes : null;
-    const mintag = m != null ? `  ·  ${m.toLocaleString('en-GB')} min` : '';
-    return `${r.player} · ${r.primary_team}${mintag}`;
-  }
-
-  // ──────────────────────────────────────────────────────
-  // Section 2 · Q1a, top 15 horizontal bar, muted half-season
-  // ──────────────────────────────────────────────────────
-  (function renderQ1a() {
-    const rows = data.q1a_full_credit.rows.slice(0, 15);
-    const bg = muteByMinutes(rows, 'minutes', C.primary);
-    // Inline plugin: draw the EP/90 value at the end of each bar.
-    const barValueLabels = {
-      id: 'q1aBarValueLabels',
-      afterDatasetsDraw(chart) {
-        const ctx = chart.ctx;
-        const meta = chart.getDatasetMeta(0);
-        ctx.save();
-        ctx.font = '600 11px ' + tok.mono;
-        ctx.fillStyle = tok.textSecondary;
-        ctx.textBaseline = 'middle';
-        ctx.textAlign = 'left';
-        meta.data.forEach((bar, i) => {
-          const v = chart.data.datasets[0].data[i];
-          if (v == null) return;
-          ctx.fillText(Number(v).toFixed(3), bar.x + 6, bar.y);
-        });
-        ctx.restore();
-      },
-    };
-    new Chart(document.getElementById('chart-q1a'), {
+  // Horizontal bars from zero with a whisker for the interval and the value printed at the end
+  function barChart(canvasId, rows, { axis, color, decimals = 2, max }) {
+    const labels = rows.map(r => r.label);
+    return new Chart(document.getElementById(canvasId), {
       type: 'bar',
-      plugins: [barValueLabels],
-      data: {
-        labels: rows.map(shortLabel),
-        datasets: [{
-          label: 'EP per 90',
-          data: rows.map(r => r.ep_per_90),
-          backgroundColor: bg,
-          borderWidth: 0,
-        }],
-      },
+      data: { labels, datasets: [{ data: rows.map(r => r.v), backgroundColor: rows.map(r => r.color || color),
+        borderWidth: 0, barThickness: narrow ? 10 : 14 }] },
       options: {
-        indexAxis: 'y',
-        aspectRatio: 1.15,
-        layout: { padding: { bottom: 12, left: 12, right: 52 } },
-        plugins: {
-          title: { display: true, text: 'EP per 90 · full credit · top 15' },
-          legend: { display: false },
-          tooltip: { callbacks: {
-            label: (ctx) => `${ctx.parsed.x.toFixed(3)} EP / 90`,
-            afterLabel: (ctx) => {
-              const r = rows[ctx.dataIndex];
-              const cohort = (r.minutes >= HALF_SEASON_MIN) ? 'full-season cohort' : 'HALF-SEASON SAMPLE';
-              return [
-                `Minutes:       ${fmt(r.minutes)}  (${cohort})`,
-                `Credits (3-layer): ${r.goals_involved}`,
-                `Total EP timed:    ${r.ep_timed.toFixed(2)}`,
-                `Position:      ${r.pos || 'n/a'}`,
-                `Age:           ${r.age != null ? r.age.toFixed(1) : 'n/a'}`,
-              ];
-            }
-          }}
-        },
-        scales: {
-          x: {
-            beginAtZero: true,
-            title: { display: true, text: 'EP per 90', padding: { top: 10 } },
-          },
-          y: { ticks: { font: { family: tok.mono, size: 11 } } },
-        },
+        indexAxis: 'y', maintainAspectRatio: false, layout: { padding: { right: 8 } },
+        plugins: { legend: { display: false },
+                   tooltip: { callbacks: { label: (ctx) => rows[ctx.dataIndex].tip } } },
+        scales: { x: { min: 0, max, title: { display: true, text: axis } },
+                  y: { ticks: { autoSkip: false, font: { family: tok.mono, size: narrow ? 9 : 11 } } } },
       },
+      plugins: [{
+        id: 'whiskers',
+        afterDatasetsDraw(chart) {
+          const { ctx, scales: { x } } = chart;
+          const m = chart.getDatasetMeta(0);
+          ctx.save();
+          rows.forEach((r, i) => {
+            const y = m.data[i].y;
+            if (r.lo != null) {
+              ctx.strokeStyle = tok.text; ctx.lineWidth = 1.5;
+              ctx.beginPath(); ctx.moveTo(x.getPixelForValue(r.lo), y); ctx.lineTo(x.getPixelForValue(r.hi), y); ctx.stroke();
+              [r.lo, r.hi].forEach(v => { ctx.beginPath(); ctx.moveTo(x.getPixelForValue(v), y - 4); ctx.lineTo(x.getPixelForValue(v), y + 4); ctx.stroke(); });
+            }
+            ctx.fillStyle = tok.text; ctx.font = `${narrow ? 9 : 11}px ${tok.mono}`; ctx.textBaseline = 'middle';
+            ctx.fillText(fmt(r.v, decimals), x.getPixelForValue(r.hi != null ? r.hi : r.v) + 6, y);
+          });
+          ctx.restore();
+        },
+      }],
     });
-  })();
+  }
 
-  // ──────────────────────────────────────────────────────
-  // Section 2 · Q1a sortable data table (mirrors the bar chart top 15)
-  // ──────────────────────────────────────────────────────
-  (function renderQ1aTable() {
-    const HALF = 3600;
-    const rows = data.q1a_full_credit.rows.slice(0, 15).map(r => ({
-      rank: r.rank,
-      player: r.player,
-      team: r.primary_team,
-      league: (r.league || '').replace(/-/g, ' ') || 'n/a',
-      pos: r.pos || 'n/a',
-      age: r.age != null ? r.age : null,
-      minutes: r.minutes,
-      credits: r.goals_involved,
-      ep: r.ep_timed,
-      ep90: r.ep_per_90,
+  // Dot-and-interval: a dot at the estimate, a line for its interval, on a fitted axis
+  function dotChart(canvasId, rows, { axis, min, max, ref }) {
+    return new Chart(document.getElementById(canvasId), {
+      type: 'bar',
+      data: { labels: rows.map(r => r.label), datasets: [{ data: rows.map(r => [r.lo, r.hi]),
+        backgroundColor: rows.map(r => r.color || 'rgba(143,166,143,0.6)'), borderWidth: 0, barThickness: 6 }] },
+      options: {
+        indexAxis: 'y', maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => rows[ctx.dataIndex].tip } } },
+        scales: { x: { min, max, title: { display: true, text: axis } },
+                  y: { ticks: { autoSkip: false, font: { family: tok.mono, size: narrow ? 9 : 11 } } } },
+      },
+      plugins: [{
+        id: 'dots',
+        beforeDatasetsDraw(chart) {
+          if (ref == null) return;
+          const { ctx, chartArea: a, scales: { x } } = chart;
+          const z = x.getPixelForValue(ref);
+          ctx.save(); ctx.strokeStyle = tok.textMuted; ctx.setLineDash([4, 4]);
+          ctx.beginPath(); ctx.moveTo(z, a.top); ctx.lineTo(z, a.bottom); ctx.stroke(); ctx.restore();
+        },
+        afterDatasetsDraw(chart) {
+          const { ctx, scales: { x } } = chart;
+          const m = chart.getDatasetMeta(0);
+          ctx.save();
+          rows.forEach((r, i) => {
+            ctx.fillStyle = r.dot || tok.text;
+            ctx.beginPath(); ctx.arc(x.getPixelForValue(r.v), m.data[i].y, 4.5, 0, Math.PI * 2); ctx.fill();
+            if (r.v2 != null) {
+              ctx.strokeStyle = tok.textMuted; ctx.lineWidth = 1.5;
+              ctx.beginPath(); ctx.arc(x.getPixelForValue(r.v2), m.data[i].y, 4.5, 0, Math.PI * 2); ctx.stroke();
+            }
+            if (r.text) {
+              ctx.fillStyle = tok.textSecondary; ctx.font = `${narrow ? 9 : 10}px ${tok.mono}`; ctx.textBaseline = 'bottom';
+              ctx.fillText(r.text, x.getPixelForValue(r.v) - 8, m.data[i].y - 6);
+            }
+          });
+          ctx.restore();
+        },
+      }],
+    });
+  }
+
+  // ── 1. The board ──
+  (function renderBoard() {
+    const rows = top.slice(0, 15).map(p => ({
+      label: narrow ? p.player : `${p.player} · ${p.team}`, v: p.theta, lo: p.theta_lo, hi: p.theta_hi,
+      color: p.p_top10_pct >= 95 ? 'rgba(193,255,114,0.8)' : 'rgba(143,166,143,0.55)',
+      tip: `${f2(p.theta)} EP per 90 adjusted (95% ${f2(p.theta_lo)}–${f2(p.theta_hi)}) · plausible rank ${p.rank_lo}–${p.rank_hi}`,
     }));
-    const cols = [
-      { key: 'rank',    label: '#',       align: 'left', int: true },
-      { key: 'player',  label: 'Player',  align: 'left', cls: 'player' },
-      { key: 'team',    label: 'Team',    align: 'left' },
-      { key: 'league',  label: 'League',  align: 'left' },
-      { key: 'pos',     label: 'Pos',     align: 'left' },
-      { key: 'age',     label: 'Age',     dp: 1 },
-      { key: 'minutes', label: 'Minutes', int: true },
-      { key: 'credits', label: 'Credits', int: true },
-      { key: 'ep',      label: 'Total EP', dp: 2 },
-      { key: 'ep90',    label: 'EP/90',   dp: 3, cls: 'ep90' },
-    ];
-    const table = document.getElementById('q1a-table');
-    if (!table) return;
-    const textKeys = new Set(['player', 'team', 'league', 'pos']);
-    let sortKey = 'ep90', sortDir = -1;
-
-    function fmt(c, v) {
-      if (v == null || v === '') return 'n/a';
-      if (c.int) return Number(v).toLocaleString('en-GB');
-      if (c.dp != null) return Number(v).toFixed(c.dp);
-      return v;
-    }
-    function render() {
-      const sorted = [...rows].sort((a, b) => {
-        const av = a[sortKey], bv = b[sortKey];
-        if (av == null) return 1;
-        if (bv == null) return -1;
-        if (typeof av === 'number' && typeof bv === 'number') return (av - bv) * sortDir;
-        return String(av).localeCompare(String(bv)) * sortDir;
-      });
-      let html = '<thead><tr>';
-      for (const c of cols) {
-        const arrow = c.key === sortKey ? `<span class="arrow">${sortDir < 0 ? '▾' : '▴'}</span>` : '';
-        html += `<th data-key="${c.key}" class="${c.align === 'left' ? 'left' : ''}">${c.label}${arrow}</th>`;
-      }
-      html += '</tr></thead><tbody>';
-      for (const r of sorted) {
-        const half = r.minutes != null && r.minutes < HALF;
-        html += `<tr class="${half ? 'half-season' : ''}">`;
-        for (const c of cols) {
-          const cls = [c.align === 'left' ? 'left' : '', c.cls || ''].filter(Boolean).join(' ');
-          html += `<td class="${cls}">${fmt(c, r[c.key])}</td>`;
-        }
-        html += '</tr>';
-      }
-      html += '</tbody>';
-      table.innerHTML = html;
-      table.querySelectorAll('th').forEach(th => {
-        th.addEventListener('click', () => {
-          const k = th.getAttribute('data-key');
-          if (k === sortKey) sortDir *= -1;
-          else { sortKey = k; sortDir = textKeys.has(k) ? 1 : -1; }
-          render();
-        });
-      });
-    }
-    render();
+    barChart('chart-board', rows, { axis: 'EP per 90, adjusted', color: 'rgba(143,166,143,0.55)', max: 1 });
+    const body = document.querySelector('#board-table tbody');
+    body.innerHTML = top.map((p, k) => {
+      const at = `$.board.top[${k}]`;
+      return `<tr${p.p_top10_pct >= 95 ? ' class="primary"' : ''}>` +
+        `<td class="numeric">${V(at + '.rank', p.rank)}</td><td class="player">${p.player}</td><td>${p.team}</td><td>${p.pos}</td>` +
+        `<td class="numeric">${V(at + '.minutes', fmt(p.minutes))}</td>` +
+        `<td class="numeric">${V(at + '.p90', f3(p.p90))}</td>` +
+        `<td class="numeric"><span class="nw">${V(at + '.p90_lo', f2(p.p90_lo))}–${V(at + '.p90_hi', f2(p.p90_hi))}</span></td>` +
+        `<td class="numeric">${V(at + '.theta', f3(p.theta))}</td>` +
+        `<td class="numeric"><span class="nw">${V(at + '.rank_lo', p.rank_lo)}–${V(at + '.rank_hi', p.rank_hi)}</span></td>` +
+        `<td class="numeric">${V(at + '.p_top10_pct', fmt(p.p_top10_pct))}%</td>` +
+        `<td class="numeric">${V(at + '.team_share_pct', fmt(p.team_share_pct, 1))}%</td></tr>`;
+    }).join('');
+    const fwP = b.priors.FW;
+    document.getElementById('board-text').innerHTML =
+      `Among the ${V('$.board.eligible', fmt(b.eligible))} players with at least ${fmt(b.min_minutes)} minutes, ` +
+      `${lead.player} adds the most: ${V('$.board.top[0].theta', f2(lead.theta))} EP per 90 adjusted, against an average ` +
+      `of ${V('$.board.priors.FW.mu', f2(fwP.mu))} for a forward, over ${V('$.board.top[0].minutes', fmt(lead.minutes))} ` +
+      `minutes. He finishes in the top 10 in ` +
+      `${V('$.board.top[0].p_top10_pct', fmt(lead.p_top10_pct))}% of the simulations, and so does ${second.player} ` +
+      `(${V('$.board.top[1].p_top10_pct', fmt(second.p_top10_pct))}%). Nobody else clears 95%: ` +
+      `${third.player} is third with a plausible rank of ${V('$.board.top[2].rank_lo', third.rank_lo)} to ` +
+      `${V('$.board.top[2].rank_hi', third.rank_hi)}, and the plausible ranks of the top 10 reach down to ` +
+      `${V('$.board.top10_rank_hi_max', b.top10_rank_hi_max)}. The order from third down is a shortlist, not a ranking.`;
+    document.getElementById('board-caption').textContent =
+      `EP per 90 adjusted toward the position average (empirical Bayes), top 5 leagues, ${q.first_season} to ` +
+      `${q.last_season}, ${fmt(b.min_minutes)}+ minutes. Whisker: 95% interval of the adjusted rate. Green: top-10 ` +
+      `chance of 95% or more. The table has the top 20 with the measured rate and its range.`;
+    document.getElementById('team-text').innerHTML =
+      `<strong>Team context.</strong> The last column is the player's EP as a share of his team's goal value while he ` +
+      `was on the pitch. Every one of the top 10 was involved in more than half of it ` +
+      `(${V('$.board.team_share_top10_min', fmt(b.team_share_top10_min, 1))}% to ` +
+      `${V('$.board.team_share_top10_max', fmt(b.team_share_top10_max, 1))}%). That is the other side of the board: ` +
+      `most of these players are at clubs that score a lot, and the share says how much of that scoring ran ` +
+      `through them. Team strength is not adjusted for (see Limitations).`;
   })();
 
-  // ──────────────────────────────────────────────────────
-  // Section 2 · Q1 slope chart (SVG, biggest movers)
-  // ──────────────────────────────────────────────────────
-  (function renderSlope() {
-    const shifts = (data.q1_rank_shift || [])
-      .filter(s => s.delta != null && s.rank_a != null && s.rank_b != null)
-      .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta))
-      .slice(0, 10);
-
-    const svg = document.getElementById('slope-svg');
-    const width = svg.clientWidth || 900;
-    const height = 380;
-    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-    while (svg.firstChild) svg.removeChild(svg.firstChild);
-
-    const margin = { top: 36, bottom: 28, left: 18, right: 18 };
-    const colLeftX  = 175;
-    const colRightX = width - 175;
-    const topY = margin.top;
-    const botY = height - margin.bottom;
-
-    // Rank domain, use max observed
-    const allRanks = shifts.flatMap(s => [s.rank_a, s.rank_b]);
-    const minRank = 1;
-    const maxRank = Math.max(...allRanks);
-    const rankY = (r) => topY + ((r - minRank) / (maxRank - minRank)) * (botY - topY);
-
-    function add(tag, attrs, text) {
-      const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
-      for (const k in attrs) el.setAttribute(k, attrs[k]);
-      if (text != null) el.textContent = text;
-      svg.appendChild(el);
-      return el;
-    }
-
-    // Column titles
-    add('text', { x: colLeftX, y: 18, fill: tok.textSecondary,
-      'font-family': tok.mono, 'font-size': 11, 'text-anchor': 'end',
-      'letter-spacing': 1.2 }, 'Q1a · FULL CREDIT');
-    add('text', { x: colRightX, y: 18, fill: tok.textSecondary,
-      'font-family': tok.mono, 'font-size': 11, 'text-anchor': 'start',
-      'letter-spacing': 1.2 }, 'Q1b · WEIGHTED');
-
-    // Lines + endpoints
-    shifts.forEach(s => {
-      const yA = rankY(s.rank_a);
-      const yB = rankY(s.rank_b);
-      const color = s.delta > 0 ? tok.accent : tok.textMuted;
-      const strokeW = Math.max(1, Math.min(3, Math.abs(s.delta) * 0.4 + 1));
-
-      add('line', { x1: colLeftX, y1: yA, x2: colRightX, y2: yB,
-        stroke: color, 'stroke-width': strokeW, opacity: 0.85 });
-      add('circle', { cx: colLeftX, cy: yA, r: 4, fill: color });
-      add('circle', { cx: colRightX, cy: yB, r: 4, fill: color });
-
-      // Left label: name + rank
-      add('text', { x: colLeftX - 12, y: yA + 4, fill: tok.text,
-        'font-family': tok.mono, 'font-size': 11, 'text-anchor': 'end' },
-        `${s.rank_a}.  ${s.player}`);
-      // Right label: rank + delta
-      const deltaStr = (s.delta > 0 ? '+' : '') + s.delta;
-      add('text', { x: colRightX + 12, y: yB + 4, fill: tok.text,
-        'font-family': tok.mono, 'font-size': 11, 'text-anchor': 'start' },
-        `${s.rank_b}.  ${s.player}`);
-      add('text', { x: colRightX + 12, y: yB + 18, fill: color,
-        'font-family': tok.mono, 'font-size': 9.5, 'text-anchor': 'start',
-        'letter-spacing': 1 }, `Δ ${deltaStr}`);
-    });
+  // ── 2. Raw vs adjusted ──
+  (function renderRaw() {
+    const rows = b.raw_top.map(p => ({
+      label: narrow ? p.player : `${p.player} · ${fmt(p.minutes)} min`, v: p.theta, v2: p.p90,
+      lo: Math.min(p.theta, p.p90), hi: Math.max(p.theta, p.p90),
+      dot: b.raw_top10_dropped_names.includes(p.player) ? tok.textMuted : tok.accent,
+      color: 'rgba(143,166,143,0.45)',
+      tip: `measured ${f3(p.p90)} → adjusted ${f3(p.theta)} · ${fmt(p.minutes)} minutes · pulled ${fmt(p.pull_pct, 1)}%`,
+    }));
+    dotChart('chart-raw', rows, { axis: 'EP per 90', min: 0.4, max: 1 });
+    const gone = b.raw_top10_dropped_names;
+    document.getElementById('raw-text').innerHTML =
+      `Sort the same players by their measured rate instead and the top 10 looks different: ` +
+      `<strong>${V('$.board.raw_top10_dropped', b.raw_top10_dropped)}</strong> of its names drop out of the adjusted top 10 ` +
+      `(${gone.join(', ')}). All of them played far fewer minutes than the players who stay. ` +
+      `${b.raw_top[2].player}'s measured ${V('$.board.raw_top[2].p90', f3(b.raw_top[2].p90))} over ` +
+      `${V('$.board.raw_top[2].minutes', fmt(b.raw_top[2].minutes))} minutes is pulled ` +
+      `${V('$.board.raw_top[2].pull_pct', fmt(b.raw_top[2].pull_pct, 1))}% of the way to the forward average; ` +
+      `${lead.player}'s, over ${V('$.board.top[0].minutes', fmt(lead.minutes))} minutes, only ` +
+      `${V('$.board.top[0].pull_pct', fmt(lead.pull_pct, 1))}%. None of this says the short-career players are poor. ` +
+      `It says their numbers can't yet tell a hot streak from a level.`;
+    document.getElementById('raw-caption').textContent =
+      `Open circle: measured EP per 90. Dot: adjusted. Grey dots: players who leave the adjusted top 10. The line ` +
+      `joins the two; its length is the shrinkage.`;
   })();
 
-  // ──────────────────────────────────────────────────────
-  // Section 3 · Q2 MVP grid (HTML table)
-  // ──────────────────────────────────────────────────────
-  (function renderMVPGrid() {
-    const grid = data.q2_mvp_grid.grid;
-    const leagues = data.q2_mvp_grid.leagues;
-    const seasons = data.q2_mvp_grid.seasons;
-    const combined = data.q2_mvp_grid.combined_5l;
+  // ── 3. Credit rules ──
+  (function renderRules() {
+    const w = cr.weighted, ro = cr.roles;
+    const shift = w.shift.filter(x => x.rank_full <= 20 || x.rank_alt <= 20);
+    document.querySelector('#rules-table tbody').innerHTML = shift.map((x, k) => {
+      const i = w.shift.indexOf(x);
+      const d = x.rank_full - x.rank_alt;
+      const at = `$.credit_rules.weighted.shift[${i}]`;
+      return `<tr><td class="player">${x.player}</td><td class="numeric">${V(at + '.rank_full', x.rank_full)}</td>` +
+        `<td class="numeric">${V(at + '.rank_alt', x.rank_alt)}</td>` +
+        `<td class="numeric">${d === 0 ? '·' : (d > 0 ? '▲ ' : '▼ ') + Math.abs(d)}</td></tr>`;
+    }).join('');
+    document.getElementById('rules-text').innerHTML =
+      `Giving everyone involved the full value of the goal is one choice. Counting every role separately (the old ` +
+      `rule, where a self-assisted goal counts twice) changes almost nothing: the top 10 is the same ` +
+      `${V('$.credit_rules.roles.top10_overlap', ro.top10_overlap)} names and the ranks correlate at ` +
+      `${V('$.credit_rules.roles.rank_corr', f3(ro.rank_corr))}. Splitting each goal ` +
+      `${V('$.meta.params.weights_pct.goal', meta.params.weights_pct.goal)}/${V('$.meta.params.weights_pct.sca1', meta.params.weights_pct.sca1)}/${V('$.meta.params.weights_pct.sca2', meta.params.weights_pct.sca2)} between scorer, SCA1 and SCA2 moves more: ` +
+      `${V('$.credit_rules.weighted.top10_overlap', w.top10_overlap)} of the top 10 stay (rank correlation ` +
+      `${V('$.credit_rules.weighted.rank_corr', f3(w.rank_corr))}). The split favours finishers and costs creators: ` +
+      `${w.biggest_riser.player} climbs from ${V('$.credit_rules.weighted.biggest_riser.rank_full', w.biggest_riser.rank_full)} ` +
+      `to ${V('$.credit_rules.weighted.biggest_riser.rank_alt', w.biggest_riser.rank_alt)}, ${w.biggest_faller.player} ` +
+      `falls from ${V('$.credit_rules.weighted.biggest_faller.rank_full', w.biggest_faller.rank_full)} to ` +
+      `${V('$.credit_rules.weighted.biggest_faller.rank_alt', w.biggest_faller.rank_alt)}. ${cr.weighted.leader} ` +
+      `leads under every rule. The weights are a judgement, not an estimate, which is why full credit is the headline.`;
+  })();
 
-    function isJackson(season, pick) {
-      return pick && pick.player === 'Nicolas Jackson' && season === '2022-2023';
-    }
-    const esc = (s) => String(s).replace(/"/g, '&quot;');
+  // ── 4. Repeatability ──
+  (function renderRep() {
+    const keys = ['inv_p90', 'p90', 'sca2_share', 'ep_per_inv'];
+    const rows = keys.map(k => ({ label: rep[k].label, v: rep[k].r, lo: rep[k].lo, hi: rep[k].hi,
+      text: `r = ${f2(rep[k].r)}`, dot: k === 'ep_per_inv' ? tok.textMuted : tok.accent,
+      color: 'rgba(143,166,143,0.55)',
+      tip: `r = ${f2(rep[k].r)} (95% CI ${f2(rep[k].lo)}–${f2(rep[k].hi)}) · ${fmt(rep[k].pairs)} pairs, ${fmt(rep[k].players)} players` }));
+    dotChart('chart-rep', rows, { axis: 'Correlation with the next season (0 = none, 1 = identical)', min: 0, max: 1 });
+    document.getElementById('rep-text').innerHTML =
+      `A number only describes a player if it carries over. For every player with ${fmt(rep.min_minutes)}+ minutes in ` +
+      `two seasons in a row, EP per 90 correlates at <strong>${V('$.repeatability.p90.r', f2(rep.p90.r))}</strong> with ` +
+      `the next season (95% CI ${V('$.repeatability.p90.lo', f2(rep.p90.lo))}–${V('$.repeatability.p90.hi', f2(rep.p90.hi))}, ` +
+      `${V('$.repeatability.p90.pairs', fmt(rep.p90.pairs))} pairs): it is mostly a trait of the player, and of the team ` +
+      `he plays in. The share of a player's credits that come from SCA2 repeats at ` +
+      `${V('$.repeatability.sca2_share.r', f2(rep.sca2_share.r))} (${V('$.repeatability.sca2_share.lo', f2(rep.sca2_share.lo))}–` +
+      `${V('$.repeatability.sca2_share.hi', f2(rep.sca2_share.hi))}): partly a habit, partly luck. How much each ` +
+      `involvement was worth barely repeats at all: ${V('$.repeatability.ep_per_inv.r', f2(rep.ep_per_inv.r))} ` +
+      `(${V('$.repeatability.ep_per_inv.lo', f2(rep.ep_per_inv.lo))}–${V('$.repeatability.ep_per_inv.hi', f2(rep.ep_per_inv.hi))}). ` +
+      `Being involved often is a skill; being involved in the big goals is mostly circumstance (§7).`;
+    document.getElementById('rep-caption').textContent =
+      `Pearson correlation between consecutive seasons, all top 5 leagues together. Rates: ${fmt(rep.min_minutes)}+ ` +
+      `minutes in both seasons. EP per involvement: ${rep.min_involvements}+ involvements in both. SCA2 share: ` +
+      `${rep.min_role_credits}+ role credits in both. Line: 95% interval from resampling players.`;
+  })();
 
-    let matches = 0, comparable = 0;
-
-    // Build one cell from a model pick + an actual-winner record.
-    function cell(pick, actual, jackson) {
-      if (!pick) return '<td class="empty">no qualifier</td>';
-      const winner = actual && actual.winner;
-      const isMatch = !!(winner && winner === pick.player);
-      if (winner) { comparable++; if (isMatch) matches++; }
-
-      const award = actual && actual.award ? actual.award : '';
-      const src = actual && actual.source ? actual.source : '';
-      const titleAttr = winner
-        ? ` title="Actual: ${esc(winner)}, ${esc(award)}${src ? ' (' + esc(src) + ')' : ''}"`
-        : (actual && actual.note ? ` title="${esc(actual.note)}"` : '');
-
-      let actualLine;
-      if (!actual) {
-        actualLine = '<div class="actual-line none">no award data</div>';
-      } else if (!winner) {
-        actualLine = `<div class="actual-line none">no award${actual.note ? ' (' + (actual.note.includes('ancel') ? 'cancelled' : 'n/a') + ')' : ''}</div>`;
-      } else if (isMatch) {
-        actualLine = `<div class="actual-line match">✓ MATCH · ${winner}</div>`;
-      } else {
-        actualLine = `<div class="actual-line diff">Actual: ${winner}<span class="dnote">model differed</span></div>`;
-      }
-
-      const cls = [jackson ? 'spotlight' : '', isMatch ? 'match' : ''].filter(Boolean).join(' ');
-      return `<td class="${cls}"${titleAttr}>
-        <span class="player">${pick.player}</span>
-        <div class="team-line">${pick.primary_team} · ${pick.minutes.toLocaleString('en-GB')} min</div>
-        <div class="ep-val">${pick.ep_per_90.toFixed(3)} EP/90</div>
-        ${actualLine}
-      </td>`;
-    }
-
-    const t = document.getElementById('mvp-grid');
-    let html = '<thead><tr><th class="season-col">Season</th>';
-    for (const lg of leagues) html += `<th>${lg.replace('-', ' ')}</th>`;
-    html += `<th style="background: var(--accent-glow); color: var(--accent);">5L · Ballon d'Or</th></tr></thead><tbody>`;
-
-    for (const s of seasons) {
-      html += `<tr><th>${s}</th>`;
-      for (const lg of leagues) {
-        const c = (grid[lg] || {})[s];
-        const pick = c && c.model_pick;
-        html += cell(pick, c && c.actual, isJackson(s, pick));
-      }
-      const cc = combined[s];
-      html += cell(cc && cc.model_pick, cc && cc.actual_ballon_dor, false);
+  // ── 5. Awards ──
+  (function renderAwards() {
+    const seasons = [...new Set(aw.grid.map(c => c.season_label))];
+    const leagues = [...new Set(aw.grid.map(c => c.league))];
+    let html = '<thead><tr><th></th>' + seasons.map(s => `<th>${s}</th>`).join('') + '</tr></thead><tbody>';
+    leagues.forEach(lg => {
+      html += `<tr><th>${lg}</th>`;
+      seasons.forEach(se => {
+        const k = aw.grid.findIndex(c => c.league === lg && c.season_label === se);
+        const c = aw.grid[k];
+        if (!c) { html += '<td class="none">·</td>'; return; }
+        const hit = c.winner_rank === 1;
+        let win;
+        if (!c.winner) win = `no award`;
+        else if (c.winner_rank == null) win = `${c.winner} (goalkeeper)`;
+        else win = hit ? 'award winner' : `${c.winner} · <span class="rk">#${V(`$.awards.grid[${k}].winner_rank`, c.winner_rank)}</span>`;
+        html += `<td class="${hit ? 'hit' : ''}" title="Pick: ${c.pick} (${f2(c.pick_theta)} EP per 90 adjusted). ` +
+          `${c.winner ? 'Winner: ' + c.winner + ' · ' + c.award : 'No award this season'}">` +
+          `<div class="pick">${c.pick}</div><div class="win">${win}</div></td>`;
+      });
       html += '</tr>';
-    }
-    html += '</tbody>';
-    t.innerHTML = html;
-
-    // Dynamic agreement summary (counts every cell where an award was given)
-    const pct = comparable ? Math.round((matches / comparable) * 100) : 0;
-    const sum = document.getElementById('mvp-summary');
-    if (sum) {
-      sum.innerHTML =
-        `The model's per-90 MVP pick matched the real award winner in ` +
-        `<strong>${matches} of ${comparable}</strong> cells where an award was given ` +
-        `(<strong>${pct}%</strong>). The model prices high-leverage value per minute, not reputation, ` +
-        `so divergence is the expected result, and the whole point of the exercise.`;
-    }
-  })();
-
-  // ──────────────────────────────────────────────────────
-  // Section 4 · Q3 late-game substantives
-  // ──────────────────────────────────────────────────────
-  (function renderQ3() {
-    const rows = (data.q3_late_game.rows_substantive || []).slice(0, 10);
-    new Chart(document.getElementById('chart-q3'), {
-      type: 'bar',
-      data: {
-        labels: rows.map(r => `${r.player} · ${r.primary_team}`),
-        datasets: [{
-          label: 'Share of EP from 60-90 mins',
-          data: rows.map(r => r.share_late * 100),
-          backgroundColor: C.primary,
-          borderWidth: 0,
-        }],
-      },
-      options: {
-        indexAxis: 'y',
-        aspectRatio: 1.4,
-        layout: { padding: { bottom: 12, left: 12 } },
-        plugins: {
-          title: { display: true, text: 'Late-game share · ≥ 30 credits · top 10' },
-          legend: { display: false },
-          tooltip: { callbacks: {
-            label: (ctx) => `${ctx.parsed.x.toFixed(1)}% late share`,
-            afterLabel: (ctx) => {
-              const r = rows[ctx.dataIndex];
-              return [
-                `Credits (3-layer):  ${r.goals_involved}`,
-                `Total EP timed:     ${r.ep_total.toFixed(2)}`,
-                `Late EP (60-90):    ${r.ep_late.toFixed(2)}`,
-              ];
-            }
-          }}
-        },
-        scales: {
-          x: {
-            ...RENBALL_HELPERS.niceRange(rows.map(r => r.share_late * 100),
-              { padding: 2, step: 5, floor: 0, ceil: 100 }),
-            title: { display: true, text: 'Late share (%)', padding: { top: 10 } },
-          },
-          y: { ticks: { font: { family: tok.mono, size: 11 } } },
-        },
-      },
     });
+    document.getElementById('award-grid').innerHTML = html + '</tbody>';
+    const ab = aw.awards_by_league;
+    const cellAt = (code, season) => aw.grid.findIndex(c => c.code === code && c.season === season);
+    const iPal = cellAt('Premier-League', '2023-2024'), iVvd = cellAt('Premier-League', '2018-2019');
+    const pal = aw.grid[iPal], vvd = aw.grid[iVvd];
+    document.getElementById('award-text').innerHTML =
+      `If the board measures something real, its pick for each league and season should look like the player who won ` +
+      `that season's award. Each league has its own award (${Object.entries(ab).map(([lg, a]) => `${lg}: ${a.join(' / ')}`).join('; ')}). ` +
+      `The model's pick is the highest adjusted EP per 90 among players with ${fmt(aw.min_minutes)}+ minutes in that ` +
+      `league and season. Of the ${V('$.awards.eligible_winners', aw.eligible_winners)} awards it could have matched, it ` +
+      `names the winner in <strong>${V('$.awards.exact', aw.exact)}</strong>, has him in its top 3 in ` +
+      `${V('$.awards.top3', aw.top3)} and in its top 10 in ${V('$.awards.top10', aw.top10)}. Picking a qualified player ` +
+      `at random would name about ${V('$.awards.chance_exact', fmt(aw.chance_exact, 1))} winners (between ` +
+      `${V('$.awards.eligible_min', aw.eligible_min)} and ${V('$.awards.eligible_max', aw.eligible_max)} players qualify per season).`;
+    document.getElementById('award-caption').textContent =
+      `Top line: the model's pick. Bottom line: the award winner and where he ranks on the model's list (#). ` +
+      `Green: the pick won the award. ${aw.ineligible.map(x => `${x.winner} (${x.league}, ${x.season}) is a goalkeeper and can't be picked`).join('; ')}. ` +
+      `Ligue 1 gave no award in 2019-20. Sources: dashboard, Award check.`;
+    document.getElementById('award-text-2').innerHTML =
+      `The misses are telling. A simple count of goals plus assists names ` +
+      `<strong>${V('$.awards.ga_exact', aw.ga_exact)}</strong> winners, more than the model's ` +
+      `${V('$.awards.exact', aw.exact)}, and the leader in total EP names ${V('$.awards.ep_total_exact', aw.ep_total_exact)}. ` +
+      `Voters reward volume and the box score; the model rewards rate. Where they part, it's usually a rate player ` +
+      `against a season-long talisman (the model's pick in the ${pal.season_label} ${pal.league} was ${pal.pick}; the award ` +
+      `went to ${pal.winner}, number ${V(`$.awards.grid[${iPal}].winner_rank`, pal.winner_rank)} on the model's list) or a ` +
+      `defender whose value the three credited roles barely see (${vvd.winner} in ${vvd.season_label}, number ` +
+      `${V(`$.awards.grid[${iVvd}].winner_rank`, vvd.winner_rank)}).`;
   })();
 
-  // ──────────────────────────────────────────────────────
-  // Section 5 · Q4a + Q4b efficiency ratios
-  // ──────────────────────────────────────────────────────
-  (function renderQ4() {
-    const a = (data.q4_efficiency.q4a_substantive || []).slice(0, 10);
-    const b = (data.q4_efficiency.q4b_substantive || []).slice(0, 10);
-
-    new Chart(document.getElementById('chart-q4a'), {
+  // ── 6. SCA2 ──
+  (function renderSCA2() {
+    const t10 = s2.top.slice(0, 10);
+    barChart('chart-sca2', t10.map(p => ({ label: p.player, v: p.ep_sca2, lo: p.ep_sca2_lo, hi: p.ep_sca2_hi,
+      color: 'rgba(114,193,255,0.7)', tip: `${f2(p.ep_sca2)} EP from ${p.sca2} SCA2 credits (95% ${fmt(p.ep_sca2_lo, 1)}–${fmt(p.ep_sca2_hi, 1)}) · plausible rank ${p.rank_lo}–${p.rank_hi}` })),
+      { axis: 'EP from SCA2 credits', decimals: 1, max: 80 });
+    new Chart(document.getElementById('chart-sca2-split'), {
       type: 'bar',
-      data: {
-        labels: a.map(r => `${r.player} · ${r.primary_team}`),
-        datasets: [{
-          label: 'EP per credit',
-          data: a.map(r => r.ratio_ep_per_goal),
-          backgroundColor: C.primary,
-          borderWidth: 0,
-        }],
-      },
-      options: {
-        indexAxis: 'y',
-        aspectRatio: 0.9,
-        layout: { padding: { bottom: 12, left: 12 } },
-        plugins: {
-          title: { display: true, text: 'EP per credit · ≥ 20 credits' },
-          legend: { display: false },
-          tooltip: { callbacks: {
-            label: (ctx) => `${ctx.parsed.x.toFixed(3)} EP / credit`,
-            afterLabel: (ctx) => {
-              const r = a[ctx.dataIndex];
-              return [`Credits: ${r.goals_involved}`, `Total EP: ${r.ep_timed.toFixed(2)}`];
-            }
-          }}
-        },
-        scales: {
-          x: { beginAtZero: true,
-            title: { display: true, text: 'EP per credit', padding: { top: 10 } } },
-          y: { ticks: { font: { family: tok.mono, size: 10.5 } } },
-        },
-      },
+      data: { labels: t10.map(p => p.player), datasets: [
+        { label: 'Scorer', data: t10.map(p => p.share_goal_pct), backgroundColor: C.primary },
+        { label: 'SCA1', data: t10.map(p => p.share_sca1_pct), backgroundColor: C.quaternary },
+        { label: 'SCA2', data: t10.map(p => p.share_sca2_pct), backgroundColor: C.secondary },
+      ] },
+      options: { indexAxis: 'y', maintainAspectRatio: false,
+        plugins: { tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${fmt(ctx.raw, 1)}%` } } },
+        scales: { x: { stacked: true, min: 0, max: 100, title: { display: true, text: 'Share of his EP by role (%)' } },
+                  y: { stacked: true, ticks: { autoSkip: false, font: { family: tok.mono, size: narrow ? 9 : 11 } } } } },
     });
-
-    new Chart(document.getElementById('chart-q4b'), {
-      type: 'bar',
-      data: {
-        labels: b.map(r => `${r.player} · ${r.primary_team}`),
-        datasets: [{
-          label: 'Time-aware multiplier',
-          data: b.map(r => r.multiplier),
-          backgroundColor: C.secondary,
-          borderWidth: 0,
-        }],
-      },
-      options: {
-        indexAxis: 'y',
-        aspectRatio: 0.9,
-        layout: { padding: { bottom: 12, left: 12 } },
-        plugins: {
-          title: { display: true, text: 'Time-aware multiplier · ≥ 20 credits' },
-          legend: { display: false },
-          tooltip: { callbacks: {
-            label: (ctx) => `×${ctx.parsed.x.toFixed(3)}`,
-            afterLabel: (ctx) => {
-              const r = b[ctx.dataIndex];
-              return [
-                `Credits:    ${r.goals_involved}`,
-                `EP timed:   ${r.ep_timed.toFixed(2)}`,
-                `EP untimed: ${r.ep_untimed.toFixed(2)}`,
-              ];
-            }
-          }}
-        },
-        scales: {
-          x: {
-            ...RENBALL_HELPERS.niceRange(b.map(r => r.multiplier), { padding: 0.02, step: 0.05, floor: 0.9, ceil: 1.3 }),
-            title: { display: true, text: 'multiplier (×)', padding: { top: 10 } },
-          },
-          y: { ticks: { font: { family: tok.mono, size: 10.5 } } },
-        },
-      },
-    });
+    const l = s2.top[0], br = s2.top[1];
+    document.getElementById('sca2-explain').innerHTML =
+      `An assist gets counted; the pass before it almost never does. FBref's <strong>SCA2</strong> is that earlier ` +
+      `action: the second-last pass, dribble or foul won before the shot. It is where a deep playmaker's work shows ` +
+      `up, the ball that breaks the line so someone else can play the assist. Here every SCA2 credit counts, even when ` +
+      `the same player also scored or assisted, and is priced at the goal's full value. SCA2 is recorded for ` +
+      `${V('$.quality.sca2_pct', fmt(q.sca2_pct, 1))}% of goals.`;
+    document.getElementById('sca2-text').innerHTML =
+      `${l.player} leads with ${V('$.sca2.top[0].ep_sca2', f2(l.ep_sca2))} EP from SCA2 alone. ${br.player} is second ` +
+      `with ${V('$.sca2.top[1].ep_sca2', f2(br.ep_sca2))}, ${V('$.sca2.top[1].share_sca2_pct', fmt(br.share_sca2_pct, 1))}% ` +
+      `of everything he collected, far more than the scorers around him. But the intervals are wide: ${br.player}'s ` +
+      `plausible rank runs from ${V('$.sca2.top[1].rank_lo', br.rank_lo)} to ${V('$.sca2.top[1].rank_hi', br.rank_hi)}, ` +
+      `so "second only to ${l.player}" is the best estimate, not a settled fact.`;
+    document.getElementById('sca2-caption').textContent =
+      `EP from SCA2 credits, top 10, roles counted separately. Whisker: 95% interval from resampling matches.`;
+    document.getElementById('split-caption').textContent =
+      `The same ten players: share of their EP from each role, with roles counted separately.`;
+    const sh = s2.top_share;
+    document.getElementById('sca2-text-2').innerHTML =
+      `Sorted by share instead of volume, the purest architects are midfielders: among the ` +
+      `${V('$.sca2.share_players', fmt(s2.share_players))} players with ${s2.min_share_credits}+ role credits, ` +
+      `${sh[0].player} (${V('$.sca2.top_share[0].share_sca2_pct', fmt(sh[0].share_sca2_pct, 1))}%), ${sh[1].player} ` +
+      `(${V('$.sca2.top_share[1].share_sca2_pct', fmt(sh[1].share_sca2_pct, 1))}%) and ${sh[2].player} ` +
+      `(${V('$.sca2.top_share[2].share_sca2_pct', fmt(sh[2].share_sca2_pct, 1))}%) take the most of their value from ` +
+      `the pass before the assist, against a median of ${V('$.sca2.share_median_pct', fmt(s2.share_median_pct, 1))}%. ` +
+      `As §4 shows, that share is partly a habit (r = ${V('$.repeatability.sca2_share.r', f2(rep.sca2_share.r))}).`;
   })();
 
-  // ──────────────────────────────────────────────────────
-  // Section 6 · Q5 position panels (HTML tables)
-  // ──────────────────────────────────────────────────────
-  (function renderQ5() {
-    const panels = data.q5_position.panels;
-    const order = ['DF', 'MF', 'FW'];
-    const labels = { DF: 'Defenders', MF: 'Midfielders', FW: 'Forwards' };
-    const wrap = document.getElementById('pos-panels');
-    let html = '';
-    for (const pos of order) {
-      const entry = panels[pos];
-      if (!entry) continue;
-      html += `<div class="pos-panel"><h3>${labels[pos]}</h3><table class="pos-table">`;
-      for (const r of entry.rows) {
-        const minsClass = (r.minutes != null && r.minutes < 2000) ? 'small' : '';
-        const minsLabel = r.minutes != null ? `${r.minutes.toLocaleString('en-GB')} min` : 'n/a';
-        html += `<tr>
-          <td>${r.rank}.</td>
-          <td><span class="player">${r.player}</span><span class="team">${r.primary_team} · age ${r.age != null ? r.age.toFixed(1) : 'n/a'}</span></td>
-          <td class="ep">${r.ep_per_90.toFixed(3)}</td>
-          <td class="mins ${minsClass}">${minsLabel}</td>
-        </tr>`;
-      }
-      html += `</table></div>`;
-    }
-    wrap.innerHTML = html;
+  // ── 7. Decisive goals ──
+  (function renderEff() {
+    const rows = [...ef.top.map(p => ({ ...p, side: 'top' })), ...ef.bottom.map(p => ({ ...p, side: 'bottom' }))]
+      .map(p => ({ label: narrow ? p.player : `${p.player} · ${p.team}`, v: p.ep_per_inv, lo: p.lo, hi: p.hi,
+        dot: p.side === 'top' ? tok.accent : tok.textSecondary,
+        color: p.side === 'top' ? 'rgba(193,255,114,0.45)' : 'rgba(143,166,143,0.45)',
+        tip: `${f3(p.ep_per_inv)} EP per involvement (95% ${f2(p.lo)}–${f2(p.hi)}) · ${p.involvements} involvements` }));
+    dotChart('chart-eff', rows, { axis: 'EP per involvement', min: 0.3, max: 1.1, ref: ef.avg });
+    document.getElementById('eff-explain').innerHTML =
+      `Divide a player's EP by the number of goals he was involved in and you get the average price of his goals. ` +
+      `The average across all credits is ${V('$.efficiency.avg', f3(ef.avg))} EP. A high number means his goals tended ` +
+      `to come when the game was tight; a low one means they often came when it was already won. It is not a measure ` +
+      `of finishing or of nerve.`;
+    document.getElementById('eff-text').innerHTML =
+      `Among the ${V('$.efficiency.eligible', fmt(ef.eligible))} players with ${ef.min_involvements}+ involvements, ` +
+      `${V('$.efficiency.above', ef.above)} are clearly above average and ${V('$.efficiency.below', ef.below)} clearly ` +
+      `below, more than the ~${V('$.efficiency.chance_each_side', ef.chance_each_side)} on each side that chance alone ` +
+      `would give. So the differences are real, but look at who is at the bottom: the five lowest all played for ` +
+      `${ef.bottom_teams.join(', ').replace(/, ([^,]*)$/, ' and $1')}. Dominant teams score many goals when the match ` +
+      `is already decided, and those goals are cheap. The number describes the team as much as the player, and it ` +
+      `barely carries over from one season to the next (r = ${V('$.repeatability.ep_per_inv.r', f2(rep.ep_per_inv.r))}).`;
+    document.getElementById('eff-caption').textContent =
+      `EP per involvement for players with ${ef.min_involvements}+ involvements: the 10 highest (green) and the 5 lowest. ` +
+      `Dashed line: the average credit. Line: 95% interval from resampling matches.`;
   })();
 
-  // ──────────────────────────────────────────────────────
-  // Section 7 · Q6 marquee, stacked horizontal bar
-  // ──────────────────────────────────────────────────────
-  (function renderQ6Stack() {
-    const rows = (data.q6_architects.layer_breakdown || []).slice(0, 10);
-    new Chart(document.getElementById('chart-q6-stack'), {
-      type: 'bar',
-      data: {
-        labels: rows.map(r => `${r.player} · ${r.primary_team}`),
-        datasets: [
-          { label: 'Scorer EP',
-            data: rows.map(r => r.ep_scorer),
-            backgroundColor: 'rgba(143, 191, 69, 0.6)',
-            borderWidth: 0,
-            stack: 's' },
-          { label: 'SCA1 (assist) EP',
-            data: rows.map(r => r.ep_sca1),
-            backgroundColor: 'rgba(143, 191, 69, 0.85)',
-            borderWidth: 0,
-            stack: 's' },
-          { label: 'SCA2 (pre-assist) EP',
-            data: rows.map(r => r.ep_sca2),
-            backgroundColor: C.primary,  // bright accent
-            borderWidth: 0,
-            stack: 's' },
-        ],
-      },
-      options: {
-        indexAxis: 'y',
-        aspectRatio: 1.4,
-        layout: { padding: { bottom: 12, left: 12 } },
-        plugins: {
-          title: { display: true, text: 'Top 10 SCA2 EP collectors · layered by role' },
-          legend: { display: true, position: 'bottom' },
-          tooltip: {
-            callbacks: {
-              label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.x.toFixed(2)} EP`,
-              afterLabel: (ctx) => {
-                if (ctx.datasetIndex !== 2) return null;
-                const r = rows[ctx.dataIndex];
-                const sca2Pct = (r.ep_sca2 / r.ep_total * 100);
-                return [`Total EP: ${r.ep_total.toFixed(2)}`,
-                        `SCA2 share: ${sca2Pct.toFixed(1)}%`];
-              }
-            },
-          },
-        },
-        scales: {
-          x: { stacked: true, beginAtZero: true,
-            title: { display: true, text: 'EP collected (cumulative)', padding: { top: 10 } } },
-          y: { stacked: true, ticks: { font: { family: tok.mono, size: 11 } } },
-        },
-      },
-    });
+  // ── 8. Positions ──
+  (function renderPos() {
+    const labels = { FW: 'Forwards', MF: 'Midfielders', DF: 'Defenders' };
+    document.getElementById('pos-panels').innerHTML = ['FW', 'MF', 'DF'].map(pos => {
+      const rows = data.positions[pos];
+      return `<div class="pos-panel"><h3>${labels[pos]}</h3><table class="proj"><thead><tr><th>Player</th>` +
+        `<th class="numeric">Adj.</th><th class="numeric">Rank</th></tr></thead><tbody>` +
+        rows.map((p, k) => `<tr><td class="player">${p.player}<div style="font-size:0.72rem;color:var(--text-muted)">${p.team}</div></td>` +
+          `<td class="numeric">${V(`$.positions.${pos}[${k}].theta`, f2(p.theta))}</td>` +
+          `<td class="numeric">${V(`$.positions.${pos}[${k}].rank`, fmt(p.rank))}</td></tr>`).join('') +
+        `</tbody></table></div>`;
+    }).join('');
+    const pr = b.priors;
+    document.getElementById('pos-text').innerHTML =
+      `Each position is pulled toward its own average: ${V('$.board.priors.FW.mu', f2(pr.FW.mu))} EP per 90 for ` +
+      `forwards, ${V('$.board.priors.MF.mu', f2(pr.MF.mu))} for midfielders and ${V('$.board.priors.DF.mu', f2(pr.DF.mu))} ` +
+      `for defenders. The best midfielder, ${data.positions.MF[0].player}, adds ` +
+      `${V('$.positions.MF[0].theta', f2(data.positions.MF[0].theta))}; the best defender, ` +
+      `${data.positions.DF[0].player}, ${V('$.positions.DF[0].theta', f2(data.positions.DF[0].theta))}, which ranks ` +
+      `${V('$.positions.DF[0].rank', fmt(data.positions.DF[0].rank))} overall. Goalkeepers are left out: the three ` +
+      `credited roles almost never reach them (the best keeper's adjusted rate is ` +
+      `${V('$.board.gk_max_theta', f3(b.gk_max_theta))}, against a median forward's ` +
+      `${V('$.board.fw_median_theta', f3(b.fw_median_theta))}), so this framework says nothing about their value. ` +
+      `"Rank" is the overall rank among all ${fmt(b.eligible)} players.`;
   })();
 
-  // ──────────────────────────────────────────────────────
-  // Section 7 · Q6 per-90 board (≥ 2,000 min editorial filter)
-  // ──────────────────────────────────────────────────────
-  (function renderQ6Per90() {
-    const all = data.q6_architects.per_90_top.rows || [];
-    const rows = all.filter(r => r.minutes >= 2000).slice(0, 10);
-    new Chart(document.getElementById('chart-q6-per90'), {
-      type: 'bar',
-      data: {
-        labels: rows.map(r => `${r.player} · ${r.primary_team}`),
-        datasets: [{
-          label: 'SCA2 EP / 90',
-          data: rows.map(r => r.ep_per_90),
-          backgroundColor: C.primary,
-          borderWidth: 0,
-        }],
-      },
-      options: {
-        indexAxis: 'y',
-        aspectRatio: 1.0,
-        layout: { padding: { bottom: 12, left: 12 } },
-        plugins: {
-          title: { display: true, text: 'SCA2 EP / 90 · ≥ 2,000 min' },
-          legend: { display: false },
-          tooltip: { callbacks: {
-            label: (ctx) => `${ctx.parsed.x.toFixed(3)} SCA2 EP / 90`,
-            afterLabel: (ctx) => {
-              const r = rows[ctx.dataIndex];
-              return [
-                `Minutes:  ${fmt(r.minutes)}`,
-                `SCA2 credits: ${r.goals_involved}`,
-                `Position: ${r.pos || 'n/a'}`,
-              ];
-            }
-          }}
-        },
-        scales: {
-          x: { beginAtZero: true,
-            title: { display: true, text: 'SCA2 EP per 90', padding: { top: 10 } } },
-          y: { ticks: { font: { family: tok.mono, size: 10.5 } } },
-        },
-      },
-    });
+  // ── 9. Young players ──
+  (function renderYoung() {
+    const y = data.young;
+    document.querySelector('#young-table tbody').innerHTML = y.rows.map((p, k) => {
+      const at = `$.young.rows[${k}]`;
+      return `<tr><td class="numeric">${k + 1}</td><td class="player">${p.player}</td><td>${p.team}</td>` +
+        `<td class="numeric">${V(at + '.age_end', fmt(p.age_end))}</td><td class="numeric">${V(at + '.minutes', fmt(p.minutes))}</td>` +
+        `<td class="numeric">${V(at + '.p90', f3(p.p90))}</td><td class="numeric">${V(at + '.theta', f3(p.theta))}</td>` +
+        `<td class="numeric">${V(at + '.rank', fmt(p.rank))}</td></tr>`;
+    }).join('');
+    const a = y.rows[0], bb = y.rows[1];
+    document.getElementById('young-text').innerHTML =
+      `Players aged ${V('$.young.max_age', y.max_age)} or under on 30 June 2024, the end of the data, with ${fmt(b.min_minutes)}+ minutes ` +
+      `(${V('$.young.eligible', fmt(y.eligible))} players). Young players have fewer minutes, so their rates are pulled ` +
+      `harder toward the average, and a high adjusted rate here is a strong signal. ${a.player} ` +
+      `(${V('$.young.rows[0].theta', f2(a.theta))}) already ranks ${V('$.young.rows[0].rank', fmt(a.rank))} overall; ` +
+      `${bb.player}'s measured ${V('$.young.rows[1].p90', f3(bb.p90))} comes from only ` +
+      `${V('$.young.rows[1].minutes', fmt(bb.minutes))} minutes and is pulled to ${V('$.young.rows[1].theta', f3(bb.theta))}. ` +
+      `With the data ending in 2023-24, treat this list as where these players stood then.`;
   })();
 
-  // ──────────────────────────────────────────────────────
-  // Section 8 · Q7 young players bar
-  // ──────────────────────────────────────────────────────
-  (function renderQ7() {
-    const rows = data.q7_young.rows.slice(0, 10);
-    const bg = rows.map(r => (r.minutes != null && r.minutes >= 2000)
-      ? C.primary : 'rgba(193, 255, 114, 0.4)');
-    new Chart(document.getElementById('chart-q7'), {
-      type: 'bar',
-      data: {
-        labels: rows.map(r => `${r.player} · ${r.primary_team} · age ${r.age != null ? r.age.toFixed(1) : '?'}`),
-        datasets: [{
-          label: 'EP / 90',
-          data: rows.map(r => r.ep_per_90),
-          backgroundColor: bg,
-          borderWidth: 0,
-        }],
-      },
-      options: {
-        indexAxis: 'y',
-        aspectRatio: 1.3,
-        layout: { padding: { bottom: 12, left: 12 } },
-        plugins: {
-          title: { display: true, text: 'Age ≤ 23 · EP/90 · top 10' },
-          legend: { display: false },
-          tooltip: { callbacks: {
-            label: (ctx) => `${ctx.parsed.x.toFixed(3)} EP / 90`,
-            afterLabel: (ctx) => {
-              const r = rows[ctx.dataIndex];
-              const cohort = (r.minutes >= 2000) ? 'sampled cohort' : 'LOW-VOLUME';
-              return [
-                `Minutes:  ${fmt(r.minutes)}  (${cohort})`,
-                `Credits:  ${r.goals_involved}`,
-                `Position: ${r.pos || 'n/a'}`,
-              ];
-            }
-          }}
-        },
-        scales: {
-          x: { beginAtZero: true,
-            title: { display: true, text: 'EP per 90', padding: { top: 10 } } },
-          y: { ticks: { font: { family: tok.mono, size: 11 } } },
-        },
-      },
-    });
-  })();
+  // ── Limitations ──
+  document.getElementById('limitations-list').innerHTML = [
+    `<strong>Prices, not causes.</strong> A goal's value comes from Project 02's model of what teams at that score ` +
+      `went on to do. It says how much a goal mattered, not how hard it was to score.`,
+    `<strong>Only three roles are credited.</strong> Scorer, SCA1 and SCA2. Defending, pressing, the run that drags a ` +
+      `defender away and everything three passes back earn nothing, so defenders and goalkeepers are undervalued by design.`,
+    `<strong>No adjustment for team or league strength.</strong> Players at clubs that score a lot get more ` +
+      `involvements; the team-share column shows how much of that ran through them, but nothing is subtracted. ` +
+      `Goal prices are pooled over six leagues.`,
+    `<strong>SCA2 is missing for ${V('$.quality.sca2_missing_pct', fmt(q.sca2_missing_pct, 1))}% of goals.</strong> ` +
+      `FBref records it for ${V('$.quality.sca2_pct', fmt(q.sca2_pct, 1))}% of goals, and the data end in ` +
+      `${q.last_season} because the source discontinued it.`,
+    `<strong>The shrinkage assumes a bell curve.</strong> A normal prior pulls true outliers in a little too hard: ` +
+      `${lead.player}'s adjusted ${V('$.board.top[0].theta', f3(lead.theta))} sits at the bottom of his measured range ` +
+      `(${V('$.board.top[0].p90_lo', f3(lead.p90_lo))}–${V('$.board.top[0].p90_hi', f3(lead.p90_hi))}). The order at the ` +
+      `top is unaffected; the level is conservative.`,
+    `<strong>Plausible ranks treat players as independent.</strong> They carry each player's own noise, not the ` +
+      `shared uncertainty of the goal prices, which moves everyone together.`,
+    `<strong>Own goals.</strong> They are missing from the shot table, so in matches with one the running score is ` +
+      `wrong after it; ${V('$.quality.goals_og_matches_pct', fmt(q.goals_og_matches_pct, 1))}% of goals come from such ` +
+      `matches and keep their (slightly mispriced) value here, as in Project 02.`,
+    `<strong>Awards are a rough benchmark.</strong> Five different awards with different voters, and a single ` +
+      `winner per season; the comparison is a reality check, not a test.`,
+  ].map(x => `<li>${x}</li>`).join('');
 
-  // ──────────────────────────────────────────────────────
-  // Section 9 · The Picks
-  // ──────────────────────────────────────────────────────
-  (function renderPicks() {
-    // Data refs
-    const brandt = (data.q6_architects.layer_breakdown || []).find(r => r.player === 'Julian Brandt');
-    const q5mf = data.q5_position.panels.MF.rows;
-    const musiala = q5mf.find(r => r.player === 'Jamal Musiala');
-    const kdb = q5mf.find(r => r.player === 'Kevin De Bruyne');
-    const tello = (data.q3_late_game.rows || data.q3_late_game.rows_substantive || [])
-      .find(r => r.player === 'Cristian Tello');
-    const yamal = data.q7_young.rows.find(r => r.player === 'Lamine Yamal');
-
-    const picks = [
-      brandt ? {
-        rank: '01 · THE MARQUEE',
-        name: 'Julian Brandt',
-        team: 'Borussia Dortmund · MF',
-        number: `${brandt.ep_sca2.toFixed(2)} EP`,
-        numberLabel: 'from SCA2 alone',
-        copy: `The page's headline finding. <strong>Only Messi creates more pre-assist value</strong>, and Brandt's layer breakdown (25% scorer, 37% SCA1, 39% SCA2) is the most balanced architect profile in the dataset. Mbappé and Salah each collect under 20% of their EP from pre-assists; Brandt almost doubles them.`,
-      } : null,
-      musiala ? {
-        rank: '02 · YOUNG · SAMPLED',
-        name: 'Jamal Musiala',
-        team: `Bayern Munich · MF · age ${musiala.age != null ? musiala.age.toFixed(1) : '?'}`,
-        number: `${musiala.ep_per_90.toFixed(3)} EP/90`,
-        numberLabel: `Q5 MF #${musiala.rank}`,
-        copy: `<strong>${musiala.minutes.toLocaleString('en-GB')} minutes</strong> across the dataset, <strong>${musiala.goals_involved} credits</strong>. The rare young player whose per-90 number isn't a small-sample mirage. Sits in the top 5 of both the position-adjusted board and the under-23 board.`,
-      } : null,
-      kdb ? {
-        rank: '03 · THE EYE TEST',
-        name: 'Kevin De Bruyne',
-        team: 'Manchester City · MF',
-        number: `${kdb.ep_per_90.toFixed(3)} EP/90`,
-        numberLabel: 'over 14,674 minutes',
-        copy: `By far the most-sampled top-3 pick on the page: <strong>${kdb.minutes.toLocaleString('en-GB')} minutes and ${kdb.goals_involved} credits</strong> of evidence behind the EP/90. Doesn't qualify as a "discovery" by any reasonable definition, which is the point: when the model agrees with conventional wisdom about elite midfielders, the model is doing its job.`,
-      } : null,
-      tello ? {
-        rank: '04 · LATE-GAME',
-        name: 'Cristian Tello',
-        team: `${tello.primary_team} · Q3 #${tello.rank}`,
-        number: `${(tello.share_late * 100).toFixed(1)}%`,
-        numberLabel: 'EP from 60-90 mins',
-        copy: `The only Q3 name with both <strong>${tello.goals_involved} credits</strong> and a late share above 70%. The substantive version of "late-game specialist": not a super-sub, just a player whose contribution lives almost entirely in the high-leverage minutes. <strong>${tello.ep_late.toFixed(1)} of his ${tello.ep_total.toFixed(1)} EP</strong> came in the last 30.`,
-      } : null,
-      yamal ? {
-        rank: '05 · THE DETAIL',
-        name: 'Lamine Yamal',
-        team: `Barcelona · age ${yamal.age != null ? yamal.age.toFixed(1) : '?'}`,
-        number: `${yamal.ep_per_90.toFixed(3)} EP/90`,
-        numberLabel: `${yamal.minutes.toLocaleString('en-GB')} mins · age ${yamal.age != null ? yamal.age.toFixed(1) : '?'}`,
-        copy: `The youngest player in the dataset to clear 500 minutes. At <strong>${yamal.minutes.toLocaleString('en-GB')} minutes</strong> his per-90 isn't a four-game flash; it's almost a full season's evidence. <strong>${yamal.goals_involved} credits at age ${yamal.age != null ? yamal.age.toFixed(1) : '?'}</strong>. The Q7 cell that requires the loudest second-look.`,
-      } : null,
-    ].filter(Boolean);
-
-    const wrap = document.getElementById('picks-grid');
-    wrap.innerHTML = picks.map(p => `
-      <div class="pick-card">
-        <div class="pick-rank">${p.rank}</div>
-        <div class="pick-name">${p.name}</div>
-        <div class="pick-team">${p.team}</div>
-        <div class="pick-number-label">${p.numberLabel}</div>
-        <div class="pick-number">${p.number}</div>
-        <div class="pick-rationale">${p.copy}</div>
-      </div>
-    `).join('');
-  })();
-
+  // ── Conclusion ──
+  document.getElementById('conclusion-text').innerHTML =
+    `Price every goal by what it was worth and share it with the players who made it, and the top of European ` +
+    `football looks as expected: ${lead.player} and ${second.player} are clear of everyone, with ` +
+    `${V('$.board.top[0].theta', f2(lead.theta))} and ${V('$.board.top[1].theta', f2(second.theta))} EP per 90. What ` +
+    `changes is how sure anyone can be about the rest. Short careers inflate raw per-90s (half the raw top 10 drop ` +
+    `out), the order from third down is a shortlist, and the parts of the numbers that feel most like character ` +
+    `(how decisive a player's goals are) are the parts that don't repeat. For a club, the useful number is ` +
+    `the adjusted rate of involvement; for anyone ranking players, it is the plausible rank next to it.`;
 })();
 </script>
 
