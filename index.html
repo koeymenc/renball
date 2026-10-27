@@ -168,9 +168,11 @@
   }
   .project-card {
     background: var(--bg-card); border: 1px solid var(--border);
-    padding: 2rem; display: flex; flex-direction: column;
+    padding: 2rem; display: flex; flex-direction: column; cursor: pointer;
     text-decoration: none; color: inherit; transition: all 0.35s; position: relative;
   }
+  .project-title a { color: inherit; text-decoration: none; }
+  .project-title a:focus-visible { outline: 1px solid var(--accent); outline-offset: 3px; }
   .project-card:hover {
     background: var(--bg-card-hover); border-color: var(--border-light); transform: translateY(-2px);
   }
@@ -200,7 +202,7 @@
     font-family: var(--mono); font-size: 0.75rem; color: var(--accent); line-height: 1.5;
   }
   .project-footer {
-    display: flex; justify-content: space-between; align-items: center;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;
     padding-top: 1rem; border-top: 1px solid var(--border);
   }
   .project-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
@@ -209,7 +211,7 @@
     text-transform: uppercase; color: var(--text-muted);
     padding: 0.2rem 0.5rem; border: 1px solid var(--border);
   }
-  .project-links { display: flex; gap: 0.5rem; }
+  .project-links { display: flex; gap: 0.5rem; flex-wrap: wrap; }
   .project-link {
     font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.06em;
     text-transform: uppercase; color: var(--text-muted);
@@ -316,7 +318,7 @@
   <div class="nav-links">
     <a href="#research">Research</a>
     <a href="#about">About</a>
-    <a href="mailto:your@email.com">Contact</a>
+    <a href="#contact">Contact</a>
   </div>
 </nav>
 
@@ -422,19 +424,18 @@
 </section>
 
 <!-- CONTACT -->
-<div class="contact-strip">
+<div class="contact-strip" id="contact">
   <h2 style="font-family:var(--serif)">Let's Talk Football & Data</h2>
   <p>Interested in my work? Have a dataset to explore?</p>
-  <a href="mailto:your@email.com" class="contact-link">Get in Touch <span>→</span></a>
+  <a href="https://x.com/renball" target="_blank" rel="noopener" class="contact-link">Message me on X <span>→</span></a>
 </div>
 
 <!-- FOOTER -->
 <footer>
   <div class="footer-left">© 2026 Renball · Can Luca Köymen</div>
   <div class="footer-links">
-    <a href="https://twitter.com/" target="_blank">Twitter</a>
-    <a href="https://linkedin.com/" target="_blank">LinkedIn</a>
-    <a href="https://github.com/" target="_blank">GitHub</a>
+    <a href="https://x.com/renball" target="_blank" rel="noopener">X</a>
+    <a href="https://github.com/koeymenc" target="_blank" rel="noopener">GitHub</a>
   </div>
 </footer>
 
@@ -468,7 +469,8 @@
     const btn = document.createElement('button');
     btn.className = 'filter-btn';
     btn.dataset.filter = f;
-    btn.textContent = f.charAt(0).toUpperCase() + f.slice(1);
+    const label = f.replace(/-/g, ' ');
+    btn.textContent = label.charAt(0).toUpperCase() + label.slice(1);
     filtersContainer.appendChild(btn);
   });
 
@@ -478,19 +480,23 @@
     const folder = p.folder;
 
     // Build links
+    const href = p.has_html ? `projects/${folder}/analysis.html` : `projects/${folder}/slides.pdf`;
     let linksHtml = '';
     if (p.has_html) {
-      linksHtml += `<a href="projects/${folder}/analysis.html" class="project-link" onclick="event.stopPropagation()">Analysis ↗</a>`;
+      linksHtml += `<a href="projects/${folder}/analysis.html" class="project-link">Analysis ↗</a>`;
+    }
+    if (p.has_dashboard) {
+      linksHtml += `<a href="projects/${folder}/dashboard.html" class="project-link">Dashboard ↗</a>`;
     }
     if (p.has_pdf) {
-      linksHtml += `<a href="projects/${folder}/slides.pdf" class="project-link" onclick="event.stopPropagation()" target="_blank">PDF ↓</a>`;
+      linksHtml += `<a href="projects/${folder}/slides.pdf" class="project-link" target="_blank" rel="noopener">Slides ↓</a>`;
     }
 
-    const card = document.createElement('a');
+    // The card is clickable as a whole; the title is the keyboard-focusable link
+    const card = document.createElement('article');
     card.className = 'project-card reveal';
     card.dataset.tags = (p.filter || []).join(',');
-    card.href = p.has_html ? `projects/${folder}/analysis.html` : `projects/${folder}/slides.pdf`;
-    if (!p.has_html) card.target = '_blank';
+    card.addEventListener('click', e => { if (!e.target.closest('a')) window.location.href = href; });
 
     card.innerHTML = `
       <span class="project-number">${num}</span>
@@ -498,7 +504,7 @@
         <span class="project-date">${p.date}</span>
         <span class="project-type">${p.type}</span>
       </div>
-      <h3 class="project-title">${p.title}</h3>
+      <h3 class="project-title"><a href="${href}">${p.title}</a></h3>
       <p class="project-excerpt">${p.excerpt}</p>
       ${p.finding ? `<div class="project-result">${p.finding}</div>` : ''}
       <div class="project-footer">
@@ -518,7 +524,7 @@
       btn.classList.add('active');
       const f = btn.dataset.filter;
       document.querySelectorAll('.project-card').forEach(c => {
-        c.style.display = (f === 'all' || (c.dataset.tags || '').includes(f)) ? '' : 'none';
+        c.style.display = (f === 'all' || (c.dataset.tags || '').split(',').includes(f)) ? '' : 'none';
       });
     });
   });

@@ -423,6 +423,22 @@
   <div class="slide-viewer" data-renball="slide-viewer" data-src="slides.pdf"></div>
 </section>
 
+<section class="proj">
+  <h2>More Renball research</h2>
+  <div class="related">
+    <a href="../03-true-contributors/analysis.html">
+      <div class="num">PROJECT 03</div>
+      <div class="ttl">The True Contributors</div>
+      <div class="why">These goal prices shared with the scorer, the assister and the pass before, with per-90 ranks that allow for luck and short careers.</div>
+    </a>
+    <a href="../01-penalty-analysis/analysis.html">
+      <div class="num">PROJECT 01</div>
+      <div class="ttl">Should the Fouled Player Take the Penalty Himself?</div>
+      <div class="why">A small-sample question answered honestly: what the data can and can't rule out.</div>
+    </a>
+  </div>
+</section>
+
 <script src="../../assets/js/chart-defaults.js"></script>
 <script src="../../assets/js/renball-components.js"></script>
 <script>
@@ -920,7 +936,7 @@
       `Total EP rewards volume; per 90 minutes rewards rate. Among the ${fmt(ps.eligible)} players with at least ` +
       `${fmt(ps.min_minutes)} minutes, the board mixes career-long rates with short hot streaks: ${ps.short_in_top10} ` +
       `of the top ten played under ${fmt(ps.short_minutes)} minutes, and their intervals are the widest. A minutes filter is a blunt tool: ` +
-      `Project 03 ranks per-90 rates properly, pulling small samples towards the average.`;
+      `<a href="../03-true-contributors/analysis.html" style="color: var(--accent);">Project 03</a> ranks per-90 rates properly, pulling small samples towards the average.`;
     document.getElementById('p90-caption').textContent =
       `EP per 90 = EP collected ÷ minutes played × 90, minutes from the same matches as the goals (all six leagues). ` +
       `At least ${fmt(ps.min_minutes)} minutes. Bar: 95% interval from resampling matches.`;
