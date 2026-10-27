@@ -2,7 +2,7 @@
   {
     "folder": "01-penalty-analysis",
     "title": "Should the Fouled Player Take the Penalty Himself?",
-    "date": "May 2026",
+    "date": "October 2026",
     "type": "HTML + PDF",
     "tags": [
       "Top 5 Leagues",
@@ -21,7 +21,7 @@
   {
     "folder": "02-points-by-gamestate",
     "title": "Not All Goals Are Equal: A Time-Aware Expected-Points Model",
-    "date": "May 2026",
+    "date": "October 2026",
     "type": "HTML + Dashboard + PDF",
     "tags": [
       "Top 5 Leagues + Eredivisie",
@@ -44,7 +44,7 @@
   {
     "folder": "03-true-contributors",
     "title": "The True Contributors: Who Actually Moves the Table?",
-    "date": "May 2026",
+    "date": "October 2026",
     "type": "HTML + Dashboard + PDF",
     "tags": [
       "Top 5 Leagues",
@@ -57,7 +57,7 @@
       "expected-points"
     ],
     "excerpt": "Every goal priced by the points it was worth and shared with the scorer, the assister and the pass before. Who adds the most per 90 once luck and short careers are allowed for, and how sure can anyone be?",
-    "finding": "Lionel Messi and Kylian Mbappé are the only players sure to rank in the top 10 for expected points added per 90 (0.81 and 0.77). Behind them nothing is settled: the number 3, Neymar, could plausibly rank anywhere from 1 to 34.",
+    "finding": "Only two players are sure of a top-10 place for expected points added per 90: Messi and Mbappé. From number 3 down, the ranking is far less settled than any \"best player\" list suggests: Neymar, third on the best estimate, could plausibly rank anywhere from 1 to 34.",
     "has_html": true,
     "has_pdf": true,
     "has_methodology": true,

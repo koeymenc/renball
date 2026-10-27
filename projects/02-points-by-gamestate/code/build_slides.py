@@ -57,7 +57,7 @@ def short(season: str) -> str:
 def slide_title(prs, d):
     R.add_title_slide(prs, title="Not All Goals Are *Equal*.",
                       subtitle="A TIME-AWARE EXPECTED-POINTS MODEL · TOP 5 LEAGUES + EREDIVISIE",
-                      date="May 2026", project_num="02")
+                      date="October 2026", project_num="02")
 
 
 def slide_tldr(prs, d):

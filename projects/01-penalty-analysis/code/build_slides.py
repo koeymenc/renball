@@ -65,7 +65,7 @@ def dot_interval(ax, labels, vals, los, his, ns, *, colors=None, label_fmt="{:.1
 # Slide content
 # ════════════════════════════════════════════════════════════════════════
 def slide_title(prs, d):
-    date_str = "May 2026"
+    date_str = "October 2026"
     R.add_title_slide(
         prs,
         title="Should the Fouled Player Take the Penalty *Himself*?",

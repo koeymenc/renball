@@ -70,20 +70,37 @@ def hbars(ax, f, rows, *, colors, label_fmt, xmax):
 
 
 def hook_chart() -> None:
-    """Post 1: the adjusted board with intervals; the two sure players in accent."""
+    """Post 1: plausible rank of the top of the board; the players sure of the top 10 in accent."""
     def draw(ax, f):
         top = B["top"][:LANDSCAPE_ROWS if f["name"] == "landscape" else 10]
-        rows = [(p["player"], p["theta"], p["theta_lo"], p["theta_hi"]) for p in top]
-        colors = [S.ACCENT if (p.get("p_top10_pct") or 0) >= 95 else S.TEXT_MUTED for p in top]
-        hbars(ax, f, rows, colors=colors, label_fmt=lambda v: fx(v), xmax=1.0)
-        ax.set_xlabel("Expected points added per 90, adjusted")
+        ys = list(range(len(top)))[::-1]
+        xmax = max(p["rank_hi"] for p in top) * 1.2
+        ax.axvline(10.5, color=S.TEXT_MUTED, ls=(0, (4, 4)), lw=1.4)
+        for y, p in zip(ys, top):
+            c = S.ACCENT if (p.get("p_top10_pct") or 0) >= 95 else S.TEXT_SECONDARY
+            ax.plot([p["rank_lo"], p["rank_hi"]], [y, y], color=c, lw=7, solid_capstyle="butt", alpha=0.6)
+            ax.plot([p["rank"]], [y], "o", color=c, ms=13, zorder=3)
+            ax.text(p["rank_hi"] + xmax * 0.02, y, f"{p['rank_lo']} to {p['rank_hi']}", ha="left", va="center",
+                    color=S.TEXT, fontsize=f["size"]["annot"], family=S.MONO, zorder=4,
+                    bbox=dict(facecolor=S.BG, edgecolor="none", pad=1.5))
+        ax.set_yticks(ys)
+        ax.set_yticklabels([p["player"] for p in top])
+        ax.set_xlim(-1.5, xmax)
+        ax.set_xticks([1, 10, 20, 30, 40, 50, 60])
+        ax.set_ylim(-0.6, len(top) - 0.4)
+        ax.grid(False)
+        ax.grid(axis="x", color=S.BORDER, lw=0.9)
+        ax.set_xlabel("Plausible rank")
 
-    per_format("01_hook", draw, title="Two players are *sure*. Then a shortlist.",
-               subtitle=lambda fmt: (f"Green: top 10 in 95%+ of simulations · lines: plausible range (95%)\n"
-                                     f"{B['eligible']:,} players with {B['min_minutes']:,}+ minutes"
+    n = B["top10_sure"]
+    word = ["No players are", "Only one player is", "Only two are", "Only three are"][n] if n < 4 else f"{n} are"
+    per_format("01_hook", draw, title=f"{word} *sure* of the top 10",
+               subtitle=lambda fmt: ("Plausible rank (95%) on EP added per 90 · dot: best estimate\n"
+                                     "green: top 10 in 95%+ of simulations · dashed line: 10th"
                                      if fmt == "landscape" else
-                                     f"Green: top 10 in 95%+ of simulations\n"
-                                     f"lines: plausible range (95%) · {B['eligible']:,} players"))
+                                     "Plausible rank (95%) on EP added per 90\n"
+                                     "dot: best estimate · dashed line: 10th\n"
+                                     "green: top 10 in 95%+ of simulations"))
 
 
 def raw_chart() -> None:

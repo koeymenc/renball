@@ -1,0 +1,17 @@
+# GitHub Pages (Jekyll) build settings for renball.com.
+# Internal files stay in the repository but are not published on the site.
+# Project code (projects/*/code/) stays published: every analysis page links to it.
+exclude:
+  - CLAUDE.md
+  - README.md
+  - requirements.txt
+  - _template
+  - _audit
+  - review
+  - projects/*/README.md
+  - projects/*/methodology.md
+  - assets/build
+  - assets/slides
+  - assets/social
+  - assets/templates
+  - assets/fonts

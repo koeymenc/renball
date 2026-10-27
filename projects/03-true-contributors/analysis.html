@@ -183,7 +183,7 @@
 <header class="project-hero">
   <div class="meta-row">
     <span class="meta-pill accent">RESEARCH · 03</span>
-    <span class="meta-pill">May 2026</span>
+    <span class="meta-pill">October 2026</span>
     <span class="meta-pill">Top 5 Leagues</span>
     <span class="meta-pill">Player Value</span>
     <span class="meta-pill">Rankings with Intervals</span>
@@ -193,7 +193,8 @@
     Goals win points, but not all goals win the same number of points, and a goal is rarely one player's work.
     This study prices every goal by <strong>how many points it was worth</strong> to the team that scored it,
     shares that value with the <strong>scorer, the player who set up the shot and the player before him</strong>,
-    and asks who adds the most per 90 minutes once luck and short careers are taken out.
+    and asks who adds the most per 90 minutes once luck and short careers are taken out, and how sure anyone can be
+    of the order.
   </p>
 </header>
 
@@ -223,14 +224,14 @@
     <div class="stat-sub" id="stat-players-sub"></div>
   </div>
   <div class="stat-box">
-    <div class="stat-value" id="stat-top" data-verify-path="$.board.top[0].theta">…</div>
-    <div class="stat-label" id="stat-top-label">Top EP per 90</div>
-    <div class="stat-sub" id="stat-top-sub"></div>
-  </div>
-  <div class="stat-box">
     <div class="stat-value" id="stat-sure" data-verify-path="$.board.top10_sure">…</div>
     <div class="stat-label">Players sure of a top-10 place</div>
     <div class="stat-sub" id="stat-sure-sub"></div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-value" id="stat-third">…</div>
+    <div class="stat-label" id="stat-third-label">Plausible rank of the number 3</div>
+    <div class="stat-sub" id="stat-third-sub"></div>
   </div>
 </div>
 
@@ -457,23 +458,26 @@
   RENBALL.renderTakeaways(document.getElementById('takeaways'), data.takeaways);
 
   // ── Key finding + stats ──
+  const sure = top.slice(0, b.top10_sure).map(p => `<strong>${p.player}</strong>`);
+  const sureList = sure.length > 1 ? `${sure.slice(0, -1).join(', ')} and ${sure[sure.length - 1]}` : sure.join('');
+  const word = ['No', 'One', 'Two', 'Three', 'Four', 'Five'][b.top10_sure] ?? fmt(b.top10_sure);
   document.getElementById('finding-text').innerHTML =
-    `<strong>${lead.player}</strong> and <strong>${second.player}</strong> are the only players sure to rank in the top 10 ` +
-    `for expected points added per 90 minutes (${V('$.board.top[0].theta', f2(lead.theta))} and ` +
-    `${V('$.board.top[1].theta', f2(second.theta))} EP once luck and short careers are allowed for). Behind them ` +
-    `nothing is settled: the number 3, ${third.player}, could plausibly rank anywhere from ` +
-    `${V('$.board.top[2].rank_lo', third.rank_lo)} to ${V('$.board.top[2].rank_hi', third.rank_hi)}.`;
+    `${word} player${b.top10_sure === 1 ? ' is' : 's are'} sure of a top-10 place for expected points added per 90 ` +
+    `minutes: ${sureList}, top 10 in ${V('$.board.top[0].p_top10_pct', fmt(lead.p_top10_pct))}% of simulations. ` +
+    `From number 3 down, the ranking is far less settled than any "best player" list suggests: ${third.player}, ` +
+    `third on the best estimate, could plausibly rank anywhere from ${V('$.board.top[2].rank_lo', third.rank_lo)} to ` +
+    `${V('$.board.top[2].rank_hi', third.rank_hi)}, and the plausible ranks of the top 10 reach down to ` +
+    `${V('$.board.top10_rank_hi_max', b.top10_rank_hi_max)}.`;
   document.getElementById('stat-goals').textContent = fmt(q.goals);
   document.getElementById('stat-goals-sub').textContent = `${fmt(q.matches)} matches · ${q.first_season} to ${q.last_season}`;
   document.getElementById('stat-players').textContent = fmt(q.players_eligible);
   document.getElementById('stat-players-sub').textContent = `${fmt(b.min_minutes)}+ minutes in the top 5 leagues`;
-  document.getElementById('stat-top').textContent = f2(lead.theta);
-  document.getElementById('stat-top-label').textContent = `EP per 90 · ${lead.player}`;
-  document.getElementById('stat-top-sub').innerHTML =
-    `adjusted · measured ${V('$.board.top[0].p90', f3(lead.p90))} (95% range ${V('$.board.top[0].p90_lo', f3(lead.p90_lo))}–` +
-    `${V('$.board.top[0].p90_hi', f3(lead.p90_hi))})`;
   document.getElementById('stat-sure').textContent = fmt(b.top10_sure);
   document.getElementById('stat-sure-sub').textContent = `top-10 chance of 95% or more`;
+  document.getElementById('stat-third').innerHTML =
+    `${V('$.board.top[2].rank_lo', third.rank_lo)}–${V('$.board.top[2].rank_hi', third.rank_hi)}`;
+  document.getElementById('stat-third-label').textContent = `Plausible rank · ${third.player}`;
+  document.getElementById('stat-third-sub').textContent = `third on the best estimate · 95% range`;
 
   // ── Framework ──
   const p02 = '<a href="../02-points-by-gamestate/analysis.html">Project 02</a>';

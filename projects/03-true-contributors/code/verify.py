@@ -82,6 +82,8 @@ ANCHORS = [
 # SCA2 share (whole or one-decimal percent)
 for k, p in enumerate(DATA["board"]["top"][:10]):
     ANCHORS.append((rf"{re.escape(p['player'])}\D{{0,14}}\d\.\d\d(?!\d)", f"$.board.top[{k}].theta"))
+for k, p in enumerate(DATA["board"]["top"][:10]):     # plausible rank quoted as "lo to hi" after his surname
+    ANCHORS.append((rf"{re.escape(p['player'].split()[-1])}\D{{0,45}}?\d+ to \d+", f"$.board.top[{k}].rank_hi"))
 for k, p in enumerate(DATA["sca2"]["top"][:10]):
     ANCHORS.append((rf"{re.escape(p['player'])}\D{{0,20}}\d+\.\d(?![\d%])", f"$.sca2.top[{k}].ep_sca2"))
 for k, p in enumerate(DATA["sca2"]["top_share"][:5]):

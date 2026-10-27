@@ -262,6 +262,12 @@
     padding: 0.85rem 2.25rem; text-decoration: none; transition: all 0.3s;
   }
   .contact-link:hover { background: #d4ff9e; transform: translateY(-1px); }
+  .contact-strip .contact-alt {
+    margin: 1.5rem 0 0; font-family: var(--mono); font-size: 0.7rem;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted);
+  }
+  .contact-alt a { color: var(--text-secondary); text-decoration: none; transition: color 0.2s; }
+  .contact-alt a:hover { color: var(--accent); }
 
   /* FOOTER */
   footer {
@@ -411,11 +417,8 @@
         <div style="margin-top:2.5rem">
           <div class="about-card-label">Data Sources</div>
           <div class="skills-grid">
-            <span class="skill-pill">StatsBomb Open Data</span>
             <span class="skill-pill">FBref</span>
-            <span class="skill-pill">Understat</span>
-            <span class="skill-pill">Transfermarkt</span>
-            <span class="skill-pill">WhoScored</span>
+            <span class="skill-pill">Wikipedia (award winners)</span>
           </div>
         </div>
       </div>
@@ -427,19 +430,28 @@
 <div class="contact-strip" id="contact">
   <h2 style="font-family:var(--serif)">Let's Talk Football & Data</h2>
   <p>Interested in my work? Have a dataset to explore?</p>
-  <a href="https://x.com/renball" target="_blank" rel="noopener" class="contact-link">Message me on X <span>→</span></a>
+  <a href="#contact" class="contact-link" data-mail>Email me <span>→</span></a>
+  <noscript><p class="contact-alt">Email: koeymenc [at] gmail [dot] com</p></noscript>
+  <p class="contact-alt">Or on X: <a href="https://x.com/renball" target="_blank" rel="noopener">@renball</a></p>
 </div>
 
 <!-- FOOTER -->
 <footer>
   <div class="footer-left">© 2026 Renball · Can Luca Köymen</div>
   <div class="footer-links">
+    <a href="#contact" data-mail>Email</a>
     <a href="https://x.com/renball" target="_blank" rel="noopener">X</a>
     <a href="https://github.com/koeymenc" target="_blank" rel="noopener">GitHub</a>
   </div>
 </footer>
 
 <script>
+// Email links: the address is assembled here so it isn't plain text in the page source
+(function() {
+  const href = 'mailto:' + ['koeymenc', 'gmail.com'].join('@') + '?subject=' + encodeURIComponent('RENBALL: ');
+  document.querySelectorAll('a[data-mail]').forEach(a => { a.href = href; });
+})();
+
 (async function() {
   const grid = document.getElementById('project-grid');
   const filtersContainer = document.getElementById('filters-container');

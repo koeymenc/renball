@@ -44,7 +44,7 @@ def n(x) -> str:
 def slide_title(prs, d):
     R.add_title_slide(prs, title="The True *Contributors*.",
                       subtitle="WHO ACTUALLY MOVES THE TABLE? · EXPECTED POINTS PER 90 WITH HONEST RANKS",
-                      date="May 2026", project_num="03")
+                      date="October 2026", project_num="03")
 
 
 def slide_tldr(prs, d):
